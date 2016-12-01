@@ -28,6 +28,8 @@ typedef struct object {
 	void (*render)(struct object*);
 	void (*free)(struct object*);
 
+	void*extended_by;
+
 } object;
 
 //-------------------------------------------------------------------- default

@@ -1,7 +1,15 @@
 #pragma once
 #include "../object.h"
 
-//--------------------------------------------------------------------- logo_1
+//--------------------------------------------------------------------- extends
+
+typedef struct ninja{
+
+	float animation_time_left_for_current_frame;
+
+}ninja;
+
+//----------------------------------------------------------------------- init
 
 inline static void init_ninja(object*this) {
 	this->position = (position){
@@ -19,20 +27,33 @@ inline static void init_ninja(object*this) {
 		};
 
 	set_bounding_radius_from_xy_scale(this);
+
+	ninja*ni=malloc(sizeof(ninja));
+	ni->animation_time_left_for_current_frame=0.5f;
+	this->extended_by=ni;
 }
 
-//---------------------------------------------------------------------- update
+//----------------------------------------------------------------------- free
+
+inline static void free_ninja(object*this){
+	free(this->extended_by);
+}
+
+//----------------------------------------------------------------------update
 
 inline static void update_ninja(object*this,dt dt){
-	float t=this->time_in_seconds-dt;
+	ninja*ext=(ninja*)this->extended_by;
+
+	float t=ext->animation_time_left_for_current_frame-dt;
 
 	if(t<0){ // next frame
 		this->texture_id++;
 		if(this->texture_id>19)
 			this->texture_id=10;
-		this->time_in_seconds+=.2f;
+
+		ext->animation_time_left_for_current_frame+=.2f;
 	}else{
-		this->time_in_seconds-=dt;
+		ext->animation_time_left_for_current_frame+=.2f;
 	}
 
 //	printf(" ninja y: %f\n",this->position.y);
