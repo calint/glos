@@ -9,7 +9,10 @@
 
 
 
-#include "classes.h"
+#include "classes/logo_1.h"
+#include "classes/logo_2.h"
+#include "classes/logo_3.h"
+#include "classes/logo_4.h"
 
 //--------------------------------------------------------------------- create
 inline static void init(){

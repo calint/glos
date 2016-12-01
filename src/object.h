@@ -17,7 +17,7 @@ typedef struct object {
 
 	bounding_radius bounding_radius;
 	bits*bits;
-	type type;
+	class type;
 	id oid;
 	color color;
 	struct object*parent;
@@ -32,7 +32,7 @@ typedef struct object {
 
 //-------------------------------------------------------------------- default
 
-static object _default_object = {
+static object default_object = {
 
 		.position = {0, 0, 0, 0},
 		.velocity = {0, 0, 0, 0},

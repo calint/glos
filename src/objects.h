@@ -37,7 +37,7 @@ inline static object*object_alloc(object*initializer) {
 			if (initializer)
 				*o = *initializer;
 			else
-				*o = _default_object;
+				*o = default_object;
 			if (o->init)
 				o->init(o);
 			o->bits = objects_bits_ptr;
@@ -71,7 +71,9 @@ inline static void objects_init() {
 		o++;
 	}
 }
+
 //--------------------------------------------------------------------- free
+
 inline static void objects_free() {
 	object*o = objects;
 	int i = objects_count;
@@ -84,7 +86,9 @@ inline static void objects_free() {
 		o++;
 	}
 }
+
 //--------------------------------------------------------------------- update
+
 inline static void objects_update(float dt) {
 	object*o = objects;
 	int i = objects_count;
@@ -103,6 +107,7 @@ inline static void objects_update(float dt) {
 	}
 }
 //--------------------------------------------------------------------- render
+
 inline static void objects_render() {
 	object*o = objects;
 	int i = objects_count;
@@ -112,4 +117,5 @@ inline static void objects_render() {
 		o++;
 	}
 }
-//--------------------------------------------------------------------- done
+
+//---------------------------------------------------------------------------
