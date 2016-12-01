@@ -1,21 +1,21 @@
+#include "fps.h"
 #include "sdl.h"
 #include "lib.h"
 #include "sprites.h"
 #include "textures.h"
 #include "window.h"
-#include "fps_counter.h"
 //--------------------------------------------------------------------- main
 int main(int argc, char *argv[]) {
 
 	sdl_init();
 
-	screen_init();
+	window_init();
 
 	textures_init();
 
 	sprites_init();
 
-	fps_counter_init();
+	fps_init();
 
 	SDL_Event event;
 
@@ -68,7 +68,7 @@ int main(int argc, char *argv[]) {
 
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		double dt = fps_counter_delta_time_for_last_frame;
+		double dt = fps_dt;
 
 		sprites_update(dt);
 
@@ -80,13 +80,13 @@ int main(int argc, char *argv[]) {
 
 	}
 
-	fps_counter_free();
+	fps_free();
 
 	sprites_free();
 
-	texture_free();
+	textures_free();
 
-	screen_free();
+	window_free();
 
 	sdl_free();
 

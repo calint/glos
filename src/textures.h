@@ -17,7 +17,7 @@ static inline void textures_init() {
 	texture[0] = tex;
 }
 
-static inline void texture_free() {
+static inline void textures_free() {
 	for (int i = 0; i < texture_count; i++) {
 		SDL_DestroyTexture(texture[i]);
 	}

@@ -9,7 +9,7 @@ static SDL_Window *window;
 static SDL_Renderer *renderer;
 static SDL_GLContext *window_glcontext;
 
-static inline void screen_init() {
+static inline void window_init() {
 
 	window = SDL_CreateWindow("gles", SDL_WINDOWPOS_CENTERED,
 			SDL_WINDOWPOS_CENTERED, window_width,
@@ -53,7 +53,7 @@ static inline void screen_init() {
 
 }
 
-static inline void screen_free() {
+static inline void window_free() {
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	SDL_GL_DeleteContext(window_glcontext);
