@@ -2,28 +2,22 @@
 #include "types.h"
 #include "window.h"
 #include "textures.h"
-//--------------------------------------------------------------------- object
+//----------------------------------------------------------------------- type
 typedef struct type {
 	char path[8];
 } type;
+//---------------------------------------------------------------- baba struct
 
-typedef int oid;
-typedef unsigned int bits;
-
-inline static int bits_is_set(bits*b, int bit_number_starting_at_zero) {
-	bits bb = (bits) (1 << bit_number_starting_at_zero);
-	return (*b & bb) != 0;
-}
-
-inline static void bits_set(bits*b, int bit_number_starting_at_zero) {
-	bits bb = (bits) (1 << bit_number_starting_at_zero);
-	*b |= bb;
-}
-
-inline static void bits_unset(bits*b, int bit_number_starting_at_zero) {
-	bits bb = (bits) (1 << bit_number_starting_at_zero);
-	*b &= (bits) ~bb;
-}
+#define baba_count 1
+struct baba{
+	bits bits;
+	byte byte;
+	word word;
+	dword dword;
+	quad quad;
+	char string[32];
+}babas[baba_count]__attribute__((align(64)));
+//--------------------------------------------------------------------------
 
 typedef struct object {
 	position position;
@@ -37,7 +31,7 @@ typedef struct object {
 	bounding_radius bouning_radius;
 	bits*bits;
 	type type;
-	oid oid;
+	id oid;
 	color color;
 	struct object*parent;
 	void (*init)(struct object*);
