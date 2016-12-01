@@ -1,10 +1,6 @@
 #include "sdl.h"
 #include "fps.h"
 #include "lib.h"
-#include "objects/logo_1.h"
-#include "objects/logo_2.h"
-#include "objects/logo_3.h"
-#include "objects/logo_4.h"
 #include "sprites.h"
 #include "textures.h"
 #include "window.h"
@@ -13,41 +9,72 @@
 
 //-------------------------------------------------------------------- include
 
+#include "objects/logo_1.h"
+#include "objects/logo_2.h"
+#include "objects/logo_3.h"
+#include "objects/logo_4.h"
+#include "objects/ninja.h"
+
 
 //------------------------------------------------------------------------ lib
 
-inline static void load_texture_bmp(int n,const char*path){
-	SDL_Surface*bmp=SDL_LoadBMP(path);
-	if (!bmp){
-		perror("load_texture: could not load path:");
+//inline static void load_texture_bmp(int n,const char*path){
+//	SDL_Surface*bmp=SDL_LoadBMP(path);
+//	if (!bmp){
+//		perror("could not load path:");
+//		printf("%s %d: %s",__FILE__,__LINE__,path);
+//		exit(4);
+//	}
+//	SDL_Texture*tex=SDL_CreateTextureFromSurface(window.renderer,bmp);
+//	if(!tex){
+//		perror("could not load path:");
+//		printf("%s %d: %s",__FILE__,__LINE__,path);
+//		exit(5);
+//	}
+//	SDL_FreeSurface(bmp);
+//	texture[n]=tex;
+//}
+
+
+inline static void load_texture(int n,const char*path){
+
+	SDL_Surface*loaded_surface=IMG_Load(path);
+	if(!loaded_surface){
+		perror("could not load texture");
 		puts(path);
-		exit(4);
+		exit(12);
 	}
-	SDL_Texture*tex=SDL_CreateTextureFromSurface(renderer,bmp);
+	SDL_Texture*tex=SDL_CreateTextureFromSurface(
+			window.renderer,
+			loaded_surface
+		);
 	if(!tex){
-		perror("load_texture: could not convert to texture:");
-		puts(path);
-		exit(5);
+		perror("could not create texture");
+		printf("%s %d: %s",__FILE__,__LINE__,"");
+		exit(13);
 	}
-	SDL_FreeSurface(bmp);
 	texture[n]=tex;
+	SDL_FreeSurface(loaded_surface);
+
 }
 
 //----------------------------------------------------------------------- init
 
 inline static void load_textures(){
-	load_texture_bmp(0,"logo.bmp");
-	load_texture_bmp(1,"sdl_logo.bmp");
+	load_texture(0,"logo.bmp");
+	load_texture(1,"sdl_logo.bmp");
+	load_texture(10,"arts/ninja/Idle__000.png");
 }
 
 inline static void init(){
 
 	load_textures();
 
-	object_alloc(&_default_logo_1);
-	object_alloc(&_default_logo_2);
-	object_alloc(&_default_logo_3);
-	object_alloc(&_default_logo_4);
+	object_alloc(&default_logo_1);
+	object_alloc(&default_logo_2);
+	object_alloc(&default_logo_3);
+	object_alloc(&default_logo_4);
+	object_alloc(&default_ninja);
 
 }
 
@@ -134,13 +161,13 @@ int main(int argc, char *argv[]) {
 
 		sprites_update(fps.dt);
 
-		sprites_render(renderer);
+		sprites_render(window.renderer);
 
 		objects_update(fps.dt);
 
 		objects_render();
 
-		SDL_GL_SwapWindow(window);
+		SDL_GL_SwapWindow(window.ptr);
 
 		fps_at_frame_done();
 

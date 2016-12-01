@@ -22,9 +22,10 @@ static inline void sdl_init() {
 //	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 //	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
-	int imgFlags=IMG_INIT_PNG;
-	if(!(IMG_Init(imgFlags)&IMG_INIT_PNG)){
-		printf( "SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError() );
+	if(!(IMG_Init(IMG_INIT_PNG)&IMG_INIT_PNG)){
+		puts("could not initialize SDL_imgage");
+		printf("%s %d: %s",__FILE__,__LINE__,"");
+		puts(IMG_GetError());
 	}
 }
 

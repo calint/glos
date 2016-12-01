@@ -2,14 +2,14 @@
 
 //--------------------------------------------------------------------- logo_2
 
-inline static void _init_logo_2(object*o) {
+inline static void init_logo_2(object*o) {
 	o->position = (position){200,100,0,0};
 	o->velocity.x = 100;
 }
 
 //---------------------------------------------------------------------------
 
-inline static void _constrain_logo_2(object*o, dt dt) {
+inline static void constrain_logo_2(object*o, dt dt) {
 	if (o->position.x > 220) {
 		o->position.x = 220;
 		o->position.y += o->scale.y;
@@ -32,7 +32,7 @@ inline static void _constrain_logo_2(object*o, dt dt) {
 
 //---------------------------------------------------------------------------
 
-static object _default_logo_2 = {
+static object default_logo_2 = {
 		.type = {{'b',0,0,0,0,0,0,0}},
 		.position = {0, 0, 0, 0},
 		.velocity = {0, 0, 0, 0},
@@ -45,8 +45,8 @@ static object _default_logo_2 = {
 		.oid=0,
 		.color=0,
 		.parent=0,
-		.init = _init_logo_2,
-		.update = _constrain_logo_2,
+		.init = init_logo_2,
+		.update = constrain_logo_2,
 		.collision=NULL,
 		.render = _draw_texture,
 		.free=NULL,

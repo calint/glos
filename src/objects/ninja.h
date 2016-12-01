@@ -3,19 +3,19 @@
 
 //--------------------------------------------------------------------- logo_1
 
-inline static void init_logo_1(object*o) {
+inline static void init_ninja(object*o) {
 	o->position = (position){100,100,0,0};
 	set_bounding_radius_from_xy_scale(o);
 }
 
 //---------------------------------------------------------------------------
 
-static object default_logo_1 = {
-		.type = {{'a',0,0,0,0,0,0,0}},
-		.init = init_logo_1,
-		.scale = { 50, 50, 50, 0 },
-		.texture_id = 0,
-		.render = _draw_texture,
+static object default_ninja={
+		.type={{'e',0,0,0,0,0,0,0}},
+		.init=init_ninja,
+		.scale={50,50,50,0},
+		.texture_id=10,
+		.render=_draw_texture,
 };
 
 //---------------------------------------------------------------------------

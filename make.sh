@@ -10,7 +10,7 @@ CFLAGS=$(sdl2-config --cflags)
 
 WARNINGS='-Wall -Wextra -pedantic -Wfatal-errors -Wno-unused-function -Wno-unused-parameter'
 
-LIBS="$(sdl2-config --libs) -lGL -lm -lSDL2_gfx"
+LIBS="$(sdl2-config --libs) -lGL -lm -lSDL2_gfx -lSDL2_image"
 
 OPTIMIZATIONS=-O3
 
