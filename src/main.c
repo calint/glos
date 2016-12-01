@@ -32,13 +32,10 @@ int main(int argc, char *argv[]) {
 		fps_counter_before_frame();
 
 		while (SDL_PollEvent(&event)) {
-
 			switch (event.type) {
-
 			case SDL_QUIT:
 				running = 0;
 				break;
-
 			case SDL_KEYDOWN:
 				switch (event.key.keysym.sym) {
 				case SDLK_ESCAPE:
@@ -82,6 +79,7 @@ int main(int argc, char *argv[]) {
 		fps_counter_after_frame();
 
 	}
+
 	fps_counter_free();
 
 	sprites_free();
