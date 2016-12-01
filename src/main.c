@@ -25,8 +25,19 @@ inline static void init(){
 
 }
 
-//----------------------------------------------------------------------- main
+//-------------------------------------------------------------background_color
+
+struct {
+	GLclampf red;
+	GLclampf green;
+	GLclampf blue;
+} background_color = {0,0,0};
+
+//------------------------------------------------------------------------ main
+
 int main(int argc, char *argv[]) {
+
+	//-------------------------------------------------------------------- init
 
 	sdl_init();
 
@@ -44,19 +55,16 @@ int main(int argc, char *argv[]) {
 
 	init();
 
-	struct {
-		GLclampf red;
-		GLclampf green;
-		GLclampf blue;
-	} background_color = {0,0,0};
-
-	SDL_Event event;
+	//-------------------------------------------------------------------- loop
 
 	for(int running = 1; running; ) {
 
 		fps_at_frame_start();
 
+		SDL_Event event;
+
 		while (SDL_PollEvent(&event)) {
+			//-------------------------------------------------------------keys
 			switch (event.type) {
 			case SDL_QUIT:
 				running = 0;
@@ -89,6 +97,8 @@ int main(int argc, char *argv[]) {
 			}
 		}
 
+		//---------------------------------------------------------------- draw
+
 		glClearColor( background_color.red, background_color.green,
 				background_color.blue, 1.0);
 
@@ -109,6 +119,8 @@ int main(int argc, char *argv[]) {
 		fps_at_frame_done();
 
 	}
+
+	//---------------------------------------------------------------------free
 
 	objects_free();
 
