@@ -8,6 +8,10 @@
 #include "objects.h"
 //--------------------------------------------------------------------- main
 
+inline static void object_logo_init(object*o) {
+	o->pos.x = 100;
+	o->pos.y = 100;
+}
 
 inline static void object_logo_render(object*o) {
 	SDL_Rect dest = { (int) o->pos.x, (int) o->pos.y,
@@ -15,17 +19,22 @@ inline static void object_logo_render(object*o) {
 	SDL_RenderCopy(renderer,texture[0], NULL, &dest);
 }
 
-inline static void object_init(object*o) {
-	o->pos.x = 100;
-	o->pos.y = 100;
-	o->render = object_logo_render;
-}
-
-inline static void object2_init(object*o) {
+inline static void object_logo2_init(object*o) {
 	o->pos.x = 200;
 	o->pos.y = 200;
 	o->dpos.x = 10;
 	o->render = object_logo_render;
+}
+
+inline static void object_logo2_update(object*o,float dt) {
+	if(o->pos.x>220 || o->pos.x<50)
+		o->dpos.x=-o->dpos.x;
+}
+
+inline static void object_logo2_render(object*o) {
+	SDL_Rect dest = { (int) o->pos.x, (int) o->pos.y,
+			80, 80 };
+	SDL_RenderCopy(renderer,texture[0], NULL, &dest);
 }
 
 int main(int argc, char *argv[]) {
@@ -44,11 +53,14 @@ int main(int argc, char *argv[]) {
 	object*o;
 
 	o = object_alloc();
-	o->init=object_init;
+	o->init=object_logo_init;
+	o->render = object_logo_render;
 	o->init(o);
 
 	o = object_alloc();
-	o->init=object2_init;
+	o->init=object_logo2_init;
+	o->render = object_logo2_render;
+	o->update =object_logo2_update;
 	o->init(o);
 
 	printf("object[%s %p}\n", o->type.path, (void*) o);
