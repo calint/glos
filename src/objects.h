@@ -38,6 +38,7 @@ typedef struct object {
 	bits*bits;
 	type type;
 	oid oid;
+	color color;
 	struct object*parent;
 	void (*init)(struct object*);
 	void (*update)(struct object*, float);

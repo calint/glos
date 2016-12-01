@@ -6,16 +6,27 @@
 #include "window.h"
 #include "shader.h"
 #include "objects.h"
+#include <SDL2/SDL2_gfxPrimitives.h>
 //-------------------------------------------------------------- lib
 inline static bounding_radius bounding_radius_for_scale(scale*s) {
 	return (bounding_radius) sqrtf(s->x * s->x + s->y * s->y + s->z * s->z);
 }
 
-inline static void _render_texture(object*o) {
+inline static void _draw_texture(object*o) {
 	SDL_Rect dest = { (int) o->position.x, (int) o->position.y,
 			(int) o->scale.x, (int) o->scale.y };
 	SDL_RenderCopy(renderer, texture[o->texture_id], NULL, &dest);
 }
+
+inline static void _draw_bounding_sphere(object*o) {
+	circleColor(renderer, (short) o->position.x, (short) o->position.y, (short) o->bouning_radius, o->color);
+}
+
+inline static void _draw_texture_and_bounding_sphere(object*o) {
+	_draw_texture(o);
+	_draw_bounding_sphere(o);
+}
+
 //-------------------------------------------------------------- object logo 1
 inline static void _init_logo_1(object*o) {
 	o->position.x = 100;
@@ -68,6 +79,14 @@ inline static void _constrain_logo_3(object*o, float dt) {
 	if (o->position.x > 400 || o->position.x < 50)
 		o->velocity.x = -o->velocity.x;
 }
+//-------------------------------------------------------------- object logo 4
+inline static void _init_logo_4(object*o) {
+	o->position.x = 100;
+	o->position.y = 400;
+	o->scale = (scale ) { 40, 40, 40, 0 };
+	o->bouning_radius = bounding_radius_for_scale(&o->scale);
+	o->color=0xff008000;
+}
 //--------------------------------------------------------------------- main
 int main(int argc, char *argv[]) {
 	sdl_init();
@@ -86,13 +105,13 @@ int main(int argc, char *argv[]) {
 
 	o = object_alloc();
 	o->init = _init_logo_1;
-	o->render = _render_texture;
+	o->render = _draw_texture;
 	o->init(o);
 
 	o = object_alloc();
 	o->init = _init_logo_2;
 	o->update = _constrain_logo_2;
-	o->render = _render_texture;
+	o->render = _draw_texture;
 	o->init(o);
 
 //	object_free(o);
@@ -100,7 +119,12 @@ int main(int argc, char *argv[]) {
 	o = object_alloc();
 	o->init=_init_logo_3;
 	o->update =_constrain_logo_3;
-	o->render = _render_texture;
+	o->render = _draw_texture;
+	o->init(o);
+
+	o = object_alloc();
+	o->init=_init_logo_4;
+	o->render = _draw_texture_and_bounding_sphere;
 	o->init(o);
 
 	int running = 1;

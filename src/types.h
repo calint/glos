@@ -10,4 +10,5 @@ typedef vec3 scale;
 typedef float bounding_radius;
 typedef vec3 velocity;
 typedef vec3 angular_velocity;
+typedef Uint32 color;
 //---------------------------------------------------------------------
