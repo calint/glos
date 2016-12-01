@@ -19,6 +19,7 @@ static inline void window_init() {
 
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 	window_glcontext = SDL_GL_CreateContext(window);
+
 //	// Set our OpenGL version.
 //	// SDL_GL_CONTEXT_CORE gives us only the newer version, deprecated functions are disabled
 //	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK,
