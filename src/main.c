@@ -44,13 +44,20 @@ int main(int argc, char *argv[]) {
 			}
 		}
 
-		SDL_RenderClear(renderer);
 
-//		SDL_RenderCopy(renderer, sprite[0].img, NULL, NULL);
+		glClearColor(0.0, 0.0, 0.0, 1.0);
+		glClear(GL_COLOR_BUFFER_BIT);
+		SDL_GL_SwapWindow(window);
+
+
+
+		SDL_RenderClear(renderer);
 
 		sprites_render(renderer);
 
 		SDL_RenderPresent(renderer);
+
+
 
 		fps_counter_after_frame();
 	}
