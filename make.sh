@@ -1,11 +1,5 @@
 #!/bin/sh -x
-# cross platform opengl framework
-#	linux
-#	android
-#	ios	
-#	osx
-
-CC='clang -std=c11 -I/usr/include/SDL2'
+CC='clang -std=c11'
 SRC=src/main.c
 BIN=glos
 CFLAGS=$(sdl2-config --cflags)

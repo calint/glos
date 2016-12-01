@@ -1,5 +1,5 @@
 #pragma once
-#include <SDL.h>
+#include <SDL2/SDL.h>
 //--------------------------------------------------------------------- sdl
 static inline void sdl_init() {
 	if (SDL_Init(SDL_INIT_VIDEO)) {

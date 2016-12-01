@@ -7,7 +7,7 @@ static inline double random() {
 	return rand() / RAND_MAX;
 }
 
-static inline double random_range(double low, double high) {
+static inline double randomRange(double low, double high) {
 	return random() * (high - low) + low;
 }
 

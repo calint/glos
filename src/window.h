@@ -1,5 +1,5 @@
 #pragma once
-//------------------------------------------------------------------ screen
+//------------------------------------------------------------------ window
 #define window_width 512
 #define window_height 512
 static SDL_Window *window;
@@ -29,4 +29,4 @@ static inline void screen_free() {
 	SDL_DestroyRenderer(window_free);
 	SDL_DestroyWindow(window);
 }
-//------------------------------------------------------------------ screen
+//------------------------------------------------------------------ window
