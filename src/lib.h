@@ -46,7 +46,7 @@ struct baba{
 	dword dword;
 	quad quad;
 	char string[32];
-}babas[baba_count]__attribute__((align(64)));
+} babas[baba_count];  //__attribute__((align(64)));
 
 //----------------------------------------------------------------------- type
 typedef struct type {
@@ -87,5 +87,12 @@ inline static double random_range(double low, double high) {
 	double r = random() * (high - low) + low;
 	return r;
 }
+
+//--------------------------------------------------------------------------
+
+static inline float _bounding_radius_for_scale(scale*s){
+	return sqrtf(s->x*s->x+s->y*s->y+s->z*s->z);
+}
+
 
 //------------------------------------------------------------------ library

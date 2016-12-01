@@ -2,33 +2,10 @@
 #include "lib.h"
 #include "window.h"
 #include "textures.h"
+#include "object.h"
 
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------- objects
 
-typedef struct object {
-	position position;
-	velocity velocity;
-	angle angle;
-	angular_velocity angular_velocity;
-
-	scale scale;
-	id texture_id;
-
-	bounding_radius bouning_radius;
-	bits*bits;
-	type type;
-	id oid;
-	color color;
-	struct object*parent;
-	void (*init)(struct object*);
-	void (*update)(struct object*, dt);
-	void (*collision)(struct object*, struct object*, dt);
-	void (*render)(struct object*);
-	void (*free)(struct object*);
-
-} object;
-
-//--------------------------------------------------------------------- objects
 #define objects_count 1024
 
 static object objects[objects_count];
@@ -45,6 +22,7 @@ static bits*objects_bits_end_ptr = objects_bits + objects_count;
 #define object_bit_allocated 0
 
 //--------------------------------------------------------------------- alloc
+
 inline static object*object_alloc(object*initializer) {
 	int i = 2;
 	while (i--) {
@@ -59,7 +37,7 @@ inline static object*object_alloc(object*initializer) {
 			if (initializer)
 				*o = *initializer;
 			else
-				memset(o, 0, sizeof(object));
+				*o = _default_object;
 			if (o->init)
 				o->init(o);
 			o->bits = objects_bits_ptr;
@@ -75,11 +53,15 @@ inline static object*object_alloc(object*initializer) {
 	perror("out of objects");
 	exit(6);
 }
+
 //--------------------------------------------------------------------- free
+
 inline static void object_free(object*o) {
 	bits_unset(o->bits, 0);
 }
+
 //--------------------------------------------------------------------- init
+
 inline static void objects_init() {
 	object*o = objects;
 	int i = objects_count;
