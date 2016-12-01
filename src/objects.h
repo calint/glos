@@ -48,7 +48,7 @@ typedef struct object {
 } object;
 
 //--------------------------------------------------------------------- objects
-#define objects_count 2
+#define objects_count 1024
 
 static object objects[objects_count];
 
@@ -59,7 +59,7 @@ static bits objects_bits[objects_count];
 
 static bits*objects_bits_start_ptr = objects_bits;
 static bits*objects_bits_ptr = objects_bits;
-static bits*objects_bits_end_ptr = objects_bits + objects_count * sizeof(bits);
+static bits*objects_bits_end_ptr = objects_bits + objects_count;
 
 #define object_bit_allocated 0
 

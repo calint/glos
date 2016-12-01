@@ -16,53 +16,57 @@ inline static void _render_texture(object*o) {
 			(int) o->scale.x, (int) o->scale.y };
 	SDL_RenderCopy(renderer, texture[o->texture_id], NULL, &dest);
 }
-//-------------------------------------------------------------- object logo
-inline static void _logo_init(object*o) {
+//-------------------------------------------------------------- object logo 1
+inline static void _init_logo_1(object*o) {
 	o->position.x = 100;
 	o->position.y = 100;
 	o->scale = (scale ) { 50, 50, 50, 0 };
 	o->bouning_radius = bounding_radius_for_scale(&o->scale);
 	o->texture_id = 0;
 }
-//-------------------------------------------------------------- object logo2
-inline static void _logo2_init(object*o) {
+//-------------------------------------------------------------- object logo 2
+inline static void _init_logo_2(object*o) {
 	o->position.x = 200;
 	o->position.y = 200;
 	o->velocity.x = 100;
 	o->scale = (scale ) { 20, 20, 20, 0 };
+	o->bouning_radius = bounding_radius_for_scale(&o->scale);
 	o->texture_id = 1;
 }
 
-inline static void _constrain(object*o, float dt) {
+inline static void _constrain_logo_2(object*o, float dt) {
 	if (o->position.x > 220){
 		o->position.x=220;
+		o->position.y+=o->scale.y;
 		o->velocity.x = -o->velocity.x;
 	}
 	if(o->position.x < 50){
 		o->position.x=50;
 		o->velocity.x = -o->velocity.x;
 	}
+	if(o->position.y > 400){
+		o->position.y=400;
+		o->velocity.y = o->velocity.x;
+		o->velocity.x = 0;
+	}
+	if(o->position.y < 50){
+		o->position.y=50;
+		o->velocity.x = o->velocity.y;
+	}
 }
-
-inline static void _logo2_render(object*o) {
-	SDL_Rect dest = { (int) o->position.x, (int) o->position.y, 100, 100 };
-	SDL_RenderCopy(renderer, texture[o->texture_id], NULL, &dest);
-}
-//-------------------------------------------------------------- object logo3
-inline static void _logo3_init(object*o) {
+//-------------------------------------------------------------- object logo 3
+inline static void _init_logo_3(object*o) {
 	o->position.x = 100;
 	o->position.y = 300;
 	o->velocity.x = -200;
+	o->scale = (scale ) { 20, 20, 20, 0 };
+	o->bouning_radius = bounding_radius_for_scale(&o->scale);
+	o->texture_id = 1;
 }
 
-inline static void _logo3_update(object*o, float dt) {
+inline static void _constrain_logo_3(object*o, float dt) {
 	if (o->position.x > 400 || o->position.x < 50)
 		o->velocity.x = -o->velocity.x;
-}
-
-inline static void _logo3_render(object*o) {
-	SDL_Rect dest = { (int) o->position.x, (int) o->position.y, 20, 20 };
-	SDL_RenderCopy(renderer, texture[0], NULL, &dest);
 }
 //--------------------------------------------------------------------- main
 int main(int argc, char *argv[]) {
@@ -80,26 +84,24 @@ int main(int argc, char *argv[]) {
 
 	object*o;
 
-//	o = object_alloc();
-//	o->init = _logo_init;
-//	o->render = _logo_render;
-//	o->init(o);
+	o = object_alloc();
+	o->init = _init_logo_1;
+	o->render = _render_texture;
+	o->init(o);
 
 	o = object_alloc();
-	o->init = _logo2_init;
-	o->update = _constrain;
+	o->init = _init_logo_2;
+	o->update = _constrain_logo_2;
 	o->render = _render_texture;
 	o->init(o);
 
 //	object_free(o);
 //
-//	o = object_alloc();
-//	o->init=_logo3_init;
-//	o->update =_logo3_update;
-//	o->render = _logo3_render;
-//	o->init(o);
-
-	printf("object[%s %p}\n", o->type.path, (void*) o);
+	o = object_alloc();
+	o->init=_init_logo_3;
+	o->update =_constrain_logo_3;
+	o->render = _render_texture;
+	o->init(o);
 
 	int running = 1;
 
