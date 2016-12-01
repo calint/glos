@@ -55,6 +55,10 @@ int main(int argc, char *argv[]) {
 
 		SDL_RenderClear(renderer);
 
+		double dt=fps_counter_delta_time_for_last_frame;
+
+		sprites_update(dt);
+
 		sprites_render(renderer);
 
 		SDL_GL_SwapWindow(window);

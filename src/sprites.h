@@ -2,17 +2,15 @@
 #include <stdlib.h>
 #include "window.h"
 #include "textures.h"
-
 //------------------------------------------------------------------ sprites
-
-#define sprite_count 1024
+#define sprite_count 1
 struct {
 	double x, y, dx, dy;
 	int w, h;
 	SDL_Texture *img;
 
 } sprite[sprite_count];
-
+//------------------------------------------------------------------ init
 static inline void sprites_init() {
 	for (int i = 0; i < sprite_count; i++) {
 		sprite[i].img = texture[0];
@@ -25,12 +23,18 @@ static inline void sprites_init() {
 		sprite[i].dy = random_range(-5, 5);
 	}
 }
-
+//------------------------------------------------------------------ free
 static inline void sprites_free() {
 }
-
+//------------------------------------------------------------------ update
+static inline void sprites_update(double dt) {
+	for (int i = 0; i < sprite_count; i++) {
+		sprite[i].x += sprite[i].dx * dt;
+		sprite[i].y += sprite[i].dy * dt;
+	}
+}
+//------------------------------------------------------------------ render
 static inline void sprites_render(SDL_Renderer*r) {
-
 	for (int i = 0; i < sprite_count; i++) {
 		SDL_Rect dest = { (int) sprite[i].x, (int) sprite[i].y,
 				(int) sprite[i].w, (int) sprite[i].h };
