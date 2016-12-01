@@ -53,7 +53,7 @@ inline static void load_texture(int n,const char*path){
 		printf("%s %d: %s",__FILE__,__LINE__,"");
 		exit(13);
 	}
-	texture[n]=tex;
+	texture[n].ptr=tex;
 	SDL_FreeSurface(loaded_surface);
 
 }
@@ -64,6 +64,15 @@ inline static void load_textures(){
 	load_texture(0,"logo.bmp");
 	load_texture(1,"sdl_logo.bmp");
 	load_texture(10,"arts/ninja/Idle__000.png");
+	load_texture(11,"arts/ninja/Idle__001.png");
+	load_texture(12,"arts/ninja/Idle__002.png");
+	load_texture(13,"arts/ninja/Idle__003.png");
+	load_texture(14,"arts/ninja/Idle__004.png");
+	load_texture(15,"arts/ninja/Idle__005.png");
+	load_texture(16,"arts/ninja/Idle__006.png");
+	load_texture(17,"arts/ninja/Idle__007.png");
+	load_texture(18,"arts/ninja/Idle__008.png");
+	load_texture(19,"arts/ninja/Idle__009.png");
 }
 
 inline static void init(){

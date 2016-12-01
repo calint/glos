@@ -23,7 +23,7 @@ struct {
 
 static inline void sprites_init() {
 	for (int i = 0; i < sprite_count; i++) {
-		sprite[i].texture = texture[0];
+		sprite[i].texture = texture[0].ptr;
 		sprite[i].x = random_range(0, window_width);
 		sprite[i].y = random_range(0, window_height);
 		sprite[i].w = 74;
