@@ -44,6 +44,7 @@ inline static void load_texture(int n,const char*path){
 		puts(path);
 		exit(12);
 	}
+
 	SDL_Texture*tex=SDL_CreateTextureFromSurface(
 			window.renderer,
 			loaded_surface
@@ -54,6 +55,9 @@ inline static void load_texture(int n,const char*path){
 		exit(13);
 	}
 	texture[n].ptr=tex;
+
+	SDL_QueryTexture(tex,NULL,NULL,&texture[n].width, &texture[n].height);
+
 	SDL_FreeSurface(loaded_surface);
 
 }
@@ -93,7 +97,7 @@ struct {
 	GLclampf red;
 	GLclampf green;
 	GLclampf blue;
-} background_color = {0,0,0};
+} background_color={1,1,0};
 
 //------------------------------------------------------------------------ main
 
@@ -168,9 +172,9 @@ int main(int argc, char *argv[]) {
 
 //		shader_render();
 
-		sprites_update(fps.dt);
+//		sprites_update(fps.dt);
 
-		sprites_render(window.renderer);
+//		sprites_render(window.renderer);
 
 		objects_update(fps.dt);
 

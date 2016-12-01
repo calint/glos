@@ -24,7 +24,7 @@ static object default_logo_3 = {
 		.scale = { 20, 20, 20, 0 },
 		.texture_id = 1,
 		.update = constrain_logo_3,
-		.render = _draw_texture,
+		.render = draw_texture,
 };
 
 //----------------------------------------------------------------------------

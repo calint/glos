@@ -1,8 +1,8 @@
 #pragma once
 #include "sdl.h"
 //------------------------------------------------------------------ window
-#define window_width 512
-#define window_height 512
+#define window_width 512+256
+#define window_height 512+256
 struct{
 	SDL_Window*ptr;
 	SDL_Renderer*renderer;
@@ -20,13 +20,20 @@ static inline void window_init() {
 			window_height,
 			SDL_WINDOW_OPENGL
 		);
-
 	if (!window.ptr){
 		perror("could not create window");
 		printf("%s %d: %s",__FILE__,__LINE__,"");
 		SDL_Quit();
 		exit(2);
 	}
+
+
+//	if(!(SDL_SetWindowFullscreen(window.ptr,SDL_WINDOW_FULLSCREEN_DESKTOP))){
+//		perror("could not enter fullscreen");
+//		printf("file '%s' line %d  --  %s",__FILE__,__LINE__,SDL_GetError());
+//		SDL_Quit();
+//		exit(2);
+//	}
 
 //	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 

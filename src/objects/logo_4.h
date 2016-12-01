@@ -17,7 +17,7 @@ static object default_logo_4 = {
 		.init = init_logo_4,
 		.scale = { 40, 40, 40, 0 },
 		.texture_id = 1,
-		.render = _draw_texture_and_bounding_sphere,
+		.render = draw_texture_and_bounding_sphere,
 };
 
 //---------------------------------------------------------------------------

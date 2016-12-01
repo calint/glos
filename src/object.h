@@ -64,7 +64,7 @@ inline static void set_bounding_radius_from_xy_scale(object*o) {
 
 //----------------------------------------------------------------------------
 
-inline static void _draw_texture(object*o) {
+inline static void draw_texture(object*o) {
 
 	SDL_Rect dest={
 			(int)(o->position.x-o->scale.x),
@@ -78,7 +78,7 @@ inline static void _draw_texture(object*o) {
 
 //----------------------------------------------------------------------------
 
-inline static void _draw_bounding_sphere(object*o) {
+inline static void draw_bounding_sphere(object*o) {
 
 	circleColor(
 			window.renderer,
@@ -92,9 +92,9 @@ inline static void _draw_bounding_sphere(object*o) {
 
 //----------------------------------------------------------------------------
 
-inline static void _draw_texture_and_bounding_sphere(object*o) {
-	_draw_texture(o);
-	_draw_bounding_sphere(o);
+inline static void draw_texture_and_bounding_sphere(object*o) {
+	draw_texture(o);
+	draw_bounding_sphere(o);
 }
 
 //----------------------------------------------------------------------------

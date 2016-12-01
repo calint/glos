@@ -6,8 +6,8 @@
 
 struct{
 	SDL_Texture*ptr;
-	int texture_width;
-	int texture_height;
+	int width;
+	int height;
 }texture[texture_count];
 
 //----------------------------------------------------------------------- init

@@ -15,7 +15,7 @@ static object default_logo_1 = {
 		.init = init_logo_1,
 		.scale = { 50, 50, 50, 0 },
 		.texture_id = 0,
-		.render = _draw_texture,
+		.render = draw_texture,
 };
 
 //---------------------------------------------------------------------------
