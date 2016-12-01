@@ -70,6 +70,8 @@ inline static object*object_alloc() {
 		}
 		bits_set(objects_bits_ptr, 0);
 		object*ret = objects_ptr;
+		memset(ret, 0, sizeof(object));
+		ret->bits=objects_bits_ptr;
 		objects_bits_ptr++;
 		objects_ptr++;
 		return ret;
@@ -86,6 +88,8 @@ inline static object*object_alloc() {
 		}
 		bits_set(objects_bits_ptr, 0);
 		object*ret = objects_ptr;
+		memset(ret, 0, sizeof(object));
+		ret->bits=objects_bits_ptr;
 		objects_bits_ptr++;
 		objects_ptr++;
 		return ret;
@@ -94,7 +98,8 @@ inline static object*object_alloc() {
 	exit(6);
 }
 //--------------------------------------------------------------------- free
-inline static object*object_free(object*o) {
+inline static void object_free(object*o) {
+	bits_unset(o->bits,0);
 }
 //--------------------------------------------------------------------- init
 inline static void objects_init() {
