@@ -9,7 +9,7 @@ static inline void textures_init() {
 	if (!bmp)
 		exit(4);
 
-	SDL_Texture *tex = SDL_CreateTextureFromSurface(window_free, bmp);
+	SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, bmp);
 	SDL_FreeSurface(bmp);
 	if (!tex)
 		exit(5);

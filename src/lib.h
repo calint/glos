@@ -1,14 +1,15 @@
 #pragma once
 #include <stdlib.h>
-
 //------------------------------------------------------------------ library
 
 static inline double random() {
-	return rand() / RAND_MAX;
+	double r = (double) rand() / RAND_MAX;
+	return r;
 }
 
-static inline double randomRange(double low, double high) {
-	return random() * (high - low) + low;
+static inline double random_range(double low, double high) {
+	double r = random() * (high - low) + low;
+	return r;
 }
 
 //------------------------------------------------------------------ library

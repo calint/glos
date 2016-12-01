@@ -19,9 +19,9 @@ int main(int argc, char *argv[]) {
 
 	SDL_Event event;
 
-	int gameover = 0;
+	int running = 1;
 
-	while (!gameover) {
+	while (running) {
 
 		fps_counter_before_frame();
 
@@ -30,25 +30,27 @@ int main(int argc, char *argv[]) {
 			switch (event.type) {
 
 			case SDL_QUIT:
-				gameover = 1;
+				running = 0;
 				break;
 
 			case SDL_KEYDOWN:
 				switch (event.key.keysym.sym) {
 				case SDLK_ESCAPE:
 				case SDLK_q:
-					gameover = 1;
+					running = 0;
 					break;
 				}
 				break;
 			}
 		}
 
-		SDL_RenderClear(window_free);
+		SDL_RenderClear(renderer);
 
-		sprites_render(window_free);
+//		SDL_RenderCopy(renderer, sprite[0].img, NULL, NULL);
 
-		SDL_RenderPresent(window_free);
+		sprites_render(renderer);
+
+		SDL_RenderPresent(renderer);
 
 		fps_counter_after_frame();
 	}
