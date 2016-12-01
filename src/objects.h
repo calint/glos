@@ -63,13 +63,13 @@ inline static void object_free(object*o) {
 //--------------------------------------------------------------------- init
 
 inline static void objects_init() {
-	object*o = objects;
-	int i = objects_count;
-	while (i--) {
-		if (o->init)
-			o->init(o);
-		o++;
-	}
+//	object*o = objects;
+//	int i = objects_count;
+//	while (i--) {
+//		if (o->init)
+//			o->init(o);
+//		o++;
+//	}
 }
 
 //--------------------------------------------------------------------- free
