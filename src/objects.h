@@ -66,47 +66,30 @@ static bits*objects_bits_end_ptr = objects_bits + objects_count;
 
 //--------------------------------------------------------------------- alloc
 inline static object*object_alloc(object*initializer) {
-	while (objects_bits_ptr < objects_bits_end_ptr) {
-		if (bits_is_set(objects_bits_ptr, object_bit_allocated)) {
+	int i = 2;
+	while (i--) {
+		while (objects_bits_ptr < objects_bits_end_ptr) {
+			if (bits_is_set(objects_bits_ptr, object_bit_allocated)) {
+				objects_bits_ptr++;
+				objects_ptr++;
+				continue;
+			}
+			bits_set(objects_bits_ptr, 0);
+			object*o = objects_ptr;
+			if (initializer)
+				*o = *initializer;
+			else
+				memset(o, 0, sizeof(object));
+			if (o->init)
+				o->init(o);
+			o->bits = objects_bits_ptr;
 			objects_bits_ptr++;
 			objects_ptr++;
-			continue;
+			return o;
 		}
-		bits_set(objects_bits_ptr, 0);
-		object*o = objects_ptr;
-		if (initializer)
-			*o = *initializer;
-		else
-			memset(o, 0, sizeof(object));
-		if (o->init)
-			o->init(o);
-		o->bits = objects_bits_ptr;
-		objects_bits_ptr++;
-		objects_ptr++;
-		return o;
-	}
 
-	objects_bits_ptr = objects_bits_start_ptr;
-	objects_ptr = objects_start_ptr;
-
-	while (objects_bits_ptr < objects_bits_end_ptr) {
-		if (bits_is_set(objects_bits_ptr, object_bit_allocated)) {
-			objects_bits_ptr++;
-			objects_ptr++;
-			continue;
-		}
-		bits_set(objects_bits_ptr, 0);
-		object*o = objects_ptr;
-		if (initializer)
-			*o = *initializer;
-		else
-			memset(o, 0, sizeof(object));
-		if (o->init)
-			o->init(o);
-		o->bits = objects_bits_ptr;
-		objects_bits_ptr++;
-		objects_ptr++;
-		return o;
+		objects_bits_ptr = objects_bits_start_ptr;
+		objects_ptr = objects_start_ptr;
 	}
 
 	perror("out of objects");

@@ -108,7 +108,6 @@ inline static void init(){
 	object_alloc(&_default_logo_4);
 }
 
-
 //--------------------------------------------------------------------- main
 int main(int argc, char *argv[]) {
 
