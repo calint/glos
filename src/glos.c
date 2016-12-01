@@ -4,7 +4,7 @@
 #define screen_width 512
 #define screen_height 512
 
-#define sprites_count 4
+#define sprites_count 1024
 static SDL_Rect sprites_pos[sprites_count];
 static SDL_Surface*sprites_image[sprites_count];
 
@@ -32,13 +32,13 @@ static inline void sprites_init() {
 }
 
 static inline void sprites_free() {
-	for (int i = 0; i < sizeof sprites_pos; i++) {
+	for (int i = 0; i < sprites_count; i++) {
 		SDL_FreeSurface(sprites_image[i]);
 	}
 }
 
 static inline void sprites_render(SDL_Surface*s) {
-	for (int i = 0; i < sizeof sprites_pos; i++) {
+	for (int i = 0; i < sprites_count; i++) {
 		SDL_BlitSurface(sprites_image[i], NULL, s, &sprites_pos[i]);
 	}
 }
