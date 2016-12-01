@@ -3,7 +3,7 @@
 #include "window.h"
 #include "textures.h"
 //------------------------------------------------------------------ sprites
-#define sprite_count 1024*2
+#define sprite_count 8
 struct {
 	double x, y, dx, dy;
 	int w, h;

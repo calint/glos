@@ -7,32 +7,23 @@
 #include "shader.h"
 //--------------------------------------------------------------------- main
 int main(int argc, char *argv[]) {
-
 	sdl_init();
-
 	window_init();
-
 	textures_init();
-
 	sprites_init();
-
 	fps_init();
-
 	shader_init();
 
-	SDL_Event event;
-
 	GLclampf red = 0;
-
 	GLclampf green = 0;
-
 	GLclampf blue = 0;
 
 	int running = 1;
 
+	SDL_Event event;
 	while (running) {
 
-		fps_counter_before_frame();
+		fps_counter_at_frame_start();
 
 		while (SDL_PollEvent(&event)) {
 			switch (event.type) {
@@ -68,35 +59,21 @@ int main(int argc, char *argv[]) {
 		}
 
 		glClearColor(red, green, blue, 1.0);
-
 		glClear(GL_COLOR_BUFFER_BIT);
-
 		shader_render();
-//
 //		double dt = fps_dt;
-//
 //		sprites_update(dt);
-//
 //		sprites_render(renderer);
-
 		SDL_GL_SwapWindow(window);
 
-		fps_counter_after_frame();
-
+		fps_counter_at_frame_done();
 	}
 
 	shader_free();
-
 	fps_free();
-
 	sprites_free();
-
 	textures_free();
-
 	window_free();
-
 	sdl_free();
-
 	return 0;
-
 }

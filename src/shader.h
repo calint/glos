@@ -78,9 +78,9 @@ inline static void load_program(GLuint *pos_slot, GLuint *col_slot) {
 	glAttachShader(glid_program, fragment);
 	glLinkProgram(glid_program);
 
-	GLint linkSuccess;
-	glGetProgramiv(glid_program, GL_LINK_STATUS, &linkSuccess);
-	if (linkSuccess == GL_FALSE) {
+	GLint result;
+	glGetProgramiv(glid_program, GL_LINK_STATUS, &result);
+	if (result == GL_FALSE) {
 		GLint len;
 		glGetProgramiv(glid_program, GL_INFO_LOG_LENGTH, &len);
 
@@ -198,9 +198,17 @@ inline static void shader_free() {
 	if (glid_program)
 		glDeleteProgram(glid_program);
 }
-//#define GLOS_EMBEDDED
+
 inline static void shader_render() {
-#ifndef GLOS_EMBEDDED
+#ifdef GLOS_EMBEDDED
+	glVertexAttribPointer(position_slot, 3, GL_FLOAT, GL_FALSE, sizeof(vertex),
+			vertices);
+	glVertexAttribPointer(color_slot, 4, GL_FLOAT, GL_FALSE, sizeof(vertex),
+			vertices);
+	glDrawElements(GL_TRIANGLES, indices_count, GL_UNSIGNED_BYTE, indices);
+
+
+#else
 	glBindBuffer(GL_ARRAY_BUFFER, glid_vertex_buffer);
 	glVertexAttribPointer(position_slot, 3, GL_FLOAT, GL_FALSE, sizeof(vertex),
 			0);
@@ -210,11 +218,5 @@ inline static void shader_render() {
 			(GLvoid*) (3 * sizeof(float)));
 
 	glDrawElements(GL_TRIANGLES, indices_count, GL_UNSIGNED_BYTE, 0);
-#else
-	glVertexAttribPointer(position_slot, 3, GL_FLOAT, GL_FALSE, sizeof(vertex),
-			&vertices[0]);
-	glVertexAttribPointer(color_slot, 4, GL_FLOAT, GL_FALSE, sizeof(vertex),
-			&vertices[0]);
-	glDrawElements(GL_TRIANGLES, indices_count, GL_UNSIGNED_BYTE, indices);
 #endif
 }

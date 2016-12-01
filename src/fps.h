@@ -23,11 +23,11 @@ static inline void fps_init() {
 static inline void fps_free() {
 }
 //------------------------------------------------------------------
-static inline void fps_counter_before_frame() {
+static inline void fps_counter_at_frame_start() {
 	fps_frame_count++;
 }
 //------------------------------------------------------------------
-static inline void fps_counter_after_frame() {
+static inline void fps_counter_at_frame_done() {
 	{
 		Uint64 t1 = SDL_GetPerformanceCounter();
 		Uint64 dt = t1 - fps_timer_tick_at_start_of_frame;
