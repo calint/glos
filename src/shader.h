@@ -1,6 +1,6 @@
 #pragma once
 #include "sdl.h"
-
+//--------------------------------------------------------------------- shader
 char*shader_source_vertex =
 		"#version 100                                                \n\
 attribute vec3 apos;// vertices                              \n\
@@ -19,6 +19,23 @@ void main(){                               \n\
 	gl_FragColor=vrgba;                    \n\
 }\n";
 
+typedef struct {
+	float position[3];
+	float color[4];
+} vertex;
+
+static GLuint glid_program, glid_vertex_buffer, glid_index_buffer;
+
+static vertex vertices[] = { { { 1, -1, 0 }, { 1, 0, 0, 1 } }, { { 1, 1, 0 }, {
+		0, 1, 0, 1 } }, { { -1, 1, 0 }, { 0, 0, 1, 1 } }, { { -1, -1, 0 }, { 0,
+		0, 0, 1 } } };
+
+static GLubyte indices[] = { 0, 1, 2, 2, 3, 0 };
+
+static int indices_count;
+
+static GLuint position_slot, color_slot;
+
 inline static const char*get_shader_name_for_type(GLenum shader_type) {
 	switch (shader_type) {
 	case GL_VERTEX_SHADER:
@@ -33,7 +50,7 @@ inline static GLuint compile_shader(GLenum shaderType, char *code) {
 	printf("%s", code);
 	GLuint handle = glCreateShader(shaderType);
 
-	int length = strlen(code);
+	int length = (int) strlen(code);
 	glShaderSource(handle, 1, (const GLchar**) &code, &length);
 
 	glCompileShader(handle);
@@ -51,54 +68,47 @@ inline static GLuint compile_shader(GLenum shaderType, char *code) {
 	return handle;
 }
 
-inline static void loadShaders(GLuint *_positionSlot, GLuint *_colorSlot) {
+inline static void load_program(GLuint *pos_slot, GLuint *col_slot) {
 	GLuint vertex = compile_shader(GL_VERTEX_SHADER, shader_source_vertex);
 	GLuint fragment = compile_shader(GL_FRAGMENT_SHADER,
 			shader_source_fragment);
 
-	GLuint program = glCreateProgram();
-	glAttachShader(program, vertex);
-	glAttachShader(program, fragment);
-	glLinkProgram(program);
+	glid_program = glCreateProgram();
+	glAttachShader(glid_program, vertex);
+	glAttachShader(glid_program, fragment);
+	glLinkProgram(glid_program);
 
 	GLint linkSuccess;
-	glGetProgramiv(program, GL_LINK_STATUS, &linkSuccess);
+	glGetProgramiv(glid_program, GL_LINK_STATUS, &linkSuccess);
 	if (linkSuccess == GL_FALSE) {
-		GLint info_len;
-		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &info_len);
+		GLint len;
+		glGetProgramiv(glid_program, GL_INFO_LOG_LENGTH, &len);
 
 		GLchar messages[256];
-		glGetProgramInfoLog(program, info_len, NULL, &messages[0]);
+		glGetProgramInfoLog(glid_program,
+				len < sizeof messages ? len : sizeof messages, NULL,
+				&messages[0]);
 		printf("program linking error: %s\n", messages);
 		exit(1);
 	}
 
-	glUseProgram(program);
+	glUseProgram(glid_program);
 
-	*_positionSlot = glGetAttribLocation(program, "apos");
-	if (*_positionSlot==-1) {
+	*pos_slot = glGetAttribLocation(glid_program, "apos");
+	if (*pos_slot == -1) {
 		puts("could not find 'apos' in vertext shader");
 		exit(6);
 	}
-	*_colorSlot = glGetAttribLocation(program, "argba");
-	if (*_colorSlot==-1) {
+	*col_slot = glGetAttribLocation(glid_program, "argba");
+	if (*col_slot == -1) {
 		puts("could not find 'argba' in vertex shader");
 		exit(6);
 	}
-	glEnableVertexAttribArray(*_positionSlot);
-	glEnableVertexAttribArray(*_colorSlot);
+	glEnableVertexAttribArray(*pos_slot);
+	glEnableVertexAttribArray(*col_slot);
 
 	return;
 }
-
-typedef struct {
-	float Position[3];
-	float Color[4];
-} Vertex;
-
-static GLuint vertexBuffer, indexBuffer;
-static int numIndices;
-GLuint _positionSlot, _colorSlot;
 
 inline static const char*get_gl_error_string(const GLenum error) {
 	const char*str;
@@ -116,21 +126,21 @@ inline static const char*get_gl_error_string(const GLenum error) {
 		str = "GL_INVALID_OPERATION";
 		break;
 #if defined __gl_h_ || defined __gl3_h_
-	case GL_OUT_OF_MEMORY:
+		case GL_OUT_OF_MEMORY:
 		str = "GL_OUT_OF_MEMORY";
 		break;
-	case GL_INVALID_FRAMEBUFFER_OPERATION:
+		case GL_INVALID_FRAMEBUFFER_OPERATION:
 		str = "GL_INVALID_FRAMEBUFFER_OPERATION";
 		break;
 #endif
 #if defined __gl_h_
-	case GL_STACK_OVERFLOW:
+		case GL_STACK_OVERFLOW:
 		str = "GL_STACK_OVERFLOW";
 		break;
-	case GL_STACK_UNDERFLOW:
+		case GL_STACK_UNDERFLOW:
 		str = "GL_STACK_UNDERFLOW";
 		break;
-	case GL_TABLE_TOO_LARGE:
+		case GL_TABLE_TOO_LARGE:
 		str = "GL_TABLE_TOO_LARGE";
 		break;
 #endif
@@ -152,24 +162,19 @@ inline static void check_gl_error(const char*op) {
 		exit(5);
 }
 
-inline static void createGeometry(GLuint *vertexBuffer, GLuint *indexBuffer,
+inline static void create_geometry(GLuint *vertexBuffer, GLuint *indexBuffer,
 		int *numIndices) {
-	const Vertex Vertices[] = { { { 1, -1, 0 }, { 1, 0, 0, 1 } }, { { 1, 1, 0 },
-			{ 0, 1, 0, 1 } }, { { -1, 1, 0 }, { 0, 0, 1, 1 } }, { { -1, -1, 0 },
-			{ 0, 0, 0, 1 } } };
 
 	glGenBuffers(1, vertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, *vertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertices), Vertices, GL_STATIC_DRAW);
-
-	const GLubyte Indices[] = { 0, 1, 2, 2, 3, 0 };
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
 	glGenBuffers(1, indexBuffer);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *indexBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Indices), Indices,
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices,
 	GL_STATIC_DRAW);
 
-	*numIndices = sizeof(Indices) / sizeof(Indices[0]);
+	*numIndices = sizeof(indices) / sizeof(indices[0]);
 	check_gl_error("generating buffers");
 }
 
@@ -179,29 +184,27 @@ inline static void print_gl_string(const char *name, const GLenum s) {
 }
 
 inline static void shader_init() {
-	check_gl_error("init");
+	check_gl_error("shader_init");
 	print_gl_string("GL_VERSION", GL_VERSION);
 	print_gl_string("GL_VENDOR", GL_VENDOR);
 	print_gl_string("GL_RENDERER", GL_RENDERER);
-	//	    printGLString("Extensions",GL_EXTENSIONS);
 	print_gl_string("GL_SHADING_LANGUAGE_VERSION", GL_SHADING_LANGUAGE_VERSION);
-	check_gl_error("after opengl info");
+	create_geometry(&glid_vertex_buffer, &glid_index_buffer, &indices_count);
+	load_program(&position_slot, &color_slot);
+	check_gl_error("after shader_init");
+}
 
-	createGeometry(&vertexBuffer, &indexBuffer, &numIndices);
-
-	// Compile shaders
-	loadShaders(&_positionSlot, &_colorSlot);
+inline static void shader_free() {
+	if (glid_program)
+		glDeleteProgram(glid_program);
 }
 
 inline static void shader_render() {
-	// Tell OpenGL about the structure of our data
-	glEnableVertexAttribArray(_positionSlot);
-	glVertexAttribPointer(_positionSlot, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-			0);
-	glEnableVertexAttribArray(_colorSlot);
-	glVertexAttribPointer(_colorSlot, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-			(GLvoid*) (sizeof(float) * 3));
-
-	// Draw it!
-	glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_BYTE, 0);
+	glBindBuffer(GL_ARRAY_BUFFER,glid_vertex_buffer);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, glid_index_buffer);
+	glVertexAttribPointer(position_slot, 3, GL_FLOAT, GL_FALSE,
+			sizeof(vertex), 0);
+	glVertexAttribPointer(color_slot, 4, GL_FLOAT, GL_FALSE,
+			sizeof(vertex), (GLvoid*)(3*sizeof(float)));
+	glDrawElements(GL_TRIANGLES, indices_count, GL_UNSIGNED_BYTE, 0);
 }

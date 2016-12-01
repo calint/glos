@@ -85,6 +85,8 @@ int main(int argc, char *argv[]) {
 
 	}
 
+	shader_free();
+
 	fps_free();
 
 	sprites_free();

@@ -1,15 +1,6 @@
 #pragma once
 #include <SDL2/SDL.h>
-#ifdef USE_OPENGLES
-#include <SDL_opengles2.h>
-#else
-#define GL_GLEXT_PROTOTYPES
-#include <SDL2/SDL_opengl.h>
-#include <SDL2/SDL_opengl_glext.h>
-#endif
-//#define GL3_PROTOTYPES 1
-//#include <GL/glew.h>
-
+#include <SDL2/SDL_opengles2.h>
 //--------------------------------------------------------------------- sdl
 static inline void sdl_init() {
 	if (SDL_Init(SDL_INIT_VIDEO)) {

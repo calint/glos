@@ -10,5 +10,5 @@ VALGRIND='valgrind --leak-check=full --track-origins=yes'
 
 $CC $SRC -o $BIN $OPTIMIZATIONS $CFLAGS $LIBS $WARNINGS &&
 ls -la --color $BIN && 
-# $VALGRIND ./$BIN
+#$VALGRIND ./$BIN
 ./$BIN
