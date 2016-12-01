@@ -11,17 +11,20 @@
 static object objects[objects_count];
 
 static object*objects_start_ptr = objects;
+
 static object*objects_ptr = objects;
 
 static bits objects_bits[objects_count];
 
 static bits*objects_bits_start_ptr = objects_bits;
+
 static bits*objects_bits_ptr = objects_bits;
+
 static bits*objects_bits_end_ptr = objects_bits + objects_count;
 
 #define object_bit_allocated 0
 
-//--------------------------------------------------------------------- alloc
+//---------------------------------------------------------------------- alloc
 
 inline static object*object_alloc(object*initializer) {
 	int i = 2;
@@ -54,18 +57,18 @@ inline static object*object_alloc(object*initializer) {
 	exit(6);
 }
 
-//--------------------------------------------------------------------- free
+//------------------------------------------------------------------------ free
 
 inline static void object_free(object*o) {
 	bits_unset(o->bits, 0);
 }
 
-//--------------------------------------------------------------------- init
+//----------------------------------------------------------------------- init
 
 inline static void objects_init() {
 }
 
-//--------------------------------------------------------------------- free
+//----------------------------------------------------------------------- free
 
 inline static void objects_free() {
 	object*o = objects;
@@ -111,4 +114,4 @@ inline static void objects_render() {
 	}
 }
 
-//---------------------------------------------------------------------------
+//----------------------------------------------------------------------------

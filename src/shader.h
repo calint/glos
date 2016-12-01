@@ -1,6 +1,8 @@
 #pragma once
 #include "sdl.h"
+
 //--------------------------------------------------------------------- shader
+
 char*shader_source_vertex =
 		"#version 100                                                \n\
 attribute vec3 apos;// vertices                              \n\

@@ -7,7 +7,7 @@
 #include "shader.h"
 #include "objects.h"
 
-
+//-------------------------------------------------------------------- include
 
 #include "classes/logo_1.h"
 #include "classes/logo_2.h"
@@ -22,7 +22,7 @@ inline static void init(){
 	object_alloc(&_default_logo_4);
 }
 
-//--------------------------------------------------------------------- main
+//----------------------------------------------------------------------- main
 int main(int argc, char *argv[]) {
 
 	sdl_init();
@@ -90,11 +90,10 @@ int main(int argc, char *argv[]) {
 
 //		shader_render();
 
-//		sprites_update(fps_dt);
+//		sprites_update(fps.dt);
 //		sprites_render(renderer);
 
-		float dt = (float) fps_dt;
-		objects_update(dt);
+		objects_update(fps.dt);
 		objects_render();
 
 		SDL_GL_SwapWindow(window);
@@ -111,3 +110,5 @@ int main(int argc, char *argv[]) {
 	sdl_free();
 	return 0;
 }
+
+//----------------------------------------------------------------------------

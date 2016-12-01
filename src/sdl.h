@@ -2,9 +2,11 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengles2.h>
 #include <unistd.h>
-//#define GLOS_EMBEDDED
 #define cpu_level1_cache_line_size 64
-//--------------------------------------------------------------------- sdl
+//#define GLOS_EMBEDDED
+
+//----------------------------------------------------------------------- init
+
 static inline void sdl_init() {
 	if (SDL_Init(SDL_INIT_VIDEO)) {
 		SDL_Quit();
@@ -20,7 +22,10 @@ static inline void sdl_init() {
 
 }
 
+//------------------------------------------------------------------------free
+
 static inline void sdl_free() {
 	SDL_Quit();
 }
-//--------------------------------------------------------------------- sdl
+
+//----------------------------------------------------------------------------
