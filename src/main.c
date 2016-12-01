@@ -1,6 +1,10 @@
 #include "sdl.h"
 #include "fps.h"
 #include "lib.h"
+#include "objects/logo_1.h"
+#include "objects/logo_2.h"
+#include "objects/logo_3.h"
+#include "objects/logo_4.h"
 #include "sprites.h"
 #include "textures.h"
 #include "window.h"
@@ -9,40 +13,36 @@
 
 //-------------------------------------------------------------------- include
 
-#include "classes/logo_1.h"
-#include "classes/logo_2.h"
-#include "classes/logo_3.h"
-#include "classes/logo_4.h"
+
+//------------------------------------------------------------------------ lib
+
+inline static void load_texture_bmp(int n,const char*path){
+	SDL_Surface*bmp=SDL_LoadBMP(path);
+	if (!bmp){
+		perror("load_texture: could not load path:");
+		puts(path);
+		exit(4);
+	}
+	SDL_Texture*tex=SDL_CreateTextureFromSurface(renderer,bmp);
+	if(!tex){
+		perror("load_texture: could not convert to texture:");
+		puts(path);
+		exit(5);
+	}
+	SDL_FreeSurface(bmp);
+	texture[n]=tex;
+}
 
 //----------------------------------------------------------------------- init
 
-inline static void init_textures(){
-	SDL_Surface *bmp;
-	SDL_Texture *tex;
-
-	// --- --- - -- - ----- - - - - --
-	if (!(bmp = SDL_LoadBMP("logo.bmp")))
-		exit(4);
-	tex = SDL_CreateTextureFromSurface(renderer, bmp);
-	if (!(tex = SDL_CreateTextureFromSurface(renderer, bmp)))
-		exit(5);
-	SDL_FreeSurface(bmp);
-	texture[0] = tex;
-
-	// --- --- - -- - ----- - - - - --
-	if (!(bmp = SDL_LoadBMP("sdl_logo.bmp")))
-		exit(4);
-	tex = SDL_CreateTextureFromSurface(renderer, bmp);
-	if (!(tex = SDL_CreateTextureFromSurface(renderer, bmp)))
-		exit(5);
-	SDL_FreeSurface(bmp);
-	texture[1] = tex;
-
+inline static void load_textures(){
+	load_texture_bmp(0,"logo.bmp");
+	load_texture_bmp(1,"sdl_logo.bmp");
 }
 
 inline static void init(){
 
-	init_textures();
+	load_textures();
 
 	object_alloc(&_default_logo_1);
 	object_alloc(&_default_logo_2);

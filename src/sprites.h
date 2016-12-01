@@ -52,9 +52,12 @@ static inline void sprites_update(double dt) {
 
 static inline void sprites_render(SDL_Renderer*r) {
 	for (int i = 0; i < sprite_count; i++) {
+
 		SDL_Rect dest = { (int) sprite[i].x, (int) sprite[i].y,
 				(int) sprite[i].w, (int) sprite[i].h };
+
 		SDL_RenderCopy(r, sprite[i].texture, NULL, &dest);
+
 	}
 
 }
