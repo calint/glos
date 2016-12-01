@@ -1,7 +1,6 @@
 #pragma once
 #include <SDL2/SDL2_gfxPrimitives.h>
-
-//----------------------------------------------------------------- functions
+//----------------------------------------------------------- object functions
 
 inline static void _set_bounding_radius_from_xy_scale(object*o) {
 	o->bouning_radius = (bounding_radius) sqrtf(
@@ -24,7 +23,7 @@ inline static void _draw_texture_and_bounding_sphere(object*o) {
 	_draw_bounding_sphere(o);
 }
 
-//-------------------------------------------------------------------- logo_1
+//--------------------------------------------------------------------- logo_1
 
 inline static void _init_logo_1(object*o) {
 	o->position.x = 100;
@@ -32,10 +31,14 @@ inline static void _init_logo_1(object*o) {
 	_set_bounding_radius_from_xy_scale(o);
 }
 
-static object _default_logo_1 = { .scale = { 50, 50, 50, 0 }, .texture_id = 0,
-		.init = _init_logo_1, .render = _draw_texture };
+static object _default_logo_1 = {
+		.init = _init_logo_1,
+		.scale = { 50, 50, 50, 0 },
+		.texture_id = 0,
+		.render = _draw_texture,
+};
 
-//-------------------------------------------------------------------- logo_2
+//--------------------------------------------------------------------- logo_2
 
 inline static void _init_logo_2(object*o) {
 	o->position.x = 200;
@@ -65,11 +68,15 @@ inline static void _constrain_logo_2(object*o, dt dt) {
 	}
 }
 
-static object _default_logo_2 = { .scale = { 20, 20, 20, 0 }, .texture_id = 1,
-		.init = _init_logo_2, .update = _constrain_logo_2, .render =
-				_draw_texture };
+static object _default_logo_2 = {
+		.init = _init_logo_2,
+		.scale = { 20, 20, 20, 0 },
+		.update = _constrain_logo_2,
+		.texture_id = 1,
+		.render = _draw_texture,
+};
 
-//-------------------------------------------------------------------- logo_2
+//--------------------------------------------------------------------- logo_2
 
 inline static void _init_logo_3(object*o) {
 	o->position.x = 100;
@@ -83,11 +90,15 @@ inline static void _constrain_logo_3(object*o, dt dt) {
 		o->velocity.x = -o->velocity.x;
 }
 
-static object _default_logo_3 = { .scale = { 20, 20, 20, 0 }, .texture_id = 1,
-		.init = _init_logo_3, .update = _constrain_logo_3, .render =
-				_draw_texture };
+static object _default_logo_3 = {
+		.init = _init_logo_3,
+		.scale = { 20, 20, 20, 0 },
+		.texture_id = 1,
+		.update = _constrain_logo_3,
+		.render = _draw_texture,
+};
 
-//-------------------------------------------------------------------- logo_4
+//--------------------------------------------------------------------- logo_4
 
 inline static void _init_logo_4(object*o) {
 	o->position.x = 100;
@@ -98,8 +109,12 @@ inline static void _init_logo_4(object*o) {
 	_set_bounding_radius_from_xy_scale(o);
 }
 
-static object _default_logo_4 = { .scale = { 40, 40, 40, 0 }, .texture_id = 1,
-		.init = _init_logo_4, .render = _draw_texture_and_bounding_sphere };
+static object _default_logo_4 = {
+		.init = _init_logo_4,
+		.scale = { 40, 40, 40, 0 },
+		.texture_id = 1,
+		.render = _draw_texture_and_bounding_sphere,
+};
 
 //---------------------------------------------------------------------------
-
+//                                                              page 1
