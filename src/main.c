@@ -39,36 +39,38 @@ int main(int argc, char *argv[]) {
 				case SDLK_q:
 					running = 0;
 					break;
+				case SDLK_r:
+					glClearColor(1.0, 0.0, 0.0, 1.0);
+					glClear(GL_COLOR_BUFFER_BIT);
+					SDL_GL_SwapWindow(window);
+					break;
 				}
-				break;
 			}
 		}
 
 
 		glClearColor(0.0, 0.0, 0.0, 1.0);
+
 		glClear(GL_COLOR_BUFFER_BIT);
-		SDL_GL_SwapWindow(window);
-
-
 
 		SDL_RenderClear(renderer);
 
 		sprites_render(renderer);
 
-		SDL_RenderPresent(renderer);
-
-
+		SDL_GL_SwapWindow(window);
 
 		fps_counter_after_frame();
+
 	}
+
+
+	fps_counter_free();
 
 	sprites_free();
 
 	texture_free();
 
 	screen_free();
-
-	fps_counter_free();
 
 	sdl_free();
 

@@ -43,7 +43,6 @@
 								<option id="gnu.c.link.option.libs.1967394696" name="Libraries (-l)" superClass="gnu.c.link.option.libs" useByScannerDiscovery="false" valueType="libs">
 									<listOptionValue builtIn="false" value="SDL2"/>
 									<listOptionValue builtIn="false" value="GL"/>
-									<listOptionValue builtIn="false" value="glew"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.linker.input.56197656" superClass="cdt.managedbuild.tool.gnu.c.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
