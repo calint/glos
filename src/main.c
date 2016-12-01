@@ -33,17 +33,16 @@ inline static void _draw_texture_and_bounding_sphere(object*o) {
 inline static void _init_logo_1(object*o) {
 	o->position.x = 100;
 	o->position.y = 100;
-	o->scale = (scale ) { 50, 50, 50, 0 };
-	o->texture_id = 0;
 	_set_bounding_radius_from_xy_scale(o);
 }
+
+static object _default_logo_1 = { .scale = { 50, 50, 50, 0 }, .texture_id = 0,
+		.init = _init_logo_1, .render = _draw_texture };
 //-------------------------------------------------------------- object logo 2
 inline static void _init_logo_2(object*o) {
 	o->position.x = 200;
 	o->position.y = 200;
 	o->velocity.x = 100;
-	o->scale = (scale ) { 20, 20, 20, 0 };
-	o->texture_id = 1;
 	_set_bounding_radius_from_xy_scale(o);
 }
 
@@ -67,13 +66,16 @@ inline static void _constrain_logo_2(object*o, float dt) {
 		o->velocity.x = o->velocity.y;
 	}
 }
+
+static object _default_logo_2 = { .scale = { 20, 20, 20, 0 }, .texture_id = 1,
+		.init = _init_logo_2, .update = _constrain_logo_2, .render =
+				_draw_texture };
+
 //-------------------------------------------------------------- object logo 3
 inline static void _init_logo_3(object*o) {
 	o->position.x = 100;
 	o->position.y = 300;
 	o->velocity.x = -200;
-	o->scale = (scale ) { 20, 20, 20, 0 };
-	o->texture_id = 1;
 	_set_bounding_radius_from_xy_scale(o);
 }
 
@@ -81,6 +83,10 @@ inline static void _constrain_logo_3(object*o, float dt) {
 	if (o->position.x > 400 || o->position.x < 50)
 		o->velocity.x = -o->velocity.x;
 }
+
+static object _default_logo_3 = { .scale = { 20, 20, 20, 0 }, .texture_id = 1,
+		.init = _init_logo_3, .update = _constrain_logo_3, .render =
+				_draw_texture };
 //-------------------------------------------------------------- object logo 4
 inline static void _init_logo_4(object*o) {
 	o->position.x = 100;
@@ -88,9 +94,11 @@ inline static void _init_logo_4(object*o) {
 	o->scale = (scale ) { 40, 40, 40, 0 };
 	o->color = 0xff008000;
 	o->texture_id = 1;
-	o->texture_id = 1;
 	_set_bounding_radius_from_xy_scale(o);
 }
+
+static object _default_logo_4 = { .scale = { 40, 40, 40, 0 }, .texture_id = 1,
+		.init = _init_logo_4, .render = _draw_texture_and_bounding_sphere };
 //--------------------------------------------------------------------- main
 int main(int argc, char *argv[]) {
 	sdl_init();
@@ -108,27 +116,21 @@ int main(int argc, char *argv[]) {
 	object*o;
 
 	o = object_alloc();
-	o->init = _init_logo_1;
-	o->render = _draw_texture;
+	*o = _default_logo_1;
 	o->init(o);
 
 	o = object_alloc();
-	o->init = _init_logo_2;
-	o->update = _constrain_logo_2;
-	o->render = _draw_texture;
+	*o = _default_logo_2;
 	o->init(o);
 
 //	object_free(o);
 //
 	o = object_alloc();
-	o->init = _init_logo_3;
-	o->update = _constrain_logo_3;
-	o->render = _draw_texture;
+	*o = _default_logo_3;
 	o->init(o);
 
 	o = object_alloc();
-	o->init = _init_logo_4;
-	o->render = _draw_texture_and_bounding_sphere;
+	*o = _default_logo_4;
 	o->init(o);
 
 	int running = 1;
