@@ -1,6 +1,4 @@
 #pragma once
-#include <SDL2/SDL2_gfxPrimitives.h>
-
 #include "functions.h"
 
 //--------------------------------------------------------------------- logo_2
@@ -9,6 +7,8 @@ inline static void _init_logo_2(object*o) {
 	o->position = (position){200,100,0,0};
 	o->velocity.x = 100;
 }
+
+//---------------------------------------------------------------------------
 
 inline static void _constrain_logo_2(object*o, dt dt) {
 	if (o->position.x > 220) {
@@ -30,6 +30,8 @@ inline static void _constrain_logo_2(object*o, dt dt) {
 		o->velocity.x = o->velocity.y;
 	}
 }
+
+//---------------------------------------------------------------------------
 
 static object _default_logo_2 = {
 		.type = {{1,0,0,0,0,0,0,0}},
