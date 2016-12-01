@@ -14,7 +14,8 @@ static inline void fps_counter_init() {
 	fps_counter_t0 = SDL_GetTicks();
 }
 
-static inline void fps_counter_free() {}
+static inline void fps_counter_free() {
+}
 
 static inline void fps_counter_before_frame() {
 	fps_counter_frame_count++;
@@ -22,7 +23,9 @@ static inline void fps_counter_before_frame() {
 
 static inline void fps_counter_after_frame() {
 
-	Uint32 dt = SDL_GetTicks() - fps_counter_t0;
+	Uint32 t1 = SDL_GetTicks();
+
+	Uint32 dt = t1 - fps_counter_t0;
 
 	if (dt < fps_counter_calculate_fps_every_x_ms)
 		return;
@@ -35,7 +38,9 @@ static inline void fps_counter_after_frame() {
 
 	printf(" fps: %d\n", fps_counter_fps);
 
-	fps_counter_t0 = SDL_GetTicks();
+	fps_counter_frame_count=0;
+
+	fps_counter_t0 = t1;
 
 }
 

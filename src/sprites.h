@@ -5,7 +5,7 @@
 
 //------------------------------------------------------------------ sprites
 
-#define sprite_count 1024*8
+#define sprite_count 1024
 struct {
 	double x, y, dx, dy;
 	int w, h;
