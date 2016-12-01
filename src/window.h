@@ -6,8 +6,9 @@ static SDL_Window *window;
 static SDL_Renderer *window_free;
 static inline void screen_init() {
 
-	window = SDL_CreateWindow("Hello World!", 100, 100, window_width,
-	window_height, SDL_WINDOW_SHOWN);
+	window = SDL_CreateWindow("Hello World!", SDL_WINDOWPOS_CENTERED,
+			SDL_WINDOWPOS_CENTERED, window_width,
+			window_height, SDL_WINDOW_SHOWN);
 
 	if (!window) {
 		SDL_Quit();

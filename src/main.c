@@ -1,34 +1,13 @@
-#include <SDL.h>
+#include "sdl.h"
 #include "lib.h"
 #include "sprites.h"
 #include "textures.h"
 #include "window.h"
-
+#include "fps_counter.h"
 //--------------------------------------------------------------------- main
-
-void print_SDL_version(char* preamble, SDL_version* v) {
-	printf("%s %u.%u.%u\n", preamble, v->major, v->minor, v->patch);
-}
-
-void print_SDL_versions() {
-
-	SDL_version ver;
-
-	SDL_VERSION(&ver);
-
-	print_SDL_version("SDL compile-time version", &ver);
-
-}
-
 int main(int argc, char *argv[]) {
-	print_SDL_versions();
 
-	if (SDL_Init(SDL_INIT_VIDEO)) {
-		SDL_Quit();
-		return 1;
-	}
-
-
+	sdl_init();
 
 	screen_init();
 
@@ -36,15 +15,7 @@ int main(int argc, char *argv[]) {
 
 	sprites_init();
 
-
-
-	Uint32 currentFPS = 0;
-
-	int frame_count = 0;
-
-	Uint32 calculate_fps_every_x_ms = 1000;
-
-	Uint32 t0 = SDL_GetTicks();
+	fps_counter_init();
 
 	SDL_Event event;
 
@@ -52,7 +23,7 @@ int main(int argc, char *argv[]) {
 
 	while (!gameover) {
 
-		frame_count++;
+		fps_counter_before_frame();
 
 		if (SDL_PollEvent(&event)) {
 
@@ -79,20 +50,7 @@ int main(int argc, char *argv[]) {
 
 		SDL_RenderPresent(window_free);
 
-		Uint32 dt = SDL_GetTicks() - t0;
-
-		if (dt < calculate_fps_every_x_ms)
-			continue;
-
-		if (dt != 0) {
-			currentFPS = frame_count * 1000 / dt;
-		} else {
-			currentFPS = 0;
-		}
-
-		printf(" fps: %d\n", currentFPS);
-
-		t0 = SDL_GetTicks();
+		fps_counter_after_frame();
 	}
 
 	sprites_free();
@@ -101,7 +59,9 @@ int main(int argc, char *argv[]) {
 
 	screen_free();
 
-	SDL_Quit();
+	fps_counter_free();
+
+	sdl_free();
 
 	return 0;
 }

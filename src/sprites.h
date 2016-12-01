@@ -14,17 +14,18 @@ struct {
 static inline void sprites_init() {
 	for (int i = 0; i < sprite_count; i++) {
 		sprite[i].img = texture[0];
-		sprite[i].x = randomRange(0, window_width);
-		sprite[i].y = randomRange(0, window_height);
+		sprite[i].x = random_range(0, window_width);
+		sprite[i].y = random_range(0, window_height);
 		sprite[i].w = 74;
 		sprite[i].h = 55;
 
-		sprite[i].dx = randomRange(-5, 5);
-		sprite[i].dy = randomRange(-5, 5);
+		sprite[i].dx = random_range(-5, 5);
+		sprite[i].dy = random_range(-5, 5);
 	}
 }
 
-static inline void sprites_free() {}
+static inline void sprites_free() {
+}
 
 static inline void sprites_render(SDL_Renderer*r) {
 
