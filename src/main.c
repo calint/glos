@@ -6,37 +6,35 @@
 #include "window.h"
 #include "shader.h"
 #include "objects.h"
-//--------------------------------------------------------------------- main
-
-inline static void object_logo_init(object*o) {
+//-------------------------------------------------------------- object logo
+inline static void _logo_init(object*o) {
 	o->pos.x = 100;
 	o->pos.y = 100;
 }
 
-inline static void object_logo_render(object*o) {
+inline static void _logo_render(object*o) {
 	SDL_Rect dest = { (int) o->pos.x, (int) o->pos.y,
 			50, 50 };
 	SDL_RenderCopy(renderer,texture[0], NULL, &dest);
 }
-
-inline static void object_logo2_init(object*o) {
+//-------------------------------------------------------------- object logo
+inline static void _logo2_init(object*o) {
 	o->pos.x = 200;
 	o->pos.y = 200;
-	o->dpos.x = 10;
-	o->render = object_logo_render;
+	o->dpos.x = 100;
 }
 
-inline static void object_logo2_update(object*o,float dt) {
+inline static void _logo2_update(object*o,float dt) {
 	if(o->pos.x>220 || o->pos.x<50)
 		o->dpos.x=-o->dpos.x;
 }
 
-inline static void object_logo2_render(object*o) {
+inline static void _logo2_render(object*o) {
 	SDL_Rect dest = { (int) o->pos.x, (int) o->pos.y,
 			80, 80 };
 	SDL_RenderCopy(renderer,texture[0], NULL, &dest);
 }
-
+//--------------------------------------------------------------------- main
 int main(int argc, char *argv[]) {
 	sdl_init();
 	window_init();
@@ -53,14 +51,14 @@ int main(int argc, char *argv[]) {
 	object*o;
 
 	o = object_alloc();
-	o->init=object_logo_init;
-	o->render = object_logo_render;
+	o->init=_logo_init;
+	o->render = _logo_render;
 	o->init(o);
 
 	o = object_alloc();
-	o->init=object_logo2_init;
-	o->render = object_logo2_render;
-	o->update =object_logo2_update;
+	o->init=_logo2_init;
+	o->render = _logo2_render;
+	o->update =_logo2_update;
 	o->init(o);
 
 	printf("object[%s %p}\n", o->type.path, (void*) o);
