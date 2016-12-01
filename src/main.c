@@ -14,12 +14,15 @@
 #include "classes/logo_3.h"
 #include "classes/logo_4.h"
 
-//--------------------------------------------------------------------- create
+//----------------------------------------------------------------------- init
+
 inline static void init(){
+
 	object_alloc(&_default_logo_1);
 	object_alloc(&_default_logo_2);
 	object_alloc(&_default_logo_3);
 	object_alloc(&_default_logo_4);
+
 }
 
 //----------------------------------------------------------------------- main
@@ -41,16 +44,17 @@ int main(int argc, char *argv[]) {
 
 	init();
 
-	GLclampf red = 0;
-	GLclampf green = 0;
-	GLclampf blue = 0;
-
-	int running = 1;
+	struct {
+		GLclampf red;
+		GLclampf green;
+		GLclampf blue;
+	} background_color = {0,0,0};
 
 	SDL_Event event;
-	while (running) {
 
-		fps_counter_at_frame_start();
+	for(int running = 1; running; ) {
+
+		fps_at_frame_start();
 
 		while (SDL_PollEvent(&event)) {
 			switch (event.type) {
@@ -63,51 +67,63 @@ int main(int argc, char *argv[]) {
 					running = 0;
 					break;
 				case SDLK_w:
-					red = 1;
-					green = 0;
-					blue = 0;
+					background_color.red = 1;
+					background_color.green = 0;
+					background_color.blue = 0;
 					break;
 				case SDLK_a:
-					red = 0;
-					green = 1;
-					blue = 0;
+					background_color.red = 0;
+					background_color.green = 1;
+					background_color.blue = 0;
 					break;
 				case SDLK_s:
-					red = 0;
-					green = 0;
-					blue = 1;
+					background_color.red = 0;
+					background_color.green = 0;
+					background_color.blue = 1;
 					break;
 				case SDLK_d:
-					red = 1;
-					green = 1;
+					background_color.red = 1;
+					background_color.green = 1;
 					break;
 				}
 			}
 		}
 
-		glClearColor(red, green, blue, 1.0);
+		glClearColor( background_color.red, background_color.green,
+				background_color.blue, 1.0);
+
 		glClear(GL_COLOR_BUFFER_BIT);
 
 //		shader_render();
 
-//		sprites_update(fps.dt);
-//		sprites_render(renderer);
+		sprites_update(fps.dt);
+
+		sprites_render(renderer);
 
 		objects_update(fps.dt);
+
 		objects_render();
 
 		SDL_GL_SwapWindow(window);
 
-		fps_counter_at_frame_done();
+		fps_at_frame_done();
+
 	}
 
 	objects_free();
+
 	shader_free();
+
 	fps_free();
+
 	sprites_free();
+
 	textures_free();
+
 	window_free();
+
 	sdl_free();
+
 	return 0;
 }
 

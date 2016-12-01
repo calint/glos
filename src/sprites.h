@@ -3,22 +3,22 @@
 #include "window.h"
 #include "textures.h"
 
-//-------------------------------------------------------------------- sprites
+//--------------------------------------------------------------------- sprites
 
 #define sprite_count 8
 
 struct {
 	double x, y, dx, dy;
 	int w, h;
-	SDL_Texture *img;
+	SDL_Texture *texture;
 
 } sprite[sprite_count];
 
-//----------------------------------------------------------------------- init
+//------------------------------------------------------------------------ init
 
 static inline void sprites_init() {
 	for (int i = 0; i < sprite_count; i++) {
-		sprite[i].img = texture[0];
+		sprite[i].texture = texture[0];
 		sprite[i].x = random_range(0, window_width);
 		sprite[i].y = random_range(0, window_height);
 		sprite[i].w = 74;
@@ -29,12 +29,12 @@ static inline void sprites_init() {
 	}
 }
 
-//----------------------------------------------------------------------- free
+//------------------------------------------------------------------------ free
 
 static inline void sprites_free() {
 }
 
-//--------------------------------------------------------------------- update
+//---------------------------------------------------------------------- update
 
 static inline void sprites_update(double dt) {
 	for (int i = 0; i < sprite_count; i++) {
@@ -49,9 +49,9 @@ static inline void sprites_render(SDL_Renderer*r) {
 	for (int i = 0; i < sprite_count; i++) {
 		SDL_Rect dest = { (int) sprite[i].x, (int) sprite[i].y,
 				(int) sprite[i].w, (int) sprite[i].h };
-		SDL_RenderCopy(r, sprite[i].img, NULL, &dest);
+		SDL_RenderCopy(r, sprite[i].texture, NULL, &dest);
 	}
 
 }
 
-//---------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
