@@ -13,7 +13,9 @@
 #include "objects/logo_2.h"
 #include "objects/logo_3.h"
 #include "objects/logo_4.h"
+
 #include "objects/ninja.h"
+#include "objects/santa.h"
 
 
 //------------------------------------------------------------------------ lib
@@ -77,17 +79,35 @@ inline static void load_textures(){
 	load_texture(17,"arts/ninja/Idle__007.png");
 	load_texture(18,"arts/ninja/Idle__008.png");
 	load_texture(19,"arts/ninja/Idle__009.png");
+
+	load_texture(20,"arts/santa/Idle (1).png");
+	load_texture(21,"arts/santa/Idle (2).png");
+	load_texture(22,"arts/santa/Idle (3).png");
+	load_texture(23,"arts/santa/Idle (4).png");
+	load_texture(24,"arts/santa/Idle (5).png");
+	load_texture(25,"arts/santa/Idle (6).png");
+	load_texture(26,"arts/santa/Idle (7).png");
+	load_texture(27,"arts/santa/Idle (8).png");
+	load_texture(28,"arts/santa/Idle (9).png");
+	load_texture(30,"arts/santa/Idle (10).png");
+	load_texture(31,"arts/santa/Idle (11).png");
+	load_texture(32,"arts/santa/Idle (12).png");
+	load_texture(33,"arts/santa/Idle (13).png");
+	load_texture(34,"arts/santa/Idle (14).png");
+	load_texture(35,"arts/santa/Idle (15).png");
+	load_texture(36,"arts/santa/Idle (16).png");
 }
 
 inline static void init(){
 
 	load_textures();
 
-	object_alloc(&default_logo_1);
-	object_alloc(&default_logo_2);
-	object_alloc(&default_logo_3);
-	object_alloc(&default_logo_4);
+//	object_alloc(&default_logo_1);
+//	object_alloc(&default_logo_2);
+//	object_alloc(&default_logo_3);
+//	object_alloc(&default_logo_4);
 	object_alloc(&default_ninja);
+	object_alloc(&default_santa);
 
 }
 

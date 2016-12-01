@@ -1,8 +1,8 @@
 #pragma once
 #include "sdl.h"
 //------------------------------------------------------------------ window
-#define window_width 512+256
-#define window_height 512+256
+#define window_width 1024
+#define window_height 1024
 struct{
 	SDL_Window*ptr;
 	SDL_Renderer*renderer;
