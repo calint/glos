@@ -25,10 +25,25 @@ inline static void init_santa(object*this) {
 
 //---------------------------------------------------------------------------
 
+inline static void update_santa(object*this,dt dt){
+	float t=this->time_in_seconds-dt;
+	if(t<0){ // next frame
+		this->texture_id++;
+		if(this->texture_id>35)
+			this->texture_id=20;
+		this->time_in_seconds+=.2f;
+	}else{
+		this->time_in_seconds-=dt;
+	}
+}
+
+//---------------------------------------------------------------------------
+
 static object default_santa={
 		.type={{'f',0,0,0,0,0,0,0}},
-		.init=init_santa,
 		.texture_id=20,
+		.init=init_santa,
+		.update=update_santa,
 		.render=draw_texture_and_bounding_sphere,
 };
 

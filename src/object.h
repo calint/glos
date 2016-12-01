@@ -20,6 +20,7 @@ typedef struct object {
 	id oid;
 	color color;
 	struct object*parent;
+	float time_in_seconds;
 
 	void (*init)(struct object*);
 	void (*update)(struct object*, dt);
@@ -45,6 +46,7 @@ static object default_object = {
 		.oid=0,
 		.color=0,
 		.parent=0,
+		.time_in_seconds=0,
 
 		.init=NULL,
 		.update=NULL,

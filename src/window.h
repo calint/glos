@@ -13,7 +13,7 @@ struct{
 static inline void window_init() {
 
 	window.ptr=SDL_CreateWindow(
-			"gles",
+			"glos",
 			SDL_WINDOWPOS_CENTERED,
 			SDL_WINDOWPOS_CENTERED,
 			window_width,

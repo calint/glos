@@ -89,13 +89,13 @@ inline static void load_textures(){
 	load_texture(26,"arts/santa/Idle (7).png");
 	load_texture(27,"arts/santa/Idle (8).png");
 	load_texture(28,"arts/santa/Idle (9).png");
-	load_texture(30,"arts/santa/Idle (10).png");
-	load_texture(31,"arts/santa/Idle (11).png");
-	load_texture(32,"arts/santa/Idle (12).png");
-	load_texture(33,"arts/santa/Idle (13).png");
-	load_texture(34,"arts/santa/Idle (14).png");
-	load_texture(35,"arts/santa/Idle (15).png");
-	load_texture(36,"arts/santa/Idle (16).png");
+	load_texture(29,"arts/santa/Idle (10).png");
+	load_texture(30,"arts/santa/Idle (11).png");
+	load_texture(31,"arts/santa/Idle (12).png");
+	load_texture(32,"arts/santa/Idle (13).png");
+	load_texture(33,"arts/santa/Idle (14).png");
+	load_texture(34,"arts/santa/Idle (15).png");
+	load_texture(35,"arts/santa/Idle (16).png");
 }
 
 inline static void init(){
@@ -131,7 +131,7 @@ int main(int argc, char *argv[]) {
 
 	textures_init();
 
-	sprites_init();
+//	sprites_init();
 
 	fps_init();
 
@@ -214,7 +214,7 @@ int main(int argc, char *argv[]) {
 
 	fps_free();
 
-	sprites_free();
+//	sprites_free();
 
 	textures_free();
 

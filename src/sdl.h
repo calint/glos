@@ -23,9 +23,8 @@ static inline void sdl_init() {
 //	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
 	if(!(IMG_Init(IMG_INIT_PNG)&IMG_INIT_PNG)){
-		puts("could not initialize SDL_imgage");
-		printf("%s %d: %s",__FILE__,__LINE__,"");
-		puts(IMG_GetError());
+		puts("could not initialize SDL_image");
+		printf("%s %d: %s",__FILE__,__LINE__,IMG_GetError());
 	}
 }
 
