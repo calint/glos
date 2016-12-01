@@ -20,6 +20,10 @@ int main(int argc, char *argv[]) {
 	GLclampf green = 0;
 	GLclampf blue = 0;
 
+	type t = { { 'a', 'b', 'c', 0 } };
+	object*o = object_alloc(t);
+	printf("object[%s %p}\n", o->type.path, (void*) o);
+
 	int running = 1;
 
 	SDL_Event event;
@@ -65,11 +69,11 @@ int main(int argc, char *argv[]) {
 
 //		shader_render();
 
-//		double dt = fps_dt;
-//		sprites_update(dt);
+//		sprites_update(fps_dt);
 //		sprites_render(renderer);
 
-		objects_update();
+		float dt = (float) fps_dt;
+		objects_update(dt);
 		objects_render();
 
 		SDL_GL_SwapWindow(window);
