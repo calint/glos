@@ -8,7 +8,7 @@ typedef struct type {
 } type;
 
 typedef int oid;
-typedef unsigned char bits;
+typedef unsigned int bits;
 
 inline static int bits_is_set(bits*b, int bit_number_starting_at_zero) {
 	bits bb = (bits) (1 << bit_number_starting_at_zero);
@@ -26,11 +26,15 @@ inline static void bits_unset(bits*b, int bit_number_starting_at_zero) {
 }
 
 typedef struct object {
-	position pos;
-	position dpos;
-	angle agl;
-	angle dagl;
+	position position;
+	velocity velocity;
+	angle angle;
+	angular_velocity angular_velocity;
 
+	scale scale;
+	int texture_id;
+
+	bounding_radius bouning_radius;
 	bits*bits;
 	type type;
 	oid oid;
@@ -55,8 +59,7 @@ static bits objects_bits[objects_count];
 
 static bits*objects_bits_start_ptr = objects_bits;
 static bits*objects_bits_ptr = objects_bits;
-static bits*objects_bits_end_ptr = objects_bits
-		+ objects_count * sizeof(bits);
+static bits*objects_bits_end_ptr = objects_bits + objects_count * sizeof(bits);
 
 #define object_bit_allocated 0
 
@@ -71,7 +74,7 @@ inline static object*object_alloc() {
 		bits_set(objects_bits_ptr, 0);
 		object*ret = objects_ptr;
 		memset(ret, 0, sizeof(object));
-		ret->bits=objects_bits_ptr;
+		ret->bits = objects_bits_ptr;
 		objects_bits_ptr++;
 		objects_ptr++;
 		return ret;
@@ -89,7 +92,7 @@ inline static object*object_alloc() {
 		bits_set(objects_bits_ptr, 0);
 		object*ret = objects_ptr;
 		memset(ret, 0, sizeof(object));
-		ret->bits=objects_bits_ptr;
+		ret->bits = objects_bits_ptr;
 		objects_bits_ptr++;
 		objects_ptr++;
 		return ret;
@@ -99,58 +102,57 @@ inline static object*object_alloc() {
 }
 //--------------------------------------------------------------------- free
 inline static void object_free(object*o) {
-	bits_unset(o->bits,0);
+	bits_unset(o->bits, 0);
 }
 //--------------------------------------------------------------------- init
 inline static void objects_init() {
-	object*p = objects;
+	object*o = objects;
 	int i = objects_count;
 	while (i--) {
-		if (p->init)
-			p->init(p);
-
-		p++;
+		if (o->init)
+			o->init(o);
+		o++;
 	}
 }
 //--------------------------------------------------------------------- free
 inline static void objects_free() {
-	object*p = objects;
+	object*o = objects;
 	int i = objects_count;
 	while (i--) {
-		if(!bits_is_set(p->bits,object_bit_allocated))
+		if (!bits_is_set(o->bits, object_bit_allocated))
 			continue;
-		if (p->free)
-			p->free(p);
+		if (o->free)
+			o->free(o);
 
-		p++;
+		o++;
 	}
 }
 //--------------------------------------------------------------------- update
 inline static void objects_update(float dt) {
-	object*p = objects;
+	object*o = objects;
 	int i = objects_count;
 	while (i--) {
-		p->pos.x += p->dpos.x * dt;
-		p->pos.y += p->dpos.y * dt;
-		p->pos.z += p->dpos.z * dt;
-		p->agl.x += p->dagl.x * dt;
-		p->agl.y += p->dagl.y * dt;
-		p->agl.x += p->dagl.z * dt;
+		o->position.x += o->velocity.x * dt;
+		o->position.y += o->velocity.y * dt;
+		o->position.z += o->velocity.z * dt;
+		o->angle.x += o->angular_velocity.x * dt;
+		o->angle.y += o->angular_velocity.y * dt;
+		o->angle.x += o->angular_velocity.z * dt;
 
-		if (p->update)
-			p->update(p, dt);
+		if (o->update)
+			o->update(o, dt);
 
-		p++;
+		o++;
 	}
 }
 //--------------------------------------------------------------------- render
 inline static void objects_render() {
-	object*p = objects;
+	object*o = objects;
 	int i = objects_count;
 	while (i--) {
-		if (p->render)
-			p->render(p);
-		p++;
+		if (o->render)
+			o->render(o);
+		o++;
 	}
 }
 //--------------------------------------------------------------------- done

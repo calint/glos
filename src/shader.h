@@ -207,7 +207,6 @@ inline static void shader_render() {
 			vertices);
 	glDrawElements(GL_TRIANGLES, indices_count, GL_UNSIGNED_BYTE, indices);
 
-
 #else
 	glBindBuffer(GL_ARRAY_BUFFER, glid_vertex_buffer);
 	glVertexAttribPointer(position_slot, 3, GL_FLOAT, GL_FALSE, sizeof(vertex),

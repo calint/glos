@@ -32,8 +32,7 @@ static inline void fps_counter_at_frame_done() {
 		Uint64 t1 = SDL_GetPerformanceCounter();
 		Uint64 dt = t1 - fps_timer_tick_at_start_of_frame;
 		fps_timer_tick_at_start_of_frame = t1;
-		fps_dt = (double) dt
-				/ (double) fps_timer_frequency;
+		fps_dt = (double) dt / (double) fps_timer_frequency;
 
 		if (fps_dt > .1)
 			fps_dt = .1;
