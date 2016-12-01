@@ -1,6 +1,8 @@
 #pragma once
 #include <SDL2/SDL2_gfxPrimitives.h>
-//-------------------------------------------------------------- lib
+
+//----------------------------------------------------------------- functions
+
 inline static void _set_bounding_radius_from_xy_scale(object*o) {
 	o->bouning_radius = (bounding_radius) sqrtf(
 			o->scale.x * o->scale.x + o->scale.y * o->scale.y);
@@ -22,7 +24,8 @@ inline static void _draw_texture_and_bounding_sphere(object*o) {
 	_draw_bounding_sphere(o);
 }
 
-//-------------------------------------------------------------- object logo 1
+//-------------------------------------------------------------------- logo_1
+
 inline static void _init_logo_1(object*o) {
 	o->position.x = 100;
 	o->position.y = 100;
@@ -31,7 +34,9 @@ inline static void _init_logo_1(object*o) {
 
 static object _default_logo_1 = { .scale = { 50, 50, 50, 0 }, .texture_id = 0,
 		.init = _init_logo_1, .render = _draw_texture };
-//-------------------------------------------------------------- object logo 2
+
+//-------------------------------------------------------------------- logo_2
+
 inline static void _init_logo_2(object*o) {
 	o->position.x = 200;
 	o->position.y = 200;
@@ -64,7 +69,8 @@ static object _default_logo_2 = { .scale = { 20, 20, 20, 0 }, .texture_id = 1,
 		.init = _init_logo_2, .update = _constrain_logo_2, .render =
 				_draw_texture };
 
-//-------------------------------------------------------------- object logo 3
+//-------------------------------------------------------------------- logo_2
+
 inline static void _init_logo_3(object*o) {
 	o->position.x = 100;
 	o->position.y = 300;
@@ -81,7 +87,7 @@ static object _default_logo_3 = { .scale = { 20, 20, 20, 0 }, .texture_id = 1,
 		.init = _init_logo_3, .update = _constrain_logo_3, .render =
 				_draw_texture };
 
-//-------------------------------------------------------------- object logo 4
+//-------------------------------------------------------------------- logo_4
 
 inline static void _init_logo_4(object*o) {
 	o->position.x = 100;
@@ -95,5 +101,5 @@ inline static void _init_logo_4(object*o) {
 static object _default_logo_4 = { .scale = { 40, 40, 40, 0 }, .texture_id = 1,
 		.init = _init_logo_4, .render = _draw_texture_and_bounding_sphere };
 
-//-------------------------------------------------------------- object logo 4
+//---------------------------------------------------------------------------
 
