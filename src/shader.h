@@ -64,7 +64,7 @@ inline static GLuint compile_shader(GLenum shaderType, char *code) {
 		glGetShaderInfoLog(handle, sizeof(messages), NULL, &messages[0]);
 		printf("compiler error in %s shader:\n%s\n",
 				get_shader_name_for_type(shaderType), messages);
-		exit(1);
+		exit(7);
 	}
 
 	return handle;
@@ -91,7 +91,7 @@ inline static void load_program(GLuint *pos_slot, GLuint *col_slot) {
 				(unsigned)len < sizeof messages ? len : sizeof messages, NULL,
 				&messages[0]);
 		printf("program linking error: %s\n", messages);
-		exit(1);
+		exit(8);
 	}
 
 	glUseProgram(glid_program);
@@ -99,12 +99,12 @@ inline static void load_program(GLuint *pos_slot, GLuint *col_slot) {
 	*pos_slot = glGetAttribLocation(glid_program, "apos");
 	if (*pos_slot == -1) {
 		puts("could not find 'apos' in vertext shader");
-		exit(6);
+		exit(9);
 	}
 	*col_slot = glGetAttribLocation(glid_program, "argba");
 	if (*col_slot == -1) {
 		puts("could not find 'argba' in vertex shader");
-		exit(6);
+		exit(10);
 	}
 	glEnableVertexAttribArray(*pos_slot);
 	glEnableVertexAttribArray(*col_slot);
@@ -161,7 +161,7 @@ inline static void check_gl_error(const char*op) {
 		err = 1;
 	}
 	if (err)
-		exit(5);
+		exit(11);
 }
 
 inline static void create_geometry(GLuint *vertexBuffer, GLuint *indexBuffer,
