@@ -8,7 +8,6 @@
 inline static void _init_logo_2(object*o) {
 	o->position = (position){200,100,0,0};
 	o->velocity.x = 100;
-	_set_bounding_radius_from_xy_scale(o);
 }
 
 inline static void _constrain_logo_2(object*o, dt dt) {
@@ -34,24 +33,21 @@ inline static void _constrain_logo_2(object*o, dt dt) {
 
 static object _default_logo_2 = {
 		.type = {{1,0,0,0,0,0,0,0}},
-		.init = _init_logo_2,
 		.position = {0, 0, 0, 0},
 		.velocity = {0, 0, 0, 0},
 		.angle = {0, 0, 0, 0},
 		.angular_velocity = {0, 0, 0, 0},
 		.scale = { 20, 20, 20, 0 },
-		.update = _constrain_logo_2,
 		.texture_id = 1,
-		.render = _draw_texture,
 		.bounding_radius =  28.284271f,
 		.bits = 0,
 		.oid=0,
 		.color=0,
 		.parent=0,
-		.init=NULL,
-		.update=NULL,
+		.init = _init_logo_2,
+		.update = _constrain_logo_2,
 		.collision=NULL,
-		.render=NULL,
+		.render = _draw_texture,
 		.free=NULL,
 };
 
