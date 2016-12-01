@@ -113,25 +113,10 @@ int main(int argc, char *argv[]) {
 	GLclampf green = 0;
 	GLclampf blue = 0;
 
-	object*o;
-
-	o = object_alloc();
-	*o = _default_logo_1;
-	o->init(o);
-
-	o = object_alloc();
-	*o = _default_logo_2;
-	o->init(o);
-
-//	object_free(o);
-//
-	o = object_alloc();
-	*o = _default_logo_3;
-	o->init(o);
-
-	o = object_alloc();
-	*o = _default_logo_4;
-	o->init(o);
+	object_alloc(&_default_logo_1);
+	object_alloc(&_default_logo_2);
+	object_alloc(&_default_logo_3);
+	object_alloc(&_default_logo_4);
 
 	int running = 1;
 

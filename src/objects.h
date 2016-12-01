@@ -65,7 +65,7 @@ static bits*objects_bits_end_ptr = objects_bits + objects_count;
 #define object_bit_allocated 0
 
 //--------------------------------------------------------------------- alloc
-inline static object*object_alloc() {
+inline static object*object_alloc(object*initializer) {
 	while (objects_bits_ptr < objects_bits_end_ptr) {
 		if (bits_is_set(objects_bits_ptr, object_bit_allocated)) {
 			objects_bits_ptr++;
@@ -73,12 +73,17 @@ inline static object*object_alloc() {
 			continue;
 		}
 		bits_set(objects_bits_ptr, 0);
-		object*ret = objects_ptr;
-		memset(ret, 0, sizeof(object));
-		ret->bits = objects_bits_ptr;
+		object*o = objects_ptr;
+		if (initializer)
+			*o = *initializer;
+		else
+			memset(o, 0, sizeof(object));
+		if (o->init)
+			o->init(o);
+		o->bits = objects_bits_ptr;
 		objects_bits_ptr++;
 		objects_ptr++;
-		return ret;
+		return o;
 	}
 
 	objects_bits_ptr = objects_bits_start_ptr;
@@ -91,13 +96,19 @@ inline static object*object_alloc() {
 			continue;
 		}
 		bits_set(objects_bits_ptr, 0);
-		object*ret = objects_ptr;
-		memset(ret, 0, sizeof(object));
-		ret->bits = objects_bits_ptr;
+		object*o = objects_ptr;
+		if (initializer)
+			*o = *initializer;
+		else
+			memset(o, 0, sizeof(object));
+		if (o->init)
+			o->init(o);
+		o->bits = objects_bits_ptr;
 		objects_bits_ptr++;
 		objects_ptr++;
-		return ret;
+		return o;
 	}
+
 	perror("out of objects");
 	exit(6);
 }
