@@ -8,18 +8,20 @@
 #include "objects.h"
 #include <SDL2/SDL2_gfxPrimitives.h>
 //-------------------------------------------------------------- lib
-inline static bounding_radius bounding_radius_for_scale(scale*s) {
-	return (bounding_radius) sqrtf(s->x * s->x + s->y * s->y + s->z * s->z);
+inline static void _set_bounding_radius_from_xy_scale(object*o) {
+	o->bouning_radius = (bounding_radius) sqrtf(
+			o->scale.x * o->scale.x + o->scale.y * o->scale.y);
 }
 
 inline static void _draw_texture(object*o) {
-	SDL_Rect dest = { (int) o->position.x, (int) o->position.y,
-			(int) o->scale.x, (int) o->scale.y };
+	SDL_Rect dest = { (int) (o->position.x - o->scale.x), (int) (o->position.y
+			- o->scale.y), (int) o->scale.x * 2, (int) o->scale.y * 2 };
 	SDL_RenderCopy(renderer, texture[o->texture_id], NULL, &dest);
 }
 
 inline static void _draw_bounding_sphere(object*o) {
-	circleColor(renderer, (short) o->position.x, (short) o->position.y, (short) o->bouning_radius, o->color);
+	circleColor(renderer, (short) o->position.x, (short) o->position.y,
+			(short) o->bouning_radius, o->color);
 }
 
 inline static void _draw_texture_and_bounding_sphere(object*o) {
@@ -32,8 +34,8 @@ inline static void _init_logo_1(object*o) {
 	o->position.x = 100;
 	o->position.y = 100;
 	o->scale = (scale ) { 50, 50, 50, 0 };
-	o->bouning_radius = bounding_radius_for_scale(&o->scale);
 	o->texture_id = 0;
+	_set_bounding_radius_from_xy_scale(o);
 }
 //-------------------------------------------------------------- object logo 2
 inline static void _init_logo_2(object*o) {
@@ -41,27 +43,27 @@ inline static void _init_logo_2(object*o) {
 	o->position.y = 200;
 	o->velocity.x = 100;
 	o->scale = (scale ) { 20, 20, 20, 0 };
-	o->bouning_radius = bounding_radius_for_scale(&o->scale);
 	o->texture_id = 1;
+	_set_bounding_radius_from_xy_scale(o);
 }
 
 inline static void _constrain_logo_2(object*o, float dt) {
-	if (o->position.x > 220){
-		o->position.x=220;
-		o->position.y+=o->scale.y;
+	if (o->position.x > 220) {
+		o->position.x = 220;
+		o->position.y += o->scale.y;
 		o->velocity.x = -o->velocity.x;
 	}
-	if(o->position.x < 50){
-		o->position.x=50;
+	if (o->position.x < 50) {
+		o->position.x = 50;
 		o->velocity.x = -o->velocity.x;
 	}
-	if(o->position.y > 400){
-		o->position.y=400;
+	if (o->position.y > 400) {
+		o->position.y = 400;
 		o->velocity.y = o->velocity.x;
 		o->velocity.x = 0;
 	}
-	if(o->position.y < 50){
-		o->position.y=50;
+	if (o->position.y < 50) {
+		o->position.y = 50;
 		o->velocity.x = o->velocity.y;
 	}
 }
@@ -71,8 +73,8 @@ inline static void _init_logo_3(object*o) {
 	o->position.y = 300;
 	o->velocity.x = -200;
 	o->scale = (scale ) { 20, 20, 20, 0 };
-	o->bouning_radius = bounding_radius_for_scale(&o->scale);
 	o->texture_id = 1;
+	_set_bounding_radius_from_xy_scale(o);
 }
 
 inline static void _constrain_logo_3(object*o, float dt) {
@@ -84,8 +86,10 @@ inline static void _init_logo_4(object*o) {
 	o->position.x = 100;
 	o->position.y = 400;
 	o->scale = (scale ) { 40, 40, 40, 0 };
-	o->bouning_radius = bounding_radius_for_scale(&o->scale);
-	o->color=0xff008000;
+	o->color = 0xff008000;
+	o->texture_id = 1;
+	o->texture_id = 1;
+	_set_bounding_radius_from_xy_scale(o);
 }
 //--------------------------------------------------------------------- main
 int main(int argc, char *argv[]) {
@@ -117,13 +121,13 @@ int main(int argc, char *argv[]) {
 //	object_free(o);
 //
 	o = object_alloc();
-	o->init=_init_logo_3;
-	o->update =_constrain_logo_3;
+	o->init = _init_logo_3;
+	o->update = _constrain_logo_3;
 	o->render = _draw_texture;
 	o->init(o);
 
 	o = object_alloc();
-	o->init=_init_logo_4;
+	o->init = _init_logo_4;
 	o->render = _draw_texture_and_bounding_sphere;
 	o->init(o);
 
