@@ -201,10 +201,12 @@ inline static void shader_free() {
 
 inline static void shader_render() {
 	glBindBuffer(GL_ARRAY_BUFFER,glid_vertex_buffer);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, glid_index_buffer);
 	glVertexAttribPointer(position_slot, 3, GL_FLOAT, GL_FALSE,
 			sizeof(vertex), 0);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, glid_index_buffer);
 	glVertexAttribPointer(color_slot, 4, GL_FLOAT, GL_FALSE,
 			sizeof(vertex), (GLvoid*)(3*sizeof(float)));
+
 	glDrawElements(GL_TRIANGLES, indices_count, GL_UNSIGNED_BYTE, 0);
 }
