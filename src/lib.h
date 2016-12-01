@@ -1,9 +1,9 @@
 #pragma once
 #include <stdlib.h>
 
-//------------------------------------------------------------------ typedefs
+//------------------------------------------------------------------- typedefs
 
-typedef Uint8 bits;
+typedef uint8_t bits;
 
 typedef int8_t byte;
 
