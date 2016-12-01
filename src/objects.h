@@ -117,6 +117,8 @@ inline static void objects_free() {
 	object*p = objects;
 	int i = objects_count;
 	while (i--) {
+		if(!bits_is_set(p->bits,object_bit_allocated))
+			continue;
 		if (p->free)
 			p->free(p);
 

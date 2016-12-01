@@ -1,5 +1,5 @@
-#include "fps.h"
 #include "sdl.h"
+#include "fps.h"
 #include "lib.h"
 #include "sprites.h"
 #include "textures.h"
@@ -79,12 +79,12 @@ int main(int argc, char *argv[]) {
 	o->init(o);
 
 	object_free(o);
-
-	o = object_alloc();
-	o->init=_logo3_init;
-	o->update =_logo3_update;
-	o->render = _logo3_render;
-	o->init(o);
+//
+//	o = object_alloc();
+//	o->init=_logo3_init;
+//	o->update =_logo3_update;
+//	o->render = _logo3_render;
+//	o->init(o);
 
 
 	printf("object[%s %p}\n", o->type.path, (void*) o);
