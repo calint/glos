@@ -99,24 +99,38 @@ inline static void _init_logo_4(object*o) {
 
 static object _default_logo_4 = { .scale = { 40, 40, 40, 0 }, .texture_id = 1,
 		.init = _init_logo_4, .render = _draw_texture_and_bounding_sphere };
-//--------------------------------------------------------------------- main
-int main(int argc, char *argv[]) {
-	sdl_init();
-	window_init();
-	textures_init();
-	sprites_init();
-	fps_init();
-	shader_init();
-	objects_init();
 
-	GLclampf red = 0;
-	GLclampf green = 0;
-	GLclampf blue = 0;
-
+//--------------------------------------------------------------------- create
+inline static void init(){
 	object_alloc(&_default_logo_1);
 	object_alloc(&_default_logo_2);
 	object_alloc(&_default_logo_3);
 	object_alloc(&_default_logo_4);
+}
+
+
+//--------------------------------------------------------------------- main
+int main(int argc, char *argv[]) {
+
+	sdl_init();
+
+	window_init();
+
+	textures_init();
+
+	sprites_init();
+
+	fps_init();
+
+	shader_init();
+
+	objects_init();
+
+	init();
+
+	GLclampf red = 0;
+	GLclampf green = 0;
+	GLclampf blue = 0;
 
 	int running = 1;
 
