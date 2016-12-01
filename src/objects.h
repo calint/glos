@@ -1,22 +1,8 @@
 #pragma once
-#include "types.h"
+#include "lib.h"
 #include "window.h"
 #include "textures.h"
-//----------------------------------------------------------------------- type
-typedef struct type {
-	char path[8];
-} type;
-//---------------------------------------------------------------- baba struct
 
-#define baba_count 1
-struct baba{
-	bits bits;
-	byte byte;
-	word word;
-	dword dword;
-	quad quad;
-	char string[32];
-}babas[baba_count]__attribute__((align(64)));
 //--------------------------------------------------------------------------
 
 typedef struct object {
@@ -26,7 +12,7 @@ typedef struct object {
 	angular_velocity angular_velocity;
 
 	scale scale;
-	int texture_id;
+	id texture_id;
 
 	bounding_radius bouning_radius;
 	bits*bits;
@@ -35,8 +21,8 @@ typedef struct object {
 	color color;
 	struct object*parent;
 	void (*init)(struct object*);
-	void (*update)(struct object*, float);
-	void (*collision)(struct object*, struct object*, float);
+	void (*update)(struct object*, dt);
+	void (*collision)(struct object*, struct object*, dt);
 	void (*render)(struct object*);
 	void (*free)(struct object*);
 

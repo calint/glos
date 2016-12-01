@@ -46,7 +46,7 @@ inline static void _init_logo_2(object*o) {
 	_set_bounding_radius_from_xy_scale(o);
 }
 
-inline static void _constrain_logo_2(object*o, float dt) {
+inline static void _constrain_logo_2(object*o, dt dt) {
 	if (o->position.x > 220) {
 		o->position.x = 220;
 		o->position.y += o->scale.y;
@@ -79,7 +79,7 @@ inline static void _init_logo_3(object*o) {
 	_set_bounding_radius_from_xy_scale(o);
 }
 
-inline static void _constrain_logo_3(object*o, float dt) {
+inline static void _constrain_logo_3(object*o, dt dt) {
 	if (o->position.x > 400 || o->position.x < 50)
 		o->velocity.x = -o->velocity.x;
 }
