@@ -46,13 +46,13 @@ static inline void fps_at_frame_done() {
 		Uint64 t1 = SDL_GetPerformanceCounter();
 		Uint64 dt = t1 - fps.timer_tick_at_start_of_frame;
 		fps.timer_tick_at_start_of_frame = t1;
-		fps.dt = (double) dt / (double) fps.timer_frequency;
+		fps.dt = (float) dt / (float) fps.timer_frequency;
 
 		if (fps.dt > .1)
-			fps.dt = .1;
+			fps.dt = .1f;
 
 		if (fps.dt == 0)
-			fps.dt = .00001; //? min double?
+			fps.dt = .00001f; //? min float?
 
 	}
 

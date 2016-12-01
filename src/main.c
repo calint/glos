@@ -16,7 +16,33 @@
 
 //----------------------------------------------------------------------- init
 
+inline static void init_textures(){
+	SDL_Surface *bmp;
+	SDL_Texture *tex;
+
+	// --- --- - -- - ----- - - - - --
+	if (!(bmp = SDL_LoadBMP("logo.bmp")))
+		exit(4);
+	tex = SDL_CreateTextureFromSurface(renderer, bmp);
+	if (!(tex = SDL_CreateTextureFromSurface(renderer, bmp)))
+		exit(5);
+	SDL_FreeSurface(bmp);
+	texture[0] = tex;
+
+	// --- --- - -- - ----- - - - - --
+	if (!(bmp = SDL_LoadBMP("sdl_logo.bmp")))
+		exit(4);
+	tex = SDL_CreateTextureFromSurface(renderer, bmp);
+	if (!(tex = SDL_CreateTextureFromSurface(renderer, bmp)))
+		exit(5);
+	SDL_FreeSurface(bmp);
+	texture[1] = tex;
+
+}
+
 inline static void init(){
+
+	init_textures();
 
 	object_alloc(&_default_logo_1);
 	object_alloc(&_default_logo_2);

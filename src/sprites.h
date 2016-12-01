@@ -8,8 +8,13 @@
 #define sprite_count 8
 
 struct {
-	double x, y, dx, dy;
+
+	double x, y;
+
+	double dx, dy;
+
 	int w, h;
+
 	SDL_Texture *texture;
 
 } sprite[sprite_count];

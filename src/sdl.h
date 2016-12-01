@@ -1,6 +1,7 @@
 #pragma once
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_opengles2.h>
+#include <SDL.h>
+#include <SDL_opengles2.h>
+#include <SDL_image.h>
 #include <unistd.h>
 #define cpu_level1_cache_line_size 64
 //#define GLOS_EMBEDDED

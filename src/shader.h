@@ -88,7 +88,7 @@ inline static void load_program(GLuint *pos_slot, GLuint *col_slot) {
 
 		GLchar messages[256];
 		glGetProgramInfoLog(glid_program,
-				len < sizeof messages ? len : sizeof messages, NULL,
+				(unsigned)len < sizeof messages ? len : sizeof messages, NULL,
 				&messages[0]);
 		printf("program linking error: %s\n", messages);
 		exit(1);
