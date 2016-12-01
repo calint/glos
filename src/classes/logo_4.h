@@ -13,6 +13,7 @@ inline static void _init_logo_4(object*o) {
 //---------------------------------------------------------------------------
 
 static object _default_logo_4 = {
+		.type = {{'d',0,0,0,0,0,0,0}},
 		.init = _init_logo_4,
 		.scale = { 40, 40, 40, 0 },
 		.texture_id = 1,

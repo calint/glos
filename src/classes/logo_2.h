@@ -33,7 +33,7 @@ inline static void _constrain_logo_2(object*o, dt dt) {
 //---------------------------------------------------------------------------
 
 static object _default_logo_2 = {
-		.type = {{1,0,0,0,0,0,0,0}},
+		.type = {{'b',0,0,0,0,0,0,0}},
 		.position = {0, 0, 0, 0},
 		.velocity = {0, 0, 0, 0},
 		.angle = {0, 0, 0, 0},

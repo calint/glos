@@ -19,6 +19,7 @@ inline static void _constrain_logo_3(object*o, dt dt) {
 //----------------------------------------------------------------------------
 
 static object _default_logo_3 = {
+		.type = {{'c',0,0,0,0,0,0,0}},
 		.init = _init_logo_3,
 		.scale = { 20, 20, 20, 0 },
 		.texture_id = 1,
