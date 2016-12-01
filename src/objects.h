@@ -44,8 +44,10 @@ typedef struct object {
 } object;
 
 //--------------------------------------------------------------------- objects
-#define objects_count 1
+#define objects_count 2
+
 static object objects[objects_count];
+
 static object*objects_start_ptr = objects;
 static object*objects_ptr = objects;
 
@@ -54,12 +56,12 @@ static bits objects_bits[objects_count];
 static bits*objects_bits_start_ptr = objects_bits;
 static bits*objects_bits_ptr = objects_bits;
 static bits*objects_bits_end_ptr = objects_bits
-		+ objects_count * sizeof(object);
+		+ objects_count * sizeof(bits);
 
 #define object_bit_allocated 0
 
 //--------------------------------------------------------------------- alloc
-inline static object*object_alloc(type t) {
+inline static object*object_alloc() {
 	while (objects_bits_ptr < objects_bits_end_ptr) {
 		if (bits_is_set(objects_bits_ptr, object_bit_allocated)) {
 			objects_bits_ptr++;
@@ -88,27 +90,14 @@ inline static object*object_alloc(type t) {
 		objects_ptr++;
 		return ret;
 	}
+	perror("out of objects");
 	exit(6);
 }
 //--------------------------------------------------------------------- free
 inline static object*object_free(object*o) {
-
-} //--------------------------------------------------------------------- base
-inline static void object_render(object*o) {
-	SDL_Rect dest = { (int) o->pos.x, (int) o->pos.y,
-			50, 50 };
-	SDL_RenderCopy(renderer,texture[0], NULL, &dest);
-}
-
-inline static void object_init(object*o) {
-	o->pos.x = 100;
-	o->pos.y = 100;
-	o->render = object_render;
 }
 //--------------------------------------------------------------------- init
 inline static void objects_init() {
-	objects[0].init = object_init;
-
 	object*p = objects;
 	int i = objects_count;
 	while (i--) {

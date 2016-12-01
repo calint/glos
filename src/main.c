@@ -7,6 +7,27 @@
 #include "shader.h"
 #include "objects.h"
 //--------------------------------------------------------------------- main
+
+
+inline static void object_logo_render(object*o) {
+	SDL_Rect dest = { (int) o->pos.x, (int) o->pos.y,
+			50, 50 };
+	SDL_RenderCopy(renderer,texture[0], NULL, &dest);
+}
+
+inline static void object_init(object*o) {
+	o->pos.x = 100;
+	o->pos.y = 100;
+	o->render = object_logo_render;
+}
+
+inline static void object2_init(object*o) {
+	o->pos.x = 200;
+	o->pos.y = 200;
+	o->dpos.x = 10;
+	o->render = object_logo_render;
+}
+
 int main(int argc, char *argv[]) {
 	sdl_init();
 	window_init();
@@ -20,8 +41,16 @@ int main(int argc, char *argv[]) {
 	GLclampf green = 0;
 	GLclampf blue = 0;
 
-	type t = { { 'a', 'b', 'c', 0 } };
-	object*o = object_alloc(t);
+	object*o;
+
+	o = object_alloc();
+	o->init=object_init;
+	o->init(o);
+
+	o = object_alloc();
+	o->init=object2_init;
+	o->init(o);
+
 	printf("object[%s %p}\n", o->type.path, (void*) o);
 
 	int running = 1;
