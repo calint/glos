@@ -22,11 +22,11 @@ static inline void fps_counter_init() {
 //------------------------------------------------------------------ free
 static inline void fps_counter_free() {
 }
-//------------------------------------------------------------------ ...
+//------------------------------------------------------------------
 static inline void fps_counter_before_frame() {
 	fps_counter_frame_count++;
 }
-
+//------------------------------------------------------------------
 static inline void fps_counter_after_frame() {
 	{
 		Uint64 t1 = SDL_GetPerformanceCounter();
@@ -35,11 +35,11 @@ static inline void fps_counter_after_frame() {
 		fps_counter_delta_time_for_last_frame = (double) dt
 				/ (double) fps_counter_frequency;
 
-		if(fps_counter_delta_time_for_last_frame>.1)
-			fps_counter_delta_time_for_last_frame=.1;
+		if (fps_counter_delta_time_for_last_frame > .1)
+			fps_counter_delta_time_for_last_frame = .1;
 
-		if(fps_counter_delta_time_for_last_frame==0)
-			fps_counter_delta_time_for_last_frame=.00001;//? min double?
+		if (fps_counter_delta_time_for_last_frame == 0)
+			fps_counter_delta_time_for_last_frame = .00001; //? min double?
 
 	}
 
@@ -64,5 +64,4 @@ static inline void fps_counter_after_frame() {
 	fps_counter_t0 = t1;
 
 }
-
 //------------------------------------------------------------------ fps

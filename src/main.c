@@ -19,13 +19,19 @@ int main(int argc, char *argv[]) {
 
 	SDL_Event event;
 
+	GLclampf red = 0;
+
+	GLclampf green = 0;
+
+	GLclampf blue = 0;
+
 	int running = 1;
 
 	while (running) {
 
 		fps_counter_before_frame();
 
-		if (SDL_PollEvent(&event)) {
+		while (SDL_PollEvent(&event)) {
 
 			switch (event.type) {
 
@@ -36,26 +42,36 @@ int main(int argc, char *argv[]) {
 			case SDL_KEYDOWN:
 				switch (event.key.keysym.sym) {
 				case SDLK_ESCAPE:
-				case SDLK_q:
 					running = 0;
 					break;
-				case SDLK_r:
-					glClearColor(1.0, 0.0, 0.0, 1.0);
-					glClear(GL_COLOR_BUFFER_BIT);
-					SDL_GL_SwapWindow(window);
+				case SDLK_w:
+					red = 1;
+					green = 0;
+					blue = 0;
+					break;
+				case SDLK_a:
+					red = 0;
+					green = 1;
+					blue = 0;
+					break;
+				case SDLK_s:
+					red = 0;
+					green = 0;
+					blue = 1;
+					break;
+				case SDLK_d:
+					red = 1;
+					green = 1;
 					break;
 				}
 			}
 		}
 
-
-		glClearColor(0.0, 0.0, 0.0, 1.0);
+		glClearColor(red, green, blue, 1.0);
 
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		SDL_RenderClear(renderer);
-
-		double dt=fps_counter_delta_time_for_last_frame;
+		double dt = fps_counter_delta_time_for_last_frame;
 
 		sprites_update(dt);
 
@@ -66,8 +82,6 @@ int main(int argc, char *argv[]) {
 		fps_counter_after_frame();
 
 	}
-
-
 	fps_counter_free();
 
 	sprites_free();
@@ -79,4 +93,5 @@ int main(int argc, char *argv[]) {
 	sdl_free();
 
 	return 0;
+
 }
