@@ -35,6 +35,11 @@ inline static void update_santa(object*this,dt dt){
 	}else{
 		this->time_in_seconds-=dt;
 	}
+
+	this->scale.x=this->scale.x+11*dt;
+	this->scale.y=this->scale.y+11*dt;
+
+	set_bounding_radius_from_xy_scale(this);
 }
 
 //---------------------------------------------------------------------------

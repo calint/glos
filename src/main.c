@@ -9,41 +9,18 @@
 
 //-------------------------------------------------------------------- include
 
-#include "objects/logo_1.h"
-#include "objects/logo_2.h"
-#include "objects/logo_3.h"
-#include "objects/logo_4.h"
-
 #include "objects/ninja.h"
+
 #include "objects/santa.h"
 
-
 //------------------------------------------------------------------------ lib
-
-//inline static void load_texture_bmp(int n,const char*path){
-//	SDL_Surface*bmp=SDL_LoadBMP(path);
-//	if (!bmp){
-//		perror("could not load path:");
-//		printf("%s %d: %s",__FILE__,__LINE__,path);
-//		exit(4);
-//	}
-//	SDL_Texture*tex=SDL_CreateTextureFromSurface(window.renderer,bmp);
-//	if(!tex){
-//		perror("could not load path:");
-//		printf("%s %d: %s",__FILE__,__LINE__,path);
-//		exit(5);
-//	}
-//	SDL_FreeSurface(bmp);
-//	texture[n]=tex;
-//}
-
 
 inline static void load_texture(int n,const char*path){
 
 	SDL_Surface*loaded_surface=IMG_Load(path);
 	if(!loaded_surface){
 		perror("could not load texture");
-		puts(path);
+		printf("%s %d: %s",__FILE__,__LINE__,path);
 		exit(12);
 	}
 
@@ -66,47 +43,22 @@ inline static void load_texture(int n,const char*path){
 
 //----------------------------------------------------------------------- init
 
-inline static void load_textures(){
-	load_texture(0,"logo.bmp");
-	load_texture(1,"sdl_logo.bmp");
-	load_texture(10,"arts/ninja/Idle__000.png");
-	load_texture(11,"arts/ninja/Idle__001.png");
-	load_texture(12,"arts/ninja/Idle__002.png");
-	load_texture(13,"arts/ninja/Idle__003.png");
-	load_texture(14,"arts/ninja/Idle__004.png");
-	load_texture(15,"arts/ninja/Idle__005.png");
-	load_texture(16,"arts/ninja/Idle__006.png");
-	load_texture(17,"arts/ninja/Idle__007.png");
-	load_texture(18,"arts/ninja/Idle__008.png");
-	load_texture(19,"arts/ninja/Idle__009.png");
-
-	load_texture(20,"arts/santa/Idle (1).png");
-	load_texture(21,"arts/santa/Idle (2).png");
-	load_texture(22,"arts/santa/Idle (3).png");
-	load_texture(23,"arts/santa/Idle (4).png");
-	load_texture(24,"arts/santa/Idle (5).png");
-	load_texture(25,"arts/santa/Idle (6).png");
-	load_texture(26,"arts/santa/Idle (7).png");
-	load_texture(27,"arts/santa/Idle (8).png");
-	load_texture(28,"arts/santa/Idle (9).png");
-	load_texture(29,"arts/santa/Idle (10).png");
-	load_texture(30,"arts/santa/Idle (11).png");
-	load_texture(31,"arts/santa/Idle (12).png");
-	load_texture(32,"arts/santa/Idle (13).png");
-	load_texture(33,"arts/santa/Idle (14).png");
-	load_texture(34,"arts/santa/Idle (15).png");
-	load_texture(35,"arts/santa/Idle (16).png");
-}
-
 inline static void init(){
 
-	load_textures();
+	for(int i=0;i<10;i++){
+		char str[256];
+		sprintf(str,"arts/ninja/Idle__%03d.png",i);
+		load_texture(10+i,str);
+	}
 
-//	object_alloc(&default_logo_1);
-//	object_alloc(&default_logo_2);
-//	object_alloc(&default_logo_3);
-//	object_alloc(&default_logo_4);
 	object_alloc(&default_ninja);
+
+	for(int i=1;i<17;i++){
+		char str[256];
+		sprintf(str,"arts/santa/Idle (%d).png",i);
+		load_texture(19+i,str);
+	}
+
 	object_alloc(&default_santa);
 
 }
