@@ -1,5 +1,5 @@
 #pragma once
-#include "functions.h"
+#include "../object.h"
 
 //--------------------------------------------------------------------- logo_3
 
