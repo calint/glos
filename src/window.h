@@ -1,7 +1,4 @@
 #pragma once
-#define GL3_PROTOTYPES 1
-#include <GL/glew.h>
-
 //------------------------------------------------------------------ window
 #define window_width 512
 #define window_height 512
@@ -20,19 +17,20 @@ static inline void window_init() {
 		exit(2);
 	}
 
-	window_glcontext = SDL_GL_CreateContext(window);
-	// Set our OpenGL version.
-	// SDL_GL_CONTEXT_CORE gives us only the newer version, deprecated functions are disabled
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK,
-			SDL_GL_CONTEXT_PROFILE_CORE);
-
-	// 3.2 is part of the modern versions of OpenGL, but most video cards whould be able to run it
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+	window_glcontext = SDL_GL_CreateContext(window);
+//	// Set our OpenGL version.
+//	// SDL_GL_CONTEXT_CORE gives us only the newer version, deprecated functions are disabled
+//	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK,
+//			SDL_GL_CONTEXT_PROFILE_CORE);
+//
+//	// 3.2 is part of the modern versions of OpenGL, but most video cards whould be able to run it
+//	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+//	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
 
-	// Turn on double buffering with a 24bit Z buffer.
-	// You may need to change this to 16 or 32 for your system
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+// Turn on double buffering with a 24bit Z buffer.
+// You may need to change this to 16 or 32 for your system
+//	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
 	SDL_GL_SetSwapInterval(1);
 

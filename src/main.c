@@ -4,6 +4,7 @@
 #include "sprites.h"
 #include "textures.h"
 #include "window.h"
+#include "shader.h"
 //--------------------------------------------------------------------- main
 int main(int argc, char *argv[]) {
 
@@ -16,6 +17,8 @@ int main(int argc, char *argv[]) {
 	sprites_init();
 
 	fps_init();
+
+	shader_init();
 
 	SDL_Event event;
 
@@ -68,11 +71,13 @@ int main(int argc, char *argv[]) {
 
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		double dt = fps_dt;
-
-		sprites_update(dt);
-
-		sprites_render(renderer);
+		shader_render();
+//
+//		double dt = fps_dt;
+//
+//		sprites_update(dt);
+//
+//		sprites_render(renderer);
 
 		SDL_GL_SwapWindow(window);
 

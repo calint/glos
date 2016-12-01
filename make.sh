@@ -4,7 +4,7 @@ SRC=src/main.c
 BIN=glos
 CFLAGS=$(sdl2-config --cflags)
 WARNINGS=-Wall -Wextra -pedantic -Wfatal-errors -Wno-unused-function -Wno-unused-parameter
-LIBS="$(sdl2-config --libs) -lGLEW -lGL"
+LIBS="$(sdl2-config --libs) -lGL"
 OPTIMIZATIONS=-O3
 VALGRIND='valgrind --leak-check=full --track-origins=yes'
 
