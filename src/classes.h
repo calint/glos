@@ -1,5 +1,6 @@
 #pragma once
 #include <SDL2/SDL2_gfxPrimitives.h>
+
 //----------------------------------------------------------- object functions
 
 inline static void _set_bounding_radius_from_xy_scale(object*o) {
@@ -117,4 +118,5 @@ static object _default_logo_4 = {
 };
 
 //---------------------------------------------------------------------------
-//                                                              page 1
+//
+//.                                                    page 1
