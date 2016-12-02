@@ -40,21 +40,21 @@ inline static void load_texture(int n,const char*path){
 inline static void main_init(){
 
 	load_texture(1,"arts/wintertileset/png/BG/BG.png");
-	object_alloc(&default_background);
+	alloc(&default_background);
 
 	for(int i=0;i<10;i++){
 		char str[256];
 		sprintf(str,"arts/ninja/Idle__%03d.png",i);
 		load_texture(10+i,str);
 	}
-	object_alloc(&default_ninja);
+	alloc(&default_ninja);
 
 	for(int i=1;i<17;i++){
 		char str[256];
 		sprintf(str,"arts/santa/Idle (%d).png",i);
 		load_texture(19+i,str);
 	}
-	object_alloc(&default_santa);
+	alloc(&default_santa);
 
 }
 
@@ -143,9 +143,9 @@ int main(int argc, char *argv[]) {
 
 //		sprites_render(window.renderer);
 
-		objects_update(fps.dt);
+		update_objects(fps.dt);
 
-		objects_render();
+		render_objects();
 
 		SDL_GL_SwapWindow(window.ptr);
 
