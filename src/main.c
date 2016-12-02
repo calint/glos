@@ -13,6 +13,8 @@
 
 #include "objects/santa.h"
 
+#include "objects/background.h"
+
 //------------------------------------------------------------------------ lib
 
 inline static void load_texture(int n,const char*path){
@@ -45,12 +47,14 @@ inline static void load_texture(int n,const char*path){
 
 inline static void init(){
 
+	load_texture(1,"arts/wintertileset/png/BG/BG.png");
+	object_alloc(&default_background);
+
 	for(int i=0;i<10;i++){
 		char str[256];
 		sprintf(str,"arts/ninja/Idle__%03d.png",i);
 		load_texture(10+i,str);
 	}
-
 	object_alloc(&default_ninja);
 
 	for(int i=1;i<17;i++){
@@ -58,7 +62,6 @@ inline static void init(){
 		sprintf(str,"arts/santa/Idle (%d).png",i);
 		load_texture(19+i,str);
 	}
-
 	object_alloc(&default_santa);
 
 }

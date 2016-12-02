@@ -73,7 +73,7 @@ inline static void draw_texture(object*o) {
 			(int)(o->position.y-o->scale.y),
 			(int)o->scale.x*2,
 			(int)o->scale.y*2
-	}	;
+	};
 
 	SDL_RenderCopy(window.renderer,texture[o->texture_id].ptr,NULL,&dest);
 }

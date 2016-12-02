@@ -5,7 +5,7 @@
 //----------------------------------------------------------------------- init
 
 inline static void init_ninja(object*this) {
-	this->position = (position){
+	this->position=(position){
 			100,
 			(float)(window_height-texture[10].height),
 			0,0
