@@ -16,7 +16,7 @@ inline static void init_background(object*this) {
 			0,0
 		};
 
-	this->velocity=(position){-43,11,0,0};
+	this->velocity=(position){-7,7,0,0};
 
 	this->scale=(scale){
 			(float)texture[1].width,

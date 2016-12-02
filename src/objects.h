@@ -59,23 +59,20 @@ inline static object*object_alloc(object*initializer) {
 
 //------------------------------------------------------------------------ free
 
-inline static void object_free(object*o) {
-	bits_unset(o->bits, 0);
-}
+inline static void object_free(object*o){bits_unset(o->bits,0);}
 
 //----------------------------------------------------------------------- init
 
-inline static void objects_init() {
-}
+inline static void objects_init(){}
 
 //----------------------------------------------------------------------- free
 
 inline static void objects_free() {
 	object*o = objects;
-	int i = objects_count;
-	while (i--) {
-		if (o->bits && bits_is_set(o->bits, object_bit_allocated))
-			if (o->free)
+	int i=objects_count;
+	while(i--){
+		if(o->bits&&bits_is_set(o->bits,object_bit_allocated))
+			if(o->free)
 				o->free(o);
 		o++;
 	}
@@ -83,20 +80,25 @@ inline static void objects_free() {
 
 //--------------------------------------------------------------------- update
 
-inline static void objects_update(float dt) {
-	object*o = objects;
-	int i = objects_count;
-	while (i--) {
-		o->position.x += o->velocity.x * dt;
-		o->position.y += o->velocity.y * dt;
-		o->position.z += o->velocity.z * dt;
-		o->angle.x += o->angular_velocity.x * dt;
-		o->angle.y += o->angular_velocity.y * dt;
-		o->angle.x += o->angular_velocity.z * dt;
+inline static void add_dt(vec4*this,vec4*other,dt dt){
+	this->x+=other->x*dt;
+	this->y+=other->y*dt;
+	this->z+=other->z*dt;
+}
 
+inline static void objects_update(dt dt){
+	object*o=objects;
+	int i=objects_count;
+	while(i--){
+		add_dt(&o->position,&o->velocity,dt);
+//		o->position.x+=o->velocity.x*dt;
+//		o->position.y+=o->velocity.y*dt;
+//		o->position.z+=o->velocity.z*dt;
+		o->angle.x+=o->angular_velocity.x*dt;
+		o->angle.y+=o->angular_velocity.y*dt;
+		o->angle.x+=o->angular_velocity.z* dt;
 		if (o->update)
 			o->update(o, dt);
-
 		o++;
 	}
 }

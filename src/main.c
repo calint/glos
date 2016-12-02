@@ -18,34 +18,26 @@
 //------------------------------------------------------------------------ lib
 
 inline static void load_texture(int n,const char*path){
-
 	SDL_Surface*loaded_surface=IMG_Load(path);
 	if(!loaded_surface){
-		perror("could not load texture");
-		printf("%s %d: %s",__FILE__,__LINE__,path);
+		printf("%s %d: %s",__FILE__,__LINE__,SDL_GetError());
 		exit(12);
 	}
-
 	SDL_Texture*tex=SDL_CreateTextureFromSurface(
 			window.renderer,
-			loaded_surface
-		);
+			loaded_surface);
 	if(!tex){
-		perror("could not create texture");
-		printf("%s %d: %s",__FILE__,__LINE__,"");
+		printf("%s %d: %s",__FILE__,__LINE__,SDL_GetError());
 		exit(13);
 	}
 	texture[n].ptr=tex;
-
-	SDL_QueryTexture(tex,NULL,NULL,&texture[n].width, &texture[n].height);
-
+	SDL_QueryTexture(tex,NULL,NULL,&texture[n].width,&texture[n].height);
 	SDL_FreeSurface(loaded_surface);
-
 }
 
 //----------------------------------------------------------------------- init
 
-inline static void init(){
+inline static void main_init(){
 
 	load_texture(1,"arts/wintertileset/png/BG/BG.png");
 	object_alloc(&default_background);
@@ -94,7 +86,7 @@ int main(int argc, char *argv[]) {
 
 	objects_init();
 
-	init();
+	main_init();
 
 	//-------------------------------------------------------------------- loop
 
