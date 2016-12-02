@@ -6,7 +6,7 @@
 
 //--------------------------------------------------------------------- object
 
-typedef struct object {
+typedef struct object{
 
 	position position;
 
@@ -16,36 +16,34 @@ typedef struct object {
 
 	angular_velocity angular_velocity;
 
-	scale scale;
-
-	id texture_id;
-
 	bounding_radius bounding_radius;
 
-	bits*bits;
+	scale scale;
 
 	class type;
 
-	id oid;
+	id id;
+
+	id texture_id;
 
 	color color;
 
+	bits*bits;
 
-	struct object*parent;
 
-	void (*init)(struct object*);
+	void(*init)(struct object*);
 
-	void (*update)(struct object*, dt);
+	void(*update)(struct object*,dt);
 
-	void (*collision)(struct object*, struct object*, dt);
+	void(*collision)(struct object*,struct object*,dt);
 
-	void (*render)(struct object*);
+	void(*render)(struct object*);
 
-	void (*free)(struct object*);
+	void(*free)(struct object*);
 
 	void*extension;
 
-} object;
+}object;
 
 //-------------------------------------------------------------------- default
 
@@ -59,9 +57,8 @@ static object default_object={
 	.bounding_radius=0,
 	.bits=0,
 	.type={{0,0,0,0,0,0,0,0}},
-	.oid=0,
+	.id=0,
 	.color=0,
-	.parent=0,
 	.init=NULL,
 	.update=NULL,
 	.collision=NULL,
