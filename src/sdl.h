@@ -38,12 +38,11 @@ static inline void init_sdl() {
 		exit(1);
 	}
 
-//	int result;
-//	if(MIX_INIT_MP3!=(result=Mix_Init(MIX_INIT_MP3))) {
-//		printf("%s %d: %s\n",__FILE__,__LINE__,IMG_GetError());
-//		printf("Mix_Init: %s\n",Mix_GetError());
-//		exit(20);
-//	}
+	if(MIX_INIT_MP3!=Mix_Init(MIX_INIT_MP3)) {
+		printf("%s %d: %s\n",__FILE__,__LINE__,IMG_GetError());
+		printf("Mix_Init: %s\n",Mix_GetError());
+		exit(20);
+	}
 
 	play_mp3("arts/mp3/Commercial DEMO - 02.mp3");
 

@@ -42,22 +42,17 @@ struct{
 }shader;
 
 inline static const char*get_shader_name_for_type(GLenum shader_type) {
-	switch (shader_type) {
-	case GL_VERTEX_SHADER:
-		return "vertex";
-	case GL_FRAGMENT_SHADER:
-		return "fragment";
-	default:
-		return "unknown";
+	switch (shader_type){
+	case GL_VERTEX_SHADER:return "vertex";
+	case GL_FRAGMENT_SHADER:return "fragment";
+	default:return "unknown";
 	}
 }
 inline static GLuint compile_shader(GLenum shaderType, char *code) {
 	printf("\n ___| %s shader |__________________\n%s\n",
 			get_shader_name_for_type(shaderType),
 			code);
-
-	GLuint handle = glCreateShader(shaderType);
-
+	GLuint handle=glCreateShader(shaderType);
 	int length=(int)strlen(code);
 	glShaderSource(handle,1,(const GLchar**)&code,&length);
 	glCompileShader(handle);
@@ -71,7 +66,6 @@ inline static GLuint compile_shader(GLenum shaderType, char *code) {
 		);
 		exit(7);
 	}
-
 	return handle;
 }
 
@@ -117,8 +111,6 @@ inline static void load_program(GLuint*pos_slot,GLuint *col_slot) {
 
 	glEnableVertexAttribArray(*pos_slot);
 	glEnableVertexAttribArray(*col_slot);
-
-	return;
 }
 
 inline static const char*get_gl_error_string(const GLenum error) {
@@ -201,7 +193,7 @@ inline static void init_shader() {
 	print_gl_string("GL_VERSION", GL_VERSION);
 	print_gl_string("GL_VENDOR", GL_VENDOR);
 	print_gl_string("GL_RENDERER", GL_RENDERER);
-	print_gl_string("GL_SHADING_LANGUAGE_VERSION", GL_SHADING_LANGUAGE_VERSION);
+	print_gl_string("GL_SHADING_LANGUAGE_VERSION",GL_SHADING_LANGUAGE_VERSION);
 
 	create_geometry(
 		&shader.vertex_buffer_id,
