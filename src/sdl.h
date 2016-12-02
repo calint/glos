@@ -5,8 +5,7 @@
 #include<SDL_ttf.h>
 #include<SDL_mixer.h>
 #include<unistd.h>
-//#define cpu_level1_cache_line_size 64
-//#define GLOS_EMBEDDED
+//------------------------------------------------------------------------ sdl
 
 static struct sdl{
 
@@ -16,7 +15,9 @@ static struct sdl{
 
 }sdl;
 
-static inline void play_mp3(const char*path){
+//----------------------------------------------------------------------- lib
+
+inline static void play_mp3(const char*path){
 	Mix_OpenAudio(22050,AUDIO_S16SYS,2,640);
 	sdl.music=Mix_LoadMUS(path);
 	Mix_PlayMusic(sdl.music,-1);
@@ -33,13 +34,6 @@ static inline void sdl_init() {
 		printf("%s %d: %s\n",__FILE__,__LINE__,IMG_GetError());
 		exit(1);
 	}
-
-//	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
-//	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-//	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
-//
-//	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-//	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
 	if(!(IMG_Init(IMG_INIT_PNG)&IMG_INIT_PNG)){
 		printf("%s %d: %s\n",__FILE__,__LINE__,IMG_GetError());
@@ -84,3 +78,4 @@ static inline void sdl_free(){
 }
 
 //----------------------------------------------------------------------------
+
