@@ -3,7 +3,7 @@
 #include"../parts/animator_part.h"
 //--------------------------------------------------------------------- logo_1
 
-#define santa_texture_on_ground_bias 131
+#define santa_texture_on_ground_bias 211
 
 inline static void init_santa(object*this) {
 	this->position=(position){

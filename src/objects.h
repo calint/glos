@@ -84,10 +84,9 @@ inline static void free_object(object*o){
 inline static void update_objects(dt dt){
 	object*o=objects;
 	while(o<objects_end_ptr){
-//		accumulate_dt(&o->position,&o->velocity,dt);
+		add_vec4_over_dt(&o->position,&o->velocity,dt);
 		add_vec4_over_dt(&o->angle,&o->angular_velocity,dt);
-		if (o->update)
-			o->update(o, dt);
+		if(o->update)o->update(o,dt);
 		o++;
 	}
 }

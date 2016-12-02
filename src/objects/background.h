@@ -12,16 +12,16 @@ inline static void init_background(object*this){
 	};
 
 	this->position=(position){
-		(float)(texture[1].width-window_width),
-		(float)(window_height-texture[1].height),
+		(float)(texture[this->texture_id].width-window_width),
+		(float)(window_height-texture[this->texture_id].height+100),
 		0,0
 	};
 
-	this->velocity=(position){-7,7,0,0};
+	this->velocity=(position){-17,+43,0,0};
 
 	this->scale=(scale){
-		(float)texture[1].width,
-		(float)texture[1].height,
+		(float)texture[this->texture_id].width,
+		(float)texture[this->texture_id].height,
 		1,0
 	};
 
@@ -29,12 +29,13 @@ inline static void init_background(object*this){
 }
 
 inline static void update_background(object*this,dt dt){
-
-	this->scale.x=this->scale.x-7*dt;
-	this->scale.y=this->scale.y-7*dt;
-
-	update_bounding_radius_using_scale(this);
+//
+//	this->scale.x=this->scale.x-7*dt;
+//	this->scale.y=this->scale.y-7*dt;
+//
+//	update_bounding_radius_using_scale(this);
 }
+
 //---------------------------------------------------------------------------
 
 static object background={

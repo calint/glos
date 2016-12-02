@@ -7,15 +7,15 @@
 inline static void init_ninja(object*this) {
 	this->position=(position){
 		100,
-		(float)(window_height-texture[10].height),
+		(float)(window_height-texture[this->texture_id].height+20),
 		0,0
 	};
 
 	this->velocity=(position){5,10,0,0};
 
 	this->scale=(scale){
-		(float)texture[10].width,
-		(float)texture[10].height,
+		(float)texture[this->texture_id].width,
+		(float)texture[this->texture_id].height,
 		1,0
 	};
 
@@ -57,7 +57,7 @@ static object ninja={
 	.free=free_ninja,
 	.texture_id=10,
 	.update=update_ninja,
-	.render=draw_texture_and_bounding_sphere,
+	.render=draw_texture,
 };
 
 //---------------------------------------------------------------------------

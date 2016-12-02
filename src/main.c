@@ -14,6 +14,8 @@
 
 #include "objects/background.h"
 
+#include "objects/snowman.h"
+
 //------------------------------------------------------------------------ lib
 
 inline static void load_texture(int n,const char*path){
@@ -30,6 +32,7 @@ inline static void load_texture(int n,const char*path){
 		exit(13);
 	}
 	texture[n].ptr=tex;
+
 	SDL_QueryTexture(tex,NULL,NULL,&texture[n].width,&texture[n].height);
 	SDL_FreeSurface(loaded_surface);
 }
@@ -38,23 +41,27 @@ inline static void load_texture(int n,const char*path){
 
 inline static void init_main(){
 
-	load_texture(1,"arts/wintertileset/png/BG/BG.png");
+	load_texture(background.texture_id,
+			"arts/wintertileset/png/BG/BG.png");
 	alloc(&background);
 
 	for(int i=0;i<10;i++){
 		char str[256];
 		sprintf(str,"arts/ninja/Idle__%03d.png",i);
-		load_texture(10+i,str);
+		load_texture(ninja.texture_id+i,str);
 	}
 	alloc(&ninja);
 
 	for(int i=1;i<17;i++){
 		char str[256];
 		sprintf(str,"arts/santa/Idle (%d).png",i);
-		load_texture(19+i,str);
+		load_texture(santa.texture_id-1+i,str);
 	}
 	alloc(&santa);
 
+//	load_texture(snowman.texture_id,
+//			"arts/wintertileset/png/Object/SnowMan.png");
+//	alloc(&snowman);
 }
 
 //-------------------------------------------------------------background_color
