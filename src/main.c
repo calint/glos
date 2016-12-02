@@ -152,7 +152,7 @@ int main(int argc, char *argv[]) {
 
 		shader_render();
 
-		SDL_GL_SwapWindow(window.ptr);
+		SDL_GL_SwapWindow(window.ref);
 
 		at_frame_end_call_fps();
 

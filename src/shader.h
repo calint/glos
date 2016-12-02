@@ -49,21 +49,23 @@ inline static const char*get_shader_name_for_type(GLenum shader_type) {
 	}
 }
 inline static GLuint compile_shader(GLenum shaderType, char *code) {
-	printf("%s", code);
+	printf("\n ___| %s shader |__________________\n%s\n",
+			get_shader_name_for_type(shaderType),
+			code);
+
 	GLuint handle = glCreateShader(shaderType);
 
-	int length = (int) strlen(code);
-	glShaderSource(handle, 1, (const GLchar**) &code, &length);
-
+	int length=(int)strlen(code);
+	glShaderSource(handle,1,(const GLchar**)&code,&length);
 	glCompileShader(handle);
-
-	GLint compileSuccess;
-	glGetShaderiv(handle, GL_COMPILE_STATUS, &compileSuccess);
-	if (compileSuccess == GL_FALSE) {
+	GLint ok;
+	glGetShaderiv(handle, GL_COMPILE_STATUS, &ok);
+	if(!ok){
 		GLchar messages[1024];
-		glGetShaderInfoLog(handle, sizeof(messages), NULL, &messages[0]);
+		glGetShaderInfoLog(handle,sizeof(messages),NULL,&messages[0]);
 		printf("compiler error in %s shader:\n%s\n",
-				get_shader_name_for_type(shaderType), messages);
+			get_shader_name_for_type(shaderType), messages
+		);
 		exit(7);
 	}
 
@@ -141,7 +143,7 @@ inline static const char*get_gl_error_string(const GLenum error) {
 #endif
 #if defined __gl_h_
 		case GL_STACK_OVERFLOW:
-		str = "GL_STACK_OVERFLOW";
+		str = "GL_STACK_OVERFLOW";-Wunused-variable
 		break;
 		case GL_STACK_UNDERFLOW:
 		str = "GL_STACK_UNDERFLOW";
@@ -184,19 +186,24 @@ inline static void create_geometry(GLuint *vertexBuffer, GLuint *indexBuffer,
 	check_gl_error("generating buffers");
 }
 
-inline static void print_gl_string(const char *name, const GLenum s) {
+inline static void print_gl_string(const char *name, const GLenum s){
 	const char*v = (const char*) glGetString(s);
 	printf("%s=%s\n", name, v);
 }
 
 inline static void init_shader() {
 	check_gl_error("shader_init");
+	gl_print_context_profile_and_version();
+	puts("");
 	print_gl_string("GL_VERSION", GL_VERSION);
 	print_gl_string("GL_VENDOR", GL_VENDOR);
 	print_gl_string("GL_RENDERER", GL_RENDERER);
 	print_gl_string("GL_SHADING_LANGUAGE_VERSION", GL_SHADING_LANGUAGE_VERSION);
+
 	create_geometry(&glid_vertex_buffer, &glid_index_buffer, &indices_count);
+
 	load_program(&position_slot, &color_slot);
+
 	check_gl_error("after shader_init");
 }
 
