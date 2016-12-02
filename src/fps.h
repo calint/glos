@@ -25,7 +25,7 @@ struct{
 
 //----------------------------------------------------------------------- init
 
-static inline void fps_init(){
+static inline void init_fps(){
 	fps.average_during_last_intervall=0;
 	fps.frame_count=0;
 	fps.calculation_intervall_in_ms=1000;

@@ -37,7 +37,7 @@ inline static void load_texture(int n,const char*path){
 
 //----------------------------------------------------------------------- init
 
-inline static void main_init(){
+inline static void init_main(){
 
 	load_texture(1,"arts/wintertileset/png/BG/BG.png");
 	alloc(&background);
@@ -76,21 +76,21 @@ int main(int argc, char *argv[]) {
 
 	//-------------------------------------------------------------------- init
 
-	sdl_init();
+	init_sdl();
 
-	window_init();
+	init_window();
 
-	textures_init();
+	init_textures();
 
 //	sprites_init();
 
-	fps_init();
+	init_fps();
 
-	shader_init();
+	init_shader();
 
 	init_objects();
 
-	main_init();
+	init_main();
 
 	//-------------------------------------------------------------------- loop
 

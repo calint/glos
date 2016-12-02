@@ -15,7 +15,7 @@ struct{
 	SDL_Surface*surface;
 
 }window;
-static inline void window_init() {
+static inline void init_window() {
 
 	window.ptr=SDL_CreateWindow(
 			"glos",

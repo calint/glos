@@ -16,7 +16,7 @@ int texture_next_free;
 
 //----------------------------------------------------------------------- init
 
-static inline void textures_init(){}
+static inline void init_textures(){}
 
 //----------------------------------------------------------------------- free
 

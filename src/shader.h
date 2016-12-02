@@ -185,7 +185,7 @@ inline static void print_gl_string(const char *name, const GLenum s) {
 	printf("%s=%s\n", name, v);
 }
 
-inline static void shader_init() {
+inline static void init_shader() {
 	check_gl_error("shader_init");
 	print_gl_string("GL_VERSION", GL_VERSION);
 	print_gl_string("GL_VENDOR", GL_VENDOR);

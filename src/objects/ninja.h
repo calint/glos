@@ -19,7 +19,7 @@ inline static void init_ninja(object*this) {
 			1,0
 		};
 
-	set_bounding_radius_from_xy_scale(this);
+	set_bounding_radius_using_scale(this);
 
 
 

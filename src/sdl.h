@@ -29,7 +29,7 @@ inline static void play_mp3(const char*path){
 
 //----------------------------------------------------------------------- init
 
-static inline void sdl_init() {
+static inline void init_sdl() {
 	if (SDL_Init(SDL_INIT_VIDEO)) {
 		printf("%s %d: %s\n",__FILE__,__LINE__,IMG_GetError());
 		exit(1);

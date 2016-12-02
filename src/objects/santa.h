@@ -20,7 +20,7 @@ inline static void init_santa(object*this) {
 			1,0
 		};
 
-	set_bounding_radius_from_xy_scale(this);
+	set_bounding_radius_using_scale(this);
 
 
 
@@ -43,7 +43,7 @@ inline static void update_santa(object*this,dt dt){
 	this->scale.x=this->scale.x+11*dt;
 	this->scale.y=this->scale.y+11*dt;
 
-	set_bounding_radius_from_xy_scale(this);
+	set_bounding_radius_using_scale(this);
 
 
 	animator_part*a=(animator_part*)this->extension;
