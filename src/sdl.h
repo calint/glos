@@ -46,10 +46,10 @@ static inline void init_sdl() {
 
 	play_mp3("arts/mp3/Commercial DEMO - 02.mp3");
 
-//	if(!(IMG_Init(IMG_INIT_PNG)&IMG_INIT_PNG)){
-//		printf("%s %d: %s\n",__FILE__,__LINE__,IMG_GetError());
-//		exit(16);
-//	}
+	if(!(IMG_Init(IMG_INIT_PNG)&IMG_INIT_PNG)){
+		printf("%s %d: %s\n",__FILE__,__LINE__,IMG_GetError());
+		exit(16);
+	}
 
 	if(TTF_Init()<0){
 		printf("%s %d: %s\n",__FILE__,__LINE__,IMG_GetError());
