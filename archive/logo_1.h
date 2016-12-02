@@ -5,7 +5,7 @@
 
 inline static void init_logo_1(object*o) {
 	o->position = (position){100,100,0,0};
-	set_bounding_radius_using_scale(o);
+	update_bounding_radius_using_scale(o);
 }
 
 //---------------------------------------------------------------------------

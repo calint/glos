@@ -6,31 +6,28 @@
 
 inline static void init_ninja(object*this) {
 	this->position=(position){
-			100,
-			(float)(window_height-texture[10].height),
-			0,0
-		};
+		100,
+		(float)(window_height-texture[10].height),
+		0,0
+	};
 
 	this->velocity=(position){5,10,0,0};
 
 	this->scale=(scale){
-			(float)texture[10].width,
-			(float)texture[10].height,
-			1,0
-		};
+		(float)texture[10].width,
+		(float)texture[10].height,
+		1,0
+	};
 
-	set_bounding_radius_using_scale(this);
+	update_bounding_radius_using_scale(this);
 
 
-
-	animator_part*a=malloc(sizeof(animator_part));
-	*a=anim;
-
-	a->animation_time_left_for_current_frame=0.5f;
-	a->current_index_in_textures=a->texture_index_for_first_frame=10;
+	animator_part*a=alloc_animator(NULL);
+	a->time_duration_per_frame=0.5f;
+	a->current_index_in_textures=
+	a->texture_index_for_first_frame=10;
 	a->texture_index_for_last_frame=19;
 	a->time_duration_per_frame=.2f;
-
 	this->extension=a;
 }
 

@@ -68,7 +68,7 @@ static object default_object={
 
 //----------------------------------------------------------- ------ functions
 
-inline static void set_bounding_radius_using_scale(object*o) {
+inline static void update_bounding_radius_using_scale(object*o) {
 	o->bounding_radius=(bounding_radius)
 		sqrtf(o->scale.x*o->scale.x+o->scale.y*o->scale.y);
 }

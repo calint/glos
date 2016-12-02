@@ -6,7 +6,7 @@
 inline static void init_logo_3(object*o) {
 	o->position = (position){100,300,0,0};
 	o->velocity.x = -200;
-	set_bounding_radius_using_scale(o);
+	update_bounding_radius_using_scale(o);
 }
 
 //----------------------------------------------------------------------------

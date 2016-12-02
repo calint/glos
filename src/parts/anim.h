@@ -14,19 +14,38 @@ typedef struct animator_part{
 
 	dt_in_seconds animation_time_left_for_current_frame;
 
-}animator_part;
+} animator_part;
+
+//------------------------------------------------------------------------- lib
+
+inline static animator_part*animator_part_ptr(void*p){
+	return(animator_part*)p;
+}
 
 //--------------------------------------------------------------------- default
 
-static animator_part anim={
-		.time_duration_per_frame=0,
-		.texture_index_for_first_frame=0,
-		.texture_index_for_last_frame=0,
-		.current_index_in_textures=0,
-		.animation_time_left_for_current_frame=0,
+static animator_part animator={
+	.time_duration_per_frame=0,
+	.texture_index_for_first_frame=0,
+	.texture_index_for_last_frame=0,
+	.current_index_in_textures=0,
+	.animation_time_left_for_current_frame=0,
 };
 
-//----------------------------------------------------------------------------
+//----------------------------------------------------------------------- alloc
+
+/**gives*/animator_part*alloc_animator(animator_part*initializer){
+	animator_part*a=malloc(sizeof(animator_part));
+	if(!a){
+		perror("out of memory");
+		exit(21);
+	}
+
+	*a=initializer?*initializer:animator;
+	return a;
+}
+
+//---------------------------------------------------------------------- update
 
 static void update_anim(void*an_anim,dt_in_seconds dt){
 	animator_part*a=an_anim;

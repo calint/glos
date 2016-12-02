@@ -20,12 +20,12 @@ inline static void init_santa(object*this) {
 			1,0
 		};
 
-	set_bounding_radius_using_scale(this);
+	update_bounding_radius_using_scale(this);
 
 
 
 	animator_part*a=malloc(sizeof(animator_part));
-	*a=anim;
+	*a=animator;
 
 	a->current_index_in_textures=a->texture_index_for_first_frame=20;
 	a->texture_index_for_last_frame=35;
@@ -43,7 +43,7 @@ inline static void update_santa(object*this,dt_in_seconds dt){
 	this->scale.x=this->scale.x+11*dt;
 	this->scale.y=this->scale.y+11*dt;
 
-	set_bounding_radius_using_scale(this);
+	update_bounding_radius_using_scale(this);
 
 
 	animator_part*a=(animator_part*)this->extension;
