@@ -100,7 +100,7 @@ static inline void init_window() {
 		exit(14);
 	}
 
-	if(SDL_GL_SetSwapInterval(0)){
+	if(SDL_GL_SetSwapInterval(1)){
 		printf("%s %d: %s",__FILE__,__LINE__,SDL_GetError());
 		exit(29);
 	}

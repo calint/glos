@@ -51,7 +51,7 @@ inline static void update_ninja(object*this,dt dt){
 
 //---------------------------------------------------------------------------
 
-static object ninja={
+static object default_ninja={
 	.type={{'e',0,0,0,0,0,0,0}},
 	.init=init_ninja,
 	.free=free_ninja,

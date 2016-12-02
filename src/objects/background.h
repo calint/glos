@@ -38,7 +38,7 @@ inline static void update_background(object*this,dt dt){
 
 //---------------------------------------------------------------------------
 
-static object background={
+static object default_background={
 	.type={{'f',0,0,0,0,0,0,0}},
 	.texture_id=1,
 	.init=init_background,

@@ -46,7 +46,7 @@ inline static void update_santa(object*this,dt dt){
 
 //---------------------------------------------------------------------------
 
-static object santa={
+static object default_santa={
 	.type={{'f',0,0,0,0,0,0,0}},
 	.texture_id=20,
 	.init=init_santa,

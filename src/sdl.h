@@ -22,7 +22,8 @@ static struct sdl{
 inline static void play_mp3(const char*path){
 	Mix_OpenAudio(22050,AUDIO_S16SYS,2,640);
 	sdl.music=Mix_LoadMUS(path);
-	Mix_PlayMusic(sdl.music,-1);
+//	Mix_PlayMusic(sdl.music,-1); // loop
+	Mix_PlayMusic(sdl.music,1); // play once
 //	while(!SDL_QuitRequested()){
 //		SDL_Delay(250);
 //	}
@@ -32,15 +33,24 @@ inline static void play_mp3(const char*path){
 //----------------------------------------------------------------------- init
 
 static inline void init_sdl() {
-	if (SDL_Init(SDL_INIT_VIDEO)) {
+	if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO)) {
 		printf("%s %d: %s\n",__FILE__,__LINE__,IMG_GetError());
 		exit(1);
 	}
 
-	if(!(IMG_Init(IMG_INIT_PNG)&IMG_INIT_PNG)){
-		printf("%s %d: %s\n",__FILE__,__LINE__,IMG_GetError());
-		exit(16);
-	}
+//	int result;
+//	if(MIX_INIT_MP3!=(result=Mix_Init(MIX_INIT_MP3))) {
+//		printf("%s %d: %s\n",__FILE__,__LINE__,IMG_GetError());
+//		printf("Mix_Init: %s\n",Mix_GetError());
+//		exit(20);
+//	}
+
+	play_mp3("arts/mp3/Commercial DEMO - 02.mp3");
+
+//	if(!(IMG_Init(IMG_INIT_PNG)&IMG_INIT_PNG)){
+//		printf("%s %d: %s\n",__FILE__,__LINE__,IMG_GetError());
+//		exit(16);
+//	}
 
 	if(TTF_Init()<0){
 		printf("%s %d: %s\n",__FILE__,__LINE__,IMG_GetError());
@@ -49,24 +59,10 @@ static inline void init_sdl() {
 
 	sdl.font=TTF_OpenFont("arts/ttf/amadeus.ttf", 25);
 	if(!sdl.font){
+		puts("tried to load font");
 		printf("%s %d: %s\n",__FILE__,__LINE__,IMG_GetError());
 		exit(18);
 	}
-
-	if(SDL_Init(SDL_INIT_AUDIO)<0){
-		printf("%s %d: %s\n",__FILE__,__LINE__,IMG_GetError());
-		exit(19);
-	}
-
-
-	int result;
-	if(MIX_INIT_MP3!=(result=Mix_Init(MIX_INIT_MP3))) {
-		printf("%s %d: %s\n",__FILE__,__LINE__,IMG_GetError());
-		printf("Mix_Init: %s\n",Mix_GetError());
-		exit(20);
-	}
-
-	play_mp3("arts/mp3/Commercial DEMO - 02.mp3");
 }
 
 //------------------------------------------------------------------------free

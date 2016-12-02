@@ -24,7 +24,7 @@ inline static animator_part*animator_part_(void*p){
 
 //--------------------------------------------------------------------- default
 
-static animator_part animator={
+static animator_part default_animator_part={
 	.time_duration_per_frame=0,
 	.texture_index_for_first_frame=0,
 	.texture_index_for_last_frame=0,
@@ -41,7 +41,7 @@ static animator_part animator={
 		exit(21);
 	}
 
-	*a=initializer?*initializer:animator;
+	*a=initializer?*initializer:default_animator_part;
 	return a;
 }
 

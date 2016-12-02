@@ -26,7 +26,7 @@ inline static void update_snowman(object*this,dt dt){
 }
 //---------------------------------------------------------------------------
 
-static object snowman={
+static object default_snowman={
 	.type={{'f',0,0,0,0,0,0,0}},
 	.texture_id=2,
 	.init=init_snowman,
