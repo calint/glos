@@ -60,11 +60,11 @@ inline static object*alloc(object*initializer){
 			set_bit(object_bits_seek_ptr,0); // allocate //? racing
 //			bits_set(object_bits_seek_ptr,0); // allocate //? racing
 			object*o=object_seek_ptr;
+			o->bits=object_bits_seek_ptr; // used at free to
+			object_seek_ptr++;
+			object_bits_seek_ptr++;      // unset alloc bit
 			*o=initializer?*initializer:default_object;
 			if (o->init)o->init(o);
-			o->bits=object_bits_seek_ptr; // used at free to
-			object_bits_seek_ptr++;      // unset alloc bit
-			object_seek_ptr++;
 			return o;
 		}
 		object_bits_seek_ptr=objects_bits_start_ptr;
@@ -81,11 +81,11 @@ inline static void free_object(object*o){
 }
 //--------------------------------------------------------------------- update
 
-inline static void update_objects(dt_in_seconds dt){
+inline static void update_objects(dt dt){
 	object*o=objects;
 	while(o<objects_end_ptr){
-		add_dt(&o->position,&o->velocity,dt);
-		add_dt(&o->angle,&o->angular_velocity,dt);
+//		accumulate_dt(&o->position,&o->velocity,dt);
+		add_vec4_over_dt(&o->angle,&o->angular_velocity,dt);
 		if (o->update)
 			o->update(o, dt);
 		o++;

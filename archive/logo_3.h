@@ -11,7 +11,7 @@ inline static void init_logo_3(object*o) {
 
 //----------------------------------------------------------------------------
 
-inline static void constrain_logo_3(object*o, dt_in_seconds dt) {
+inline static void constrain_logo_3(object*o, dt dt) {
 	if (o->position.x > 400 || o->position.x < 50)
 		o->velocity.x = -o->velocity.x;
 }

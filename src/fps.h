@@ -13,7 +13,7 @@ struct{
 
 	Uint32 time_at_start_of_intervall_in_ms;
 
-	dt_in_seconds dt;
+	dt dt;
 
 	Uint64 timer_frequency;
 

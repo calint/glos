@@ -12,7 +12,8 @@ struct{
 	int height;
 
 }texture[texture_count];
-int texture_next_free;
+
+int texture_next_index;
 
 //----------------------------------------------------------------------- init
 
@@ -28,14 +29,14 @@ static inline void free_textures(){
 
 //----------------------------------------------------------------------------
 
-static inline void textures_alloc(
+static inline void alloc_textures(
 	int number_of_textures,
 	int*begin_index,
 	int*end_index_not_included
 ){
-	if(texture_next_free+number_of_textures>=texture_count){
+	if(texture_next_index+number_of_textures>=texture_count){
 		perror("buffer overrun");
 	}
-	texture_next_free+=number_of_textures;
+	texture_next_index+=number_of_textures;
 }
 

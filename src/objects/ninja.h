@@ -1,6 +1,6 @@
 #pragma once
 #include "../object.h"
-#include "../parts/anim.h"
+#include "../parts/animator_part.h"
 
 //----------------------------------------------------------------------- init
 
@@ -21,7 +21,6 @@ inline static void init_ninja(object*this) {
 
 	update_bounding_radius_using_scale(this);
 
-
 	animator_part*a=/**takes*/alloc_animator_part(NULL);
 	a->time_duration_per_frame=0.5f;
 	a->current_texture_index=
@@ -37,7 +36,7 @@ inline static void free_ninja(object*this){free(this->extension);}
 
 //----------------------------------------------------------------------update
 
-inline static void update_ninja(object*this,dt_in_seconds dt){
+inline static void update_ninja(object*this,dt dt){
 //	printf(" ninja y: %f\n",this->position.y);
 	if(this->position.y>620){
 		this->velocity.y=-this->velocity.y;
@@ -46,7 +45,7 @@ inline static void update_ninja(object*this,dt_in_seconds dt){
 	}
 
 	animator_part*a=animator_part_(this->extension);
-	update_anim(a,dt);
+	update_animator_part(a,dt);
 	this->texture_id=a->current_texture_index;
 }
 

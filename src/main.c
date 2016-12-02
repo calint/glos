@@ -73,8 +73,6 @@ struct{
 
 int main(int argc, char *argv[]) {
 
-	//-------------------------------------------------------------------- init
-
 	init_sdl();
 
 	init_window();
@@ -130,16 +128,20 @@ int main(int argc, char *argv[]) {
 					break;
 				}
 			}
+			//-------------------------------------------------------------keys
 		}
 
 		//---------------------------------------------------------------- draw
 
-		glClearColor( background_color.red, background_color.green,
-				background_color.blue, 1.0);
+		glClearColor(
+			background_color.red,
+			background_color.green,
+			background_color.blue, 1.0
+		);
 
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		shader_render();
+//		shader_render();
 
 		update_objects(fps.dt);
 
@@ -152,6 +154,8 @@ int main(int argc, char *argv[]) {
 	}
 
 	//---------------------------------------------------------------------free
+
+	//? early-hangup
 
 	free_objects();
 

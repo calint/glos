@@ -9,7 +9,7 @@ inline static void init_logo_2(object*o) {
 
 //---------------------------------------------------------------------------
 
-inline static void constrain_logo_2(object*o, dt_in_seconds dt) {
+inline static void constrain_logo_2(object*o, dt dt) {
 	if (o->position.x > 220) {
 		o->position.x = 220;
 		o->position.y += o->scale.y;
