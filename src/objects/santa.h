@@ -22,6 +22,8 @@ inline static void init_santa(object*this) {
 
 	set_bounding_radius_from_xy_scale(this);
 
+
+
 	anim*a=malloc(sizeof(anim));
 	*a=default_anim;
 
@@ -30,7 +32,8 @@ inline static void init_santa(object*this) {
 	a->time_duration_per_frame=.2f;
 	a->current_index_in_textures=a->texture_index_for_first_frame;
 	a->animation_time_left_for_current_frame=0;
-	this->extended=a;
+
+	this->extension=a;
 }
 
 //---------------------------------------------------------------------------
@@ -43,7 +46,7 @@ inline static void update_santa(object*this,dt dt){
 	set_bounding_radius_from_xy_scale(this);
 
 
-	anim*a=(anim*)this->extended;
+	anim*a=(anim*)this->extension;
 	update_anim(a,dt);
 	this->texture_id=a->current_index_in_textures;
 }

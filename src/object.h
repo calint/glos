@@ -27,7 +27,7 @@ typedef struct object {
 	void (*render)(struct object*);
 	void (*free)(struct object*);
 
-	void*extended;
+	void*extension;
 
 } object;
 
