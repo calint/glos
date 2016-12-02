@@ -22,9 +22,9 @@ inline static void init_ninja(object*this) {
 	update_bounding_radius_using_scale(this);
 
 
-	animator_part*a=alloc_animator(NULL);
+	animator_part*a=/**takes*/alloc_animator_part(NULL);
 	a->time_duration_per_frame=0.5f;
-	a->current_index_in_textures=
+	a->current_texture_index=
 	a->texture_index_for_first_frame=10;
 	a->texture_index_for_last_frame=19;
 	a->time_duration_per_frame=.2f;
@@ -33,9 +33,7 @@ inline static void init_ninja(object*this) {
 
 //----------------------------------------------------------------------- free
 
-inline static void free_ninja(object*this){
-	free(this->extension);
-}
+inline static void free_ninja(object*this){free(this->extension);}
 
 //----------------------------------------------------------------------update
 
@@ -47,9 +45,9 @@ inline static void update_ninja(object*this,dt_in_seconds dt){
 		this->velocity.y=-this->velocity.y;
 	}
 
-	animator_part*a=(animator_part*)this->extension;
+	animator_part*a=animator_part_(this->extension);
 	update_anim(a,dt);
-	this->texture_id=a->current_index_in_textures;
+	this->texture_id=a->current_texture_index;
 }
 
 //---------------------------------------------------------------------------

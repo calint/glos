@@ -51,27 +51,25 @@ typedef float dt_in_seconds;
 
 typedef dt_in_seconds time_in_seconds;
 
-//-------------------------------------------------------------------- library
-//
-//inline static int bits_is_set(bits*b, int bit_number_starting_at_zero) {
-//	bits bb = (bits) (1 << bit_number_starting_at_zero);
-//	return (*b & bb) != 0;
-//}
-//
-////----------------------------------------------------------------------------
-//
-//inline static void bits_set(bits*b, int bit_number_starting_at_zero) {
-//	bits bb = (bits) (1 << bit_number_starting_at_zero);
-//	*b |= bb;
-//}
-//
-////----------------------------------------------------------------------------
-//
-//inline static void bits_unset(bits*b, int bit_number_starting_at_zero) {
-//	bits bb = (bits) (1 << bit_number_starting_at_zero);
-//	*b &= (bits) ~bb;
-//}
-//
+//---------------------------------------------------------------------- lib
+
+inline static int is_bit_set(bits*b,int bit_number_starting_at_zero){
+	return(*b&(1<<bit_number_starting_at_zero))!=0;
+}
+
+inline static void set_bit(bits*b,int bit_number_starting_at_zero){
+	*b|=(bits)(1<<bit_number_starting_at_zero);
+}
+
+inline static void clear_bit(bits*b,int bit_number_starting_at_zero){
+	*b&=(bits)~(1<<bit_number_starting_at_zero);
+}
+
+inline static void add_dt(vec4*this,vec4*other,dt_in_seconds dt){
+	this->x+=other->x*dt;
+	this->y+=other->y*dt;
+	this->z+=other->z*dt;
+}
 //----------------------------------------------------------------------------
 
 inline static float random(){return(float)rand()/(float)RAND_MAX;}

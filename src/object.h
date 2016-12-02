@@ -1,8 +1,8 @@
 #pragma once
-#include "lib.h"
-#include "window.h"
-#include "textures.h"
-#include <SDL2/SDL2_gfxPrimitives.h>
+#include<SDL2/SDL2_gfxPrimitives.h>
+#include"lib.h"
+#include"window.h"
+#include"textures.h"
 
 //--------------------------------------------------------------------- object
 

@@ -27,10 +27,10 @@ inline static void init_santa(object*this) {
 	animator_part*a=malloc(sizeof(animator_part));
 	*a=animator;
 
-	a->current_index_in_textures=a->texture_index_for_first_frame=20;
+	a->current_texture_index=a->texture_index_for_first_frame=20;
 	a->texture_index_for_last_frame=35;
 	a->time_duration_per_frame=.2f;
-	a->current_index_in_textures=a->texture_index_for_first_frame;
+	a->current_texture_index=a->texture_index_for_first_frame;
 	a->animation_time_left_for_current_frame=0;
 
 	this->extension=a;
@@ -48,7 +48,7 @@ inline static void update_santa(object*this,dt_in_seconds dt){
 
 	animator_part*a=(animator_part*)this->extension;
 	update_anim(a,dt);
-	this->texture_id=a->current_index_in_textures;
+	this->texture_id=a->current_texture_index;
 }
 
 //---------------------------------------------------------------------------
