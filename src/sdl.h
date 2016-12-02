@@ -5,6 +5,8 @@
 #include<SDL_ttf.h>
 #include<SDL_mixer.h>
 #include<unistd.h>
+//#define GLOS_EMBEDDED
+
 //------------------------------------------------------------------------ sdl
 
 static struct sdl{
@@ -69,7 +71,7 @@ static inline void init_sdl() {
 
 //------------------------------------------------------------------------free
 
-static inline void sdl_free(){
+static inline void free_sdl(){
 	Mix_FreeMusic(sdl.music);
 	TTF_CloseFont(sdl.font);
 	TTF_Quit();

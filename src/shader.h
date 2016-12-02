@@ -200,17 +200,19 @@ inline static void init_shader() {
 	check_gl_error("after shader_init");
 }
 
-inline static void shader_free() {
+inline static void free_shader() {
 	if (program_id)
 		glDeleteProgram(program_id);
 }
 
 inline static void shader_render() {
 #ifdef GLOS_EMBEDDED
-	glVertexAttribPointer(position_slot, 3, GL_FLOAT, GL_FALSE, sizeof(vertex),
-			vertices);
-	glVertexAttribPointer(color_slot, 4, GL_FLOAT, GL_FALSE, sizeof(vertex),
-			vertices);
+	glVertexAttribPointer(
+		position_slot,3, GL_FLOAT,GL_FALSE,sizeof(vertex),vertices
+	);
+	glVertexAttribPointer(
+		color_slot,4,GL_FLOAT,GL_FALSE,sizeof(vertex),vertices);
+
 	glDrawElements(GL_TRIANGLES, indices_count, GL_UNSIGNED_BYTE, indices);
 
 #else

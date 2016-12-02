@@ -51,7 +51,7 @@ static inline void init_window() {
 	SDL_GL_SetSwapInterval(0);
 }
 
-static inline void window_free() {
+static inline void free_window() {
 	SDL_DestroyRenderer(window.renderer);
 	SDL_DestroyWindow(window.ptr);
 	SDL_GL_DeleteContext(window.glcontext);

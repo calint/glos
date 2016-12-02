@@ -86,8 +86,6 @@ int main(int argc, char *argv[]) {
 
 	init_textures();
 
-//	sprites_init();
-
 	init_fps();
 
 	init_shader();
@@ -148,11 +146,11 @@ int main(int argc, char *argv[]) {
 
 		glClear(GL_COLOR_BUFFER_BIT);
 
-//		shader_render();
-
 		update_objects(fps.dt);
 
 		render_objects();
+
+		shader_render();
 
 		SDL_GL_SwapWindow(window.ptr);
 
@@ -166,15 +164,15 @@ int main(int argc, char *argv[]) {
 
 	free_objects();
 
-	shader_free();
+	free_shader();
 
 	free_fps();
 
 	free_textures();
 
-	window_free();
+	free_window();
 
-	sdl_free();
+	free_sdl();
 
 	return 0;
 }
