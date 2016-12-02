@@ -12,7 +12,7 @@ static object objects[object_count];
 
 static object*objects_start_ptr=objects;
 
-static object*objects_ptr=objects;
+static object*object_seek_ptr=objects;
 
 static object*objects_end_ptr=objects+object_count;
 
@@ -21,42 +21,48 @@ static bits objects_bits[object_count];
 
 static bits*objects_bits_start_ptr=objects_bits;
 
-static bits*objects_bits_ptr=objects_bits;
+static bits*object_bits_seek_ptr=objects_bits;
 
 static bits*objects_bits_end_ptr=objects_bits+object_count;
 
 
-#define object_bit_allocated 0
+#define bit_object_allocated 0
+
+//---------------------------------------------------------------------- lib
+
+inline static int is_bit_set(bits*bits,int bit_number_starting_at_zero){
+	return(*bits&(1<<bit_number_starting_at_zero))!=0;
+}
+
+inline static void set_bit(bits*bits,int bit_number_starting_at_zero){
+	*bits|=(1<<bit_number_starting_at_zero);
+}
 
 //---------------------------------------------------------------------- alloc
 
-inline static object*object_alloc(object*initializer) {
-	int i = 2;
-	while (i--) {
-		while (objects_bits_ptr < objects_bits_end_ptr) {
-			if (bits_is_set(objects_bits_ptr, object_bit_allocated)) {
-				objects_bits_ptr++;
-				objects_ptr++;
+inline static object*object_alloc(object*initializer){
+	int iterate_to_scan_the_table=2;
+	while(iterate_to_scan_the_table--){
+		while(object_bits_seek_ptr<objects_bits_end_ptr){
+			if(is_bit_set(object_bits_seek_ptr,bit_object_allocated)){
+//			if (bits_is_set(object_bits_seek_ptr,object_bit_allocated)){
+				object_bits_seek_ptr++; // allocated, next
+				object_seek_ptr++;
 				continue;
 			}
-			bits_set(objects_bits_ptr, 0);
-			object*o = objects_ptr;
-			if (initializer)
-				*o = *initializer;
-			else
-				*o = default_object;
-			if (o->init)
-				o->init(o);
-			o->bits = objects_bits_ptr;
-			objects_bits_ptr++;
-			objects_ptr++;
+			set_bit(object_bits_seek_ptr,0); // allocate //? racing
+//			bits_set(object_bits_seek_ptr,0); // allocate //? racing
+			object*o=object_seek_ptr;
+			*o=initializer?*initializer:default_object;
+			if (o->init)o->init(o);
+			o->bits=object_bits_seek_ptr;
+			object_bits_seek_ptr++;
+			object_seek_ptr++;
 			return o;
 		}
-
-		objects_bits_ptr = objects_bits_start_ptr;
-		objects_ptr = objects_start_ptr;
+		object_bits_seek_ptr=objects_bits_start_ptr;
+		object_seek_ptr=objects_start_ptr;
 	}
-
 	perror("out of objects");
 	exit(6);
 }
@@ -65,19 +71,17 @@ inline static object*object_alloc(object*initializer) {
 
 inline static void object_free(object*o){bits_unset(o->bits,0);}
 
-//----------------------------------------------------------------------- init
+//------------------------------------------------------------------------ init
 
 inline static void objects_init(){}
 
-//----------------------------------------------------------------------- free
+//------------------------------------------------------------------------ free
 
 inline static void objects_free() {
-	object*o = objects;
-	int i=object_count;
-	while(i--){
-		if(o->bits&&bits_is_set(o->bits,object_bit_allocated))
-			if(o->free)
-				o->free(o);
+	object*o=objects;
+	while(o<objects_end_ptr){
+		if(o->bits&&bits_is_set(o->bits,bit_object_allocated))
+			if(o->free)o->free(o);
 		o++;
 	}
 }
@@ -103,11 +107,9 @@ inline static void objects_update(dt dt){
 //--------------------------------------------------------------------- render
 
 inline static void objects_render() {
-	object*o = objects;
-	int i = object_count;
-	while (i--) {
-		if (o->render)
-			o->render(o);
+	object*o=objects;
+	while(o<objects_end_ptr){
+		if (o->render)o->render(o);
 		o++;
 	}
 }
