@@ -33,9 +33,9 @@ typedef struct object{
 
 	void(*init)(struct object*);
 
-	void(*update)(struct object*,dt);
+	void(*update)(struct object*,dt_in_seconds);
 
-	void(*collision)(struct object*,struct object*,dt);
+	void(*collision)(struct object*,struct object*,dt_in_seconds);
 
 	void(*render)(struct object*);
 

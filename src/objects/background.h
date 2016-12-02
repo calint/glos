@@ -27,7 +27,7 @@ inline static void init_background(object*this) {
 	set_bounding_radius_using_scale(this);
 }
 
-inline static void update_background(object*this,dt dt){
+inline static void update_background(object*this,dt_in_seconds dt){
 
 	this->scale.x=this->scale.x-7*dt;
 	this->scale.y=this->scale.y-7*dt;

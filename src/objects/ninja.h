@@ -42,7 +42,7 @@ inline static void free_ninja(object*this){
 
 //----------------------------------------------------------------------update
 
-inline static void update_ninja(object*this,dt dt){
+inline static void update_ninja(object*this,dt_in_seconds dt){
 //	printf(" ninja y: %f\n",this->position.y);
 	if(this->position.y>620){
 		this->velocity.y=-this->velocity.y;

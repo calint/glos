@@ -38,7 +38,7 @@ inline static void init_santa(object*this) {
 
 //---------------------------------------------------------------------------
 
-inline static void update_santa(object*this,dt dt){
+inline static void update_santa(object*this,dt_in_seconds dt){
 
 	this->scale.x=this->scale.x+11*dt;
 	this->scale.y=this->scale.y+11*dt;

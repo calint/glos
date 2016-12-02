@@ -13,9 +13,7 @@ struct{
 
 	Uint32 time_at_start_of_intervall_in_ms;
 
-	dt dt;
-
-	float time_in_seconds;
+	dt_in_seconds dt;
 
 	Uint64 timer_frequency;
 
@@ -36,15 +34,15 @@ static inline void init_fps(){
 
 //----------------------------------------------------------------------- free
 
-inline static void fps_free(){}
+inline static void free_fps(){}
 
 //----------------------------------------------------------------------------
 
-inline static void at_fram_start_call_fps() {fps.frame_count++;}
+inline static void at_frame_begin_call_fps() {fps.frame_count++;}
 
 //----------------------------------------------------------------------------
 
-static inline void at_frame_done_call_fps() {
+static inline void at_frame_end_call_fps() {
 	{
 		Uint64 t1 = SDL_GetPerformanceCounter();
 		Uint64 dt = t1 - fps.timer_tick_at_start_of_frame;
@@ -57,6 +55,7 @@ static inline void at_frame_done_call_fps() {
 		if(fps.dt==0)
 			fps.dt=.00001f; //? min float?
 	}
+
 	Uint32 t1=SDL_GetTicks();
 	Uint32 dt=t1-fps.time_at_start_of_intervall_in_ms;
 	if(dt<fps.calculation_intervall_in_ms)

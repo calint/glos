@@ -47,7 +47,9 @@ typedef Uint32 color;
 
 typedef int id;
 
-typedef float dt;
+typedef float dt_in_seconds;
+
+typedef dt_in_seconds time_in_seconds;
 
 //-------------------------------------------------------------------- library
 //

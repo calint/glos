@@ -95,7 +95,7 @@ int main(int argc, char *argv[]) {
 
 	for(int running=1;running;){
 
-		at_fram_start_call_fps();
+		at_frame_begin_call_fps();
 
 		SDL_Event event;
 		while(SDL_PollEvent(&event)){
@@ -147,7 +147,7 @@ int main(int argc, char *argv[]) {
 
 		SDL_GL_SwapWindow(window.ptr);
 
-		at_frame_done_call_fps();
+		at_frame_end_call_fps();
 
 	}
 
@@ -157,7 +157,7 @@ int main(int argc, char *argv[]) {
 
 	shader_free();
 
-	fps_free();
+	free_fps();
 
 	free_textures();
 

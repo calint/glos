@@ -12,7 +12,7 @@ typedef struct animator_part{
 
 	int current_index_in_textures;
 
-	dt animation_time_left_for_current_frame;
+	dt_in_seconds animation_time_left_for_current_frame;
 
 }animator_part;
 
@@ -28,7 +28,7 @@ static animator_part anim={
 
 //----------------------------------------------------------------------------
 
-static void update_anim(void*an_anim,dt dt){
+static void update_anim(void*an_anim,dt_in_seconds dt){
 	animator_part*a=an_anim;
 	a->animation_time_left_for_current_frame-=dt;
 	if(a->animation_time_left_for_current_frame<0){ // next frame
