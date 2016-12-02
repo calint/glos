@@ -1,11 +1,10 @@
 #include "sdl.h"
-#include "fps.h"
-#include "lib.h"
-#include "sprites.h"
-#include "textures.h"
 #include "window.h"
 #include "shader.h"
 #include "objects.h"
+#include "textures.h"
+#include "lib.h"
+#include "fps.h"
 
 //-------------------------------------------------------------------- include
 
@@ -95,6 +94,7 @@ int main(int argc, char *argv[]) {
 	//-------------------------------------------------------------------- loop
 
 	for(int running=1;running;){
+
 		at_fram_start_call_fps();
 
 		SDL_Event event;
@@ -141,10 +141,6 @@ int main(int argc, char *argv[]) {
 
 //		shader_render();
 
-//		sprites_update(fps.dt);
-
-//		sprites_render(window.renderer);
-
 		update_objects(fps.dt);
 
 		render_objects();
@@ -163,9 +159,7 @@ int main(int argc, char *argv[]) {
 
 	fps_free();
 
-//	sprites_free();
-
-	textures_free();
+	free_textures();
 
 	window_free();
 

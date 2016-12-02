@@ -50,43 +50,39 @@ typedef int id;
 typedef float dt;
 
 //-------------------------------------------------------------------- library
+//
+//inline static int bits_is_set(bits*b, int bit_number_starting_at_zero) {
+//	bits bb = (bits) (1 << bit_number_starting_at_zero);
+//	return (*b & bb) != 0;
+//}
+//
+////----------------------------------------------------------------------------
+//
+//inline static void bits_set(bits*b, int bit_number_starting_at_zero) {
+//	bits bb = (bits) (1 << bit_number_starting_at_zero);
+//	*b |= bb;
+//}
+//
+////----------------------------------------------------------------------------
+//
+//inline static void bits_unset(bits*b, int bit_number_starting_at_zero) {
+//	bits bb = (bits) (1 << bit_number_starting_at_zero);
+//	*b &= (bits) ~bb;
+//}
+//
+//----------------------------------------------------------------------------
 
-inline static int bits_is_set(bits*b, int bit_number_starting_at_zero) {
-	bits bb = (bits) (1 << bit_number_starting_at_zero);
-	return (*b & bb) != 0;
+inline static float random(){return(float)rand()/(float)RAND_MAX;}
+
+//----------------------------------------------------------------------------
+
+inline static double random_range(float low,float high){
+	return random()*(high-low)+low;
 }
 
 //----------------------------------------------------------------------------
 
-inline static void bits_set(bits*b, int bit_number_starting_at_zero) {
-	bits bb = (bits) (1 << bit_number_starting_at_zero);
-	*b |= bb;
-}
-
-//----------------------------------------------------------------------------
-
-inline static void bits_unset(bits*b, int bit_number_starting_at_zero) {
-	bits bb = (bits) (1 << bit_number_starting_at_zero);
-	*b &= (bits) ~bb;
-}
-
-//----------------------------------------------------------------------------
-
-inline static double random() {
-	double r = (double) rand() / RAND_MAX;
-	return r;
-}
-
-//----------------------------------------------------------------------------
-
-inline static double random_range(double low, double high) {
-	double r = random() * (high - low) + low;
-	return r;
-}
-
-//----------------------------------------------------------------------------
-
-static inline float _bounding_radius_for_scale(scale*s){
+static inline float bounding_radius_for_scale(scale*s){
 	return sqrtf(s->x*s->x+s->y*s->y+s->z*s->z);
 }
 

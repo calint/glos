@@ -58,7 +58,7 @@ inline static void init_objects(){}
 inline static void free_objects() {
 	object*o=objects;
 	while(o<objects_end_ptr){
-		if(o->bits&&bits_is_set(o->bits,bit_object_allocated))
+		if(o->bits&&is_bit_set(o->bits,bit_object_allocated))
 			if(o->free)o->free(o);
 		o++;
 	}

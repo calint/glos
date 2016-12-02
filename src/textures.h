@@ -20,7 +20,7 @@ static inline void init_textures(){}
 
 //----------------------------------------------------------------------- free
 
-static inline void textures_free(){
+static inline void free_textures(){
 	for (int i=0;i<texture_count;i++){
 		SDL_DestroyTexture(texture[i].ptr);
 	}
