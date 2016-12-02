@@ -23,8 +23,8 @@ inline static void init_ninja(object*this) {
 
 
 
-	anim*a=malloc(sizeof(anim));
-	*a=default_anim;
+	animator_part*a=malloc(sizeof(animator_part));
+	*a=anim;
 
 	a->animation_time_left_for_current_frame=0.5f;
 	a->current_index_in_textures=a->texture_index_for_first_frame=10;
@@ -50,20 +50,20 @@ inline static void update_ninja(object*this,dt dt){
 		this->velocity.y=-this->velocity.y;
 	}
 
-	anim*a=(anim*)this->extension;
+	animator_part*a=(animator_part*)this->extension;
 	update_anim(a,dt);
 	this->texture_id=a->current_index_in_textures;
 }
 
 //---------------------------------------------------------------------------
 
-static object default_ninja={
-		.type={{'e',0,0,0,0,0,0,0}},
-		.init=init_ninja,
-		.free=free_ninja,
-		.texture_id=10,
-		.update=update_ninja,
-		.render=draw_texture_and_bounding_sphere,
+static object ninja={
+	.type={{'e',0,0,0,0,0,0,0}},
+	.init=init_ninja,
+	.free=free_ninja,
+	.texture_id=10,
+	.update=update_ninja,
+	.render=draw_texture_and_bounding_sphere,
 };
 
 //---------------------------------------------------------------------------

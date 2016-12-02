@@ -24,8 +24,8 @@ inline static void init_santa(object*this) {
 
 
 
-	anim*a=malloc(sizeof(anim));
-	*a=default_anim;
+	animator_part*a=malloc(sizeof(animator_part));
+	*a=anim;
 
 	a->current_index_in_textures=a->texture_index_for_first_frame=20;
 	a->texture_index_for_last_frame=35;
@@ -46,14 +46,14 @@ inline static void update_santa(object*this,dt dt){
 	set_bounding_radius_from_xy_scale(this);
 
 
-	anim*a=(anim*)this->extension;
+	animator_part*a=(animator_part*)this->extension;
 	update_anim(a,dt);
 	this->texture_id=a->current_index_in_textures;
 }
 
 //---------------------------------------------------------------------------
 
-static object default_santa={
+static object santa={
 		.type={{'f',0,0,0,0,0,0,0}},
 		.texture_id=20,
 		.init=init_santa,

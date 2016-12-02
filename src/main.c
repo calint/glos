@@ -40,31 +40,35 @@ inline static void load_texture(int n,const char*path){
 inline static void main_init(){
 
 	load_texture(1,"arts/wintertileset/png/BG/BG.png");
-	alloc(&default_background);
+	alloc(&background);
 
 	for(int i=0;i<10;i++){
 		char str[256];
 		sprintf(str,"arts/ninja/Idle__%03d.png",i);
 		load_texture(10+i,str);
 	}
-	alloc(&default_ninja);
+	alloc(&ninja);
 
 	for(int i=1;i<17;i++){
 		char str[256];
 		sprintf(str,"arts/santa/Idle (%d).png",i);
 		load_texture(19+i,str);
 	}
-	alloc(&default_santa);
+	alloc(&santa);
 
 }
 
 //-------------------------------------------------------------background_color
 
-struct {
+struct{
+
 	GLclampf red;
+
 	GLclampf green;
+
 	GLclampf blue;
-} background_color={1,1,0};
+
+}background_color={1,1,0};
 
 //------------------------------------------------------------------------ main
 
@@ -84,19 +88,17 @@ int main(int argc, char *argv[]) {
 
 	shader_init();
 
-	objects_init();
+	init_objects();
 
 	main_init();
 
 	//-------------------------------------------------------------------- loop
 
-	for(int running = 1; running; ) {
-
-		fps_at_frame_start();
+	for(int running=1;running;){
+		at_fram_start_call_fps();
 
 		SDL_Event event;
-
-		while (SDL_PollEvent(&event)) {
+		while(SDL_PollEvent(&event)){
 			//-------------------------------------------------------------keys
 			switch (event.type) {
 			case SDL_QUIT:
@@ -149,13 +151,13 @@ int main(int argc, char *argv[]) {
 
 		SDL_GL_SwapWindow(window.ptr);
 
-		fps_at_frame_done();
+		at_frame_done_call_fps();
 
 	}
 
 	//---------------------------------------------------------------------free
 
-	objects_free();
+	free_objects();
 
 	shader_free();
 

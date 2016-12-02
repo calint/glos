@@ -50,11 +50,11 @@ static bits*objects_bits_end_ptr=objects_bits+object_count;
 
 //------------------------------------------------------------------------ init
 
-inline static void objects_init(){}
+inline static void init_objects(){}
 
 //------------------------------------------------------------------------ free
 
-inline static void objects_free() {
+inline static void free_objects() {
 	object*o=objects;
 	while(o<objects_end_ptr){
 		if(o->bits&&bits_is_set(o->bits,bit_object_allocated))
