@@ -3,7 +3,7 @@
 
 //--------------------------------------------------------------------- shader
 
-char*shader_source_vertex =
+char*vertex_shader_source =
 		"#version 100                                                \n\
 attribute vec3 apos;// vertices                              \n\
 attribute vec4 argba;// colors                               \n\
@@ -13,7 +13,7 @@ void main(){                                                 \n\
 	vrgba=argba;                                             \n\
 }\n";
 
-char*shader_source_fragment =
+char*fragment_shader_source =
 		"#version 100                              \n\
 uniform sampler2D utex;                    \n\
 varying mediump vec4 vrgba;                \n\
@@ -26,7 +26,7 @@ typedef struct {
 	float color[4];
 } vertex;
 
-static GLuint glid_program, glid_vertex_buffer, glid_index_buffer;
+static GLuint program_id, glid_vertex_buffer, glid_index_buffer;
 
 static vertex vertices[] = { { { 1, -1, 0 }, { 1, 0, 0, 1 } }, { { 1, 1, 0 }, {
 		0, 1, 0, 1 } }, { { -1, 1, 0 }, { 0, 0, 1, 1 } }, { { -1, -1, 0 }, { 0,
@@ -70,42 +70,46 @@ inline static GLuint compile_shader(GLenum shaderType, char *code) {
 	return handle;
 }
 
-inline static void load_program(GLuint *pos_slot, GLuint *col_slot) {
-	GLuint vertex = compile_shader(GL_VERTEX_SHADER, shader_source_vertex);
-	GLuint fragment = compile_shader(GL_FRAGMENT_SHADER,
-			shader_source_fragment);
+inline static void load_program(GLuint*pos_slot,GLuint *col_slot) {
+	GLuint vertex=compile_shader(GL_VERTEX_SHADER,vertex_shader_source);
+	GLuint fragment=compile_shader(GL_FRAGMENT_SHADER,fragment_shader_source);
 
-	glid_program = glCreateProgram();
-	glAttachShader(glid_program, vertex);
-	glAttachShader(glid_program, fragment);
-	glLinkProgram(glid_program);
+	program_id=glCreateProgram();
+	glAttachShader(program_id,vertex);
+	glAttachShader(program_id,fragment);
+	glLinkProgram(program_id);
 
-	GLint result;
-	glGetProgramiv(glid_program, GL_LINK_STATUS, &result);
-	if (result == GL_FALSE) {
-		GLint len;
-		glGetProgramiv(glid_program, GL_INFO_LOG_LENGTH, &len);
+	GLint ok;glGetProgramiv(program_id,GL_LINK_STATUS,&ok);
+	if(!ok){
+		GLint len;glGetProgramiv(program_id,GL_INFO_LOG_LENGTH,&len);
 
-		GLchar messages[256];
-		glGetProgramInfoLog(glid_program,
-				(unsigned)len < sizeof messages ? len : sizeof messages, NULL,
-				&messages[0]);
-		printf("program linking error: %s\n", messages);
+		GLchar msg[1024];
+		if(len>(signed)sizeof msg){
+			len=sizeof msg;
+		}
+		glGetProgramInfoLog(program_id,len,NULL,&msg[0]);
+		printf("program linking error: %s\n",msg);
 		exit(8);
 	}
 
-	glUseProgram(glid_program);
+	glUseProgram(program_id);
 
-	*pos_slot = glGetAttribLocation(glid_program, "apos");
-	if (*pos_slot == -1) {
+	GLint slot;
+
+	slot=glGetAttribLocation(program_id,"apos");
+	if(slot==-1){
 		puts("could not find 'apos' in vertext shader");
 		exit(9);
 	}
-	*col_slot = glGetAttribLocation(glid_program, "argba");
-	if (*col_slot == -1) {
+	*pos_slot=(GLuint)slot;
+
+	slot=glGetAttribLocation(program_id,"argba");
+	if(slot==-1){
 		puts("could not find 'argba' in vertex shader");
 		exit(10);
 	}
+	*col_slot=(GLuint)slot;
+
 	glEnableVertexAttribArray(*pos_slot);
 	glEnableVertexAttribArray(*col_slot);
 
@@ -197,8 +201,8 @@ inline static void init_shader() {
 }
 
 inline static void shader_free() {
-	if (glid_program)
-		glDeleteProgram(glid_program);
+	if (program_id)
+		glDeleteProgram(program_id);
 }
 
 inline static void shader_render() {
