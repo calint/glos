@@ -139,7 +139,7 @@ int main(int argc, char *argv[]) {
 
 		glClear(GL_COLOR_BUFFER_BIT);
 
-//		shader_render();
+		shader_render();
 
 		update_objects(fps.dt);
 

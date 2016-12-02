@@ -48,7 +48,7 @@ static inline void init_window() {
 		exit(3);
 	}
 
-	SDL_GL_SetSwapInterval(1);
+	SDL_GL_SetSwapInterval(0);
 }
 
 static inline void window_free() {

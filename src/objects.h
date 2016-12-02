@@ -26,6 +26,7 @@ inline static void add_dt(vec4*this,vec4*other,dt_in_seconds dt){
 
 //-------------------------------------------------------------------- objects
 
+//#define object_count 1024*512
 #define object_count 1024
 
 static object objects[object_count];
