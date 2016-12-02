@@ -11,7 +11,7 @@ inline static void init_ninja(object*this) {
 		0,0
 	};
 
-	this->velocity=(position){5,10,0,0};
+	this->velocity=(position){7,11,0,0};
 
 	this->scale=(scale){
 		(float)texture[this->texture_id].width,
@@ -38,7 +38,7 @@ inline static void free_ninja(object*this){free(this->extension);}
 
 inline static void update_ninja(object*this,dt dt){
 //	printf(" ninja y: %f\n",this->position.y);
-	if(this->position.y>620){
+	if(this->position.y>630){
 		this->velocity.y=-this->velocity.y;
 	}else if(this->position.y<600){
 		this->velocity.y=-this->velocity.y;

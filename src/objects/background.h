@@ -30,8 +30,8 @@ inline static void init_background(object*this){
 
 inline static void update_background(object*this,dt dt){
 //
-//	this->scale.x=this->scale.x-7*dt;
-//	this->scale.y=this->scale.y-7*dt;
+	this->scale.x=this->scale.x-17*dt;
+	this->scale.y=this->scale.y+17*dt;
 //
 //	update_bounding_radius_using_scale(this);
 }
