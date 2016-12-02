@@ -1,13 +1,6 @@
 #pragma once
 #include "../object.h"
-
-//--------------------------------------------------------------------- extends
-
-typedef struct ninja{
-
-	float animation_time_left_for_current_frame;
-
-}ninja;
+#include "../parts/anim.h"
 
 //----------------------------------------------------------------------- init
 
@@ -28,40 +21,34 @@ inline static void init_ninja(object*this) {
 
 	set_bounding_radius_from_xy_scale(this);
 
-	ninja*ni=malloc(sizeof(ninja));
-	ni->animation_time_left_for_current_frame=0.5f;
-	this->extended_by=ni;
+	anim*a=malloc(sizeof(anim));
+	*a=default_anim;
+	a->animation_time_left_for_current_frame=0.5f;
+	a->current_index_in_textures=a->texture_index_for_first_frame=10;
+	a->texture_index_for_last_frame=19;
+	a->time_duration_per_frame=.2f;
+	this->extended=a;
 }
 
 //----------------------------------------------------------------------- free
 
 inline static void free_ninja(object*this){
-	free(this->extended_by);
+	free(this->extended);
 }
 
 //----------------------------------------------------------------------update
 
 inline static void update_ninja(object*this,dt dt){
-	ninja*ext=(ninja*)this->extended_by;
-
-	float t=ext->animation_time_left_for_current_frame-dt;
-
-	if(t<0){ // next frame
-		this->texture_id++;
-		if(this->texture_id>19)
-			this->texture_id=10;
-
-		ext->animation_time_left_for_current_frame+=.2f;
-	}else{
-		ext->animation_time_left_for_current_frame+=.2f;
-	}
-
 //	printf(" ninja y: %f\n",this->position.y);
 	if(this->position.y>620){
 		this->velocity.y=-this->velocity.y;
 	}else if(this->position.y<600){
 		this->velocity.y=-this->velocity.y;
 	}
+
+	anim*a=(anim*)this->extended;
+	update_anim(a,dt);
+	this->texture_id=a->current_index_in_textures;
 }
 
 //---------------------------------------------------------------------------
@@ -69,6 +56,7 @@ inline static void update_ninja(object*this,dt dt){
 static object default_ninja={
 		.type={{'e',0,0,0,0,0,0,0}},
 		.init=init_ninja,
+		.free=free_ninja,
 		.texture_id=10,
 		.update=update_ninja,
 		.render=draw_texture_and_bounding_sphere,

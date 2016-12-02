@@ -1,6 +1,6 @@
 #pragma once
 #include "../object.h"
-
+#include "../parts/anim.h"
 //--------------------------------------------------------------------- logo_1
 
 #define santa_texture_on_ground_bias 131
@@ -21,25 +21,31 @@ inline static void init_santa(object*this) {
 		};
 
 	set_bounding_radius_from_xy_scale(this);
+
+	anim*a=malloc(sizeof(anim));
+	*a=default_anim;
+
+	a->current_index_in_textures=a->texture_index_for_first_frame=20;
+	a->texture_index_for_last_frame=35;
+	a->time_duration_per_frame=.2f;
+	a->current_index_in_textures=a->texture_index_for_first_frame;
+	a->animation_time_left_for_current_frame=0;
+	this->extended=a;
 }
 
 //---------------------------------------------------------------------------
 
 inline static void update_santa(object*this,dt dt){
-	float t=this->time_in_seconds-dt;
-	if(t<0){ // next frame
-		this->texture_id++;
-		if(this->texture_id>35)
-			this->texture_id=20;
-		this->time_in_seconds+=.2f;
-	}else{
-		this->time_in_seconds-=dt;
-	}
 
 	this->scale.x=this->scale.x+11*dt;
 	this->scale.y=this->scale.y+11*dt;
 
 	set_bounding_radius_from_xy_scale(this);
+
+
+	anim*a=(anim*)this->extended;
+	update_anim(a,dt);
+	this->texture_id=a->current_index_in_textures;
 }
 
 //---------------------------------------------------------------------------
