@@ -2,6 +2,7 @@
 #include <SDL.h>
 #include <SDL_opengles2.h>
 #include <SDL_image.h>
+#include <SDL_ttf.h>
 #include <unistd.h>
 #define cpu_level1_cache_line_size 64
 //#define GLOS_EMBEDDED
@@ -23,14 +24,21 @@ static inline void sdl_init() {
 //	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
 	if(!(IMG_Init(IMG_INIT_PNG)&IMG_INIT_PNG)){
-		puts("could not initialize SDL_image");
+		puts("could not initialize IMG_Init");
+		printf("%s %d: %s",__FILE__,__LINE__,IMG_GetError());
+	}
+
+	if(!(TTF_Init())){
+		puts("could not initialize TTF_Init");
 		printf("%s %d: %s",__FILE__,__LINE__,IMG_GetError());
 	}
 }
 
 //------------------------------------------------------------------------free
 
-static inline void sdl_free() {
+static inline void sdl_free(){
+	TTF_Quit();
+	IMG_Quit();
 	SDL_Quit();
 }
 
