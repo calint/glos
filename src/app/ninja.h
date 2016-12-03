@@ -2,15 +2,16 @@
 #include "../object.h"
 #include "../parts/animator_part.h"
 //----------------------------------------------------------------------- init
-inline static void init_ninja(object*this) {
+inline static void _ninja_init_(object*this) {
 	this->scale=(scale){.5,.5,.5,0};
 	this->angular_velocity.z=90;
 //	this->velocity.x=.5f;
 	update_bounding_radius_using_scale(this);
 }
 //----------------------------------------------------------------------update
-inline static void update_ninja(object*this,dt dt){
+inline static void _ninja_update_(object*this,dt dt){
 	object_update(this,dt);
+
 	if(this->position.x>1){
 		this->position.x=1;
 		this->velocity.x=-this->velocity.x;
@@ -36,8 +37,8 @@ static object default_ninja={
 	.bits=0,
 	.drawable_id=1,
 	.model_to_world_matrix={1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1},
-	.init=init_ninja,
-	.update=update_ninja,
+	.init=_ninja_init_,
+	.update=_ninja_update_,
 	.collision=NULL,
 	.render=render_drawable,
 	.free=NULL,
