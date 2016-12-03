@@ -61,7 +61,7 @@ inline static object*alloc(object*initializer){
 			object*o=object_seek_ptr;
 			object_seek_ptr++;
 			object_bits_seek_ptr++;      // unset alloc bit
-			*o=initializer?*initializer:default_object;
+			*o=initializer?*initializer:_object_;
 			o->bits_ref=object_bits_seek_ptr; // used at free to
 			if (o->init)o->init(o);
 			return o;

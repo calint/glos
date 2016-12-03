@@ -16,9 +16,9 @@ inline static void main_init(){
 	load_drawable(1,"arts/obj/sphere.obj");
 
 
-	alloc(&default_ninja);
+	alloc(&_ninja_);
 
-	object*o=alloc(&default_ninja);
+	object*o=alloc(&_ninja_);
 	o->position.x=-.5f;
 	o->scale=(scale){.2f,.2f,.2f,1};
 }

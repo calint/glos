@@ -1,7 +1,8 @@
+//------------------------------------------------------------------ ninja_part
 #pragma once
-//#include"../object.h"
-//------------------------------------------------------------------------ part
-
+//------------------------------------------------------------------- overrides
+static void _ninja_part_update_(object*o,part*this,dt dt);
+//---------------------------------------------------------------------- define
 typedef struct ninja_part{
 	part part;
 	float time_duration_per_frame;
@@ -9,8 +10,35 @@ typedef struct ninja_part{
 	int texture_index_for_last_frame;
 	int current_texture_index;
 	dt animation_time_left_for_current_frame;
-}ninja_animator_part;
-//------------------------------------------------------------------- overrides
+}ninja_part;
+//--------------------------------------------------------------------- default
+static ninja_part _ninja_part_={
+	.part=(part){
+		.init=NULL,
+		.update=_ninja_part_update_,
+		.render=NULL,
+		.free=NULL,
+	},
+	.time_duration_per_frame=0,
+	.texture_index_for_first_frame=0,
+	.texture_index_for_last_frame=0,
+	.current_texture_index=0,
+	.animation_time_left_for_current_frame=0,
+};
+//----------------------------------------------------------------------- alloc
+/**gives*/ninja_part*ninja_part_alloc(
+		ninja_part*initializer
+	){
+	ninja_part*a=malloc(sizeof(ninja_part));
+	if(!a){
+		perror("out of memory");
+		exit(21);
+	}
+
+	*a=initializer?*initializer:_ninja_part_;
+	return a;
+}
+//-------------------------------------------------------------- implementation
 static void _ninja_part_update_(object*o,part*this,dt dt){
 	if(o->position.x>1){
 		o->position.x=1;
@@ -22,31 +50,4 @@ static void _ninja_part_update_(object*o,part*this,dt dt){
 		o->angular_velocity.z=-o->angular_velocity.z;
 	}
 }
-//--------------------------------------------------------------------- default
-static ninja_animator_part default_ninja_part={
-	.part=(part){
-		.type_id=3,
-		.init=0,
-		.update=_ninja_part_update_,
-		.render=0,
-		.free=0,
-	},
-	.time_duration_per_frame=0,
-	.texture_index_for_first_frame=0,
-	.texture_index_for_last_frame=0,
-	.current_texture_index=0,
-	.animation_time_left_for_current_frame=0,
-};
-//----------------------------------------------------------------------- alloc
-/**gives*/ninja_animator_part*alloc_ninja_part(
-		ninja_animator_part*initializer
-	){
-	ninja_animator_part*a=malloc(sizeof(ninja_animator_part));
-	if(!a){
-		perror("out of memory");
-		exit(21);
-	}
-
-	*a=initializer?*initializer:default_ninja_part;
-	return a;
-}
+//-----------------------------------------------------------------------------

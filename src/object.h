@@ -51,7 +51,7 @@ inline static void _object_free_(object*this){
 	printf(" object free: [ %4s %p ]\n",this->type.path,this);
 }
 //----------------------------------------------------------------------------
-static object default_object={
+static object _object_={
 	.position={0,0,0,0},
 	.velocity={0,0,0,0},
 	.angle={0,0,0,0},
