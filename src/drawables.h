@@ -1,37 +1,24 @@
 #pragma once
 #include "mat4.h"
-
 //-------------------------------------------------------------------- texture
-
-#define drawable_count 1024
+#define drawables_count 1024
 struct{
 	float*vertex_buf;
 	GLuint vertex_buf_gid;
 	size_t vertex_buf_size;
 	size_t vertex_count;
-
-}drawable[drawable_count];
-
-int drawable_next_index;
-
+}drawables[drawables_count];
 //----------------------------------------------------------------------- init
-
 static inline void drawables_init(){}
-
 //----------------------------------------------------------------------- free
-
 static inline void drawables_free(){
-	for (int i=0;i<drawable_count;i++){
-		if(drawable[i].vertex_buf)
-			free(drawable[i].vertex_buf);
-		if(drawable[i].vertex_buf_gid){
-			glDeleteBuffers(1,&drawable[i].vertex_buf_gid);
-		}
+	for (int i=0;i<drawables_count;i++){
+		if(drawables[i].vertex_buf)free(drawables[i].vertex_buf);
+		if(drawables[i].vertex_buf_gid)
+			glDeleteBuffers(1,&drawables[i].vertex_buf_gid);
 	}
 }
-
 //----------------------------------------------------------------------------
-
 static void drawables_load_file_in_slot(int id,const char*file_path){
 	size_t buf_size_in_bytes;
 	float*buf=/*takes*/read_obj_file_from_path(
@@ -40,8 +27,8 @@ static void drawables_load_file_in_slot(int id,const char*file_path){
 		);
 	//                   vertex, color, normal
 	size_t vertex_size_in_bytes=(3+3+3)*sizeof(float);
-	drawable[id].vertex_buf_size=buf_size_in_bytes;
-	drawable[id].vertex_count=(unsigned)(buf_size_in_bytes/vertex_size_in_bytes);
+	drawables[id].vertex_buf_size=buf_size_in_bytes;
+	drawables[id].vertex_count=(unsigned)(buf_size_in_bytes/vertex_size_in_bytes);
 
 #ifdef GLOS_EMBEDDED
 	drawable[id].vertex_buf=buf;
@@ -49,19 +36,17 @@ static void drawables_load_file_in_slot(int id,const char*file_path){
 	GLuint vertex_buffer_id;
 	glGenBuffers(1,&vertex_buffer_id);
 	glBindBuffer(GL_ARRAY_BUFFER,vertex_buffer_id);
-	drawable[id].vertex_buf_gid=vertex_buffer_id;
+	drawables[id].vertex_buf_gid=vertex_buffer_id;
 	glBufferData(GL_ARRAY_BUFFER,(signed)buf_size_in_bytes,buf,GL_STATIC_DRAW);
 	free(buf);
 #endif
 //	load_drawable(index);
 }
-
 //----------------------------------------------------------------------------
-
-static inline void draw_drawable(int id){
+static inline void drawables_draw(int id){
 	int stride=(signed)(
-			drawable[id].vertex_buf_size/
-			drawable[id].vertex_count
+			drawables[id].vertex_buf_size/
+			drawables[id].vertex_count
 		);
 #ifdef GLOS_EMBEDDED
 	glVertexAttribPointer(shader.position_slot,3,GL_FLOAT,GL_FALSE,stride,
@@ -75,7 +60,7 @@ static inline void draw_drawable(int id){
 
 	glDrawArrays(GL_TRIANGLES,0,(signed)drawable[id].vertex_count);
 #else
-	glBindBuffer(GL_ARRAY_BUFFER,drawable[id].vertex_buf_gid);
+	glBindBuffer(GL_ARRAY_BUFFER,drawables[id].vertex_buf_gid);
 	glVertexAttribPointer(shader.position_slot,3,GL_FLOAT,GL_FALSE,stride,0);
 
 	glVertexAttribPointer(shader.color_slot,3,GL_FLOAT,GL_FALSE,stride,
@@ -84,12 +69,8 @@ static inline void draw_drawable(int id){
 	glVertexAttribPointer(shader.normal_slot,3,GL_FLOAT,GL_FALSE,stride,
 		(void*)((3+3)*sizeof(float)));
 
-	glDrawArrays(GL_TRIANGLES,0,(signed)drawable[id].vertex_count);
+	glDrawArrays(GL_TRIANGLES,0,(signed)drawables[id].vertex_count);
 #endif
 	//	glDrawArrays(GL_LINES,0,(signed)drawable[id].vertex_count);
 }
-
-//----------------------------------------------------------------------------
-
-
 //----------------------------------------------------------------------------

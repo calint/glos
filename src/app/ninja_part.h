@@ -53,5 +53,6 @@ static void _ninja_part_update_(object*o,part*this,dt dt){
 }
 //-------------------------------------------------------------- implementation
 static void _ninja_part_render_(object*o,part*this){
+	drawables_draw(2);
 }
 //-----------------------------------------------------------------------------

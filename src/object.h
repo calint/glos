@@ -134,7 +134,7 @@ inline static void _render_drawable_(object*o) {
 		glUniformMatrix4fv((signed)shader.model_to_world_matrix_slot,1,0,
 				o->model_to_world_matrix);
 
-		draw_drawable(o->drawable_id);
+		drawables_draw(o->drawable_id);
 	}
 }
 

@@ -127,14 +127,16 @@ static/*gives*/float*read_obj_file_from_path(const char*path,size_t*bufsize){
 	printf(" * load obj file: %s\n",path);
 	struct stat st;
 	if(stat(path,&st)==-1){
-		perror("cannot stat");
+		perror("\ncannot stat");
+		fprintf(stderr,"\t%s\n\n%s %d\n",path,__FILE__,__LINE__);
 		exit(-1);
 	}
 	size_t size=(unsigned)st.st_size;
 
 	int fd=open(path,O_RDONLY);
 	if(fd==1){
-		perror("Open Failed");
+		perror("\ncannot open");
+		fprintf(stderr,"\t%s\n\n%s %d\n",path,__FILE__,__LINE__);
 		exit(-1);
 	}
 

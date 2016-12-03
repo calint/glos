@@ -1,47 +1,58 @@
-#include "formats/obj/obj_file.h"
-#include "sdl.h"
-#include "window.h"
-#include "shader.h"
-#include "objects.h"
-#include "textures.h"
-#include "lib.h"
-#include "fps.h"
-#include "drawables.h"
-#include "app/ninja.h"
+#include"formats/obj/obj_file.h"
+#include"sdl.h"
+#include"window.h"
+#include"shader.h"
+#include"objects.h"
+#include"textures.h"
+#include"lib.h"
+#include"fps.h"
+#include"drawables.h"
+#include"app/ninja.h"
+#include"alloc.h"
 //----------------------------------------------------------------------- init
 inline static void main_init(){
-	drawables_load_file_in_slot(1,"arts/obj/sphere.obj");
+	drawables_load_file_in_slot(1,"arts/obj/cube.obj");
+	drawables_load_file_in_slot(2,"arts/obj/sphere.obj");
+	drawables_load_file_in_slot(3,"arts/obj/cylinder.obj");
+	drawables_load_file_in_slot(4,"arts/obj/trunk.obj");
+	drawables_load_file_in_slot(5,"arts/obj/boulder_1.obj");
+
 	new(&_ninja_);
+
 	object*o=new(&_ninja_);
 	o->position.x=-.5f;
 	o->scale=(scale){.2f,.2f,.2f,1};
+
+	o=new(&_ninja_);
+	o->position.y=.5f;
+	o->scale=(scale){.1f,.1f,.1f,1};
+
 }
 //------------------------------------------------------------------------ main
 int main(int argc, char *argv[]) {
+
+	printf(": %10s  : %4s :\n","type","size");
+	printf(": %10s  : %4s :\n","----------","----");
+	printf(": %10s  : %4ld :\n","object",sizeof(object));
+	printf(": %10s  : %4ld :\n","part",sizeof(part));
+	printf(": %10s  : %4ld :\n","drawables",sizeof(drawables));
+	printf(": %10s  : %4s :\n","----------","----");
+	puts("");
+
+	sdl_init();
+	window_init();
+	textures_init();
+	fps_init();
+	shader_init();
+	objects_init();
+	drawables_init();
+	main_init();
+
 	struct{
 		GLclampf red;
 		GLclampf green;
 		GLclampf blue;
-	}background_color={0,0,1};
-
-	sdl_init();
-
-	window_init();
-
-	textures_init();
-
-	fps_init();
-
-	shader_init();
-
-	objects_init();
-
-	drawables_init();
-
-	main_init();
-
-	printf(": %10s  : %4s :\n","type","size");
-	printf(": %10s  : %4ld :\n","object",sizeof(object));
+	}c={0,0,1};
 
 	for(int running=1;running;){
 		fps__at__frame_begin();
@@ -57,37 +68,32 @@ int main(int argc, char *argv[]) {
 					running = 0;
 					break;
 				case SDLK_w:
-					background_color.red = 1;
-					background_color.green = 0;
-					background_color.blue = 0;
+					c.red = 1;
+					c.green = 0;
+					c.blue = 0;
 					break;
 				case SDLK_a:
 					objects[0].angular_velocity.z=90;
-					background_color.red = 0;
-					background_color.green = 1;
-					background_color.blue = 0;
+					c.red = 0;
+					c.green = 1;
+					c.blue = 0;
 					break;
 				case SDLK_s:
 					objects[0].angular_velocity.z=0;
-					background_color.red = 0;
-					background_color.green = 0;
-					background_color.blue = 1;
+					c.red = 0;
+					c.green = 0;
+					c.blue = 1;
 					break;
 				case SDLK_d:
 					objects[0].angular_velocity.z=-90;
-					background_color.red = 1;
-					background_color.green = 1;
+					c.red = 1;
+					c.green = 1;
 					break;
 				}
 			}
 		}
 
-		glClearColor(
-			background_color.red,
-			background_color.green,
-			background_color.blue, 1.0
-		);
-
+		glClearColor(c.red,c.green,c.blue,1.0);
 		glClear(GL_COLOR_BUFFER_BIT);
 //		shader_render();
 		objects_update(fps.dt);
@@ -95,7 +101,6 @@ int main(int argc, char *argv[]) {
 		SDL_GL_SwapWindow(window.ref);
 		fps__at__update_frame_end();
 	}
-
 	//---------------------------------------------------------------------free
 	//? early-hangup
 	drawables_free();
@@ -107,5 +112,4 @@ int main(int argc, char *argv[]) {
 	sdl_free();
 	return 0;
 }
-
 //----------------------------------------------------------------------------
