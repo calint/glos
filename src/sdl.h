@@ -32,7 +32,7 @@ inline static void play_mp3(const char*path){
 
 //----------------------------------------------------------------------- init
 
-static inline void init_sdl() {
+static inline void sdl_init() {
 	if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO)) {
 		printf("%s %d: %s\n",__FILE__,__LINE__,IMG_GetError());
 		exit(1);
@@ -66,7 +66,7 @@ static inline void init_sdl() {
 
 //------------------------------------------------------------------------free
 
-static inline void free_sdl(){
+static inline void sdl_free(){
 	Mix_FreeMusic(sdl.music);
 	TTF_CloseFont(sdl.font);
 	TTF_Quit();

@@ -23,7 +23,7 @@ struct{
 
 //----------------------------------------------------------------------- init
 
-static inline void init_fps(){
+static inline void fps_init(){
 	fps.average_during_last_intervall=0;
 	fps.frame_count=0;
 	fps.calculation_intervall_in_ms=1000;
@@ -34,15 +34,15 @@ static inline void init_fps(){
 
 //----------------------------------------------------------------------- free
 
-inline static void free_fps(){}
+inline static void fps_free(){}
 
 //----------------------------------------------------------------------------
 
-inline static void at_frame_begin_call_fps() {fps.frame_count++;}
+inline static void fps__at__frame_begin() {fps.frame_count++;}
 
 //----------------------------------------------------------------------------
 
-static inline void at_frame_end_call_fps() {
+static inline void fps__at__update_frame_end() {
 	{
 		Uint64 t1 = SDL_GetPerformanceCounter();
 		Uint64 dt = t1 - fps.timer_tick_at_start_of_frame;

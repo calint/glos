@@ -75,7 +75,7 @@ struct{
 	SDL_Surface*surface;
 
 }window;
-static inline void init_window() {
+static inline void window_init() {
 //	puts(" *** requested:");
 //	gl_request_profile_and_version(SDL_GL_CONTEXT_PROFILE_ES,2,0);
 //	gl_request_profile_and_version(SDL_GL_CONTEXT_PROFILE_CORE,4,5);
@@ -126,7 +126,7 @@ static inline void init_window() {
 
 }
 
-static inline void free_window() {
+static inline void window_free() {
 	SDL_DestroyRenderer(window.renderer);
 	SDL_DestroyWindow(window.ref);
 	SDL_GL_DeleteContext(window.glcontext);

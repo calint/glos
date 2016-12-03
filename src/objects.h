@@ -1,8 +1,9 @@
 #pragma once
-#include "lib.h"
-#include "window.h"
-#include "textures.h"
-#include "object.h"
+#include"lib.h"
+#include"window.h"
+#include"textures.h"
+#include"object.h"
+#include"part.h"
 
 //-------------------------------------------------------------------- objects
 
@@ -32,14 +33,14 @@ static bits*objects_bits_end_ptr=objects_bits+object_count;
 
 //------------------------------------------------------------------------ init
 
-inline static void init_objects(){}
+inline static void objects_init(){}
 
 //------------------------------------------------------------------------ free
 
-inline static void free_objects() {
+inline static void objects_free() {
 	for(int i=0;i<object_count;i++){
 		object*o=&objects[i];
-		if(is_bit_set(&objects_bits[i],bit_object_allocated))
+		if(bits_is_bit_set(&objects_bits[i],bit_object_allocated))
 			if(o->free)
 				o->free(o);
 	}
@@ -51,14 +52,12 @@ inline static object*alloc(object*initializer){
 	int iterate_to_scan_the_table=2;
 	while(iterate_to_scan_the_table--){
 		while(object_bits_seek_ptr<objects_bits_end_ptr){
-			if(is_bit_set(object_bits_seek_ptr,bit_object_allocated)){
-//			if (bits_is_set(object_bits_seek_ptr,object_bit_allocated)){
+			if(bits_is_bit_set(object_bits_seek_ptr,bit_object_allocated)){
 				object_bits_seek_ptr++; // allocated, next
 				object_seek_ptr++;
 				continue;
 			}
-			set_bit(object_bits_seek_ptr,0); // allocate //? racing
-//			bits_set(object_bits_seek_ptr,0); // allocate //? racing
+			bits_set_bit(object_bits_seek_ptr,0); // allocate //? racing
 			object*o=object_seek_ptr;
 			object_seek_ptr++;
 			object_bits_seek_ptr++;      // unset alloc bit
@@ -76,12 +75,12 @@ inline static object*alloc(object*initializer){
 
 //------------------------------------------------------------------------ free
 
-inline static void free_object(object*o){
-	clear_bit(o->bits_ref,bit_object_allocated); //? racing
+inline static void object_free(object*o){
+	bits_clear(o->bits_ref,bit_object_allocated); //? racing
 }
 //--------------------------------------------------------------------- update
 
-inline static void update_objects(dt dt){
+inline static void objects_update(dt dt){
 	object*o=objects;
 	while(o<objects_end_ptr){
 //		add_vec4_over_dt(&o->position,&o->velocity,dt);
@@ -109,7 +108,7 @@ inline static void update_objects(dt dt){
 }
 //--------------------------------------------------------------------- render
 
-inline static void render_objects() {
+inline static void objects_render() {
 	object*o=objects;
 	while(o<objects_end_ptr){
 		if (o->render)o->render(o);

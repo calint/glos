@@ -12,7 +12,7 @@
 
 //----------------------------------------------------------------------- init
 
-inline static void init_main(){
+inline static void main_init(){
 	load_drawable(1,"arts/obj/sphere.obj");
 
 
@@ -35,21 +35,21 @@ struct{
 
 int main(int argc, char *argv[]) {
 
-	init_sdl();
+	sdl_init();
 
-	init_window();
+	window_init();
 
-	init_textures();
+	textures_init();
 
-	init_fps();
+	fps_init();
 
-	init_shader();
+	shader_init();
 
-	init_objects();
+	objects_init();
 
-	init_drawables();
+	drawables_init();
 
-	init_main();
+	main_init();
 
 	printf(": %10s  : %4s :\n","type","size");
 	printf(": %10s  : %4ld :\n","object",sizeof(object));
@@ -57,7 +57,7 @@ int main(int argc, char *argv[]) {
 
 	for(int running=1;running;){
 
-		at_frame_begin_call_fps();
+		fps__at__frame_begin();
 
 		SDL_Event event;
 		while(SDL_PollEvent(&event)){
@@ -110,14 +110,14 @@ int main(int argc, char *argv[]) {
 
 //		shader_render();
 
-		update_objects(fps.dt);
+		objects_update(fps.dt);
 
-		render_objects();
+		objects_render();
 
 
 		SDL_GL_SwapWindow(window.ref);
 
-		at_frame_end_call_fps();
+		fps__at__update_frame_end();
 
 	}
 
@@ -125,19 +125,19 @@ int main(int argc, char *argv[]) {
 
 	//? early-hangup
 
-	free_drawables();
+	drawables_free();
 
-	free_objects();
+	objects_free();
 
-	free_shader();
+	shader_free();
 
-	free_fps();
+	fps_free();
 
-	free_textures();
+	textures_free();
 
-	free_window();
+	window_free();
 
-	free_sdl();
+	sdl_free();
 
 	return 0;
 }

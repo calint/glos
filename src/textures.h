@@ -12,11 +12,11 @@ struct{
 
 //----------------------------------------------------------------------- init
 
-static inline void init_textures(){}
+static inline void textures_init(){}
 
 //----------------------------------------------------------------------- free
 
-static inline void free_textures(){
+static inline void textures_free(){
 	for (int i=0;i<texture_count;i++){
 		SDL_DestroyTexture(texture[i].ptr);
 	}

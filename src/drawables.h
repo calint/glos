@@ -16,11 +16,11 @@ int drawable_next_index;
 
 //----------------------------------------------------------------------- init
 
-static inline void init_drawables(){}
+static inline void drawables_init(){}
 
 //----------------------------------------------------------------------- free
 
-static inline void free_drawables(){
+static inline void drawables_free(){
 	for (int i=0;i<drawable_count;i++){
 		if(drawable[i].vertex_buf)
 			free(drawable[i].vertex_buf);

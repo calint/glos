@@ -219,7 +219,7 @@ inline static void print_gl_string(const char *name, const GLenum s){
 	printf("%s=%s\n", name, v);
 }
 
-inline static void init_shader() {
+inline static void shader_init() {
 	check_gl_error("shader_init");
 	gl_print_context_profile_and_version();
 	puts("");
@@ -239,7 +239,7 @@ inline static void init_shader() {
 	check_gl_error("after shader_init");
 }
 
-inline static void free_shader() {
+inline static void shader_free() {
 	if(shader.program_id)
 		glDeleteProgram(shader.program_id);
 }

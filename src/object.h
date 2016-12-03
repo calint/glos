@@ -4,7 +4,6 @@
 #include"window.h"
 #include"textures.h"
 #include"drawables.h"
-#include"part.h"
 
 #define object_part_count 4
 
@@ -31,15 +30,6 @@ typedef struct object{
 	void(*free)(struct object*);
 	void*part[object_part_count];
 }object;
-
-typedef struct part{
-	short type_id;
-	void(*init)(object*,struct part*);
-	void(*update)(object*,struct part*,dt);
-	void(*render)(object*,struct part*);
-	void(*free)(object*,struct part*);
-}part;
-
 //-------------------------------------------------------------------- default
 inline static void _object_init_(object*this){
 	printf(" object init: [ %4s %p ]\n",this->type.path,this);
