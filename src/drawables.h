@@ -8,9 +8,9 @@ struct{
 
 	float*vertex_buf;
 
-	GLuint vertex_buf_id;
+	GLuint vertex_buf_gid;
 
-	size_t vertex_buf_size_in_bytes;
+	size_t vertex_buf_size;
 
 	size_t vertex_count;
 
@@ -40,18 +40,18 @@ static void load_drawable(int id,const char*file_path){
 			&buf_size_in_bytes
 		);
 
-	size_t vertex_size_in_bytes=(3+4+3)*sizeof(float); // vertex, color, normal
+	//                   vertex, color, normal
+	size_t vertex_size_in_bytes=(3+3+3)*sizeof(float);
 
 	drawable[id].vertex_buf=buf;
-	drawable[id].vertex_buf_size_in_bytes=buf_size_in_bytes;
+	drawable[id].vertex_buf_size=buf_size_in_bytes;
 	drawable[id].vertex_count=(unsigned)(buf_size_in_bytes/vertex_size_in_bytes);
 
 	GLuint vertex_buffer_id;
 	glGenBuffers(1,&vertex_buffer_id);
 	glBindBuffer(GL_ARRAY_BUFFER,vertex_buffer_id);
-	drawable[id].vertex_buf_id=vertex_buffer_id;
-	glBufferData(GL_ARRAY_BUFFER,
-			(signed)drawable[id].vertex_buf_size_in_bytes,
+	drawable[id].vertex_buf_gid=vertex_buffer_id;
+	glBufferData(GL_ARRAY_BUFFER,(signed)drawable[id].vertex_buf_size,
 			drawable[id].vertex_buf,GL_STATIC_DRAW);
 	free(buf);
 //	load_drawable(index);
@@ -59,20 +59,21 @@ static void load_drawable(int id,const char*file_path){
 
 static inline void draw_drawable(int id){
 	int stride=(signed)(
-			drawable[id].vertex_buf_size_in_bytes/
+			drawable[id].vertex_buf_size/
 			drawable[id].vertex_count
 		);
 
-	glBindBuffer(GL_ARRAY_BUFFER,drawable[id].vertex_buf_id);
+	glBindBuffer(GL_ARRAY_BUFFER,drawable[id].vertex_buf_gid);
 
 	glVertexAttribPointer(shader.position_slot,3,GL_FLOAT,GL_FALSE,stride,0);
 
-	glVertexAttribPointer(shader.color_slot,4,GL_FLOAT,GL_FALSE,stride,
+	glVertexAttribPointer(shader.color_slot,3,GL_FLOAT,GL_FALSE,stride,
 		(void*)(3*sizeof(float)));
 
 	glVertexAttribPointer(shader.normal_slot,3,GL_FLOAT,GL_FALSE,stride,
-		(void*)((3+4)*sizeof(float)));
+		(void*)((3+3)*sizeof(float)));
 
 	glDrawArrays(GL_TRIANGLES,0,(signed)drawable[id].vertex_count);
+//	glDrawArrays(GL_LINES,0,(signed)drawable[id].vertex_count);
 }
 

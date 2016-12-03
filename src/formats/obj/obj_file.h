@@ -110,7 +110,7 @@ inline static token next_token_from_string_additional_delim(
 	return t;
 }
 
-inline static const char*return_after_end_of_line(const char*p){
+inline static const char*scan_to_including_newline(const char*p){
 	while(1){
 		if(!*p)return p;
 		if(*p=='\n'){
@@ -122,7 +122,7 @@ inline static const char*return_after_end_of_line(const char*p){
 	return p;
 }
 
-// returns triangles:  x y z   r g b a  nx ny nz
+// returns triangles:  3 vertices times [ x y z  r g b  nx ny nz ]
 static/*gives*/float*read_obj_file_from_path(const char*path,size_t*bufsize){
 	printf(" * load obj file: %s\n",path);
 	struct stat st;
@@ -150,38 +150,38 @@ static/*gives*/float*read_obj_file_from_path(const char*path,size_t*bufsize){
 		token t=next_token_from_string(p);
 		p+=token_size_including_whitespace(&t);
 		if(token_starts_with(&t,"#")){
-			p=return_after_end_of_line(p);
+			p=scan_to_including_newline(p);
 			continue;
 		}
 		if(token_equals(&t,"mtllib")){
-			p=return_after_end_of_line(p);
+			p=scan_to_including_newline(p);
 			continue;
 		}
 		if(token_equals(&t,"o")){
-			p=return_after_end_of_line(p);
+			p=scan_to_including_newline(p);
 			continue;
 		}
 		if(token_equals(&t,"usemtl")){
-			p=return_after_end_of_line(p);
+			p=scan_to_including_newline(p);
 			continue;
 		}
 		if(token_equals(&t,"s")){
-			p=return_after_end_of_line(p);
+			p=scan_to_including_newline(p);
 			continue;
 		}
 		if(token_equals(&t,"v")){
 			vertex_count++;
-			p=return_after_end_of_line(p);
+			p=scan_to_including_newline(p);
 			continue;
 		}
 		if(token_equals(&t,"vn")){
 			normal_count++;
-			p=return_after_end_of_line(p);
+			p=scan_to_including_newline(p);
 			continue;
 		}
 		if(token_equals(&t,"f")){
 			face_count++;
-			p=return_after_end_of_line(p);
+			p=scan_to_including_newline(p);
 			continue;
 		}
 		print_token_including_whitespace(&t);
@@ -192,8 +192,8 @@ static/*gives*/float*read_obj_file_from_path(const char*path,size_t*bufsize){
 
 	vec4*normal_array=malloc(sizeof(vec4)*normal_count);
 	vec4*normal_array_seek=normal_array;
-
-	*bufsize=face_count*((3+4+3)*3)*sizeof(float);//? asumes triangles
+	//                   vertex  3 vertices
+	*bufsize=face_count*((3+3+3)*3)*sizeof(float);//? assumes triangles
 	float*glbuf=malloc(*bufsize);
 	float*glbuf_seek=glbuf;
 
@@ -203,23 +203,23 @@ static/*gives*/float*read_obj_file_from_path(const char*path,size_t*bufsize){
 		token t=next_token_from_string(p);
 		p+=token_size_including_whitespace(&t);
 		if(token_starts_with(&t,"#")){
-			p=return_after_end_of_line(p);
+			p=scan_to_including_newline(p);
 			continue;
 		}
 		if(token_equals(&t,"mtllib")){
-			p=return_after_end_of_line(p);
+			p=scan_to_including_newline(p);
 			continue;
 		}
 		if(token_equals(&t,"o")){
-			p=return_after_end_of_line(p);
+			p=scan_to_including_newline(p);
 			continue;
 		}
 		if(token_equals(&t,"usemtl")){
-			p=return_after_end_of_line(p);
+			p=scan_to_including_newline(p);
 			continue;
 		}
 		if(token_equals(&t,"s")){
-			p=return_after_end_of_line(p);
+			p=scan_to_including_newline(p);
 			continue;
 		}
 
@@ -271,10 +271,10 @@ static/*gives*/float*read_obj_file_from_path(const char*path,size_t*bufsize){
 				*glbuf_seek++=vtx.z;
 
 				// color
-				*glbuf_seek++=1;// r
+				*glbuf_seek++=0;// r
 				*glbuf_seek++=1;// g
-				*glbuf_seek++=1;// b
-				*glbuf_seek++=1;// a
+				*glbuf_seek++=0;// b
+//				*glbuf_seek++=0;// a
 
 
 				// texture index

@@ -47,13 +47,11 @@ typedef struct object{
 
 	void(*free)(struct object*);
 
-	void*extension;
+//	void*extension[2];
 
 }object;
 
 //-------------------------------------------------------------------- default
-//	if(not model_to_world_matrix_needs_update)
-//		return;
 
 static object default_object={
 	.position={0,0,0,0},
@@ -74,17 +72,6 @@ static object default_object={
 	.render=NULL,
 	.free=NULL,
 };
-
-inline static void object_update_physics(object*this,dt dt){
-	add_vec4_over_dt(&this->position,&this->velocity,dt);
-	add_vec4_over_dt(&this->angle,&this->angular_velocity,dt);
-	if(this->velocity.x || this->velocity.y || this->velocity.z ||
-		this->angular_velocity.x || this->angular_velocity.y ||
-		this->angular_velocity.z
-	){
-		this->model_to_world_matrix_is_updated=0;
-	}
-}
 
 inline static void object_update_model_to_world_matrix(object*this){
 	if(this->model_to_world_matrix_is_updated)

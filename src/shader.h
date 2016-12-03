@@ -7,28 +7,28 @@ char*vertex_shader_source =
 		"#version 100                                                \n\
 uniform mat4 umtx_mw;// model-to-world-matrix                        \n\
 attribute vec3 apos;// positions                              \n\
-attribute vec4 argba;// colors                               \n\
+attribute vec3 argb;// colors                               \n\
 attribute vec3 anorm;// normals                              \n\
-varying vec4 vrgba;                                          \n\
+varying vec3 vrgb;                                          \n\
 varying vec3 vnorm;                                          \n\
 void main(){                                                 \n\
 	gl_Position=umtx_mw*vec4(apos,1);                        \n\
-	vrgba=argba;                                             \n\
+	vrgb=argb;                                             \n\
 	vnorm=anorm;                                             \n\
 }\n";
 
 char*fragment_shader_source =
 		"#version 100                              \n\
 uniform sampler2D utex;                    \n\
-varying mediump vec4 vrgba;                \n\
+varying mediump vec3 vrgb;                \n\
 varying mediump vec3 vnorm;                \n\
 void main(){             \n\
 	                  \n\
-	mediump vec3 ambient_light_vector=vec3(-1.0,0,0);                  \n\
+//	mediump vec3 ambient_light_vector=;                  \n\
 	                  \n\
 	                  \n\
-	mediump float al=dot(ambient_light_vector,vnorm);                  \n\
-	gl_FragColor=vrgba+al;         \n\
+	mediump float al=dot(vec3(-1.0,0,0),vnorm);                  \n\
+	gl_FragColor=vec4(vrgb+al,1);         \n\
 }\n";
 
 typedef struct {
@@ -109,20 +109,23 @@ inline static void load_program() {
 	slot=glGetAttribLocation(shader.program_id,"apos");
 	if(slot==-1){
 		puts("could not find 'apos' in vertext shader");
+		printf("%s %d: %s",__FILE__,__LINE__,"");
 		exit(9);
 	}
 	shader.position_slot=(GLuint)slot;
 
-	slot=glGetAttribLocation(shader.program_id,"argba");
+	slot=glGetAttribLocation(shader.program_id,"argb");
 	if(slot==-1){
-		puts("could not find 'argba' in vertex shader");
+		puts("could not find attribute 'argb' in vertex shader");
+		printf("%s %d: %s",__FILE__,__LINE__,"");
 		exit(10);
 	}
 	shader.color_slot=(GLuint)slot;
 
 	slot=glGetAttribLocation(shader.program_id,"anorm");
 	if(slot==-1){
-		puts("could not find 'anorm' in vertex shader");
+		puts("could not find attribute 'anorm' in vertex shader");
+		printf("%s %d: %s",__FILE__,__LINE__,"");
 		exit(10);
 	}
 	shader.normal_slot=(GLuint)slot;
