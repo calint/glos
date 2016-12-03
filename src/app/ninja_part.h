@@ -2,7 +2,7 @@
 //#include"../object.h"
 //------------------------------------------------------------------------ part
 
-typedef struct ninja_animator_part{
+typedef struct ninja_part{
 	part part;
 	float time_duration_per_frame;
 	int texture_index_for_first_frame;
@@ -10,19 +10,24 @@ typedef struct ninja_animator_part{
 	int current_texture_index;
 	dt animation_time_left_for_current_frame;
 }ninja_animator_part;
-
-//---------------------------------------------------------------------- update
-static void update_ninja_animator_part(object*o,part*this,dt dt){
-//	printf(" object init: [ %4s %p ]\n",this->type.path,this);
+//------------------------------------------------------------------- overrides
+static void _ninja_part_update_(object*o,part*this,dt dt){
+	if(o->position.x>1){
+		o->position.x=1;
+		o->velocity.x=-o->velocity.x;
+		o->angular_velocity.z=-o->angular_velocity.z;
+	}else if(o->position.x<-1){
+		o->position.x=-1;
+		o->velocity.x=-o->velocity.x;
+		o->angular_velocity.z=-o->angular_velocity.z;
+	}
 }
-
 //--------------------------------------------------------------------- default
-
-static ninja_animator_part default_ninja_animator_part={
+static ninja_animator_part default_ninja_part={
 	.part=(part){
 		.type_id=3,
 		.init=0,
-		.update=update_ninja_animator_part,
+		.update=_ninja_part_update_,
 		.render=0,
 		.free=0,
 	},
@@ -32,9 +37,8 @@ static ninja_animator_part default_ninja_animator_part={
 	.current_texture_index=0,
 	.animation_time_left_for_current_frame=0,
 };
-
 //----------------------------------------------------------------------- alloc
-/**gives*/ninja_animator_part*alloc_ninja_animator_part(
+/**gives*/ninja_animator_part*alloc_ninja_part(
 		ninja_animator_part*initializer
 	){
 	ninja_animator_part*a=malloc(sizeof(ninja_animator_part));
@@ -43,7 +47,6 @@ static ninja_animator_part default_ninja_animator_part={
 		exit(21);
 	}
 
-	*a=initializer?*initializer:default_ninja_animator_part;
+	*a=initializer?*initializer:default_ninja_part;
 	return a;
 }
-

@@ -25,7 +25,7 @@ inline static void init_background(object*this){
 		1,0
 	};
 
-	update_bounding_radius_using_scale(this);
+	object_update_bounding_radius_using_scale(this);
 }
 
 inline static void update_background(object*this,dt dt){
@@ -43,7 +43,7 @@ static object default_background={
 	.texture_id=1,
 	.init=init_background,
 	.update=update_background,
-	.render=draw_texture,
+	.render=_draw_texture_,
 };
 
 //---------------------------------------------------------------------------

@@ -75,7 +75,7 @@ inline static void clear_bit(bits*b,int bit_number_starting_at_zero){
 
 //----------------------------------------------------------------------------
 
-inline static void add_vec4_over_dt(vec4*this,vec4*other,dt dt){
+inline static void vec4_increase_with_vec4_over_dt(vec4*this,vec4*other,dt dt){
 	this->x+=other->x*dt;
 	this->y+=other->y*dt;
 	this->z+=other->z*dt;

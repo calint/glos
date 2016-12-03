@@ -17,7 +17,7 @@ inline static void init_snowman(object*this){
 		1,0
 	};
 
-	update_bounding_radius_using_scale(this);
+	object_update_bounding_radius_using_scale(this);
 }
 
 //--------------------------------------------------------------------- update
@@ -31,7 +31,7 @@ static object default_snowman={
 	.texture_id=2,
 	.init=init_snowman,
 	.update=update_snowman,
-	.render=draw_texture_and_bounding_sphere,
+	.render=_draw_texture_and_bounding_sphere_,
 };
 
 //---------------------------------------------------------------------------

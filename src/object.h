@@ -41,9 +41,12 @@ typedef struct part{
 }part;
 
 //-------------------------------------------------------------------- default
-inline static void object_update(object*this,dt dt){
-	add_vec4_over_dt(&this->position,&this->velocity,dt);
-	add_vec4_over_dt(&this->angle,&this->angular_velocity,dt);
+inline static void _object_init_(object*this){
+	printf(" object init: [ %4s %p ]\n",this->type.path,this);
+}
+inline static void _object_update_(object*this,dt dt){
+	vec4_increase_with_vec4_over_dt(&this->position,&this->velocity,dt);
+	vec4_increase_with_vec4_over_dt(&this->angle,&this->angular_velocity,dt);
 	if(this->model_to_world_matrix_is_updated &&
 		(this->velocity.x||this->velocity.y||this->velocity.z||
 		this->angular_velocity.x||this->angular_velocity.y||
@@ -52,9 +55,8 @@ inline static void object_update(object*this,dt dt){
 		this->model_to_world_matrix_is_updated=0;
 	}
 }
-inline static void _object_init_(object*this){
-	printf(" object init: [ %4s %p ]\n",this->type.path,this);
-}
+inline static void _object_collision_(object*this,object*other,dt dt){}
+inline static void _object_render_(object*this){}
 inline static void _object_free_(object*this){
 	printf(" object free: [ %4s %p ]\n",this->type.path,this);
 }
@@ -74,22 +76,22 @@ static object default_object={
 	.drawable_id=0,
 	.model_to_world_matrix={1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1},
 	.init=_object_init_,
-	.update=object_update,
-	.collision=NULL,
-	.render=NULL,
+	.update=_object_update_,
+	.collision=_object_collision_,
+	.render=_object_render_,
 	.free=_object_free_,
 	.part={NULL,NULL,NULL,NULL}
 };
 //----------------------------------------------------------- ------ functions
 
-inline static void update_bounding_radius_using_scale(object*o) {
+inline static void object_update_bounding_radius_using_scale(object*o) {
 	o->bounding_radius=(bounding_radius)
 		sqrtf(o->scale.x*o->scale.x+o->scale.y*o->scale.y);
 }
 
 //----------------------------------------------------------------------------
 
-inline static void draw_texture(object*o) {
+inline static void _draw_texture_(object*o) {
 	SDL_Rect d={
 		(int)(o->position.x-o->scale.x),
 		(int)(o->position.y-o->scale.y),
@@ -101,7 +103,7 @@ inline static void draw_texture(object*o) {
 
 //----------------------------------------------------------------------------
 
-inline static void draw_bounding_sphere(object*o) {
+inline static void _draw_bounding_sphere_(object*o) {
 	circleColor(
 		window.renderer,
 		(short)o->position.x,
@@ -113,9 +115,9 @@ inline static void draw_bounding_sphere(object*o) {
 
 //----------------------------------------------------------------------------
 
-inline static void draw_texture_and_bounding_sphere(object*o) {
-	draw_texture(o);
-	draw_bounding_sphere(o);
+inline static void _draw_texture_and_bounding_sphere_(object*o) {
+	_draw_texture_(o);
+	_draw_bounding_sphere_(o);
 }
 
 //----------------------------------------------------------------------------
@@ -132,7 +134,7 @@ inline static void _object_update_model_to_world_matrix(object*this){
 
 //----------------------------------------------------------------------------
 
-inline static void render_drawable(object*o) {
+inline static void _render_drawable_(object*o) {
 	if(o->drawable_id){
 		_object_update_model_to_world_matrix(o);
 

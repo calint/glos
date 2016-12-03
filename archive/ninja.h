@@ -19,7 +19,7 @@ inline static void init_ninja(object*this) {
 		1,0
 	};
 
-	update_bounding_radius_using_scale(this);
+	object_update_bounding_radius_using_scale(this);
 
 	animator_part*a=/**takes*/alloc_animator_part(NULL);
 	a->time_duration_per_frame=0.5f;
@@ -57,7 +57,7 @@ static object default_ninja={
 	.free=free_ninja,
 	.texture_id=10,
 	.update=update_ninja,
-	.render=draw_texture,
+	.render=_draw_texture_,
 };
 
 //---------------------------------------------------------------------------

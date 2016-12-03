@@ -19,7 +19,7 @@ inline static void init_santa(object*this) {
 		1,0
 	};
 
-	update_bounding_radius_using_scale(this);
+	object_update_bounding_radius_using_scale(this);
 
 	animator_part*a=/**takes*/alloc_animator_part(NULL);
 	a->current_texture_index=a->texture_index_for_first_frame=20;
@@ -37,7 +37,7 @@ inline static void update_santa(object*this,dt dt){
 	this->scale.x=this->scale.x+11*dt;
 	this->scale.y=this->scale.y+11*dt;
 
-	update_bounding_radius_using_scale(this);
+	object_update_bounding_radius_using_scale(this);
 
 	animator_part*a=animator_part_(this->parts);
 	update_animator_part(a,dt);
@@ -51,7 +51,7 @@ static object default_santa={
 	.texture_id=20,
 	.init=init_santa,
 	.update=update_santa,
-	.render=draw_texture_and_bounding_sphere,
+	.render=_draw_texture_and_bounding_sphere_,
 };
 
 //---------------------------------------------------------------------------

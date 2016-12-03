@@ -48,7 +48,7 @@ static object default_logo_2 = {
 		.init = init_logo_2,
 		.update = constrain_logo_2,
 		.collision=NULL,
-		.render = draw_texture,
+		.render = _draw_texture_,
 		.free=NULL,
 };
 
