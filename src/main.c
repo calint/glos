@@ -6,13 +6,6 @@
 #include "textures.h"
 #include "lib.h"
 #include "fps.h"
-#include "objects/ninja.h"
-
-#include "objects/santa.h"
-
-#include "objects/background.h"
-
-#include "objects/snowman.h"
 
 //------------------------------------------------------------------------ lib
 
