@@ -118,7 +118,6 @@ static inline void init_window() {
 		printf("%s %d: %s",__FILE__,__LINE__,SDL_GetError());
 		exit(15);
 	}
-
 	window.renderer=SDL_CreateRenderer(window.ref,-1,SDL_WINDOW_OPENGL);
 	if (!window.renderer){
 		printf("%s %d: %s",__FILE__,__LINE__,SDL_GetError());

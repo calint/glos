@@ -8,7 +8,7 @@ WARNINGS='-Wall -Wextra -pedantic -Wfatal-errors -Wno-unused-function -Wno-unuse
 LIBS="$(sdl2-config --libs) -lGL -lm -lSDL2_gfx -lSDL2_image -lSDL2_ttf -lSDL2_mixer"
 OPTIMIZATIONS=-O3
 VALGRIND='valgrind --leak-check=full --track-origins=yes'
-PROFILE=-pg
+#PROFILE=-pg
 
 $CC $PROFILE $SRC -o $BIN $OPTIMIZATIONS $CFLAGS $LIBS $WARNINGS &&
 ls -la --color $BIN && 
