@@ -19,19 +19,29 @@ typedef struct token{
 	const char*end;
 }token;
 
-inline static void print_token_including_whitespace(token*t){
-	write(1,t->begin,(unsigned)(t->end-t->begin));
-}
-
-inline static void print_token(token*t){
-	write(1,t->content,(unsigned)(t->content_end-t->content));
-}
-
-inline static size_t token_size(token*t){
+inline static size_t token_size_including_whitespace(token*t){
 	return (size_t)(t->end-t->begin);
 }
 
+inline static void print_token_including_whitespace(token*t){
+//	write(1,t->begin,(unsigned)(t->end-t->begin));
+	printf("%.*s",(int)token_size_including_whitespace(t),t->begin);
+}
+
+inline static void print_token(token*t){
+//	write(1,t->content,(unsigned)(t->content_end-t->content));
+	printf("%.*s",(int)token_size_including_whitespace(t),t->begin);
+}
+
+inline static size_t token_size(token*t){
+	return (size_t)(t->content_end-t->content);
+}
+
 inline static int token_starts_with(token*t,const char*str){
+	return strncmp(str,t->content,strlen(str))==0;
+}
+
+inline static int token_equals(token*t,const char*str){
 	return strncmp(str,t->content,strlen(str))==0;
 }
 
@@ -66,6 +76,17 @@ typedef struct obj_file{
 	struct obj_o*o_array;
 }obj_file;
 
+inline static const char*return_after_end_of_line(const char*p){
+	while(1){
+		if(!*p)return p;
+		if(*p=='\n'){
+			p++;
+			return p;
+		}
+		p++;
+	}
+	return p;
+}
 static void init_obj_file_from_path(obj_file*this,const char*path){
 	printf(" * load obj file: %s\n",path);
 	struct stat st;
@@ -86,17 +107,29 @@ static void init_obj_file_from_path(obj_file*this,const char*path){
 	filedata[size+1]=0;
 	close(fd);
 
-	char*p=filedata;
+	const char*p=filedata;
 	while(1){
 		if(!*p)break;
 		token t=next_token_from_string(p);
-		p+=token_size(&t);
+		p+=token_size_including_whitespace(&t);
 		if(token_starts_with(&t,"#")){
-			while(1){
-				if(!*p)break;
-				p++;
-				if(*p=='\n')break;
-			}
+			p=return_after_end_of_line(p);
+			continue;
+		}
+		if(token_equals(&t,"mtllib")){
+			p=return_after_end_of_line(p);
+			continue;
+		}
+		if(token_equals(&t,"o")){
+			p=return_after_end_of_line(p);
+			continue;
+		}
+		if(token_equals(&t,"usemtl")){
+			p=return_after_end_of_line(p);
+			continue;
+		}
+		if(token_equals(&t,"s")){
+			p=return_after_end_of_line(p);
 			continue;
 		}
 		print_token_including_whitespace(&t);
