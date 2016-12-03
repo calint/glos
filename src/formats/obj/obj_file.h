@@ -8,7 +8,7 @@
 
 typedef struct str{
 	char*ptr;
-	unsigned long int size;
+	size_t size;
 }str;
 
 // ---------------------------------------------------------------------- init
@@ -64,13 +64,17 @@ typedef struct token{
 	char*end;
 }token;
 
-inline static void token_write(token*this,int fd){
+inline static void write_token(token*this,int fd){
 	write(fd,this->begin,(size_t)(this->end-this->begin));
 }
 
-inline static void foreach_token_in_str(str*s,void(*f)(token*)){
+inline static void foreach_token_in_str(
+		str*s,
+		void(*f)(token*,void*),
+		void*context
+){
 	char*p=s->ptr;
-	int n=s->size;
+	size_t n=s->size;
 	token t;
 	t.begin=s->ptr;
 	while(1){
@@ -94,22 +98,27 @@ inline static void foreach_token_in_str(str*s,void(*f)(token*)){
 		n--;
 	}
 	t.end=p;
-	f(&t);
+	f(&t,context);
 }
+
 
 typedef struct obj_file{
 	const char*name;
 	struct obj_o*o_array;
 }obj_file;
 
-inline static void load_obj_file__1(token*t){
-	token_write(t,1);
+inline static void load_obj_file__root(token*t,void*context){
+	fsync(1);
+	puts("** in root");
+	write_token(t,1);
+	puts("** out of root");
+	fsync(1);
 }
 
-static void load_obj_file(obj_file*this,const char*path){
+static void init_obj_file_from_path(obj_file*this,const char*path){
 	printf(" * load obj file: %s\n",path);
 	str s;
 	str_initfromfile(&s,path);
 	str_write(&s,1);
-	foreach_token_in_str(&s,load_obj_file__1);
+	foreach_token_in_str(&s,load_obj_file__root,0);
 }

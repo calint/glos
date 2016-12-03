@@ -32,7 +32,7 @@ inline static void load_texture(int n,const char*path){
 
 inline static void init_main(){
 	obj_file of;
-	load_obj_file(&of,"arts/obj/boulder_1/boulder_1.obj");
+	init_obj_file_from_path(&of,"arts/obj/boulder_1/boulder_1.obj");
 }
 
 //-------------------------------------------------------------background_color
