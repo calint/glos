@@ -4,101 +4,60 @@
 #include<ctype.h>
 #include<stdlib.h>
 #include"obj_o.h"
-// ----------------------------------------------------------------------- str
-
-typedef struct str{
-	char*ptr;
-	size_t size;
-}str;
-
-// ---------------------------------------------------------------------- init
-
-inline static void str_initfromfile(str*this,const char*filepath){
-
-	FILE*f=fopen(filepath,"rb");
-
-	fseek(f,0,SEEK_END);
-
-	long s=ftell(f);
-	if(s<0){
-		perror("error while getting file size");
-		exit(-1);
-	}
-
-	this->size=(unsigned)s;
-
-	fseek(f,0,SEEK_SET);
-
-	this->ptr=malloc(this->size);
-
-	fread(this->ptr,this->size,1,f);
-
-	fclose(f);
-
-}
-
-// --------------------------------------------------------------------- write
-
-inline static void str_write(str*this,int fd){
-	write(fd,this->ptr,this->size);
-}
-
-// ---------------------------------------------------------------------- free
-
-inline static void str_free(str*this){
-	//	if(!this->ptr);//?
-	free(this->ptr);
-}
-
-// ---------------------------------------------------------------------------
-
-typedef struct span{
-	char*begin;
-	char*end;
-}span;
+#include<sys/stat.h>
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include<string.h>
 
 typedef struct token{
-	char*begin;
-	char*content;
-	char*content_end;
-	char*end;
+	const char*begin;
+	const char*content;
+	const char*content_end;
+	const char*end;
 }token;
 
-inline static void write_token(token*this,int fd){
-	write(fd,this->begin,(size_t)(this->end-this->begin));
+inline static void print_token_including_whitespace(token*t){
+	write(1,t->begin,(unsigned)(t->end-t->begin));
 }
 
-inline static void foreach_token_in_str(
-		str*s,
-		void(*f)(token*,void*),
-		void*context
-){
-	char*p=s->ptr;
-	size_t n=s->size;
+inline static void print_token(token*t){
+	write(1,t->content,(unsigned)(t->content_end-t->content));
+}
+
+inline static size_t token_size(token*t){
+	return (size_t)(t->end-t->begin);
+}
+
+inline static int token_starts_with(token*t,const char*str){
+	return strncmp(str,t->content,strlen(str))==0;
+}
+
+inline static token next_token_from_string(const char*s){
+	const char*p=s;
 	token t;
-	t.begin=s->ptr;
+	t.begin=s;
 	while(1){
-		if(!n)break;
+		if(!*p)break;
 		if(!isspace(*p))break;
 		p++;
-		n--;
 	}
 	t.content=p;
 	while(1){
-		if(!n)break;
+		if(!*p)break;
 		if(isspace(*p))break;
 		p++;
-		n--;
 	}
 	t.content_end=p;
 	while(1){
-		if(!n)break;
+		if(!*p)break;
 		if(!isspace(*p))break;
 		p++;
-		n--;
 	}
 	t.end=p;
-	f(&t,context);
+	return t;
 }
 
 
@@ -107,18 +66,74 @@ typedef struct obj_file{
 	struct obj_o*o_array;
 }obj_file;
 
-inline static void load_obj_file__root(token*t,void*context){
-	fsync(1);
-	puts("** in root");
-	write_token(t,1);
-	puts("** out of root");
-	fsync(1);
-}
-
 static void init_obj_file_from_path(obj_file*this,const char*path){
 	printf(" * load obj file: %s\n",path);
-	str s;
-	str_initfromfile(&s,path);
-	str_write(&s,1);
-	foreach_token_in_str(&s,load_obj_file__root,0);
+	struct stat st;
+	if(stat(path,&st)==-1){
+		perror("cannot stat");
+		exit(-1);
+	}
+	size_t size=(unsigned)st.st_size;
+
+	int fd=open(path,O_RDONLY);
+	if(fd==1){
+		perror("Open Failed");
+		exit(11);
+	}
+
+	char*filedata=malloc(size+1);
+	read(fd,filedata,size);
+	filedata[size+1]=0;
+	close(fd);
+
+	char*p=filedata;
+	while(1){
+		if(!*p)break;
+		token t=next_token_from_string(p);
+		p+=token_size(&t);
+		if(token_starts_with(&t,"#")){
+			while(1){
+				if(!*p)break;
+				p++;
+				if(*p=='\n')break;
+			}
+			continue;
+		}
+		print_token_including_whitespace(&t);
+	}
+	puts("----");
+	exit(0);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
