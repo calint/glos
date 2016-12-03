@@ -34,7 +34,7 @@ inline static void load_texture(int n,const char*path){
 //----------------------------------------------------------------------- init
 
 inline static void init_main(){
-	drawables_load(alloc(&default_ninja)->drawable_id=1,"arts/obj/sphere.obj");
+	load_drawable(alloc(&default_ninja)->drawable_id=1,"arts/obj/sphere.obj");
 }
 
 //-------------------------------------------------------------background_color

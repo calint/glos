@@ -33,21 +33,7 @@ static inline void free_drawables(){
 
 //----------------------------------------------------------------------------
 
-//static inline void load_drawable(int index){
-//	GLuint vertex_buffer_id;
-//
-//	glGenBuffers(1,&vertex_buffer_id);
-//
-//	glBindBuffer(GL_ARRAY_BUFFER,vertex_buffer_id);
-//
-//	drawable[index].vertex_buf_id=vertex_buffer_id;
-//
-//	glBufferData(GL_ARRAY_BUFFER,
-//			(signed)drawable[index].vertex_buf_size_in_bytes,
-//			drawable[index].vertex_buf,GL_STATIC_DRAW);
-//}
-
-static void drawables_load(int index,const char*file_path){
+static void load_drawable(int id,const char*file_path){
 	size_t buf_size_in_bytes;
 	float*buf=/*takes*/read_obj_file_from_path(
 			file_path,
@@ -56,41 +42,37 @@ static void drawables_load(int index,const char*file_path){
 
 	size_t vertex_size_in_bytes=(3+4+3)*sizeof(float); // vertex, color, normal
 
-	drawable[index].vertex_buf=buf;
-	drawable[index].vertex_buf_size_in_bytes=buf_size_in_bytes;
-	drawable[index].vertex_count=(unsigned)(buf_size_in_bytes/vertex_size_in_bytes);
+	drawable[id].vertex_buf=buf;
+	drawable[id].vertex_buf_size_in_bytes=buf_size_in_bytes;
+	drawable[id].vertex_count=(unsigned)(buf_size_in_bytes/vertex_size_in_bytes);
 
 	GLuint vertex_buffer_id;
 	glGenBuffers(1,&vertex_buffer_id);
 	glBindBuffer(GL_ARRAY_BUFFER,vertex_buffer_id);
-	drawable[index].vertex_buf_id=vertex_buffer_id;
+	drawable[id].vertex_buf_id=vertex_buffer_id;
 	glBufferData(GL_ARRAY_BUFFER,
-			(signed)drawable[index].vertex_buf_size_in_bytes,
-			drawable[index].vertex_buf,GL_STATIC_DRAW);
-
+			(signed)drawable[id].vertex_buf_size_in_bytes,
+			drawable[id].vertex_buf,GL_STATIC_DRAW);
+	free(buf);
 //	load_drawable(index);
 }
 
-static inline void draw_drawable(int index){
+static inline void draw_drawable(int id){
 	int stride=(signed)(
-			drawable[index].vertex_buf_size_in_bytes/
-			drawable[index].vertex_count
+			drawable[id].vertex_buf_size_in_bytes/
+			drawable[id].vertex_count
 		);
 
-	glBindBuffer(GL_ARRAY_BUFFER,drawable[index].vertex_buf_id);
+	glBindBuffer(GL_ARRAY_BUFFER,drawable[id].vertex_buf_id);
 
-	glVertexAttribPointer(
-		shader.position_slot,3,GL_FLOAT,GL_FALSE,stride,0);
+	glVertexAttribPointer(shader.position_slot,3,GL_FLOAT,GL_FALSE,stride,0);
 
-	glVertexAttribPointer(
-		shader.color_slot,   4,GL_FLOAT,GL_FALSE,stride,
+	glVertexAttribPointer(shader.color_slot,4,GL_FLOAT,GL_FALSE,stride,
 		(void*)(3*sizeof(float)));
 
-	glVertexAttribPointer(
-		shader.normal_slot,  3,GL_FLOAT,GL_FALSE,stride,
+	glVertexAttribPointer(shader.normal_slot,3,GL_FLOAT,GL_FALSE,stride,
 		(void*)((3+4)*sizeof(float)));
 
-	glDrawArrays(GL_TRIANGLES,0,(signed)drawable[index].vertex_count);
+	glDrawArrays(GL_TRIANGLES,0,(signed)drawable[id].vertex_count);
 }
-
 
