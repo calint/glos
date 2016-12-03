@@ -21,7 +21,7 @@ typedef struct object{
 
 	scale scale;
 
-	class type;
+	type type;
 
 	id id;
 
@@ -32,6 +32,10 @@ typedef struct object{
 	bits*bits;
 
 	id drawable_id;
+
+	float model_to_world_matrix[4*4];
+
+	int model_to_world_matrix_is_updated;
 
 	void(*init)(struct object*);
 
@@ -48,6 +52,8 @@ typedef struct object{
 }object;
 
 //-------------------------------------------------------------------- default
+//	if(not model_to_world_matrix_needs_update)
+//		return;
 
 static object default_object={
 	.position={0,0,0,0},
@@ -68,6 +74,31 @@ static object default_object={
 	.render=NULL,
 	.free=NULL,
 };
+
+inline static void object_update_physics(object*this,dt dt){
+	add_vec4_over_dt(&this->position,&this->velocity,dt);
+	add_vec4_over_dt(&this->angle,&this->angular_velocity,dt);
+	if(this->velocity.x || this->velocity.y || this->velocity.z ||
+		this->angular_velocity.x || this->angular_velocity.y ||
+		this->angular_velocity.z
+	){
+		this->model_to_world_matrix_is_updated=0;
+	}
+}
+
+inline static void object_update_model_to_world_matrix(object*this){
+	if(this->model_to_world_matrix_is_updated)
+		return;
+
+	mat4_load_translate(this->model_to_world_matrix,&this->position);
+	mat4_append_rotation_about_z_axis(this->model_to_world_matrix,this->angle.z);
+
+	this->model_to_world_matrix_is_updated=1;
+
+//	model_to_world_matrix_.append_scaling(phy.s);
+//	model_to_world_matrix_needs_update=false;
+//		p(" [%u]  update_model_to_world_matrix %p\n",gl::time_stamp,this);
+}
 
 //----------------------------------------------------------- ------ functions
 
@@ -109,7 +140,11 @@ inline static void draw_texture_and_bounding_sphere(object*o) {
 //----------------------------------------------------------------------------
 
 inline static void render_drawable(object*o) {
-	if(o->drawable_id)draw_drawable(o->drawable_id);
+	if(o->drawable_id){
+		object_update_model_to_world_matrix(o);
+		glUniformMatrix4fv((signed)shader.model_to_world_matrix_slot,1,0,
+				o->model_to_world_matrix);
+		draw_drawable(o->drawable_id);
+	}
 }
-
 //----------------------------------------------------------------------------

@@ -22,16 +22,18 @@ typedef struct baba{
 	dword dword;
 	quad quad;
 	char string[32];
-} baba;
+}baba;
 
 
 typedef struct class {
 	char path[8];
-} class;
+}type;
 
 typedef struct vec4 {
-	float x, y, z, q;
-} vec4;
+	float x,y,z,q;
+}vec4;
+
+typedef float* mat4;
 
 typedef vec4 position;
 

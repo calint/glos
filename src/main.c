@@ -103,16 +103,19 @@ int main(int argc, char *argv[]) {
 					background_color.blue = 0;
 					break;
 				case SDLK_a:
+					objects[0].angular_velocity.z=90;
 					background_color.red = 0;
 					background_color.green = 1;
 					background_color.blue = 0;
 					break;
 				case SDLK_s:
+					objects[0].angular_velocity.z=0;
 					background_color.red = 0;
 					background_color.green = 0;
 					background_color.blue = 1;
 					break;
 				case SDLK_d:
+					objects[0].angular_velocity.z=-90;
 					background_color.red = 1;
 					background_color.green = 1;
 					break;
@@ -131,11 +134,12 @@ int main(int argc, char *argv[]) {
 
 		glClear(GL_COLOR_BUFFER_BIT);
 
+//		shader_render();
+
 		update_objects(fps.dt);
 
 		render_objects();
 
-//		shader_render();
 
 		SDL_GL_SwapWindow(window.ref);
 

@@ -5,13 +5,14 @@
 
 char*vertex_shader_source =
 		"#version 100                                                \n\
+uniform mat4 umtx_mw;// model-to-world-matrix                        \n\
 attribute vec3 apos;// positions                              \n\
 attribute vec4 argba;// colors                               \n\
 attribute vec3 anorm;// normals                              \n\
 varying vec4 vrgba;                                          \n\
 varying vec3 vnorm;                                          \n\
 void main(){                                                 \n\
-	gl_Position=vec4(apos,1);                                        \n\
+	gl_Position=umtx_mw*vec4(apos,1);                        \n\
 	vrgba=argba;                                             \n\
 	vnorm=anorm;                                             \n\
 }\n";
@@ -47,7 +48,7 @@ static GLubyte indices[]={0,1,2,2,3,0};
 
 struct{
 	GLuint program_id,vertex_buffer_id,index_buffer_id;
-	GLuint position_slot,color_slot,normal_slot;
+	GLuint position_slot,color_slot,normal_slot,model_to_world_matrix_slot;
 	int indices_count;
 }shader;
 
@@ -79,7 +80,7 @@ inline static GLuint compile_shader(GLenum shaderType, char *code) {
 	return handle;
 }
 
-inline static void load_program(GLuint*pos_slot,GLuint*col_slot,GLuint*norm_slot) {
+inline static void load_program() {
 	GLuint vertex=compile_shader(GL_VERTEX_SHADER,vertex_shader_source);
 	GLuint fragment=compile_shader(GL_FRAGMENT_SHADER,fragment_shader_source);
 
@@ -110,21 +111,29 @@ inline static void load_program(GLuint*pos_slot,GLuint*col_slot,GLuint*norm_slot
 		puts("could not find 'apos' in vertext shader");
 		exit(9);
 	}
-	*pos_slot=(GLuint)slot;
+	shader.position_slot=(GLuint)slot;
 
 	slot=glGetAttribLocation(shader.program_id,"argba");
 	if(slot==-1){
 		puts("could not find 'argba' in vertex shader");
 		exit(10);
 	}
-	*col_slot=(GLuint)slot;
+	shader.color_slot=(GLuint)slot;
 
 	slot=glGetAttribLocation(shader.program_id,"anorm");
 	if(slot==-1){
 		puts("could not find 'anorm' in vertex shader");
 		exit(10);
 	}
-	*norm_slot=(GLuint)slot;
+	shader.normal_slot=(GLuint)slot;
+
+
+	slot=glGetUniformLocation(shader.program_id,"umtx_mw");
+	if(slot==-1){
+		puts("could not find uniform 'umtx_mw' in vertex shader");
+		exit(10);
+	}
+	shader.model_to_world_matrix_slot=(GLuint)slot;
 }
 
 inline static const char*get_gl_error_string(const GLenum error) {
@@ -215,7 +224,7 @@ inline static void init_shader() {
 		&shader.indices_count
 	);
 
-	load_program(&shader.position_slot,&shader.color_slot,&shader.normal_slot);
+	load_program();
 
 	check_gl_error("after shader_init");
 }
