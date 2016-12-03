@@ -101,7 +101,7 @@ inline static void update_objects(dt dt){
 				continue;
 			part*p=(part*)o->part[i];
 			if(p->update)
-				p->update(p,dt);
+				p->update(o,p,dt);
 		}
 
 		o++;

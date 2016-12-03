@@ -12,17 +12,8 @@ typedef struct ninja_animator_part{
 }ninja_animator_part;
 
 //---------------------------------------------------------------------- update
-static void update_ninja_animator_part(part*part,dt dt){
-	ninja_animator_part*a=(ninja_animator_part*)part;
-	a->animation_time_left_for_current_frame-=dt;
-	if(a->animation_time_left_for_current_frame<0){ // next frame
-		a->current_texture_index++;
-		if(a->current_texture_index>a->texture_index_for_last_frame){
-			a->current_texture_index=a->texture_index_for_first_frame;
-		}
-//		printf(" %p  frame   %d\n",(void*)a,a->current_index_in_textures);
-		a->animation_time_left_for_current_frame+=a->time_duration_per_frame;
-	}
+static void update_ninja_animator_part(object*o,part*this,dt dt){
+//	printf("update ninja part");
 }
 
 //--------------------------------------------------------------------- default

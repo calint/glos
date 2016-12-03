@@ -34,10 +34,10 @@ typedef struct object{
 
 typedef struct part{
 	short type_id;
-	void(*init)(struct part*);
-	void(*update)(struct part*,dt);
-	void(*render)(struct part*);
-	void(*free)(struct part*);
+	void(*init)(object*,struct part*);
+	void(*update)(object*,struct part*,dt);
+	void(*render)(object*,struct part*);
+	void(*free)(object*,struct part*);
 }part;
 
 //-------------------------------------------------------------------- default
