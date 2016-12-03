@@ -1,4 +1,5 @@
 #pragma once
+#include"../object.h"
 //------------------------------------------------------------------------ part
 typedef struct animator_part{
 	part part;
@@ -7,7 +8,6 @@ typedef struct animator_part{
 	int texture_index_for_last_frame;
 	int current_texture_index;
 	dt animation_time_left_for_current_frame;
-
 }animator_part;
 //--------------------------------------------------------------------- default
 static animator_part default_animator_part={

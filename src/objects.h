@@ -95,6 +95,15 @@ inline static void update_objects(dt dt){
 //		}
 
 		if(o->update)o->update(o,dt);
+
+		for(int i=0;i<object_part_count;i++){
+			if(!o->part[i])
+				continue;
+			part*p=(part*)o->part[i];
+			if(p->update)
+				p->update(p,dt);
+		}
+
 		o++;
 	}
 }

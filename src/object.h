@@ -5,6 +5,9 @@
 #include"textures.h"
 #include"drawables.h"
 #include"part.h"
+
+#define object_part_count 4
+
 //--------------------------------------------------------------------- object
 typedef struct object{
 	position position;
@@ -26,8 +29,17 @@ typedef struct object{
 	void(*collision)(struct object*,struct object*,dt);
 	void(*render)(struct object*);
 	void(*free)(struct object*);
-	part*part[4];
+	void*part[object_part_count];
 }object;
+
+typedef struct part{
+	short type_id;
+	void(*init)(struct part*);
+	void(*update)(struct part*,dt);
+	void(*render)(struct part*);
+	void(*free)(struct part*);
+}part;
+
 //-------------------------------------------------------------------- default
 inline static void object_update(object*this,dt dt){
 	add_vec4_over_dt(&this->position,&this->velocity,dt);

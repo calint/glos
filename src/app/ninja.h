@@ -1,12 +1,14 @@
 #pragma once
 #include "../object.h"
-#include "../parts/animator_part.h"
+#include "ninja_animator_part.h"
 //----------------------------------------------------------------------- init
 inline static void _ninja_init_(object*this) {
 	this->scale=(scale){.5,.5,.5,0};
 	this->angular_velocity.z=90;
 //	this->velocity.x=.5f;
 	update_bounding_radius_using_scale(this);
+
+	this->part[0]=&default_ninja_animator_part;
 }
 //----------------------------------------------------------------------update
 inline static void _ninja_update_(object*this,dt dt){
