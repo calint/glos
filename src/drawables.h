@@ -66,10 +66,5 @@ static inline void draw_drawable(int index){
 		shader.normal_slot,  3,GL_FLOAT,GL_FALSE,stride,
 		(void*)((3+4)*sizeof(float)));
 
-
-	glEnableVertexAttribArray(shader.position_slot);
-	glEnableVertexAttribArray(shader.color_slot);
-	glEnableVertexAttribArray(shader.normal_slot);
-
 	glDrawArrays(GL_TRIANGLES,0,(signed)drawable[index].vertex_count);
 }

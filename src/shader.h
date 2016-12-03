@@ -134,6 +134,13 @@ inline static void load_program() {
 		exit(10);
 	}
 	shader.model_to_world_matrix_slot=(GLuint)slot;
+
+
+
+	glEnableVertexAttribArray(shader.position_slot);
+	glEnableVertexAttribArray(shader.color_slot);
+	glEnableVertexAttribArray(shader.normal_slot);
+
 }
 
 inline static const char*get_gl_error_string(const GLenum error) {
