@@ -3,6 +3,7 @@
 #include"lib.h"
 #include"window.h"
 #include"textures.h"
+#include"drawables.h"
 
 //--------------------------------------------------------------------- object
 
@@ -29,6 +30,8 @@ typedef struct object{
 	color color;
 
 	bits*bits;
+
+	id drawable_id;
 
 
 	void(*init)(struct object*);
@@ -59,6 +62,7 @@ static object default_object={
 	.type={{0,0,0,0,0,0,0,0}},
 	.id=0,
 	.color=0,
+	.drawable_id=0,
 	.init=NULL,
 	.update=NULL,
 	.collision=NULL,
@@ -102,6 +106,11 @@ inline static void draw_bounding_sphere(object*o) {
 inline static void draw_texture_and_bounding_sphere(object*o) {
 	draw_texture(o);
 	draw_bounding_sphere(o);
+}
+//----------------------------------------------------------------------------
+
+inline static void render_drawable(object*o) {
+	if(o->drawable_id)draw_drawable(o->drawable_id);
 }
 
 //----------------------------------------------------------------------------

@@ -1,6 +1,8 @@
 #pragma once
-#include <stdlib.h>
-
+#include"SDL.h"
+#include<stdlib.h>
+#include<sys/types.h>
+#include<math.h>
 //------------------------------------------------------------------- typedefs
 
 typedef uint8_t bits;

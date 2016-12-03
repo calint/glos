@@ -6,6 +6,9 @@
 #include "textures.h"
 #include "lib.h"
 #include "fps.h"
+#include "drawables.h"
+
+#include "app/ninja.h"
 
 //------------------------------------------------------------------------ lib
 
@@ -31,8 +34,21 @@ inline static void load_texture(int n,const char*path){
 //----------------------------------------------------------------------- init
 
 inline static void init_main(){
-	obj_file of;
-	init_obj_file_from_path(&of,"arts/obj/boulder_1/boulder_1.obj");
+	size_t buf_size_in_bytes;
+	float*buf=/*takes*/read_obj_file_from_path(
+			"arts/obj/boulder_1/boulder_1.obj",
+			&buf_size_in_bytes
+		);
+
+	size_t vertex_size_in_bytes=(3+4+3)*sizeof(float); // vertex, color, normal
+
+	drawable[1].vertex_buf=buf;
+	drawable[1].vertex_buf_size_in_bytes=buf_size_in_bytes;
+	drawable[1].vertex_count=(unsigned)(buf_size_in_bytes/vertex_size_in_bytes);
+
+	load_drawable(1);
+
+	alloc(&default_ninja);
 }
 
 //-------------------------------------------------------------background_color
@@ -121,7 +137,7 @@ int main(int argc, char *argv[]) {
 
 		render_objects();
 
-		shader_render();
+//		shader_render();
 
 		SDL_GL_SwapWindow(window.ref);
 

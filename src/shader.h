@@ -5,39 +5,44 @@
 
 char*vertex_shader_source =
 		"#version 100                                                \n\
-attribute vec3 apos;// vertices                              \n\
+attribute vec3 apos;// positions                              \n\
 attribute vec4 argba;// colors                               \n\
+attribute vec3 anorm;// normals                              \n\
 varying vec4 vrgba;                                          \n\
+varying vec3 vnorm;                                          \n\
 void main(){                                                 \n\
 	gl_Position=vec4(apos,1);                                        \n\
 	vrgba=argba;                                             \n\
+	vnorm=anorm;                                             \n\
 }\n";
 
 char*fragment_shader_source =
 		"#version 100                              \n\
 uniform sampler2D utex;                    \n\
 varying mediump vec4 vrgba;                \n\
+varying mediump vec3 vnorm;                \n\
 void main(){                               \n\
-	gl_FragColor=vrgba;                    \n\
+	gl_FragColor=vec4(vnorm,1)+vrgba;                    \n\
 }\n";
 
 typedef struct {
 	float position[3];
 	float color[4];
+	float normal[3];
 } vertex;
 
 static vertex vertices[]={
-	{{ 1,-1, 0},{ 1, 0, 0,1}},
-	{{ 1, 1, 0},{ 0, 1, 0,1}},
-	{{-1, 1, 0},{ 0, 0, 1,1}},
-	{{-1,-1, 0},{ 0, 0, 0,1}},
+	{{ 1,-1, 0},{ 1, 0, 0,1},{0,0,0}},
+	{{ 1, 1, 0},{ 0, 1, 0,1},{0,0,0}},
+	{{-1, 1, 0},{ 0, 0, 1,1},{0,0,0}},
+	{{-1,-1, 0},{ 0, 0, 0,1},{0,0,0}},
 };
 
 static GLubyte indices[]={0,1,2,2,3,0};
 
 struct{
 	GLuint program_id,vertex_buffer_id,index_buffer_id;
-	GLuint position_slot,color_slot;
+	GLuint position_slot,color_slot,normal_slot;
 	int indices_count;
 }shader;
 
@@ -69,7 +74,7 @@ inline static GLuint compile_shader(GLenum shaderType, char *code) {
 	return handle;
 }
 
-inline static void load_program(GLuint*pos_slot,GLuint *col_slot) {
+inline static void load_program(GLuint*pos_slot,GLuint*col_slot,GLuint*norm_slot) {
 	GLuint vertex=compile_shader(GL_VERTEX_SHADER,vertex_shader_source);
 	GLuint fragment=compile_shader(GL_FRAGMENT_SHADER,fragment_shader_source);
 
@@ -109,8 +114,12 @@ inline static void load_program(GLuint*pos_slot,GLuint *col_slot) {
 	}
 	*col_slot=(GLuint)slot;
 
-	glEnableVertexAttribArray(*pos_slot);
-	glEnableVertexAttribArray(*col_slot);
+	slot=glGetAttribLocation(shader.program_id,"anorm");
+	if(slot==-1){
+		puts("could not find 'anorm' in vertex shader");
+		exit(10);
+	}
+	*norm_slot=(GLuint)slot;
 }
 
 inline static const char*get_gl_error_string(const GLenum error) {
@@ -168,16 +177,16 @@ inline static void check_gl_error(const char*op) {
 inline static void create_geometry(GLuint *vertexBuffer, GLuint *indexBuffer,
 		int *numIndices) {
 
-	glGenBuffers(1, vertexBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, *vertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glGenBuffers(1,vertexBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER,*vertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER,sizeof(vertices),vertices,GL_STATIC_DRAW);
 
-	glGenBuffers(1, indexBuffer);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *indexBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices,
+	glGenBuffers(1,indexBuffer);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,*indexBuffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER,sizeof(indices),indices,
 	GL_STATIC_DRAW);
 
-	*numIndices = sizeof(indices) / sizeof(indices[0]);
+	*numIndices=sizeof(indices)/sizeof(indices[0]);
 	check_gl_error("generating buffers");
 }
 
@@ -201,7 +210,7 @@ inline static void init_shader() {
 		&shader.indices_count
 	);
 
-	load_program(&shader.position_slot,&shader.color_slot);
+	load_program(&shader.position_slot,&shader.color_slot,&shader.normal_slot);
 
 	check_gl_error("after shader_init");
 }
@@ -223,12 +232,14 @@ inline static void shader_render() {
 
 #else
 	glBindBuffer(GL_ARRAY_BUFFER,shader.vertex_buffer_id);
+
 	glVertexAttribPointer(shader.position_slot,3,GL_FLOAT,GL_FALSE,
 			sizeof(vertex),0);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,shader.index_buffer_id);
 	glVertexAttribPointer(shader.color_slot,4,GL_FLOAT,GL_FALSE,
 			sizeof(vertex),(GLvoid*)(3*sizeof(float)));
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,shader.index_buffer_id);
 
 	glDrawElements(GL_TRIANGLES,shader.indices_count,GL_UNSIGNED_BYTE,0);
 #endif
