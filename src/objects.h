@@ -28,9 +28,6 @@ static bits*object_bits_seek_ptr=objects_bits;
 
 static bits*objects_bits_end_ptr=objects_bits+object_count;
 
-
-#define bit_object_allocated 0
-
 //------------------------------------------------------------------------ init
 
 inline static void objects_init(){}
@@ -46,9 +43,8 @@ inline static void objects_free() {
 	}
 }
 
-//---------------------------------------------------------------------- alloc
-
-inline static object*alloc(object*initializer){
+//------------------------------------------------------------------------ new
+inline static object*new(object*initializer){
 	int iterate_to_scan_the_table=2;
 	while(iterate_to_scan_the_table--){
 		while(object_bits_seek_ptr<objects_bits_end_ptr){
@@ -72,14 +68,11 @@ inline static object*alloc(object*initializer){
 	perror("out of objects");
 	exit(6);
 }
-
-//------------------------------------------------------------------------ free
-
-inline static void object_free(object*o){
+//---------------------------------------------------------------------- delete
+inline static void delete(object*o){
 	bits_clear(o->bits_ref,bit_object_allocated); //? racing
 }
 //--------------------------------------------------------------------- update
-
 inline static void objects_update(dt dt){
 	object*o=objects;
 	while(o<objects_end_ptr){

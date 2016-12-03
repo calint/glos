@@ -4,10 +4,9 @@
 #include"window.h"
 #include"textures.h"
 #include"drawables.h"
-
+#define bit_object_allocated 0
 #define object_part_count 4
-
-//--------------------------------------------------------------------- object
+//------------------------------------------------------------------------ def
 typedef struct object{
 	position position;
 	velocity velocity;
@@ -30,10 +29,14 @@ typedef struct object{
 	void(*free)(struct object*);
 	void*part[object_part_count];
 }object;
-//-------------------------------------------------------------------- default
+
+//-------------------------------------------------------------------overrides
+//
+//----------------------------------------------------------------------- init
 inline static void _object_init_(object*this){
 	printf(" object init: [ %4s %p ]\n",this->type.path,this);
 }
+//---------------------------------------------------------------------- update
 inline static void _object_update_(object*this,dt dt){
 	vec4_increase_with_vec4_over_dt(&this->position,&this->velocity,dt);
 	vec4_increase_with_vec4_over_dt(&this->angle,&this->angular_velocity,dt);
@@ -74,9 +77,9 @@ static object _object_={
 };
 //----------------------------------------------------------- ------ functions
 
-inline static void object_update_bounding_radius_using_scale(object*o) {
-	o->bounding_radius=(bounding_radius)
-		sqrtf(o->scale.x*o->scale.x+o->scale.y*o->scale.y);
+inline static void object_update_bounding_radius_using_scale(object*this) {
+	this->bounding_radius=(bounding_radius)
+		sqrtf(this->scale.x*this->scale.x+this->scale.y*this->scale.y);
 }
 
 //----------------------------------------------------------------------------

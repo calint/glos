@@ -32,7 +32,7 @@ static inline void drawables_free(){
 
 //----------------------------------------------------------------------------
 
-static void load_drawable(int id,const char*file_path){
+static void drawables_load_file_in_slot(int id,const char*file_path){
 	size_t buf_size_in_bytes;
 	float*buf=/*takes*/read_obj_file_from_path(
 			file_path,

@@ -2,6 +2,7 @@
 #pragma once
 //------------------------------------------------------------------- overrides
 static void _ninja_part_update_(object*o,part*this,dt dt);
+static void _ninja_part_render_(object*o,part*this);
 //---------------------------------------------------------------------- define
 typedef struct ninja_part{
 	part part;
@@ -16,7 +17,7 @@ static ninja_part _ninja_part_={
 	.part=(part){
 		.init=NULL,
 		.update=_ninja_part_update_,
-		.render=NULL,
+		.render=_ninja_part_render_,
 		.free=NULL,
 	},
 	.time_duration_per_frame=0,
@@ -49,5 +50,8 @@ static void _ninja_part_update_(object*o,part*this,dt dt){
 		o->velocity.x=-o->velocity.x;
 		o->angular_velocity.z=-o->angular_velocity.z;
 	}
+}
+//-------------------------------------------------------------- implementation
+static void _ninja_part_render_(object*o,part*this){
 }
 //-----------------------------------------------------------------------------

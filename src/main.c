@@ -7,33 +7,22 @@
 #include "lib.h"
 #include "fps.h"
 #include "drawables.h"
-
 #include "app/ninja.h"
-
 //----------------------------------------------------------------------- init
-
 inline static void main_init(){
-	load_drawable(1,"arts/obj/sphere.obj");
-
-
-	alloc(&_ninja_);
-
-	object*o=alloc(&_ninja_);
+	drawables_load_file_in_slot(1,"arts/obj/sphere.obj");
+	new(&_ninja_);
+	object*o=new(&_ninja_);
 	o->position.x=-.5f;
 	o->scale=(scale){.2f,.2f,.2f,1};
 }
-
-//-------------------------------------------------------------background_color
-
-struct{
-	GLclampf red;
-	GLclampf green;
-	GLclampf blue;
-}background_color={0,0,1};
-
 //------------------------------------------------------------------------ main
-
 int main(int argc, char *argv[]) {
+	struct{
+		GLclampf red;
+		GLclampf green;
+		GLclampf blue;
+	}background_color={0,0,1};
 
 	sdl_init();
 
@@ -53,15 +42,11 @@ int main(int argc, char *argv[]) {
 
 	printf(": %10s  : %4s :\n","type","size");
 	printf(": %10s  : %4ld :\n","object",sizeof(object));
-	//-------------------------------------------------------------------- loop
 
 	for(int running=1;running;){
-
 		fps__at__frame_begin();
-
 		SDL_Event event;
 		while(SDL_PollEvent(&event)){
-			//-------------------------------------------------------------keys
 			switch (event.type) {
 			case SDL_QUIT:
 				running = 0;
@@ -95,10 +80,7 @@ int main(int argc, char *argv[]) {
 					break;
 				}
 			}
-			//-------------------------------------------------------------keys
 		}
-
-		//---------------------------------------------------------------- draw
 
 		glClearColor(
 			background_color.red,
@@ -107,38 +89,22 @@ int main(int argc, char *argv[]) {
 		);
 
 		glClear(GL_COLOR_BUFFER_BIT);
-
 //		shader_render();
-
 		objects_update(fps.dt);
-
 		objects_render();
-
-
 		SDL_GL_SwapWindow(window.ref);
-
 		fps__at__update_frame_end();
-
 	}
 
 	//---------------------------------------------------------------------free
-
 	//? early-hangup
-
 	drawables_free();
-
 	objects_free();
-
 	shader_free();
-
 	fps_free();
-
 	textures_free();
-
 	window_free();
-
 	sdl_free();
-
 	return 0;
 }
 
