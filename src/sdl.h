@@ -51,17 +51,17 @@ static inline void init_sdl() {
 		exit(16);
 	}
 
-	if(TTF_Init()<0){
-		printf("%s %d: %s\n",__FILE__,__LINE__,IMG_GetError());
-		exit(17);
-	}
+//	if(TTF_Init()<0){
+//		printf("%s %d: %s\n",__FILE__,__LINE__,IMG_GetError());
+//		exit(17);
+//	}
 
-	sdl.font=TTF_OpenFont("arts/ttf/amadeus.ttf", 25);
-	if(!sdl.font){
-		puts("tried to load font");
-		printf("%s %d: %s\n",__FILE__,__LINE__,IMG_GetError());
-		exit(18);
-	}
+//	sdl.font=TTF_OpenFont("arts/ttf/amadeus.ttf", 25);
+//	if(!sdl.font){
+//		puts("tried to load font");
+//		printf("%s %d: %s\n",__FILE__,__LINE__,IMG_GetError());
+//		exit(18);
+//	}
 }
 
 //------------------------------------------------------------------------free

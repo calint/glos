@@ -1,51 +1,115 @@
 #pragma once
+#include<unistd.h>
+#include<stdio.h>
+#include<ctype.h>
 #include<stdlib.h>
-#include<string.h>
-#include"../../formats/obj/obj_o.h"
+#include"obj_o.h"
+// ----------------------------------------------------------------------- str
+
+typedef struct str{
+	char*ptr;
+	unsigned long int size;
+}str;
+
+// ---------------------------------------------------------------------- init
+
+inline static void str_initfromfile(str*this,const char*filepath){
+
+	FILE*f=fopen(filepath,"rb");
+
+	fseek(f,0,SEEK_END);
+
+	long s=ftell(f);
+	if(s<0){
+		perror("error while getting file size");
+		exit(-1);
+	}
+
+	this->size=(unsigned)s;
+
+	fseek(f,0,SEEK_SET);
+
+	this->ptr=malloc(this->size);
+
+	fread(this->ptr,this->size,1,f);
+
+	fclose(f);
+
+}
+
+// --------------------------------------------------------------------- write
+
+inline static void str_write(str*this,int fd){
+	write(fd,this->ptr,this->size);
+}
+
+// ---------------------------------------------------------------------- free
+
+inline static void str_free(str*this){
+	//	if(!this->ptr);//?
+	free(this->ptr);
+}
+
+// ---------------------------------------------------------------------------
+
+typedef struct span{
+	char*begin;
+	char*end;
+}span;
+
+typedef struct token{
+	char*begin;
+	char*content;
+	char*content_end;
+	char*end;
+}token;
+
+inline static void token_write(token*this,int fd){
+	write(fd,this->begin,(size_t)(this->end-this->begin));
+}
+
+inline static void foreach_token_in_str(str*s,void(*f)(token*)){
+	char*p=s->ptr;
+	int n=s->size;
+	token t;
+	t.begin=s->ptr;
+	while(1){
+		if(!n)break;
+		if(!isspace(*p))break;
+		p++;
+		n--;
+	}
+	t.content=p;
+	while(1){
+		if(!n)break;
+		if(isspace(*p))break;
+		p++;
+		n--;
+	}
+	t.content_end=p;
+	while(1){
+		if(!n)break;
+		if(!isspace(*p))break;
+		p++;
+		n--;
+	}
+	t.end=p;
+	f(&t);
+}
 
 typedef struct obj_file{
 	const char*name;
 	struct obj_o*o_array;
 }obj_file;
 
+inline static void load_obj_file__1(token*t){
+	token_write(t,1);
+}
+
 static void load_obj_file(obj_file*this,const char*path){
 	printf(" * load obj file: %s\n",path);
-	FILE*ptr_file =fopen(path,"r");
-	if (!ptr_file){
-		perror("could not open file");
-		perror(path);
-		exit(32);
-	}
-
-	int v_count=0;
-	int vn_count=0;
-	int vf_count=0;
-
-	char buf[1024];
-	while(1){
-		int res=fscanf(ptr_file,"%s",buf);
-		if(res==EOF){
-			printf("end-of-file");
-			break;
-		}
-		if(!strncmp(buf,"#",sizeof(buf))){// comment
-			continue;
-		}
-		printf("%s\n",buf);
-//		exit(0);
-//
-//		const char*delim=" ";
-//		char*token=strtok(line_buf,delim);
-//		while(token){
-//			if(!strncmp(token,"o")){
-//				printf(" * found object\n");
-//
-//			}
-//			printf( " %s\n",token);
-//			token=strtok(NULL,delim);
-//		}
-//		printf("%s",line_buf);
-	}
-
-	fclose(ptr_file);
+	str s;
+	str_initfromfile(&s,path);
+	str_write(&s,1);
+	foreach_token_in_str(&s,load_obj_file__1);
 }
