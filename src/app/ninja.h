@@ -17,9 +17,11 @@ inline static void update_ninja(object*this,dt dt){
 	if(this->position.x>1){
 		this->position.x=1;
 		this->velocity.x=-this->velocity.x;
+		this->angular_velocity.z=-this->angular_velocity.z;
 	}else if(this->position.x<-1){
 		this->position.x=-1;
 		this->velocity.x=-this->velocity.x;
+		this->angular_velocity.z=-this->angular_velocity.z;
 	}
 }
 
