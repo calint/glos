@@ -1,3 +1,4 @@
+#include "formats/obj/obj_file.h"
 #include "sdl.h"
 #include "window.h"
 #include "shader.h"
@@ -5,9 +6,6 @@
 #include "textures.h"
 #include "lib.h"
 #include "fps.h"
-
-//-------------------------------------------------------------------- include
-
 #include "objects/ninja.h"
 
 #include "objects/santa.h"
@@ -40,28 +38,8 @@ inline static void load_texture(int n,const char*path){
 //----------------------------------------------------------------------- init
 
 inline static void init_main(){
-
-	load_texture(default_background.texture_id,
-			"arts/wintertileset/png/BG/BG.png");
-	alloc(&default_background);
-
-	for(int i=0;i<10;i++){
-		char str[256];
-		sprintf(str,"arts/ninja/Idle__%03d.png",i);
-		load_texture(default_ninja.texture_id+i,str);
-	}
-	alloc(&default_ninja);
-
-	for(int i=1;i<17;i++){
-		char str[256];
-		sprintf(str,"arts/santa/Idle (%d).png",i);
-		load_texture(default_santa.texture_id-1+i,str);
-	}
-	alloc(&default_santa);
-
-//	load_texture(snowman.texture_id,
-//			"arts/wintertileset/png/Object/SnowMan.png");
-//	alloc(&snowman);
+	obj_file of;
+	load_obj_file(&of,"arts/obj/boulder_1/boulder_1.obj");
 }
 
 //-------------------------------------------------------------background_color
