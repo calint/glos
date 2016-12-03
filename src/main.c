@@ -36,7 +36,7 @@ inline static void load_texture(int n,const char*path){
 inline static void init_main(){
 	size_t buf_size_in_bytes;
 	float*buf=/*takes*/read_obj_file_from_path(
-			"arts/obj/boulder_1/boulder_1.obj",
+			"arts/obj/boulder_1.obj",
 			&buf_size_in_bytes
 		);
 
@@ -45,10 +45,8 @@ inline static void init_main(){
 	drawable[1].vertex_buf=buf;
 	drawable[1].vertex_buf_size_in_bytes=buf_size_in_bytes;
 	drawable[1].vertex_count=(unsigned)(buf_size_in_bytes/vertex_size_in_bytes);
-
 	load_drawable(1);
-
-	alloc(&default_ninja);
+	alloc(&default_ninja)->drawable_id=1;
 }
 
 //-------------------------------------------------------------background_color

@@ -21,8 +21,13 @@ char*fragment_shader_source =
 uniform sampler2D utex;                    \n\
 varying mediump vec4 vrgba;                \n\
 varying mediump vec3 vnorm;                \n\
-void main(){                               \n\
-	gl_FragColor=vec4(vnorm,1)+vrgba;                    \n\
+void main(){             \n\
+	                  \n\
+	mediump vec3 ambient_light_vector=vec3(-1.0,0,0);                  \n\
+	                  \n\
+	                  \n\
+	mediump float al=dot(ambient_light_vector,vnorm);                  \n\
+	gl_FragColor=vrgba+al;         \n\
 }\n";
 
 typedef struct {

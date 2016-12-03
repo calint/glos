@@ -33,7 +33,6 @@ typedef struct object{
 
 	id drawable_id;
 
-
 	void(*init)(struct object*);
 
 	void(*update)(struct object*,dt);
