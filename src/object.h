@@ -20,7 +20,7 @@ typedef struct object{
 	id id;
 	id texture_id;
 	color color;
-	bits*bits;
+	bits*bits_ref;
 	id drawable_id;
 	float model_to_world_matrix[4*4];
 	int model_to_world_matrix_is_updated;
@@ -52,6 +52,12 @@ inline static void object_update(object*this,dt dt){
 		this->model_to_world_matrix_is_updated=0;
 	}
 }
+inline static void _object_init_(object*this){
+	printf(" object init: [ %4s %p ]\n",this->type.path,this);
+}
+inline static void _object_free_(object*this){
+	printf(" object free: [ %4s %p ]\n",this->type.path,this);
+}
 //----------------------------------------------------------------------------
 static object default_object={
 	.position={0,0,0,0},
@@ -64,14 +70,14 @@ static object default_object={
 	.id=0,
 	.texture_id=0,
 	.color=0,
-	.bits=0,
+	.bits_ref=NULL,
 	.drawable_id=0,
 	.model_to_world_matrix={1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1},
-	.init=NULL,
+	.init=_object_init_,
 	.update=object_update,
 	.collision=NULL,
 	.render=NULL,
-	.free=NULL,
+	.free=_object_free_,
 	.part={NULL,NULL,NULL,NULL}
 };
 //----------------------------------------------------------- ------ functions

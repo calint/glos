@@ -47,6 +47,8 @@ int main(int argc, char *argv[]) {
 
 	init_objects();
 
+	init_drawables();
+
 	init_main();
 
 	printf(": %10s  : %4s :\n","type","size");
@@ -122,6 +124,8 @@ int main(int argc, char *argv[]) {
 	//---------------------------------------------------------------------free
 
 	//? early-hangup
+
+	free_drawables();
 
 	free_objects();
 

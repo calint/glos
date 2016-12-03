@@ -37,11 +37,11 @@ inline static void init_objects(){}
 //------------------------------------------------------------------------ free
 
 inline static void free_objects() {
-	object*o=objects;
-	while(o<objects_end_ptr){
-		if(o->bits&&is_bit_set(o->bits,bit_object_allocated))
-			if(o->free)o->free(o);
-		o++;
+	for(int i=0;i<object_count;i++){
+		object*o=&objects[i];
+		if(is_bit_set(&objects_bits[i],bit_object_allocated))
+			if(o->free)
+				o->free(o);
 	}
 }
 
@@ -60,10 +60,10 @@ inline static object*alloc(object*initializer){
 			set_bit(object_bits_seek_ptr,0); // allocate //? racing
 //			bits_set(object_bits_seek_ptr,0); // allocate //? racing
 			object*o=object_seek_ptr;
-			o->bits=object_bits_seek_ptr; // used at free to
 			object_seek_ptr++;
 			object_bits_seek_ptr++;      // unset alloc bit
 			*o=initializer?*initializer:default_object;
+			o->bits_ref=object_bits_seek_ptr; // used at free to
 			if (o->init)o->init(o);
 			return o;
 		}
@@ -77,7 +77,7 @@ inline static object*alloc(object*initializer){
 //------------------------------------------------------------------------ free
 
 inline static void free_object(object*o){
-	clear_bit(o->bits,bit_object_allocated); //? racing
+	clear_bit(o->bits_ref,bit_object_allocated); //? racing
 }
 //--------------------------------------------------------------------- update
 

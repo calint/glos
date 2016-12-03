@@ -13,7 +13,7 @@ typedef struct ninja_animator_part{
 
 //---------------------------------------------------------------------- update
 static void update_ninja_animator_part(object*o,part*this,dt dt){
-//	printf("update ninja part");
+//	printf(" object init: [ %4s %p ]\n",this->type.path,this);
 }
 
 //--------------------------------------------------------------------- default
