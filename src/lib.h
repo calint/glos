@@ -79,12 +79,12 @@ inline static void add_vec4_over_dt(vec4*this,vec4*other,dt dt){
 
 //----------------------------------------------------------------------------
 
-inline static float random(){return(float)rand()/(float)RAND_MAX;}
+inline static float rnd(){return(float)rand()/(float)RAND_MAX;}
 
 //----------------------------------------------------------------------------
 
-inline static double random_range(float low,float high){
-	return random()*(high-low)+low;
+inline static float random_range(float low,float high){
+	return (float)rand()*(high-low)+low;
 }
 
 //----------------------------------------------------------------------------

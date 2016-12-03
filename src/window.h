@@ -78,7 +78,7 @@ struct{
 static inline void init_window() {
 //	puts(" *** requested:");
 //	gl_request_profile_and_version(SDL_GL_CONTEXT_PROFILE_ES,2,0);
-	gl_request_profile_and_version(SDL_GL_CONTEXT_PROFILE_CORE,4,5);
+//	gl_request_profile_and_version(SDL_GL_CONTEXT_PROFILE_CORE,4,5);
 //	puts(" ***  reading:");
 //	gl_print_context_profile();
 
