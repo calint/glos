@@ -27,7 +27,7 @@ inline static void init_santa(object*this) {
 	a->time_duration_per_frame=.2f;
 	a->current_texture_index=a->texture_index_for_first_frame;
 	a->animation_time_left_for_current_frame=a->time_duration_per_frame;
-	this->extension=a;
+	this->parts=a;
 }
 
 //---------------------------------------------------------------------------
@@ -39,7 +39,7 @@ inline static void update_santa(object*this,dt dt){
 
 	update_bounding_radius_using_scale(this);
 
-	animator_part*a=animator_part_(this->extension);
+	animator_part*a=animator_part_(this->parts);
 	update_animator_part(a,dt);
 	this->texture_id=a->current_texture_index;
 }

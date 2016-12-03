@@ -27,12 +27,12 @@ inline static void init_ninja(object*this) {
 	a->texture_index_for_first_frame=10;
 	a->texture_index_for_last_frame=19;
 	a->time_duration_per_frame=.2f;
-	this->extension=a;
+	this->parts=a;
 }
 
 //----------------------------------------------------------------------- free
 
-inline static void free_ninja(object*this){free(this->extension);}
+inline static void free_ninja(object*this){free(this->parts);}
 
 //----------------------------------------------------------------------update
 
@@ -44,7 +44,7 @@ inline static void update_ninja(object*this,dt dt){
 		this->velocity.y=-this->velocity.y;
 	}
 
-	animator_part*a=animator_part_(this->extension);
+	animator_part*a=animator_part_(this->parts);
 	update_animator_part(a,dt);
 	this->texture_id=a->current_texture_index;
 }

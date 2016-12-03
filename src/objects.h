@@ -84,15 +84,16 @@ inline static void free_object(object*o){
 inline static void update_objects(dt dt){
 	object*o=objects;
 	while(o<objects_end_ptr){
-		add_vec4_over_dt(&o->position,&o->velocity,dt);
-		add_vec4_over_dt(&o->angle,&o->angular_velocity,dt);
-		if(o->model_to_world_matrix_is_updated &&
-			(o->velocity.x||o->velocity.y||o->velocity.z||
-			o->angular_velocity.x||o->angular_velocity.y||
-			o->angular_velocity.z))
-		{
-			o->model_to_world_matrix_is_updated=0;
-		}
+//		add_vec4_over_dt(&o->position,&o->velocity,dt);
+//		add_vec4_over_dt(&o->angle,&o->angular_velocity,dt);
+//		if(o->model_to_world_matrix_is_updated &&
+//			(o->velocity.x||o->velocity.y||o->velocity.z||
+//			o->angular_velocity.x||o->angular_velocity.y||
+//			o->angular_velocity.z))
+//		{
+//			o->model_to_world_matrix_is_updated=0;
+//		}
+
 		if(o->update)o->update(o,dt);
 		o++;
 	}

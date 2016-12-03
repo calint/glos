@@ -10,44 +10,26 @@
 
 #include "app/ninja.h"
 
-//------------------------------------------------------------------------ lib
-
-inline static void load_texture(int n,const char*path){
-	SDL_Surface*loaded_surface=IMG_Load(path);
-	if(!loaded_surface){
-		printf("%s %d: %s",__FILE__,__LINE__,SDL_GetError());
-		exit(12);
-	}
-	SDL_Texture*tex=SDL_CreateTextureFromSurface(
-			window.renderer,
-			loaded_surface);
-	if(!tex){
-		printf("%s %d: %s",__FILE__,__LINE__,SDL_GetError());
-		exit(13);
-	}
-	texture[n].ptr=tex;
-
-	SDL_QueryTexture(tex,NULL,NULL,&texture[n].width,&texture[n].height);
-	SDL_FreeSurface(loaded_surface);
-}
-
 //----------------------------------------------------------------------- init
 
 inline static void init_main(){
-	load_drawable(alloc(&default_ninja)->drawable_id=1,"arts/obj/sphere.obj");
+	load_drawable(1,"arts/obj/sphere.obj");
+
+
+	alloc(&default_ninja);
+
+	object*o=alloc(&default_ninja);
+	o->position.x=-.5f;
+	o->scale=(scale){.2f,.2f,.2f,1};
 }
 
 //-------------------------------------------------------------background_color
 
 struct{
-
 	GLclampf red;
-
 	GLclampf green;
-
 	GLclampf blue;
-
-}background_color={1,1,0};
+}background_color={0,0,1};
 
 //------------------------------------------------------------------------ main
 
@@ -67,6 +49,8 @@ int main(int argc, char *argv[]) {
 
 	init_main();
 
+	printf(": %10s  : %4s :\n","type","size");
+	printf(": %10s  : %4ld :\n","object",sizeof(object));
 	//-------------------------------------------------------------------- loop
 
 	for(int running=1;running;){
