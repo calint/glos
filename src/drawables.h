@@ -33,18 +33,42 @@ static inline void free_drawables(){
 
 //----------------------------------------------------------------------------
 
-static inline void load_drawable(int index){
+//static inline void load_drawable(int index){
+//	GLuint vertex_buffer_id;
+//
+//	glGenBuffers(1,&vertex_buffer_id);
+//
+//	glBindBuffer(GL_ARRAY_BUFFER,vertex_buffer_id);
+//
+//	drawable[index].vertex_buf_id=vertex_buffer_id;
+//
+//	glBufferData(GL_ARRAY_BUFFER,
+//			(signed)drawable[index].vertex_buf_size_in_bytes,
+//			drawable[index].vertex_buf,GL_STATIC_DRAW);
+//}
+
+static void drawables_load(int index,const char*file_path){
+	size_t buf_size_in_bytes;
+	float*buf=/*takes*/read_obj_file_from_path(
+			file_path,
+			&buf_size_in_bytes
+		);
+
+	size_t vertex_size_in_bytes=(3+4+3)*sizeof(float); // vertex, color, normal
+
+	drawable[index].vertex_buf=buf;
+	drawable[index].vertex_buf_size_in_bytes=buf_size_in_bytes;
+	drawable[index].vertex_count=(unsigned)(buf_size_in_bytes/vertex_size_in_bytes);
+
 	GLuint vertex_buffer_id;
-
 	glGenBuffers(1,&vertex_buffer_id);
-
 	glBindBuffer(GL_ARRAY_BUFFER,vertex_buffer_id);
-
 	drawable[index].vertex_buf_id=vertex_buffer_id;
-
 	glBufferData(GL_ARRAY_BUFFER,
 			(signed)drawable[index].vertex_buf_size_in_bytes,
 			drawable[index].vertex_buf,GL_STATIC_DRAW);
+
+//	load_drawable(index);
 }
 
 static inline void draw_drawable(int index){
@@ -68,3 +92,5 @@ static inline void draw_drawable(int index){
 
 	glDrawArrays(GL_TRIANGLES,0,(signed)drawable[index].vertex_count);
 }
+
+

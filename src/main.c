@@ -34,19 +34,7 @@ inline static void load_texture(int n,const char*path){
 //----------------------------------------------------------------------- init
 
 inline static void init_main(){
-	size_t buf_size_in_bytes;
-	float*buf=/*takes*/read_obj_file_from_path(
-			"arts/obj/cube.obj",
-			&buf_size_in_bytes
-		);
-
-	size_t vertex_size_in_bytes=(3+4+3)*sizeof(float); // vertex, color, normal
-
-	drawable[1].vertex_buf=buf;
-	drawable[1].vertex_buf_size_in_bytes=buf_size_in_bytes;
-	drawable[1].vertex_count=(unsigned)(buf_size_in_bytes/vertex_size_in_bytes);
-	load_drawable(1);
-	alloc(&default_ninja)->drawable_id=1;
+	drawables_load(alloc(&default_ninja)->drawable_id=1,"arts/obj/sphere.obj");
 }
 
 //-------------------------------------------------------------background_color
