@@ -36,7 +36,7 @@ inline static void load_texture(int n,const char*path){
 inline static void init_main(){
 	size_t buf_size_in_bytes;
 	float*buf=/*takes*/read_obj_file_from_path(
-			"arts/obj/boulder_1.obj",
+			"arts/obj/cube.obj",
 			&buf_size_in_bytes
 		);
 

@@ -5,9 +5,9 @@
 //----------------------------------------------------------------------- init
 
 inline static void init_ninja(object*this) {
-	this->scale=(scale){1,1,1,0};
+	this->scale=(scale){.5,.5,.5,0};
 	this->angular_velocity.z=90;
-	this->velocity.x=.5f;
+//	this->velocity.x=.5f;
 	update_bounding_radius_using_scale(this);
 }
 

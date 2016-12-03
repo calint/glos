@@ -92,12 +92,9 @@ inline static void object_update_model_to_world_matrix(object*this){
 
 	mat4_load_translate(this->model_to_world_matrix,&this->position);
 	mat4_append_rotation_about_z_axis(this->model_to_world_matrix,this->angle.z);
-
+	mat4_scale(this->model_to_world_matrix,&this->scale);
 	this->model_to_world_matrix_is_updated=1;
 
-//	model_to_world_matrix_.append_scaling(phy.s);
-//	model_to_world_matrix_needs_update=false;
-//		p(" [%u]  update_model_to_world_matrix %p\n",gl::time_stamp,this);
 }
 
 //----------------------------------------------------------- ------ functions
@@ -142,9 +139,13 @@ inline static void draw_texture_and_bounding_sphere(object*o) {
 inline static void render_drawable(object*o) {
 	if(o->drawable_id){
 		object_update_model_to_world_matrix(o);
+
 		glUniformMatrix4fv((signed)shader.model_to_world_matrix_slot,1,0,
 				o->model_to_world_matrix);
+
 		draw_drawable(o->drawable_id);
+
+
 	}
 }
 //----------------------------------------------------------------------------
