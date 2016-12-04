@@ -1,0 +1,16 @@
+ [x] dynamic pointer vector
+ [ ] obj format, read colors
+ [ ]     read textures
+ [ ] bounding volume
+ [ ]    sphere
+ [ ]    box
+ [ ]    planes
+ [ ]     empty/solid spaces, boolean
+ [ ] camera
+ [ ] grid
+ [ ]   multi/single thread
+ [ ]    cull
+ [ ]      bounding_volume
+ [ ] keymaphub
+ [ ]    multiuser
+
