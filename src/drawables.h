@@ -38,7 +38,7 @@ static void drawables_load_file_in_slot(int id,const char*file_path){
 	glBindBuffer(GL_ARRAY_BUFFER,vertex_buffer_id);
 	drawables[id].vertex_buf_gid=vertex_buffer_id;
 	glBufferData(GL_ARRAY_BUFFER,(signed)buf_size_in_bytes,buf,GL_STATIC_DRAW);
-	free(buf);
+//	free(buf); //?
 #endif
 //	load_drawable(index);
 }

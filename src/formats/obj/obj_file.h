@@ -7,6 +7,7 @@
 #include<stdlib.h>
 #include<fcntl.h>
 #include"../../lib.h"
+#include"../../dynpvec.h"
 
 typedef struct token{
 	const char*begin;
@@ -142,68 +143,34 @@ static/*gives*/float*read_obj_file_from_path(const char*path,size_t*bufsize){
 
 	char*filedata=malloc(size+1);
 	read(fd,filedata,size);
-	filedata[size+1]=0;
+	filedata[size]=0;
 	close(fd);
 
-	const char*p=filedata;
-	size_t vertex_count=0,normal_count=0,face_count=0;
-	while(1){
-		if(!*p)break;
-		token t=next_token_from_string(p);
-		p+=token_size_including_whitespace(&t);
-		if(token_starts_with(&t,"#")){
-			p=scan_to_including_newline(p);
-			continue;
-		}
-		if(token_equals(&t,"mtllib")){
-			p=scan_to_including_newline(p);
-			continue;
-		}
-		if(token_equals(&t,"o")){
-			p=scan_to_including_newline(p);
-			continue;
-		}
-		if(token_equals(&t,"usemtl")){
-			p=scan_to_including_newline(p);
-			continue;
-		}
-		if(token_equals(&t,"s")){
-			p=scan_to_including_newline(p);
-			continue;
-		}
-		if(token_equals(&t,"v")){
-			vertex_count++;
-			p=scan_to_including_newline(p);
-			continue;
-		}
-		if(token_equals(&t,"vn")){
-			normal_count++;
-			p=scan_to_including_newline(p);
-			continue;
-		}
-		if(token_equals(&t,"f")){
-			face_count++;
-			p=scan_to_including_newline(p);
-			continue;
-		}
-		print_token_including_whitespace(&t);
-	}
+	dynpvec vertices=_dynpvec_init_;
+	dynpvec normals=_dynpvec_init_;
+	dynpvec faces=_dynpvec_init_;
 
-	vec4*vertex_array=malloc(sizeof(vec4)*vertex_count);
-	vec4*vertex_array_seek=vertex_array;
+//	vec4*vertex_array=malloc(sizeof(vec4)*vertex_count);
+//	vec4*vertex_array_seek=vertex_array;
 
-	vec4*normal_array=malloc(sizeof(vec4)*normal_count);
-	vec4*normal_array_seek=normal_array;
+//	vec4*normal_array=malloc(sizeof(vec4)*normal_count);
+//	vec4*normal_array_seek=normal_array;
 	//                   vertex  3 vertices
-	*bufsize=face_count*((3+3+3)*3)*sizeof(float);//? assumes triangles
-	float*glbuf=malloc(*bufsize);
+//	*bufsize=face_count*((3+3+3)*3)*sizeof(float);//? assumes triangles
+
+
+	float*glbuf=malloc(10000);
 	float*glbuf_seek=glbuf;
 
-	p=filedata;
-	while(1){
-		if(!*p)break;
+	size_t nnormals=0;
+	size_t nfaces=0;
+
+	const char*p=filedata;
+
+//	puts(p);
+	while(*p){
 		token t=next_token_from_string(p);
-		p+=token_size_including_whitespace(&t);
+		p=t.end;//token_size_including_whitespace(&t);
 		if(token_starts_with(&t,"#")){
 			p=scan_to_including_newline(p);
 			continue;
@@ -239,7 +206,14 @@ static/*gives*/float*read_obj_file_from_path(const char*path,size_t*bufsize){
 			float z=token_asfloat(&tz);
 			p=tz.end;
 
-			*vertex_array_seek++=(vec4){x,y,z,0};
+			vec4*ptr=malloc(sizeof(vec4));
+			*ptr=(vec4){x,y,z,0};
+			dynpvec_add(&vertices,ptr);
+//			if(dynpvec_get_last(&vertices)!=ptr){
+//				printf(" returned value not same");
+//				exit(-2);
+//			}
+//			*vertex_array_seek++=(vec4){x,y,z,0};
 			continue;
 		}
 		if(token_equals(&t,"vn")){
@@ -255,22 +229,46 @@ static/*gives*/float*read_obj_file_from_path(const char*path,size_t*bufsize){
 			p=tz.end;
 			float z=token_asfloat(&tz);
 
-			*normal_array_seek++=(vec4){x,y,z,0};
+			vec4*ptr=malloc(sizeof(vec4));
+			*ptr=(vec4){x,y,z,0};
+			dynpvec_add(&normals,ptr);
+			if(dynpvec_get_last(&normals)!=ptr){
+				printf(" returned value not same");
+				exit(-2);
+			}
+			nnormals++;
+//			*normal_array_seek++=(vec4){x,y,z,0};
 			continue;
 		}
 		if(token_equals(&t,"f")){
-			// position(x,y,z) normal(x,y,z)
-
+//			FILE*f=fopen("/home/c/w/glos/dump.txt","w");
+//			// position(x,y,z) normal(x,y,z)
+//			for(size_t i=0;i<vertices.size;i++){
+//				vec4*v=(vec4*)dynpvec_get(&vertices,i);
+//				fprintf(f,"v %f %f %f\n",v->x,v->y,v->z);
+//			}
+//			// position(x,y,z) normal(x,y,z)
+//			for(size_t i=0;i<normals.size;i++){
+//				vec4*v=(vec4*)dynpvec_get(&normals,i);
+//				fprintf(f,"vn %.4f %.4f %.4f\n",v->x,v->y,v->z);
+//			}
+//			fclose(f);
+//			exit(0);
+			char*start_of_f=p;
+			nfaces++;
+			printf("face : %zu\n",nfaces);
 			for(int i=0;i<3;i++){
 				token v1=next_token_from_string_additional_delim(p,'/');
 				p=v1.end;
+//				int v1ix=token_as_int(&v1);
 				int v1ix=atoi(v1.content);
 
 				// position
-				vec4 vtx=vertex_array[v1ix-1];
-				*glbuf_seek++=vtx.x;
-				*glbuf_seek++=vtx.y;
-				*glbuf_seek++=vtx.z;
+				vec4*vtx=(vec4*)dynpvec_get(&vertices,(size_t)(v1ix-1));
+//				vec4 vtx=vertex_array[v1ix-1];
+				*glbuf_seek++=vtx->x;
+				*glbuf_seek++=vtx->y;
+				*glbuf_seek++=vtx->z;
 
 				// color
 				*glbuf_seek++=0;// r
@@ -288,7 +286,8 @@ static/*gives*/float*read_obj_file_from_path(const char*path,size_t*bufsize){
 				p=v3.end;
 				int v3ix=atoi(v3.content);
 
-				vec4 norm=normal_array[v3ix-1];
+//				vec4 norm=normal_array[v3ix-1];
+				vec4 norm=*(vec4*)dynpvec_get(&normals,(size_t)(v3ix-1));
 				*glbuf_seek++=norm.x;
 				*glbuf_seek++=norm.y;
 				*glbuf_seek++=norm.z;
@@ -296,6 +295,7 @@ static/*gives*/float*read_obj_file_from_path(const char*path,size_t*bufsize){
 			continue;
 		}
 	}
+	*bufsize=sizeof(float)*(size_t)(glbuf_seek-glbuf);
 	return glbuf;
 }
 

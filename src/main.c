@@ -12,12 +12,14 @@
 #include"dynpvec.h"
 //----------------------------------------------------------------------- init
 inline static void main_init(){
-	drawables_load_file_in_slot(1,"arts/obj/cube.obj");
-	drawables_load_file_in_slot(2,"arts/obj/sphere.obj");
-	drawables_load_file_in_slot(3,"arts/obj/cylinder.obj");
-	drawables_load_file_in_slot(4,"arts/obj/trunk.obj");
-	drawables_load_file_in_slot(5,"arts/obj/boulder_1.obj");
-	drawables_load_file_in_slot(6,"arts/obj/car1.obj");
+//	drawables_load_file_in_slot(1,"arts/obj/cube.obj");
+//	drawables_load_file_in_slot(2,"arts/obj/sphere.obj");
+//	drawables_load_file_in_slot(3,"arts/obj/cylinder.obj");
+//	drawables_load_file_in_slot(4,"arts/obj/trunk.obj");
+//	drawables_load_file_in_slot(5,"arts/obj/boulder_1.obj");
+//	drawables_load_file_in_slot(6,"arts/obj/car1.obj");
+
+	drawables_load_file_in_slot(6,"arts/obj/sphere.obj");
 
 	new(&_ninja_);
 
@@ -31,30 +33,6 @@ inline static void main_init(){
 }
 //------------------------------------------------------------------------ main
 int main(int argc,char*argv[]){
-	while(argc--)puts(*argv++);
-	{
-		dynpvec v=_dynpvec_init_;
-		int a=1,b=2,c=3;
-		dynpvec_add(&v,&a);
-		dynpvec_add(&v,&b);
-		dynpvec_add(&v,&c);
-
-		printf(" %d  %d   %d\n",
-				*((int*)dynpvec_get(&v,0)),
-				*((int*)dynpvec_get(&v,1)),
-				*((int*)dynpvec_get(&v,2))
-			);
-
-		int*p=(int*)dynpvec_get(&v,0);
-		if(*p!=a){exit(-1);}
-		if(p!=&a){exit(-1);}
-		p=dynpvec_get(&v,2);
-		if(p!=&c){exit(-1);}
-		puts("ok");
-		exit(0);
-	}
-
-
 	printf(":-%14s : %8s-:\n","--------------","--------");
 	printf(": %14s : %8s :\n","type","size");
 	printf(":-%14s : %8s-:\n","--------------","--------");

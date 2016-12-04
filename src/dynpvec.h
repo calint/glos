@@ -1,7 +1,7 @@
 #pragma once
 #include<stdlib.h>
 
-#define dynpvec_initial_cap 2
+#define dynpvec_initial_cap 10000
 #define dynpvec_realloc_strategy 'a'
 #define dynpvec_bounds_check 1
 
@@ -22,10 +22,10 @@ inline static void __dynpvec_insure_free_capcity(dynpvec*this,size_t n){
 	if(rem>=n)
 		return;
 	if(this->data){
-		size_t new_size;
+		size_t new_cap;
 		switch(dynpvec_realloc_strategy){
 		case 'a':
-			new_size=this->cap*2;
+			new_cap=this->cap*2;
 			break;
 		default:
 			fprintf(stderr,"\nunknown-strategy");
@@ -33,20 +33,18 @@ inline static void __dynpvec_insure_free_capcity(dynpvec*this,size_t n){
 			exit(-1);
 		}
 
-//		void* *new_data=realloc(this->data,sizeof(void*)*new_size);
-		void* *new_data=malloc(sizeof(void*)*new_size);
-
+		printf("   re-allocating vector %p\n",this->data);
+		void* *new_data=realloc(this->data,sizeof(void*)*new_cap);
 		if(!new_data){
 			fprintf(stderr,"\nout-of-memory");
 			fprintf(stderr,"\tfile: '%s'  line: %d\n\n",__FILE__,__LINE__);
 			exit(-1);
 		}
 		if(new_data!=this->data){ // re-locate
-			memcpy(new_data,this->data,this->size*sizeof(void*));
+			printf("   re-allocated vector %p to %p\n",this->data,new_data);
 			this->data=new_data;
 		}
-		this->cap=new_size;
-		// realloc
+		this->cap=new_cap;
 		return;
 	}
 	// initialize data
@@ -67,13 +65,18 @@ inline static void dynpvec_add(dynpvec*this,void*ptr){
 inline static void*dynpvec_get(dynpvec*this,size_t index){
 #ifdef dynpvec_bounds_check
 	if(index>=this->cap){
-		perror("\nindex-out-of-bounds");
+		fprintf(stderr,"\nindex-out-of-bounds");
 		fprintf(stderr,"\t%s\n\n%d  index: %zu    capacity: %zu\n",
 				__FILE__,__LINE__,index,this->cap);
 		exit(-1);
 	}
 #endif
 	void*p=*(this->data+index);
+	return p;
+}
+
+inline static void*dynpvec_get_last(dynpvec*this){
+	void*p=*(this->data+this->size-1);
 	return p;
 }
 
@@ -84,3 +87,30 @@ inline static void*dynpvec_get(dynpvec*this,size_t index){
 //inline static void dynpvec_insert_after(dynpvec*this,void*ptr){}
 //inline static void dynpvec_insert_before(dynpvec*this,size_t index){}
 //inline static void dynpvec_insert_after(dynpvec*this,size_t index){}
+
+
+
+
+//while(argc--)puts(*argv++);
+//{
+//	dynpvec v=_dynpvec_init_;
+//	int a=1,b=2,c=3;
+//	dynpvec_add(&v,&a);
+//	dynpvec_add(&v,&b);
+//	dynpvec_add(&v,&c);
+//
+//	printf(" %d  %d   %d\n",
+//			*((int*)dynpvec_get(&v,0)),
+//			*((int*)dynpvec_get(&v,1)),
+//			*((int*)dynpvec_get(&v,2))
+//		);
+//
+//	int*p=(int*)dynpvec_get(&v,0);
+//	if(*p!=a){exit(-1);}
+//	if(p!=&a){exit(-1);}
+//	p=dynpvec_get(&v,2);
+//	if(p!=&c){exit(-1);}
+//	puts("ok");
+//	exit(0);
+//}
+
