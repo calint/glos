@@ -1,36 +1,5 @@
-//#define cpu_level1_cache_line_size 64
-//#define GLOS_EMBEDDED
-
-
-//			FILE*f=fopen("/home/c/w/glos/dump.txt","w");
-//			// position(x,y,z) normal(x,y,z)
-//			for(size_t i=0;i<vertices.size;i++){
-//				vec4*v=(vec4*)dynpvec_get(&vertices,i);
-//				fprintf(f,"v %f %f %f\n",v->x,v->y,v->z);
-//			}
-//			// position(x,y,z) normal(x,y,z)
-//			for(size_t i=0;i<normals.size;i++){
-//				vec4*v=(vec4*)dynpvec_get(&normals,i);
-//				fprintf(f,"vn %.4f %.4f %.4f\n",v->x,v->y,v->z);
-//			}
-//			fclose(f);
-//			exit(0);
-//inline static void dbg(const char*p){
-//	while(1){
-//		if(!*p)return;
-//		if(*p=='\n')break;
-//		putchar(*p++);
-//	}
-//	putchar('\n');
-//}
-//
-
-
-
-
-
 template<dynf>
-//------------------------------------------------------------------------ dynf
+//------------------------------------------------------------------ ${template}
 #pragma once
 #include<stdlib.h>
 
@@ -98,7 +67,7 @@ inline static void ${template}_add(${template}*this,float f){
 //-----------------------------------------------------------------------------
 
 inline static float ${template}_get(${template}*this,size_t index){
-#ifdef dynf_bounds_check
+#ifdef ${template}_bounds_check
 	if(index>=this->cap){
 		fprintf(stderr,"\nindex-out-of-bounds");
 		fprintf(stderr,"\t%s\n\n%d  index: %zu    capacity: %zu\n",
@@ -111,13 +80,13 @@ inline static float ${template}_get(${template}*this,size_t index){
 
 //-----------------------------------------------------------------------------
 
-inline static size_t ${template}_size_in_bytes(dynf*this){
+inline static size_t ${template}_size_in_bytes(${template}*this){
 	return this->size*sizeof(float);
 }
 
 //-----------------------------------------------------------------------------
 
-inline static void ${template}_free(dynf*this){
+inline static void ${template}_free(${template}*this){
 	if(!this->data)
 		return;
 	free(this->data);
