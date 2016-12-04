@@ -125,15 +125,6 @@ inline static const char*scan_to_including_newline(const char*p){
 	}
 }
 
-inline static void dbg(const char*p){
-	while(1){
-		if(!*p)return;
-		if(*p=='\n')break;
-		putchar(*p++);
-	}
-	putchar('\n');
-}
-
 // returns triangles:  3 vertices times [ x y z  r g b  nx ny nz ]
 static/*gives*/float*read_obj_file_from_path(const char*path,size_t*bufsize){
 	printf(" * load: %s\n",path);
@@ -173,19 +164,12 @@ static/*gives*/float*read_obj_file_from_path(const char*path,size_t*bufsize){
 
 	dynpvec vertices=_dynpvec_init_;
 	dynpvec normals=_dynpvec_init_;
-	dynpvec faces=_dynpvec_init_;
 
 	float*glbuf=malloc(100000);//? dyna_float
 	float*glbuf_seek=glbuf;
 
-	size_t nnormals=0;
-	size_t nfaces=0;
 	const char*p=filedata;
-	size_t nline=0;
 	while(*p){
-		nline++;
-		printf(" *** %zu: ",nline);
-		dbg(p);
 		token t=next_token_from_string(p);
 		p=t.end;//token_size_including_whitespace(&t);
 		if(token_starts_with(&t,"#")){
@@ -242,13 +226,10 @@ static/*gives*/float*read_obj_file_from_path(const char*path,size_t*bufsize){
 			vec4*ptr=malloc(sizeof(vec4));
 			*ptr=(vec4){x,y,z,0};
 			dynpvec_add(&normals,ptr);
-			nnormals++;
 			continue;
 		}
 
 		if(token_equals(&t,"f")){
-			nfaces++;
-			dbg(p);
 			for(int i=0;i<3;i++){
 				token v1=next_token_from_string_additional_delim(p,'/');
 				p=v1.end;
@@ -326,3 +307,12 @@ static/*gives*/float*read_obj_file_from_path(const char*path,size_t*bufsize){
 //			}
 //			fclose(f);
 //			exit(0);
+//inline static void dbg(const char*p){
+//	while(1){
+//		if(!*p)return;
+//		if(*p=='\n')break;
+//		putchar(*p++);
+//	}
+//	putchar('\n');
+//}
+//
