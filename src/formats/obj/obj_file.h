@@ -275,8 +275,9 @@ static/*gives*/float*read_obj_file_from_path(const char*path,size_t*bufsize){
 			continue;
 		}
 	}
-	*bufsize=sizeof(float)*(size_t)(glbuf_seek-glbuf);
+//	*bufsize=sizeof(float)*(size_t)(glbuf_seek-glbuf);
 //	return glbuf;
+	*bufsize=vertex_buffer.size*sizeof(float);
 	return vertex_buffer.data;
 }
 
