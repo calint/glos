@@ -16,6 +16,7 @@ inline static void main_init(){
 	drawables_load_file_in_slot(3,"arts/obj/cylinder.obj");
 	drawables_load_file_in_slot(4,"arts/obj/trunk.obj");
 	drawables_load_file_in_slot(5,"arts/obj/boulder_1.obj");
+	drawables_load_file_in_slot(6,"arts/obj/car1.obj");
 
 	new(&_ninja_);
 

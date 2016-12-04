@@ -56,7 +56,7 @@ static void _ninja_part_update_(object*o,part*this,dt dt){
 }
 //-------------------------------------------------------------- implementation
 static void _ninja_part_render_(object*o,part*this){
-	drawables_draw(4);
+//	drawables_draw(4);
 }
 static void _ninja_part_init_(object*o,part*this){
 	printf(" * new %-12s [ %p %p ]\n","ninja_part",o,this);

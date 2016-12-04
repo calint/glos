@@ -18,7 +18,7 @@ inline static void _ninja_init_(object*this);static object _ninja_={
 	.texture_id=0,
 	.color=0,
 	.bits_ref=NULL,
-	.drawable_id=1,
+	.drawable_id=6,
 	.model_to_world_matrix={1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1},
 	.init=_ninja_init_,
 	.update=_object_update_,
@@ -27,8 +27,8 @@ inline static void _ninja_init_(object*this);static object _ninja_={
 	.free=_ninja_free_,
 	.part={NULL,NULL,NULL,NULL}
 };inline static void _ninja_init_(object*this){
-	_object_init_(this);
 	printf(" * new %-12s [ %4s %p ]\n","ninja",this->type.path,this);
+	_object_init_(this);
 
 	this->scale=(scale){.5,.5,.5,0};
 	this->angular_velocity.z=90;
@@ -44,14 +44,12 @@ inline static void _ninja_init_(object*this);static object _ninja_={
 }
 //---------------------------------------------------------------------------
 inline static void _ninja_free_(object*this){
+	printf(" * del %-12s [ %4s %p ]\n","ninja",this->type.path,this);
 	_object_free_(this);
 
 	((ninja_part*)(this->part[0]))->part.free(
 			this,
 			&((ninja_part*)(this->part[0]))->part
 		);
-
-
-	printf(" * del %-12s [ %4s %p ]\n","ninja",this->type.path,this);
 }
 //---------------------------------------------------------------------------
