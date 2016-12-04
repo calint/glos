@@ -129,3 +129,26 @@ int main(int argc,char*argv[]){
 	return 0;
 }
 //----------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+//--- todo
+// [ ] obj format, read colors
+// [ ]     read textures
+// [ ] dynamic pointer vector
+// [ ] bounding volume
+// [ ]    sphere
+// [ ]    box
+// [ ]    planes
+// [ ]     empty/solid spaces, boolean
+// [ ] camera
+// [ ] grid
+// [ ]   multi/single thread
+// [ ]    cull
+// [ ]     view planes (bounding volume)
