@@ -48,12 +48,16 @@ int main(int argc,char*argv[]){
 
 	glCullFace(GL_BACK);
 	glEnable(GL_CULL_FACE);
+//
+//	glEnable(GL_TEXTURE_2D);
+//	glEnable(GL_BLEND); // transparency rgba
 
 	puts("");
 	printf(":-%10s-:-%7s-:\n","----------","-------");
 	printf(": %10s :-%7s-:\n","feature","");
 	printf(":-%10s-:-%7s-:\n","----------","-------");
 	printf(": %10s : %-7s :\n","cull face",glIsEnabled(GL_CULL_FACE)?"yes":"no");
+	printf(": %10s : %-7s :\n","blend",glIsEnabled(GL_BLEND)?"yes":"no");
 	printf(":-%10s-:-%7s-:\n","----------","-------");
 	puts("");
 

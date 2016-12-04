@@ -1,5 +1,5 @@
 #pragma once
-#include "sdl.h"
+#include"sdl.h"
 
 //--------------------------------------------------------------------- shader
 
@@ -162,11 +162,14 @@ inline static void load_program() {
 	glEnableVertexAttribArray(shader.texture_slot);
 
 //
+//	size_t height,width;
+//	char*data;
 //	GLuint textureID;
 //	glGenTextures(1,&textureID);
 //	glBindTexture(GL_TEXTURE_2D,textureID);
 //	glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB,
-//			width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
+//			width,height,
+//			0, GL_BGR, GL_UNSIGNED_BYTE, data);
 //	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
 //	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
 }
