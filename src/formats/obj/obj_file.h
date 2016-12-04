@@ -39,7 +39,7 @@ inline static int token_starts_with(token*t,const char*str){
 }
 
 inline static int token_equals(token*t,const char*str){
-	const char*p=t->content;
+	const char*p=t->content;//? stdlib
 	while(1){
 		if(p==t->content_end)
 			return 1;
@@ -50,7 +50,7 @@ inline static int token_equals(token*t,const char*str){
 	}
 }
 
-inline static float token_asfloat(token*t){
+inline static float token_get_float(token*t){
 	float f=(float)atof(t->content);// assuming file ends with whitespace
 	return f;
 }
@@ -96,11 +96,12 @@ inline static token next_token_from_string_additional_delim(
 	while(1){
 		if(!*p)break;
 		if(isspace(*p))break;
-		if(*p==delim)break;
+		if(*p==delim){
+			p++;
+			break;
+		}
 		p++;
 	}
-	if(*p==delim)
-		p++;
 	t.content_end=p;
 	while(1){
 		if(!*p)break;
@@ -113,62 +114,87 @@ inline static token next_token_from_string_additional_delim(
 
 inline static const char*scan_to_including_newline(const char*p){
 	while(1){
-		if(!*p)return p;
+		if(!*p)
+			return p;
 		if(*p=='\n'){
 			p++;
 			return p;
 		}
 		p++;
 	}
-	return p;
 }
 
 // returns triangles:  3 vertices times [ x y z  r g b  nx ny nz ]
 static/*gives*/float*read_obj_file_from_path(const char*path,size_t*bufsize){
 	printf(" * load: %s\n",path);
-	struct stat st;
-	if(stat(path,&st)==-1){
-		perror("\ncannot stat");
-		fprintf(stderr,"\t%s\n\n%s %d\n",path,__FILE__,__LINE__);
-		exit(-1);
-	}
-	size_t size=(unsigned)st.st_size;
+//	struct stat st;
+//	if(stat(path,&st)==-1){
+//		perror("\ncannot stat");
+//		fprintf(stderr,"\t%s\n\n%s %d\n",path,__FILE__,__LINE__);
+//		exit(-1);
+//	}
+//	size_t size=(unsigned)st.st_size;
+//
+//	int fd=open(path,O_RDONLY);
+//	if(fd==1){
+//		perror("\ncannot open");
+//		fprintf(stderr,"\t%s\n\n%s %d\n",path,__FILE__,__LINE__);
+//		exit(-1);
+//	}
+//
+//	char*filedata=malloc(size+1);
+//	ssiread(fd,filedata,size);
+//	filedata[size]=0;
+//	close(fd);
 
-	int fd=open(path,O_RDONLY);
-	if(fd==1){
+	FILE*f=fopen(path,"rb");
+	if(!f){
 		perror("\ncannot open");
 		fprintf(stderr,"\t%s\n\n%s %d\n",path,__FILE__,__LINE__);
 		exit(-1);
 	}
-
-	char*filedata=malloc(size+1);
-	read(fd,filedata,size);
-	filedata[size]=0;
-	close(fd);
+	long sk=fseek(f,0,SEEK_END);
+	if(sk<0){
+		fprintf(stderr,"\nwhile fseek\n");
+		fprintf(stderr,"\t\n%s %d\n",__FILE__,__LINE__);
+		exit(-1);
+	}
+	long length=ftell(f);
+	if(length<0){
+		fprintf(stderr,"\nwhile ftell\n");
+		fprintf(stderr,"\t\n%s %d\n",__FILE__,__LINE__);
+		exit(-1);
+	}
+//	fseek(f,0,SEEK_SET);
+	rewind(f);
+	char*filedata=(char*)malloc((size_t)length+1);
+	if(!filedata){
+		fprintf(stderr,"\nout-of-memory\n");
+		fprintf(stderr,"\t\n%s %d\n",__FILE__,__LINE__);
+		exit(-1);
+	}
+	size_t ncharsread=fread(filedata,1,(size_t)length+1,f);
+	if(ncharsread!=(size_t)length){
+		fprintf(stderr,"\nnot-a-full-read\n");
+		fprintf(stderr,"\t\n%s %d\n",__FILE__,__LINE__);
+		exit(-1);
+	}
+	fclose(f);
+	filedata[length]=0;
 
 	dynpvec vertices=_dynpvec_init_;
 	dynpvec normals=_dynpvec_init_;
 	dynpvec faces=_dynpvec_init_;
 
-//	vec4*vertex_array=malloc(sizeof(vec4)*vertex_count);
-//	vec4*vertex_array_seek=vertex_array;
-
-//	vec4*normal_array=malloc(sizeof(vec4)*normal_count);
-//	vec4*normal_array_seek=normal_array;
-	//                   vertex  3 vertices
-//	*bufsize=face_count*((3+3+3)*3)*sizeof(float);//? assumes triangles
-
-
-	float*glbuf=malloc(10000);
+	float*glbuf=malloc(10000);//?
 	float*glbuf_seek=glbuf;
 
 	size_t nnormals=0;
 	size_t nfaces=0;
-
 	const char*p=filedata;
-
-//	puts(p);
+	size_t nline=0;
 	while(*p){
+		nline++;
 		token t=next_token_from_string(p);
 		p=t.end;//token_size_including_whitespace(&t);
 		if(token_starts_with(&t,"#")){
@@ -195,77 +221,59 @@ static/*gives*/float*read_obj_file_from_path(const char*path,size_t*bufsize){
 
 		if(token_equals(&t,"v")){
 			token tx=next_token_from_string(p);
-			float x=token_asfloat(&tx);
+			float x=token_get_float(&tx);
 			p=tx.end;
 
 			token ty=next_token_from_string(p);
-			float y=token_asfloat(&ty);
+			float y=token_get_float(&ty);
 			p=ty.end;
 
 			token tz=next_token_from_string(p);
-			float z=token_asfloat(&tz);
+			float z=token_get_float(&tz);
 			p=tz.end;
 
 			vec4*ptr=malloc(sizeof(vec4));
 			*ptr=(vec4){x,y,z,0};
 			dynpvec_add(&vertices,ptr);
-//			if(dynpvec_get_last(&vertices)!=ptr){
-//				printf(" returned value not same");
-//				exit(-2);
-//			}
-//			*vertex_array_seek++=(vec4){x,y,z,0};
 			continue;
 		}
 		if(token_equals(&t,"vn")){
 			token tx=next_token_from_string(p);
 			p=tx.end;
-			float x=token_asfloat(&tx);
+			float x=token_get_float(&tx);
 
 			token ty=next_token_from_string(p);
 			p=ty.end;
-			float y=token_asfloat(&ty);
+			float y=token_get_float(&ty);
 
 			token tz=next_token_from_string(p);
 			p=tz.end;
-			float z=token_asfloat(&tz);
+			float z=token_get_float(&tz);
 
 			vec4*ptr=malloc(sizeof(vec4));
 			*ptr=(vec4){x,y,z,0};
 			dynpvec_add(&normals,ptr);
-			if(dynpvec_get_last(&normals)!=ptr){
-				printf(" returned value not same");
-				exit(-2);
-			}
 			nnormals++;
-//			*normal_array_seek++=(vec4){x,y,z,0};
 			continue;
 		}
 		if(token_equals(&t,"f")){
-//			FILE*f=fopen("/home/c/w/glos/dump.txt","w");
-//			// position(x,y,z) normal(x,y,z)
-//			for(size_t i=0;i<vertices.size;i++){
-//				vec4*v=(vec4*)dynpvec_get(&vertices,i);
-//				fprintf(f,"v %f %f %f\n",v->x,v->y,v->z);
-//			}
-//			// position(x,y,z) normal(x,y,z)
-//			for(size_t i=0;i<normals.size;i++){
-//				vec4*v=(vec4*)dynpvec_get(&normals,i);
-//				fprintf(f,"vn %.4f %.4f %.4f\n",v->x,v->y,v->z);
-//			}
-//			fclose(f);
-//			exit(0);
 			char*start_of_f=p;
 			nfaces++;
-			printf("face : %zu\n",nfaces);
+			printf("line: %zu    face : %zu\n",nline,nfaces);
 			for(int i=0;i<3;i++){
 				token v1=next_token_from_string_additional_delim(p,'/');
 				p=v1.end;
 //				int v1ix=token_as_int(&v1);
 				int v1ix=atoi(v1.content);
-
+				if(v1ix==0){
+					printf("first index is 0    line: %zu    nfaces:%zu\n   %s",
+							nline,
+							nfaces,
+							start_of_f);
+					exit(-1);
+				}
 				// position
 				vec4*vtx=(vec4*)dynpvec_get(&vertices,(size_t)(v1ix-1));
-//				vec4 vtx=vertex_array[v1ix-1];
 				*glbuf_seek++=vtx->x;
 				*glbuf_seek++=vtx->y;
 				*glbuf_seek++=vtx->z;
@@ -274,19 +282,22 @@ static/*gives*/float*read_obj_file_from_path(const char*path,size_t*bufsize){
 				*glbuf_seek++=0;// r
 				*glbuf_seek++=1;// g
 				*glbuf_seek++=0;// b
-//				*glbuf_seek++=0;// a
-
 
 				// texture index
 				token v2=next_token_from_string_additional_delim(p,'/');
 				p=v2.end;
-
 				// normal
 				token v3=next_token_from_string_additional_delim(p,'/');
 				p=v3.end;
 				int v3ix=atoi(v3.content);
-
-//				vec4 norm=normal_array[v3ix-1];
+				if(v3ix==0){
+					printf("third index is 0    line: %zu    nfaces:%zu\n   %s",
+							nline,
+							nfaces,
+							start_of_f
+						);
+					exit(-1);
+				}
 				vec4 norm=*(vec4*)dynpvec_get(&normals,(size_t)(v3ix-1));
 				*glbuf_seek++=norm.x;
 				*glbuf_seek++=norm.y;
@@ -331,3 +342,16 @@ static/*gives*/float*read_obj_file_from_path(const char*path,size_t*bufsize){
 
 
 
+//			FILE*f=fopen("/home/c/w/glos/dump.txt","w");
+//			// position(x,y,z) normal(x,y,z)
+//			for(size_t i=0;i<vertices.size;i++){
+//				vec4*v=(vec4*)dynpvec_get(&vertices,i);
+//				fprintf(f,"v %f %f %f\n",v->x,v->y,v->z);
+//			}
+//			// position(x,y,z) normal(x,y,z)
+//			for(size_t i=0;i<normals.size;i++){
+//				vec4*v=(vec4*)dynpvec_get(&normals,i);
+//				fprintf(f,"vn %.4f %.4f %.4f\n",v->x,v->y,v->z);
+//			}
+//			fclose(f);
+//			exit(0);
