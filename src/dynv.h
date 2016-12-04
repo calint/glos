@@ -1,12 +1,16 @@
 #pragma once
 #include<stdlib.h>
 
-#define dynv_initial_cap 8
+#define dynpvec_initial_cap 8
 #define dynv_realloc_strategy 'a'
-#define dynv_bounds_check 1
+#define dynpvec_bounds_check 1
+
+typedef void* array_of_voids;
+typedef void** ptr_to_array_of_voids;
+
 
 typedef struct dynv{
-	void* *data;/*owns*//*owns*/
+	void* *data;
 	size_t size;
 	size_t cap;
 }dynv;
@@ -44,7 +48,7 @@ inline static void __dynv_insure_free_capcity(dynv*this,size_t n){
 		return;
 	}
 	// initialize data
-	this->cap=dynv_initial_cap;
+	this->cap=dynpvec_initial_cap;
 	this->data=malloc(sizeof(void*)*this->cap);
 	if(!this->data){
 		fprintf(stderr,"\nout-of-memory");
@@ -71,18 +75,42 @@ inline static void*dynv_get(dynv*this,size_t index){
 	return p;
 }
 
-//-----------------------------------------------------------------------------
-
-inline static void dynv_free(dynv*this){
-	if(!this->data)
-		return;
-	void*p=this->data;
-	size_t i=this->size;
-	while(i--){
-		free(p);
-		p++;
-	}
-	free(this->data);
+inline static void*dynv_get_last(dynv*this){
+	void*p=*(this->data+this->size-1);
+	return p;
 }
 
-//-----------------------------------------------------------------------------
+//inline static void dynpvec_add_all(dynpvec*this){}
+//inline static void dynpvec_remove_ptr(dynpvec*this,void*ptr){}
+//inline static void dynpvec_remove_at_index(dynpvec*this,size_t index){}
+//inline static void dynpvec_insert_before(dynpvec*this,void*ptr){}
+//inline static void dynpvec_insert_after(dynpvec*this,void*ptr){}
+//inline static void dynpvec_insert_before(dynpvec*this,size_t index){}
+//inline static void dynpvec_insert_after(dynpvec*this,size_t index){}
+
+
+
+
+//while(argc--)puts(*argv++);
+//{
+//	dynpvec v=_dynpvec_init_;
+//	int a=1,b=2,c=3;
+//	dynpvec_add(&v,&a);
+//	dynpvec_add(&v,&b);
+//	dynpvec_add(&v,&c);
+//
+//	printf(" %d  %d   %d\n",
+//			*((int*)dynpvec_get(&v,0)),
+//			*((int*)dynpvec_get(&v,1)),
+//			*((int*)dynpvec_get(&v,2))
+//		);
+//
+//	int*p=(int*)dynpvec_get(&v,0);
+//	if(*p!=a){exit(-1);}
+//	if(p!=&a){exit(-1);}
+//	p=dynpvec_get(&v,2);
+//	if(p!=&c){exit(-1);}
+//	puts("ok");
+//	exit(0);
+//}
+

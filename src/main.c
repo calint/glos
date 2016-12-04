@@ -19,7 +19,7 @@ inline static void main_init(){
 //	drawables_load_file_in_slot(5,"arts/obj/boulder_1.obj");
 //	drawables_load_file_in_slot(6,"arts/obj/car1.obj");
 
-	drawables_load_file_in_slot(6,"arts/obj/cube.obj");
+	drawables_load_file_in_slot(6,"arts/obj/sphere.obj");
 
 	new(&_ninja_);
 

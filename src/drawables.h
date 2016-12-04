@@ -1,6 +1,5 @@
 #pragma once
-#include"mat4.h"
-#include"dynf.h"
+#include "mat4.h"
 //-------------------------------------------------------------------- texture
 #define drawables_count 1024
 struct{
@@ -21,23 +20,24 @@ static inline void drawables_free(){
 }
 //----------------------------------------------------------------------------
 static void drawables_load_file_in_slot(int id,const char*file_path){
-	dynf vertex_buffer=/*takes*/read_obj_file_from_path(file_path);
+	size_t buf_size_in_bytes;
+	float*buf=/*takes*/read_obj_file_from_path(
+			file_path,
+			&buf_size_in_bytes
+		);
 	//                   vertex, color, normal
-	drawables[id].vertex_buf_size=dynf_size_in_bytes(&vertex_buffer);
-	drawables[id].vertex_count=vertex_buffer.size;
+	size_t vertex_size_in_bytes=(3+3+3)*sizeof(float);
+	drawables[id].vertex_buf_size=buf_size_in_bytes;
+	drawables[id].vertex_count=(unsigned)(buf_size_in_bytes/vertex_size_in_bytes);
 
 #ifdef GLOS_EMBEDDED
-	drawable[id].vertex_buf=vertex_buffer.data;
+	drawable[id].vertex_buf=buf;
 #else
 	GLuint vertex_buffer_id;
 	glGenBuffers(1,&vertex_buffer_id);
 	glBindBuffer(GL_ARRAY_BUFFER,vertex_buffer_id);
 	drawables[id].vertex_buf_gid=vertex_buffer_id;
-	glBufferData(GL_ARRAY_BUFFER,
-			(signed)drawables[id].vertex_buf_size,
-			vertex_buffer.data,
-			GL_STATIC_DRAW
-	);
+	glBufferData(GL_ARRAY_BUFFER,(signed)buf_size_in_bytes,buf,GL_STATIC_DRAW);
 //	free(buf); //?
 #endif
 //	load_drawable(index);
@@ -46,7 +46,7 @@ static void drawables_load_file_in_slot(int id,const char*file_path){
 static inline void drawables_draw(int id){
 	int stride=(signed)(
 			drawables[id].vertex_buf_size/
-									drawables[id].vertex_count
+			drawables[id].vertex_count
 		);
 #ifdef GLOS_EMBEDDED
 	glVertexAttribPointer(shader.position_slot,3,GL_FLOAT,GL_FALSE,stride,
