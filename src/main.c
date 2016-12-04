@@ -1,4 +1,3 @@
-#include"formats/obj_file.h"
 #include"sdl.h"
 #include"window.h"
 #include"shader.h"
@@ -10,6 +9,7 @@
 #include"app/ninja.h"
 #include"alloc.h"
 #include"dynv.h"
+#include"obj_file.h"
 //----------------------------------------------------------------------- init
 inline static void main_init(){
 //	drawables_load_file_in_slot(1,"arts/obj/cube.obj");
