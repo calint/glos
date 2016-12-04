@@ -53,8 +53,13 @@ inline static int token_equals(token*t,const char*str){
 }
 
 inline static float token_get_float(token*t){
-	float f=(float)atof(t->content);// assuming file ends with whitespace
+	float f=(float)atof(t->content);//? assuming file ends with whitespace
 	return f;
+}
+
+inline static int token_get_int(token*t){
+	int i=atoi(t->content);//?  assuming file ends with whitespace
+	return i;
 }
 
 inline static token next_token_from_string(const char*s){
@@ -127,7 +132,53 @@ inline static const char*scan_to_including_newline(const char*p){
 	}
 }
 
-// returns triangles:  3 vertices times [ x y z  r g b  nx ny nz ]
+
+
+
+
+//# Blender MTL File: 'None'
+//# Material Count: 2
+//
+//newmtl blue
+//Ns 96.078431
+//Ka 1.000000 1.000000 1.000000
+//Kd 0.005881 0.000000 0.640000
+//Ks 0.500000 0.500000 0.500000
+//Ke 0.000000 0.000000 0.000000
+//Ni 1.000000
+//d 1.000000
+//illum 2
+//map_Kd /home/c/w/glos/logo.jpg
+//
+//newmtl red
+//Ns 96.078431
+//Ka 1.000000 1.000000 1.000000
+//Kd 0.640000 0.000000 0.012335
+//Ks 0.500000 0.500000 0.500000
+//Ke 0.000000 0.000000 0.000000
+//Ni 1.000000
+//d 1.000000
+//illum 2
+//map_Kd /home/c/w/glos/logo.jpg
+
+
+typedef struct obj_mtl{
+	/*owns*/const char*name;
+	/*owns*/const char*path;
+}obj_mtl;
+
+
+
+
+
+
+
+
+
+
+
+
+// returns triangles:  3 vertices times [ x y z   r g b   nx ny nz   u v]
 static/*gives*/dynf read_obj_file_from_path(const char*path){
 	printf(" * load: %s\n",path);
 	FILE*f=fopen(path,"rb");
@@ -166,6 +217,7 @@ static/*gives*/dynf read_obj_file_from_path(const char*path){
 
 	dynv vertices=_dynv_init_;
 	dynv normals=_dynv_init_;
+	dynv texuv=_dynv_init_;
 	dynf vertex_buffer=_dynf_init_;
 
 	const char*p=filedata;
@@ -210,6 +262,20 @@ static/*gives*/dynf read_obj_file_from_path(const char*path){
 			dynv_add(&vertices,ptr);
 			continue;
 		}
+		if(token_equals(&t,"vt")){
+			token tu=next_token_from_string(p);
+			float u=token_get_float(&tu);
+			p=tu.end;
+
+			token tv=next_token_from_string(p);
+			float v=token_get_float(&tv);
+			p=tv.end;
+
+			vec4*ptr=malloc(sizeof(vec4));
+			*ptr=(vec4){u,v,0,0};
+			dynv_add(&texuv,ptr);
+			continue;
+		}
 		if(token_equals(&t,"vn")){
 			token tx=next_token_from_string(p);
 			p=tx.end;
@@ -233,20 +299,26 @@ static/*gives*/dynf read_obj_file_from_path(const char*path){
 		if(token_equals(&t,"f")){
 			for(int i=0;i<3;i++){
 				// position
-				token v1=next_token_from_string_additional_delim(p,'/');
-				p=v1.end;
-				int v1ix=atoi(v1.content);
-				vec4*vtx=(vec4*)dynv_get(&vertices,(size_t)(v1ix-1));
+				token vert1=next_token_from_string_additional_delim(p,'/');
+				p=vert1.end;
+				int ix1=token_get_int(&vert1);
+				vec4*vtx=(vec4*)dynv_get(&vertices,(size_t)(ix1-1));
 
 				// texture index
-				token v2=next_token_from_string_additional_delim(p,'/');
-				p=v2.end;
-
+				token vert2=next_token_from_string_additional_delim(p,'/');
+				p=vert2.end;
+				int ix2=token_get_int(&vert2);
+				vec4 tx,*tex;tex=&tx;
+				if(!ix2){
+					tex=(vec4*)dynv_get(&texuv,(size_t)(ix2-1));
+				}else{
+					*tex=(vec4){0,0,0,0};
+				}
 				// normal
-				token v3=next_token_from_string_additional_delim(p,'/');
-				p=v3.end;
-				int v3ix=atoi(v3.content);
-				vec4 norm=*(vec4*)dynv_get(&normals,(size_t)(v3ix-1));
+				token vert3=next_token_from_string_additional_delim(p,'/');
+				p=vert3.end;
+				int ix3=token_get_int(&vert3);
+				vec4*norm=(vec4*)dynv_get(&normals,(size_t)(ix3-1));
 
 				// buffer
 				dynf_add(&vertex_buffer,vtx->x);
@@ -257,9 +329,12 @@ static/*gives*/dynf read_obj_file_from_path(const char*path){
 				dynf_add(&vertex_buffer,1);
 				dynf_add(&vertex_buffer,0);
 
-				dynf_add(&vertex_buffer,norm.x);
-				dynf_add(&vertex_buffer,norm.y);
-				dynf_add(&vertex_buffer,norm.z);
+				dynf_add(&vertex_buffer,norm->x);
+				dynf_add(&vertex_buffer,norm->y);
+				dynf_add(&vertex_buffer,norm->z);
+
+				dynf_add(&vertex_buffer,tex->x);
+				dynf_add(&vertex_buffer,tex->y);
 			}
 			continue;
 		}

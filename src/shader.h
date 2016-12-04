@@ -6,15 +6,18 @@
 char*vertex_shader_source =
 		"#version 100                                                \n\
 uniform mat4 umtx_mw;// model-to-world-matrix                        \n\
-attribute vec3 apos;// positions                              \n\
-attribute vec3 argb;// colors                               \n\
-attribute vec3 anorm;// normals                              \n\
+attribute vec3 apos;// positions  xyz                            \n\
+attribute vec3 argb;// colors  rgb                             \n\
+attribute vec3 anorm;// normals  xyz                            \n\
+attribute vec2 atex;// texture uv                              \n\
 varying vec3 vrgb;                                          \n\
 varying vec3 vnorm;                                          \n\
+varying vec2 vtex;                                          \n\
 void main(){                                                 \n\
 	gl_Position=umtx_mw*vec4(apos,1);                        \n\
 	vrgb=argb;                                             \n\
 	vnorm=anorm;                                             \n\
+	vtex=atex;                                             \n\
 }\n";
 
 char*fragment_shader_source =
@@ -22,33 +25,39 @@ char*fragment_shader_source =
 uniform sampler2D utex;                    \n\
 varying mediump vec3 vrgb;                \n\
 varying mediump vec3 vnorm;                \n\
+varying mediump vec2 vtex;                \n\
 void main(){             \n\
 	                  \n\
 //	mediump vec3 ambient_light_vector=;                  \n\
 	                  \n\
 	                  \n\
 	mediump float al=dot(vec3(-1.0,0,0),vnorm);                  \n\
-	gl_FragColor=vec4(vrgb+al,1);         \n\
+	gl_FragColor=texture2D(utex,vtex)+vec4(vrgb+al,1);         \n\
 }\n";
 
 typedef struct {
 	float position[3];
 	float color[4];
 	float normal[3];
+	float texture_uv[2];
 } vertex;
 
 static vertex vertices[]={
-	{{ 1,-1, 0},{ 1, 0, 0,1},{0,0,0}},
-	{{ 1, 1, 0},{ 0, 1, 0,1},{0,0,0}},
-	{{-1, 1, 0},{ 0, 0, 1,1},{0,0,0}},
-	{{-1,-1, 0},{ 0, 0, 0,1},{0,0,0}},
+	{{ 1,-1, 0},{ 1, 0, 0,1},{0,0,0},{0,0}},
+	{{ 1, 1, 0},{ 0, 1, 0,1},{0,0,0},{0,0}},
+	{{-1, 1, 0},{ 0, 0, 1,1},{0,0,0},{0,0}},
+	{{-1,-1, 0},{ 0, 0, 0,1},{0,0,0},{0,0}},
 };
 
 static GLubyte indices[]={0,1,2,2,3,0};
 
 struct{
 	GLuint program_id,vertex_buffer_id,index_buffer_id;
-	GLuint position_slot,color_slot,normal_slot,model_to_world_matrix_slot;
+	GLuint position_slot;
+	GLuint color_slot;
+	GLuint normal_slot;
+	GLuint texture_slot;
+	GLuint model_to_world_matrix_slot;
 	int indices_count;
 }shader;
 
@@ -129,6 +138,15 @@ inline static void load_program() {
 		exit(10);
 	}
 	shader.normal_slot=(GLuint)slot;
+
+
+	slot=glGetAttribLocation(shader.program_id,"atex");
+	if(slot==-1){
+		puts("could not find attribute 'atex' in vertex shader");
+		printf("%s %d: %s",__FILE__,__LINE__,"");
+		exit(10);
+	}
+	shader.texture_slot=(GLuint)slot;
 
 
 	slot=glGetUniformLocation(shader.program_id,"umtx_mw");
