@@ -75,8 +75,8 @@ inline static float random_range(float low,float high){
 
 //----------------------------------------------------------------------------
 
-static inline float bounding_radius_for_scale(scale*s){
-	return sqrtf(s->x*s->x+s->y*s->y+s->z*s->z);
+inline static float bounding_radius_for_scale(scale*s){
+	return sqrtf(s->x*s->x+s->y*s->y+s->z*s->z);//?
 }
 
 //----------------------------------------------------------------------------

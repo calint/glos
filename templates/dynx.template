@@ -1,4 +1,3 @@
-template<dynf>
 //------------------------------------------------------------------ ${template}
 #pragma once
 #include<stdlib.h>
