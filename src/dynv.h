@@ -1,13 +1,9 @@
 #pragma once
 #include<stdlib.h>
 
-#define dynpvec_initial_cap 8
+#define dynv_initial_cap 8
 #define dynv_realloc_strategy 'a'
-#define dynpvec_bounds_check 1
-
-typedef void* array_of_voids;
-typedef void** ptr_to_array_of_voids;
-
+#define dynv_bounds_check 1
 
 typedef struct dynv{
 	void* *data;
@@ -48,7 +44,7 @@ inline static void __dynv_insure_free_capcity(dynv*this,size_t n){
 		return;
 	}
 	// initialize data
-	this->cap=dynpvec_initial_cap;
+	this->cap=dynv_initial_cap;
 	this->data=malloc(sizeof(void*)*this->cap);
 	if(!this->data){
 		fprintf(stderr,"\nout-of-memory");
