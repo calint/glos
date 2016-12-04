@@ -7,7 +7,8 @@
 #include<stdlib.h>
 #include<fcntl.h>
 
-#include "../../dynv.h"
+#include"../../dynv.h"
+#include"../../dynf.h"
 #include"../../lib.h"
 
 typedef struct token{
@@ -166,8 +167,11 @@ static/*gives*/float*read_obj_file_from_path(const char*path,size_t*bufsize){
 	dynv vertices=_dynv_init_;
 	dynv normals=_dynv_init_;
 
+
 	float*glbuf=malloc(1000000);//? dyna_float
 	float*glbuf_seek=glbuf;
+
+	dynf vertex_buffer=_dynf_init_;
 
 	const char*p=filedata;
 	while(*p){
@@ -255,6 +259,18 @@ static/*gives*/float*read_obj_file_from_path(const char*path,size_t*bufsize){
 				*glbuf_seek++=norm.x;
 				*glbuf_seek++=norm.y;
 				*glbuf_seek++=norm.z;
+
+				dynf_add(&vertex_buffer,vtx->x);
+				dynf_add(&vertex_buffer,vtx->y);
+				dynf_add(&vertex_buffer,vtx->z);
+
+				dynf_add(&vertex_buffer,0);
+				dynf_add(&vertex_buffer,1);
+				dynf_add(&vertex_buffer,0);
+
+				dynf_add(&vertex_buffer,norm.x);
+				dynf_add(&vertex_buffer,norm.y);
+				dynf_add(&vertex_buffer,norm.z);
 			}
 			continue;
 		}
