@@ -33,7 +33,9 @@ inline static void __dynpvec_insure_free_capcity(dynpvec*this,size_t n){
 			fprintf(stderr,"\tfile: '%s'  line: %d\n\n",__FILE__,__LINE__);
 			exit(-1);
 		}
-		void* new_data=malloc(sizeof(void*)*new_size);
+
+//		void* *new_data=realloc(this->data,sizeof(void*)*new_size);
+		void* *new_data=malloc(sizeof(void*)*new_size);
 
 		if(!new_data){
 			fprintf(stderr,"\nout-of-memory");
@@ -61,7 +63,12 @@ inline static void __dynpvec_insure_free_capcity(dynpvec*this,size_t n){
 // public
 inline static void dynpvec_add(dynpvec*this,void*ptr){
 	__dynpvec_insure_free_capcity(this,1);
-	this->data[this->size++]=ptr;
+//	this->data[this->size++]=ptr;
+	*(this->data+this->size++)=ptr;
+
+	void*p=*(this->data+this->size-1);
+	int*pi=(int*)p;
+	printf("  get: %p=%d\n",p,*pi);
 
 }
 //inline static void*dynpvec_get(dynpvec*this,size_t index){
