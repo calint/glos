@@ -7,8 +7,8 @@
 #include<stdlib.h>
 #include<fcntl.h>
 
-#include"../lib/dynv.h"
-#include"../lib/dynf.h"
+#include"../dynv.h"
+#include"../dynf.h"
 #include"../lib.h"
 
 typedef struct token{
