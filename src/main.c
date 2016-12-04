@@ -9,6 +9,7 @@
 #include"drawables.h"
 #include"app/ninja.h"
 #include"alloc.h"
+#include"dynpvec.h"
 //----------------------------------------------------------------------- init
 inline static void main_init(){
 	drawables_load_file_in_slot(1,"arts/obj/cube.obj");
@@ -31,6 +32,16 @@ inline static void main_init(){
 //------------------------------------------------------------------------ main
 int main(int argc,char*argv[]){
 	while(argc--)puts(*argv++);
+	{
+		dynpvec v=_dynpvec_init_;
+		int a=1,b=2,c=3;
+		dynpvec_add(&v,&a);
+		dynpvec_add(&v,&b);
+		dynpvec_add(&v,&c);
+	//	int*p=dynpvec_
+	}
+
+	exit(0);
 
 	printf(":-%14s : %8s-:\n","--------------","--------");
 	printf(": %14s : %8s :\n","type","size");
@@ -152,3 +163,6 @@ int main(int argc,char*argv[]){
 // [ ]   multi/single thread
 // [ ]    cull
 // [ ]     view planes (bounding volume)
+// [ ] keymaphub
+// [ ]  multiuser
+
