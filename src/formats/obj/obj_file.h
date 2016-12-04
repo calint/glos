@@ -98,7 +98,8 @@ inline static token next_token_from_string_additional_delim(
 		if(isspace(*p))break;
 		if(*p==delim){
 			p++;
-			break;
+			t.end=t.content_end=p;
+			return t;
 		}
 		p++;
 	}
@@ -124,29 +125,18 @@ inline static const char*scan_to_including_newline(const char*p){
 	}
 }
 
+inline static void dbg(const char*p){
+	while(1){
+		if(!*p)return;
+		if(*p=='\n')break;
+		putchar(*p++);
+	}
+	putchar('\n');
+}
+
 // returns triangles:  3 vertices times [ x y z  r g b  nx ny nz ]
 static/*gives*/float*read_obj_file_from_path(const char*path,size_t*bufsize){
 	printf(" * load: %s\n",path);
-//	struct stat st;
-//	if(stat(path,&st)==-1){
-//		perror("\ncannot stat");
-//		fprintf(stderr,"\t%s\n\n%s %d\n",path,__FILE__,__LINE__);
-//		exit(-1);
-//	}
-//	size_t size=(unsigned)st.st_size;
-//
-//	int fd=open(path,O_RDONLY);
-//	if(fd==1){
-//		perror("\ncannot open");
-//		fprintf(stderr,"\t%s\n\n%s %d\n",path,__FILE__,__LINE__);
-//		exit(-1);
-//	}
-//
-//	char*filedata=malloc(size+1);
-//	ssiread(fd,filedata,size);
-//	filedata[size]=0;
-//	close(fd);
-
 	FILE*f=fopen(path,"rb");
 	if(!f){
 		perror("\ncannot open");
@@ -165,7 +155,6 @@ static/*gives*/float*read_obj_file_from_path(const char*path,size_t*bufsize){
 		fprintf(stderr,"\t\n%s %d\n",__FILE__,__LINE__);
 		exit(-1);
 	}
-//	fseek(f,0,SEEK_SET);
 	rewind(f);
 	char*filedata=(char*)malloc((size_t)length+1);
 	if(!filedata){
@@ -186,7 +175,7 @@ static/*gives*/float*read_obj_file_from_path(const char*path,size_t*bufsize){
 	dynpvec normals=_dynpvec_init_;
 	dynpvec faces=_dynpvec_init_;
 
-	float*glbuf=malloc(10000);//?
+	float*glbuf=malloc(100000);//? dyna_float
 	float*glbuf_seek=glbuf;
 
 	size_t nnormals=0;
@@ -195,6 +184,8 @@ static/*gives*/float*read_obj_file_from_path(const char*path,size_t*bufsize){
 	size_t nline=0;
 	while(*p){
 		nline++;
+		printf(" *** %zu: ",nline);
+		dbg(p);
 		token t=next_token_from_string(p);
 		p=t.end;//token_size_including_whitespace(&t);
 		if(token_starts_with(&t,"#")){
@@ -237,6 +228,7 @@ static/*gives*/float*read_obj_file_from_path(const char*path,size_t*bufsize){
 			dynpvec_add(&vertices,ptr);
 			continue;
 		}
+
 		if(token_equals(&t,"vn")){
 			token tx=next_token_from_string(p);
 			p=tx.end;
@@ -256,22 +248,21 @@ static/*gives*/float*read_obj_file_from_path(const char*path,size_t*bufsize){
 			nnormals++;
 			continue;
 		}
+
 		if(token_equals(&t,"f")){
-			char*start_of_f=p;
 			nfaces++;
-			printf("line: %zu    face : %zu\n",nline,nfaces);
+			dbg(p);
 			for(int i=0;i<3;i++){
 				token v1=next_token_from_string_additional_delim(p,'/');
 				p=v1.end;
 //				int v1ix=token_as_int(&v1);
 				int v1ix=atoi(v1.content);
 				if(v1ix==0){
-					printf("first index is 0    line: %zu    nfaces:%zu\n   %s",
-							nline,
-							nfaces,
-							start_of_f);
+					printf("first index is 0\n");
+					printf("  i1: %zu \n",v1ix);
 					exit(-1);
 				}
+//				printf("  i1: %zu   ",v1ix);
 				// position
 				vec4*vtx=(vec4*)dynpvec_get(&vertices,(size_t)(v1ix-1));
 				*glbuf_seek++=vtx->x;
@@ -290,18 +281,17 @@ static/*gives*/float*read_obj_file_from_path(const char*path,size_t*bufsize){
 				token v3=next_token_from_string_additional_delim(p,'/');
 				p=v3.end;
 				int v3ix=atoi(v3.content);
+//				printf("   i3: %zu  \n",v3ix);
 				if(v3ix==0){
-					printf("third index is 0    line: %zu    nfaces:%zu\n   %s",
-							nline,
-							nfaces,
-							start_of_f
-						);
+					printf("  i1: %zu   i3: %zu\n",v1ix,v3ix);
+					printf("!!!   third index is 0\n");
 					exit(-1);
 				}
 				vec4 norm=*(vec4*)dynpvec_get(&normals,(size_t)(v3ix-1));
 				*glbuf_seek++=norm.x;
 				*glbuf_seek++=norm.y;
 				*glbuf_seek++=norm.z;
+				printf("  i1: %zu   i3: %zu\n",v1ix,v3ix);
 			}
 			continue;
 		}
