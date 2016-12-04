@@ -38,10 +38,13 @@ int main(int argc,char*argv[]){
 		dynpvec_add(&v,&a);
 		dynpvec_add(&v,&b);
 		dynpvec_add(&v,&c);
-	//	int*p=dynpvec_
+		int*p=(int*)dynpvec_get(&v,0);
+		if(p!=&a){exit(-1);}
+		p=dynpvec_get(&v,2);
+		if(p!=&c){exit(-1);}
+		exit(0);
 	}
 
-	exit(0);
 
 	printf(":-%14s : %8s-:\n","--------------","--------");
 	printf(": %14s : %8s :\n","type","size");

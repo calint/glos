@@ -34,8 +34,8 @@ inline static void __dynpvec_insure_free_capcity(dynpvec*this,size_t n){
 			exit(-1);
 		}
 
-//		void* *new_data=realloc(this->data,sizeof(void*)*new_size);
-		void* *new_data=malloc(sizeof(void*)*new_size);
+		void* *new_data=realloc(this->data,sizeof(void*)*new_size);
+//		void* *new_data=malloc(sizeof(void*)*new_size);
 
 		if(!new_data){
 			fprintf(stderr,"\nout-of-memory");
@@ -45,8 +45,8 @@ inline static void __dynpvec_insure_free_capcity(dynpvec*this,size_t n){
 		if(new_data!=this->data){ // re-locate
 			memcpy(new_data,this->data,this->size);
 			this->data=new_data;
-			this->cap=dynpvec_initial_cap;
 		}
+		this->cap=new_size;
 		// realloc
 		return;
 	}
@@ -63,26 +63,20 @@ inline static void __dynpvec_insure_free_capcity(dynpvec*this,size_t n){
 // public
 inline static void dynpvec_add(dynpvec*this,void*ptr){
 	__dynpvec_insure_free_capcity(this,1);
-//	this->data[this->size++]=ptr;
 	*(this->data+this->size++)=ptr;
-
-	void*p=*(this->data+this->size-1);
-	int*pi=(int*)p;
-	printf("  get: %p=%d\n",p,*pi);
-
 }
-//inline static void*dynpvec_get(dynpvec*this,size_t index){
-//#ifdef dynpvec_bounds_check
-//	if(index>=this->cap){
-//		perror("\nindex-out-of-bounds");
-//		fprintf(stderr,"\t%s\n\n%s  index: %uld    capacity: %uld\n",
-//				__FILE__,__LINE__,index,this->cap);
-//		exit(-1);
-//	}
-//#endif
-//	void*ptr=(*(this->data))[index];
-////	return *this->data[index];
-//}
+inline static void*dynpvec_get(dynpvec*this,size_t index){
+#ifdef dynpvec_bounds_check
+	if(index>=this->cap){
+		perror("\nindex-out-of-bounds");
+		fprintf(stderr,"\t%s\n\n%d  index: %zu    capacity: %zu\n",
+				__FILE__,__LINE__,index,this->cap);
+		exit(-1);
+	}
+#endif
+	void*p=*(this->data+index);
+	return p;
+}
 
 //inline static void dynpvec_add_all(dynpvec*this){}
 //inline static void dynpvec_remove_ptr(dynpvec*this,void*ptr){}
