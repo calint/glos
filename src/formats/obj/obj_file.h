@@ -167,9 +167,9 @@ static/*gives*/dynf read_obj_file_from_path(const char*path){
 	dynv vertices=_dynv_init_;
 	dynv normals=_dynv_init_;
 
-
-	float*glbuf=malloc(1000000);//? dyna_float
-	float*glbuf_seek=glbuf;
+//
+//	float*glbuf=malloc(1000000);//? dyna_float
+//	float*glbuf_seek=glbuf;
 
 	dynf vertex_buffer=_dynf_init_;
 
@@ -242,13 +242,13 @@ static/*gives*/dynf read_obj_file_from_path(const char*path){
 				int v1ix=atoi(v1.content);
 				// position
 				vec4*vtx=(vec4*)dynv_get(&vertices,(size_t)(v1ix-1));
-				*glbuf_seek++=vtx->x;
-				*glbuf_seek++=vtx->y;
-				*glbuf_seek++=vtx->z;
+//				*glbuf_seek++=vtx->x;
+//				*glbuf_seek++=vtx->y;
+//				*glbuf_seek++=vtx->z;
 				// color
-				*glbuf_seek++=0;// r
-				*glbuf_seek++=1;// g
-				*glbuf_seek++=0;// b
+//				*glbuf_seek++=0;// r
+//				*glbuf_seek++=1;// g
+//				*glbuf_seek++=0;// b
 				// texture index
 				token v2=next_token_from_string_additional_delim(p,'/');
 				p=v2.end;
@@ -257,9 +257,9 @@ static/*gives*/dynf read_obj_file_from_path(const char*path){
 				p=v3.end;
 				int v3ix=atoi(v3.content);
 				vec4 norm=*(vec4*)dynv_get(&normals,(size_t)(v3ix-1));
-				*glbuf_seek++=norm.x;
-				*glbuf_seek++=norm.y;
-				*glbuf_seek++=norm.z;
+//				*glbuf_seek++=norm.x;
+//				*glbuf_seek++=norm.y;
+//				*glbuf_seek++=norm.z;
 
 				dynf_add(&vertex_buffer,vtx->x);
 				dynf_add(&vertex_buffer,vtx->y);
