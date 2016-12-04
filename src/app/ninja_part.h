@@ -1,8 +1,10 @@
 //------------------------------------------------------------------ ninja_part
 #pragma once
 //------------------------------------------------------------------- overrides
+static void _ninja_part_init_(object*o,part*this);
 static void _ninja_part_update_(object*o,part*this,dt dt);
 static void _ninja_part_render_(object*o,part*this);
+static void _ninja_part_free_(object*o,part*this);
 //---------------------------------------------------------------------- define
 typedef struct ninja_part{
 	part part;
@@ -15,10 +17,10 @@ typedef struct ninja_part{
 //--------------------------------------------------------------------- default
 static ninja_part _ninja_part_={
 	.part=(part){
-		.init=NULL,
+		.init=_ninja_part_init_,
 		.update=_ninja_part_update_,
 		.render=_ninja_part_render_,
-		.free=NULL,
+		.free=_ninja_part_free_,
 	},
 	.time_duration_per_frame=0,
 	.texture_index_for_first_frame=0,
@@ -33,6 +35,7 @@ static ninja_part _ninja_part_={
 	ninja_part*a=malloc(sizeof(ninja_part));
 	if(!a){
 		perror("out of memory");
+		fprintf(stderr,"\t%s\n\n%s %d\n","",__FILE__,__LINE__);
 		exit(21);
 	}
 
@@ -54,5 +57,11 @@ static void _ninja_part_update_(object*o,part*this,dt dt){
 //-------------------------------------------------------------- implementation
 static void _ninja_part_render_(object*o,part*this){
 	drawables_draw(4);
+}
+static void _ninja_part_init_(object*o,part*this){
+	printf(" * new %-12s [ %p %p ]\n","ninja_part",o,this);
+}
+static void _ninja_part_free_(object*o,part*this){
+	printf(" * del %-12s [ %p %p ]\n","ninja_part",o,this);
 }
 //-----------------------------------------------------------------------------
