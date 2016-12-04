@@ -3,18 +3,14 @@
 #include<stdlib.h>
 #include<sys/types.h>
 #include<math.h>
+
 //------------------------------------------------------------------- typedefs
 
 typedef uint8_t bits;
-
 typedef int8_t byte;
-
 typedef int16_t word;
-
 typedef int32_t dword;
-
 typedef int64_t quad;
-
 typedef struct baba{
 	bits bits;
 	byte byte;
@@ -23,36 +19,22 @@ typedef struct baba{
 	quad quad;
 	char string[32];
 }baba;
-
-
 typedef struct class {
 	char path[8];
 }type;
-
 typedef struct vec4 {
 	float x,y,z,q;
 }vec4;
-
 typedef float* mat4;
-
 typedef vec4 position;
-
 typedef vec4 angle;
-
 typedef vec4 scale;
-
 typedef float bounding_radius;
-
 typedef vec4 velocity;
-
 typedef vec4 angular_velocity;
-
 typedef Uint32 color;
-
 typedef int id;
-
 typedef float dt;
-
 typedef dt time_in_seconds;
 
 //------------------------------------------------------------------------ lib
