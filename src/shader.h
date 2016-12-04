@@ -183,15 +183,14 @@ inline static void load_program() {
 //		printf("%s %d: %s",__FILE__,__LINE__,SDL_GetError());
 //		exit(13);
 //	}
-//	texture[id].ptr=tex;
-//	SDL_QueryTexture(tex,NULL,NULL,&texture[id].width,&texture[id].height);
-//	SDL_FreeSurface(loaded_surface);
+//	int height=0,width=0;
+//	SDL_QueryTexture(tex,NULL,NULL,width,height);
+//	void*data=loaded_surface->pixels;
 
-
-	int height=2,width=2;
+	int height=1,width=1;
 	unsigned char data[]={
-			0,127,0,  0,0,0,
-			0,0,0,  0,0,255,
+			127,0,0,  0,127,0,
+			0,0,127,  127,127,127,
 	};
 
 	GLuint textureID;
@@ -204,15 +203,17 @@ inline static void load_program() {
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
 
-	glUniform1i((signed)shader.texture_sampler,0);
-
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D,textureID);
+//	glUniform1i((signed)shader.texture_sampler,0);
+//
+//	glActiveTexture(GL_TEXTURE0);
+//	glBindTexture(GL_TEXTURE_2D,textureID);
 
 	glEnableVertexAttribArray(shader.position_slot);
 	glEnableVertexAttribArray(shader.color_slot);
 	glEnableVertexAttribArray(shader.normal_slot);
-	glEnableVertexAttribArray(shader.texture_slot);
+//	glEnableVertexAttribArray(shader.texture_slot);
+
+//	SDL_FreeSurface(loaded_surface);
 }
 
 inline static const char*get_gl_error_string(const GLenum error) {
