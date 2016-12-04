@@ -6,8 +6,9 @@
 #include<sys/stat.h>
 #include<stdlib.h>
 #include<fcntl.h>
+
+#include "../../dynv.h"
 #include"../../lib.h"
-#include"../../dynpvec.h"
 
 typedef struct token{
 	const char*begin;
@@ -162,8 +163,8 @@ static/*gives*/float*read_obj_file_from_path(const char*path,size_t*bufsize){
 	fclose(f);
 	filedata[length]=0;
 
-	dynpvec vertices=_dynpvec_init_;
-	dynpvec normals=_dynpvec_init_;
+	dynv vertices=_dynv_init_;
+	dynv normals=_dynv_init_;
 
 	float*glbuf=malloc(100000);//? dyna_float
 	float*glbuf_seek=glbuf;
@@ -207,7 +208,7 @@ static/*gives*/float*read_obj_file_from_path(const char*path,size_t*bufsize){
 
 			vec4*ptr=malloc(sizeof(vec4));
 			*ptr=(vec4){x,y,z,0};
-			dynpvec_add(&vertices,ptr);
+			dynv_add(&vertices,ptr);
 			continue;
 		}
 		if(token_equals(&t,"vn")){
@@ -225,7 +226,7 @@ static/*gives*/float*read_obj_file_from_path(const char*path,size_t*bufsize){
 
 			vec4*ptr=malloc(sizeof(vec4));
 			*ptr=(vec4){x,y,z,0};
-			dynpvec_add(&normals,ptr);
+			dynv_add(&normals,ptr);
 			continue;
 		}
 
@@ -235,7 +236,7 @@ static/*gives*/float*read_obj_file_from_path(const char*path,size_t*bufsize){
 				p=v1.end;
 				int v1ix=atoi(v1.content);
 				// position
-				vec4*vtx=(vec4*)dynpvec_get(&vertices,(size_t)(v1ix-1));
+				vec4*vtx=(vec4*)dynv_get(&vertices,(size_t)(v1ix-1));
 				*glbuf_seek++=vtx->x;
 				*glbuf_seek++=vtx->y;
 				*glbuf_seek++=vtx->z;
@@ -250,7 +251,7 @@ static/*gives*/float*read_obj_file_from_path(const char*path,size_t*bufsize){
 				token v3=next_token_from_string_additional_delim(p,'/');
 				p=v3.end;
 				int v3ix=atoi(v3.content);
-				vec4 norm=*(vec4*)dynpvec_get(&normals,(size_t)(v3ix-1));
+				vec4 norm=*(vec4*)dynv_get(&normals,(size_t)(v3ix-1));
 				*glbuf_seek++=norm.x;
 				*glbuf_seek++=norm.y;
 				*glbuf_seek++=norm.z;
