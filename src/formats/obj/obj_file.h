@@ -208,8 +208,6 @@ static/*gives*/float*read_obj_file_from_path(const char*path,size_t*bufsize){
 			p=scan_to_including_newline(p);
 			continue;
 		}
-
-
 		if(token_equals(&t,"v")){
 			token tx=next_token_from_string(p);
 			float x=token_get_float(&tx);
@@ -228,7 +226,6 @@ static/*gives*/float*read_obj_file_from_path(const char*path,size_t*bufsize){
 			dynpvec_add(&vertices,ptr);
 			continue;
 		}
-
 		if(token_equals(&t,"vn")){
 			token tx=next_token_from_string(p);
 			p=tx.end;
@@ -255,25 +252,16 @@ static/*gives*/float*read_obj_file_from_path(const char*path,size_t*bufsize){
 			for(int i=0;i<3;i++){
 				token v1=next_token_from_string_additional_delim(p,'/');
 				p=v1.end;
-//				int v1ix=token_as_int(&v1);
 				int v1ix=atoi(v1.content);
-				if(v1ix==0){
-					printf("first index is 0\n");
-					printf("  i1: %zu \n",v1ix);
-					exit(-1);
-				}
-//				printf("  i1: %zu   ",v1ix);
 				// position
 				vec4*vtx=(vec4*)dynpvec_get(&vertices,(size_t)(v1ix-1));
 				*glbuf_seek++=vtx->x;
 				*glbuf_seek++=vtx->y;
 				*glbuf_seek++=vtx->z;
-
 				// color
 				*glbuf_seek++=0;// r
 				*glbuf_seek++=1;// g
 				*glbuf_seek++=0;// b
-
 				// texture index
 				token v2=next_token_from_string_additional_delim(p,'/');
 				p=v2.end;
@@ -281,17 +269,10 @@ static/*gives*/float*read_obj_file_from_path(const char*path,size_t*bufsize){
 				token v3=next_token_from_string_additional_delim(p,'/');
 				p=v3.end;
 				int v3ix=atoi(v3.content);
-//				printf("   i3: %zu  \n",v3ix);
-				if(v3ix==0){
-					printf("  i1: %zu   i3: %zu\n",v1ix,v3ix);
-					printf("!!!   third index is 0\n");
-					exit(-1);
-				}
 				vec4 norm=*(vec4*)dynpvec_get(&normals,(size_t)(v3ix-1));
 				*glbuf_seek++=norm.x;
 				*glbuf_seek++=norm.y;
 				*glbuf_seek++=norm.z;
-				printf("  i1: %zu   i3: %zu\n",v1ix,v3ix);
 			}
 			continue;
 		}
