@@ -8,6 +8,7 @@
 #include<fcntl.h>
 
 #include "../../dynv.h"
+#include "../../dynf.h"
 #include"../../lib.h"
 
 typedef struct token{
@@ -127,7 +128,7 @@ inline static const char*scan_to_including_newline(const char*p){
 }
 
 // returns triangles:  3 vertices times [ x y z  r g b  nx ny nz ]
-static/*gives*/float*read_obj_file_from_path(const char*path,size_t*bufsize){
+static/*gives*/dynf read_obj_file_from_path(const char*path){
 	printf(" * load: %s\n",path);
 	FILE*f=fopen(path,"rb");
 	if(!f){
@@ -163,11 +164,16 @@ static/*gives*/float*read_obj_file_from_path(const char*path,size_t*bufsize){
 	fclose(f);
 	filedata[length]=0;
 
+
+
+		float*glbuf=malloc(100000);//? dyna_float
+		float*glbuf_seek=glbuf;
+
 	dynv vertices=_dynv_init_;
 	dynv normals=_dynv_init_;
+	dynf vertex_buffer=_dynf_init_;
 
-	float*glbuf=malloc(100000);//? dyna_float
-	float*glbuf_seek=glbuf;
+	size_t float_count=0;
 
 	const char*p=filedata;
 	while(*p){
@@ -229,38 +235,56 @@ static/*gives*/float*read_obj_file_from_path(const char*path,size_t*bufsize){
 			dynv_add(&normals,ptr);
 			continue;
 		}
-
 		if(token_equals(&t,"f")){
 			for(int i=0;i<3;i++){
 				token v1=next_token_from_string_additional_delim(p,'/');
 				p=v1.end;
 				int v1ix=atoi(v1.content);
 				// position
-				vec4*vtx=(vec4*)dynv_get(&vertices,(size_t)(v1ix-1));
-				*glbuf_seek++=vtx->x;
-				*glbuf_seek++=vtx->y;
-				*glbuf_seek++=vtx->z;
+				vec4*vert=(vec4*)dynv_get(&vertices,(size_t)(v1ix-1));
+				dynf_add(&vertex_buffer,vert->x);
+				dynf_add(&vertex_buffer,vert->y);
+				dynf_add(&vertex_buffer,vert->z);
 				// color
-				*glbuf_seek++=0;// r
-				*glbuf_seek++=1;// g
-				*glbuf_seek++=0;// b
+				dynf_add(&vertex_buffer,0);// r
+				dynf_add(&vertex_buffer,1);// g
+				dynf_add(&vertex_buffer,0);// b
 				// texture index
 				token v2=next_token_from_string_additional_delim(p,'/');
 				p=v2.end;
 				// normal
-				token v3=next_token_from_string_additional_delim(p,'/');
+				token v3=next_token_from_string(p);
 				p=v3.end;
 				int v3ix=atoi(v3.content);
-				vec4 norm=*(vec4*)dynv_get(&normals,(size_t)(v3ix-1));
-				*glbuf_seek++=norm.x;
-				*glbuf_seek++=norm.y;
-				*glbuf_seek++=norm.z;
+				vec4*norm=(vec4*)dynv_get(&normals,(size_t)(v3ix-1));
+				dynf_add(&vertex_buffer,norm->x);
+				dynf_add(&vertex_buffer,norm->y);
+				dynf_add(&vertex_buffer,norm->z);
+
+				*glbuf_seek++=vert->x;
+				*glbuf_seek++=vert->y;
+				*glbuf_seek++=vert->z;
+				*glbuf_seek++=0;
+				*glbuf_seek++=1;
+				*glbuf_seek++=0;
+				*glbuf_seek++=norm->x;
+				*glbuf_seek++=norm->y;
+				*glbuf_seek++=norm->z;
+
+				float_count+=9;
 			}
 			continue;
 		}
 	}
-	*bufsize=sizeof(float)*(size_t)(glbuf_seek-glbuf);
-	return glbuf;
+//	printf("  %zu   %zu\n",vertex_buffer.size,float_count);
+//	float*fp=glbuf;
+//	for(size_t i=0;i<vertex_buffer.size;i++,fp++){
+//		if(*fp!=dynf_get(&vertex_buffer,i)){
+//			printf("!!!! ");
+//			exit(-2);
+//		}
+//	}
+	return vertex_buffer;
 }
 
 
