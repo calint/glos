@@ -45,8 +45,7 @@ inline static void gl_print_context_profile_and_version(){
 		printf("%s %d: %d",__FILE__,__LINE__,value);
 		exit(22);
 	}
-	puts("");
-	printf("%-32s  %d\n","",value);
+	printf(" (%d)\n",value);
 
 	if(SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION,&value)){
 		printf("%s %d: %s",__FILE__,__LINE__,SDL_GetError());
@@ -65,15 +64,10 @@ inline static void gl_print_context_profile_and_version(){
 #define window_height 1024
 
 struct{
-
 	SDL_Window*ref;
-
 	SDL_Renderer*renderer;
-
 	SDL_GLContext*glcontext;
-
 	SDL_Surface*surface;
-
 }window;
 static inline void window_init() {
 //	puts(" *** requested:");

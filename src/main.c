@@ -26,21 +26,36 @@ inline static void main_init(){
 	o=new(&_ninja_);
 	o->position.y=.5f;
 	o->scale=(scale){.1f,.1f,.1f,1};
-
 }
 //------------------------------------------------------------------------ main
-int main(int argc, char *argv[]) {
+int main(int argc,char*argv[]){
+	while(argc--)puts(*argv++);
 
-	printf(": %10s  : %4s :\n","type","size");
-	printf(": %10s  : %4s :\n","----------","----");
-	printf(": %10s  : %4ld :\n","object",sizeof(object));
-	printf(": %10s  : %4ld :\n","part",sizeof(part));
-	printf(": %10s  : %4ld :\n","drawables",sizeof(drawables));
-	printf(": %10s  : %4s :\n","----------","----");
-	puts("");
+	printf(":-%14s : %8s-:\n","--------------","--------");
+	printf(": %14s : %8s :\n","type","size");
+	printf(":-%14s : %8s-:\n","--------------","--------");
+	printf(": %14s : %8ld :\n","part",sizeof(part));
+	printf(": %14s : %8ld :\n","object",sizeof(object));
+	printf(": %14s : %8ld :\n","objects",sizeof(objects));
+	printf(": %14s : %8ld :\n","drawables",sizeof(drawables));
+	printf(": %14s : %8ld :\n","textures",sizeof(texture));
+	printf(":-%14s-:-%8s-:\n","--------------","--------");
 
 	sdl_init();
 	window_init();
+
+	glCullFace(GL_BACK);
+	glEnable(GL_CULL_FACE);
+
+	puts("");
+	printf(":-%10s-:-%7s-:\n","----------","-------");
+	printf(": %10s :-%7s-:\n","feature","");
+	printf(":-%10s-:-%7s-:\n","----------","-------");
+	printf(": %10s : %-7s :\n","cull face",glIsEnabled(GL_CULL_FACE)?"yes":"no");
+	printf(":-%10s-:-%7s-:\n","----------","-------");
+	puts("");
+
+
 	textures_init();
 	fps_init();
 	shader_init();

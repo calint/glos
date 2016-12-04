@@ -124,7 +124,7 @@ inline static const char*scan_to_including_newline(const char*p){
 
 // returns triangles:  3 vertices times [ x y z  r g b  nx ny nz ]
 static/*gives*/float*read_obj_file_from_path(const char*path,size_t*bufsize){
-	printf(" * load obj file: %s\n",path);
+	printf(" * load: %s\n",path);
 	struct stat st;
 	if(stat(path,&st)==-1){
 		perror("\ncannot stat");

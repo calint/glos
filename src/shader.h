@@ -60,9 +60,9 @@ inline static const char*get_shader_name_for_type(GLenum shader_type) {
 	}
 }
 inline static GLuint compile_shader(GLenum shaderType, char *code) {
-	printf("\n ___| %s shader |__________________\n%s\n",
-			get_shader_name_for_type(shaderType),
-			code);
+//	printf("\n ___| %s shader |__________________\n%s\n",
+//			get_shader_name_for_type(shaderType),
+//			code);
 	GLuint handle=glCreateShader(shaderType);
 	int length=(int)strlen(code);
 	glShaderSource(handle,1,(const GLchar**)&code,&length);
@@ -137,8 +137,6 @@ inline static void load_program() {
 		exit(10);
 	}
 	shader.model_to_world_matrix_slot=(GLuint)slot;
-
-
 
 	glEnableVertexAttribArray(shader.position_slot);
 	glEnableVertexAttribArray(shader.color_slot);
@@ -222,11 +220,11 @@ inline static void print_gl_string(const char *name, const GLenum s){
 inline static void shader_init() {
 	check_gl_error("shader_init");
 	gl_print_context_profile_and_version();
-	puts("");
 	print_gl_string("GL_VERSION", GL_VERSION);
 	print_gl_string("GL_VENDOR", GL_VENDOR);
 	print_gl_string("GL_RENDERER", GL_RENDERER);
 	print_gl_string("GL_SHADING_LANGUAGE_VERSION",GL_SHADING_LANGUAGE_VERSION);
+	puts("");
 
 	create_geometry(
 		&shader.vertex_buffer_id,
