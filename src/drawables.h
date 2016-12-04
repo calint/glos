@@ -1,6 +1,6 @@
 #pragma once
 #include"mat4.h"
-#include"dynf.h"
+#include"lib/dynf.h"
 //-------------------------------------------------------------------- texture
 #define drawables_count 1024
 struct{

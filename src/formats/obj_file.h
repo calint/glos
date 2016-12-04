@@ -7,9 +7,9 @@
 #include<stdlib.h>
 #include<fcntl.h>
 
-#include"../../dynv.h"
-#include"../../dynf.h"
-#include"../../lib.h"
+#include"../lib/dynv.h"
+#include"../lib/dynf.h"
+#include"../lib.h"
 
 typedef struct token{
 	const char*begin;
