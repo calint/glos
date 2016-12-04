@@ -27,15 +27,14 @@ inline static void __dynpvec_insure_free_capcity(dynpvec*this,size_t n){
 		case 'a':
 			new_size=this->cap*2;
 			break;
-
 		default:
 			fprintf(stderr,"\nunknown-strategy");
 			fprintf(stderr,"\tfile: '%s'  line: %d\n\n",__FILE__,__LINE__);
 			exit(-1);
 		}
 
-		void* *new_data=realloc(this->data,sizeof(void*)*new_size);
-//		void* *new_data=malloc(sizeof(void*)*new_size);
+//		void* *new_data=realloc(this->data,sizeof(void*)*new_size);
+		void* *new_data=malloc(sizeof(void*)*new_size);
 
 		if(!new_data){
 			fprintf(stderr,"\nout-of-memory");
@@ -43,7 +42,7 @@ inline static void __dynpvec_insure_free_capcity(dynpvec*this,size_t n){
 			exit(-1);
 		}
 		if(new_data!=this->data){ // re-locate
-			memcpy(new_data,this->data,this->size);
+			memcpy(new_data,this->data,this->size*sizeof(void*));
 			this->data=new_data;
 		}
 		this->cap=new_size;

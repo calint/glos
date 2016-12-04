@@ -38,10 +38,19 @@ int main(int argc,char*argv[]){
 		dynpvec_add(&v,&a);
 		dynpvec_add(&v,&b);
 		dynpvec_add(&v,&c);
+
+		printf(" %d  %d   %d\n",
+				*((int*)dynpvec_get(&v,0)),
+				*((int*)dynpvec_get(&v,1)),
+				*((int*)dynpvec_get(&v,2))
+			);
+
 		int*p=(int*)dynpvec_get(&v,0);
+		if(*p!=a){exit(-1);}
 		if(p!=&a){exit(-1);}
 		p=dynpvec_get(&v,2);
 		if(p!=&c){exit(-1);}
+		puts("ok");
 		exit(0);
 	}
 
