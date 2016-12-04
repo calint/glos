@@ -128,7 +128,7 @@ inline static const char*scan_to_including_newline(const char*p){
 }
 
 // returns triangles:  3 vertices times [ x y z  r g b  nx ny nz ]
-static/*gives*/float*read_obj_file_from_path(const char*path,size_t*bufsize){
+static/*gives*/dynf read_obj_file_from_path(const char*path){
 	printf(" * load: %s\n",path);
 	FILE*f=fopen(path,"rb");
 	if(!f){
@@ -228,6 +228,7 @@ static/*gives*/float*read_obj_file_from_path(const char*path,size_t*bufsize){
 			p=tz.end;
 			float z=token_get_float(&tz);
 
+
 			vec4*ptr=malloc(sizeof(vec4));
 			*ptr=(vec4){x,y,z,0};
 			dynv_add(&normals,ptr);
@@ -277,8 +278,9 @@ static/*gives*/float*read_obj_file_from_path(const char*path,size_t*bufsize){
 	}
 //	*bufsize=sizeof(float)*(size_t)(glbuf_seek-glbuf);
 //	return glbuf;
-	*bufsize=vertex_buffer.size*sizeof(float);
-	return vertex_buffer.data;
+//	*bufsize=vertex_buffer.size*sizeof(float);
+//	return vertex_buffer.data;
+	return vertex_buffer;
 }
 
 
