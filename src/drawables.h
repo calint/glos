@@ -22,11 +22,7 @@ static inline void drawables_free(){
 }
 //----------------------------------------------------------------------------
 static void drawables_load_file_in_slot(int id,const char*file_path){
-	dynf buf=/*takes*/read_obj_file_from_path(
-			file_path
-		);
-	//                   vertex, color, normal
-	size_t vertex_size_in_bytes=(3+3+3+2)*sizeof(float);
+	dynf buf=/*takes*/read_obj_file_from_path(file_path);
 	drawables[id].vertex_buf_size=buf.size*sizeof(float);
 	drawables[id].vertex_count=buf.size/(3+3+3+2);
 
