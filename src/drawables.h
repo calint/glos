@@ -37,7 +37,7 @@ static void drawables_load_file_in_slot(int id,const char*file_path){
 			(signed)drawables[id].vertex_buf_size,
 			buf.data,
 			GL_STATIC_DRAW);
-//	free(buf); //?
+	dynf_free(/*gives*/&buf);
 #endif
 //	load_drawable(index);
 }

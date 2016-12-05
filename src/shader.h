@@ -190,20 +190,21 @@ inline static void load_program() {
 
 	GLuint textureID;
 	glGenTextures(1,&textureID);
+	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D,textureID);
 
 	int width=2,height=2;
-//	float pixels[]={
-//	    1.0f, 0.0f, 0.0f,   1.0f, 1.0f, 1.0f,
-//	    1.0f, 1.0f, 1.0f,   0.0f, 0.0f, 0.0f
-//	};
-//	glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,width,height,0,GL_RGB,GL_FLOAT,pixels);
+	float pixels[]={
+	    1.0f, 0.0f, 0.0f,   1.0f, 1.0f, 1.0f,
+	    1.0f, 1.0f, 1.0f,   0.0f, 0.0f, 0.0f
+	};
+	glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,width,height,0,GL_RGB,GL_FLOAT,pixels);
 
-	unsigned char*image =SOIL_load_image("logo.jpg",&width,&height,0,
-			SOIL_LOAD_RGB);
-	glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,width,height,0,GL_RGB,GL_UNSIGNED_BYTE,
-			image);
-	SOIL_free_image_data(image);
+//	unsigned char*image =SOIL_load_image("logo.jpg",&width,&height,0,
+//			SOIL_LOAD_RGB);
+//	glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,width,height,0,GL_RGB,GL_UNSIGNED_BYTE,
+//			image);
+//	SOIL_free_image_data(image);
 
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
@@ -212,8 +213,6 @@ inline static void load_program() {
 
 	glUniform1i((signed)shader.texture_sampler,0);
 
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D,textureID);
 
 	glEnableVertexAttribArray(shader.position_slot);
 	glEnableVertexAttribArray(shader.color_slot);
