@@ -165,11 +165,9 @@ inline static void shader_render() {
 	glEnableVertexAttribArray(_shader_atex);//texture
 	glUseProgram(shader_programs[0].id);
 
-	// Set the active texture unit to texture unit 0.
-//	glActiveTexture(GL_TEXTURE0);
-	// Bind the texture to this unit.
-//	glBindTexture(GL_TEXTURE_2D,shader.texture_id);
-	// Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D,texbufid);
+
 	float mtxident[]={1,0,0,0,  0,1,0,0,  0,0,1,0,  0,0,0,1};
 	glUniformMatrix4fv(0,1,0,mtxident);
 	glUniform1i(_shader_umtx_mw,0);// texture sampler on texture0
@@ -187,6 +185,7 @@ inline static void shader_render() {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,ixbufid);
 	glDrawElements(GL_TRIANGLES,(signed)ixbufn,GL_UNSIGNED_BYTE,0);
 
+	glBindTexture(GL_TEXTURE_2D,0);
 	glDisableVertexAttribArray(_shader_apos);//position
 	glDisableVertexAttribArray(_shader_argba);//color
 	glDisableVertexAttribArray(_shader_anorm);//normal
