@@ -56,7 +56,7 @@ inline static void ${name}_add(${name}*this,${type} o){
 
 //-----------------------------------------------------------------------------
 
-inline static ${type}${name}_get(${name}*this,size_t index){
+inline static ${type} ${name}_get(${name}*this,size_t index){
 #ifdef ${name}vec_bounds_check
 	if(index>=this->capacity){
 		fprintf(stderr,"\nindex-out-of-bounds");
@@ -71,9 +71,42 @@ inline static ${type}${name}_get(${name}*this,size_t index){
 
 //-----------------------------------------------------------------------------
 
-inline static ${type}${name}_get_last(${name}*this){
+inline static ${type} ${name}_get_last(${name}*this){
 	${type} p=*(this->data+this->size-1);
 	return p;
+}
+
+//-----------------------------------------------------------------------------
+
+inline static ${type} ${name}_size_in_bytes(${name}*this){
+	return this->size*sizeof(${type});
+}
+
+//-----------------------------------------------------------------------------
+
+inline static void ${name}_free(${name}*this){
+	if(!this->data)
+		return;
+	free(this->data);
+}
+
+//-----------------------------------------------------------------------------
+
+inline static void ${name}_add_string(${name}*this,/*copies*/const ${type}*str){
+	//? optimize
+	${type}*p=str;
+	while(*p){
+		__${name}_insure_free_capcity(this,1);
+		*(this->data+this->size++)=*p++;
+	}
+}
+
+//-----------------------------------------------------------------------------
+
+inline static void ${name}_write_to_fd(${name}*this,int fd){
+	if(!this->data)
+		return;
+	write(fd,this->data,this->size);
 }
 
 //-----------------------------------------------------------------------------
