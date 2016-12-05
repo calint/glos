@@ -1,27 +1,27 @@
 #pragma once
-#include"object.h"
+#include"alloc.h"
 #include"part.h"
 
 #define ref_validate_cast 0
 //-------------------------------------------------------------------- objects
-#define objects_count 1024
-typedef object*objectref;
-typedef object*object_ptr;
-typedef void*ref;
-
-inline static objectref object_(ref r){
-	return(object*)r;//? detect cast error
-}
-
-static object objects[objects_count];
-static object*objects_start_ptr=objects;
-static object*objects_seek_ptr=objects;
-static object*objects_end_ptr=objects+objects_count;
-//----------------------------------------------------------------------- bits
-static bits objects_bits[objects_count];
-static bits*objects_bits_start_ptr=objects_bits;
-static bits*objects_bits_seek_ptr=objects_bits;
-static bits*objects_bits_end_ptr=objects_bits+objects_count;
+//#define objects_count 1024
+//typedef object*objectref;
+//typedef object*object_ptr;
+//typedef void*ref;
+//
+//inline static objectref object_(ref r){
+//	return(object*)r;//? detect cast error
+//}
+//
+//static object objects[objects_count];
+//static object*objects_start_ptr=objects;
+//static object*objects_seek_ptr=objects;
+//static object*objects_end_ptr=objects+objects_count;
+////----------------------------------------------------------------------- bits
+//static bits objects_bits[objects_count];
+//static bits*objects_bits_start_ptr=objects_bits;
+//static bits*objects_bits_seek_ptr=objects_bits;
+//static bits*objects_bits_end_ptr=objects_bits+objects_count;
 //------------------------------------------------------------------------ init
 inline static void objects_init(){}
 //------------------------------------------------------------------------ free
