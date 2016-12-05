@@ -1,44 +1,45 @@
-// ${name} : name
-// ${type}     : type
-//------------------------------------------------------------------ ${name}
+//------------------------------------------------------------------------ ${name}
 #pragma once
-#include<stdlib.h>
 
-#define ${name}_initial_cap 8
-#define ${name}_realloc_strategy 'a'
+#define ${name}_initial_capacity 8
 #define ${name}_bounds_check 1
 
+//------------------------------------------------------------------------- def
+
 typedef struct ${name}{
-	${type} data;/*owns*/
+
+	${type} *data;
+
 	size_t size;
-	size_t cap;
+
+	size_t capacity;
+
 }${name};
-${name} _${name}_init_={NULL,0,0};
+
+${name} ${name}_default={NULL,0,0};
 
 //--------------------------------------------------------------------- private
 
-inline static void __${name}_insure_free_capcity(${name}*this,size_t n){
-	const size_t rem=this->cap-this->size;
+inline static void _${name}_insure_free_capcity(${name}*this,size_t n){
+	const size_t rem=this->capacity-this->size;
 	if(rem>=n)
 		return;
 	if(this->data){
-		size_t new_cap=this->cap*2;
-		printf("   re-allocating vector %p\n",this->data);
-		${type}*new_data=realloc(this->data,sizeof(${type})*new_cap);
+		size_t new_cap=this->capacity*2;
+		${type} *new_data=realloc(this->data,sizeof(${type})*new_cap);
 		if(!new_data){
 			fprintf(stderr,"\nout-of-memory");
 			fprintf(stderr,"\tfile: '%s'  line: %d\n\n",__FILE__,__LINE__);
 			exit(-1);
 		}
-		if(new_data!=this->data){ // re-locate
-			printf("   re-allocated vector %p to %p\n",this->data,new_data);
+		if(new_data!=this->data){
 			this->data=new_data;
 		}
-		this->cap=new_cap;
+		this->capacity=new_cap;
 		return;
 	}
-	this->cap=${name}_initial_cap;
-	this->data=malloc(sizeof(${type})*this->cap);
+	this->capacity=${name}_initial_capacity;
+	this->data=malloc(sizeof(${type})*this->capacity);
 	if(!this->data){
 		fprintf(stderr,"\nout-of-memory");
 		fprintf(stderr,"\tfile: '%s'  line: %d\n\n",__FILE__,__LINE__);
@@ -46,40 +47,33 @@ inline static void __${name}_insure_free_capcity(${name}*this,size_t n){
 	}
 }
 
-
 //---------------------------------------------------------------------- public
 
-inline static void ${name}_add(${name}*this,${type} f){
-	__${name}_insure_free_capcity(this,1);
-	*(this->data+this->size++)=f;
+inline static void ${name}_add(${name}*this,${type}o){
+	_${name}_insure_free_capcity(this,1);
+	*(this->data+this->size++)=o;
 }
 
 //-----------------------------------------------------------------------------
 
-inline static ${type} ${name}_get(${name}*this,size_t index){
-#ifdef ${name}_bounds_check
-	if(index>=this->cap){
+inline static ${type}${name}_get(${name}*this,size_t index){
+#ifdef ${name}vec_bounds_check
+	if(index>=this->capacity){
 		fprintf(stderr,"\nindex-out-of-bounds");
 		fprintf(stderr,"\t%s\n\n%d  index: %zu    capacity: %zu\n",
-				__FILE__,__LINE__,index,this->cap);
+				__FILE__,__LINE__,index,this->capacity);
 		exit(-1);
 	}
 #endif
-	return*(this->data+index);
+	${type}p=*(this->data+index);
+	return p;
 }
 
 //-----------------------------------------------------------------------------
 
-inline static size_t ${name}_size_in_bytes(${name}*this){
-	return this->size*sizeof(${type});
-}
-
-//-----------------------------------------------------------------------------
-
-inline static void ${name}_free(${name}*this){
-	if(!this->data)
-		return;
-	free(this->data);
+inline static ${type}${name}_get_last(${name}*this){
+	${type}p=*(this->data+this->size-1);
+	return p;
 }
 
 //-----------------------------------------------------------------------------
