@@ -76,7 +76,6 @@ void main(){                               \n\
 }\n";
 #define _shader_utex 1
 
-
 inline static const char*get_shader_name_for_type(GLenum shader_type);
 inline static GLuint compile_shader(GLenum shaderType,const char *code) {
 //	printf("\n ___| %s shader |__________________\n%s\n",
@@ -164,6 +163,7 @@ inline static void shader_render() {
 	glEnableVertexAttribArray(_shader_argba);//color
 	glEnableVertexAttribArray(_shader_anorm);//normal
 	glEnableVertexAttribArray(_shader_atex);//texture
+	glUseProgram(shader_programs[0].id);
 
 	// Set the active texture unit to texture unit 0.
 //	glActiveTexture(GL_TEXTURE0);
@@ -185,7 +185,13 @@ inline static void shader_render() {
 			sizeof(shader_vertex),(GLvoid*)((3+4+3)*sizeof(float)));
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,ixbufid);
-	glDrawElements(GL_TRIANGLES,ixbufn,GL_UNSIGNED_BYTE,0);
+	glDrawElements(GL_TRIANGLES,(signed)ixbufn,GL_UNSIGNED_BYTE,0);
+
+	glDisableVertexAttribArray(_shader_apos);//position
+	glDisableVertexAttribArray(_shader_argba);//color
+	glDisableVertexAttribArray(_shader_anorm);//normal
+	glDisableVertexAttribArray(_shader_atex);//texture
+
 }
 
 
@@ -230,8 +236,8 @@ inline static void shader_init() {
 
 	puts("");
 
-	shader_program_load(1,vertex_shader_source,fragment_shader_source);
-	glUseProgram(shader_programs[1].id);
+	shader_program_load(0,vertex_shader_source,fragment_shader_source);
+//	glUseProgram(shader_programs[0].id);
 
 	shader_load();
 
