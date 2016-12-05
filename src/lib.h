@@ -4,7 +4,7 @@
 #include<sys/types.h>
 #include<math.h>
 
-#include "typesdefs.h"
+#include "typedefs.h"
 //------------------------------------------------------------------------ lib
 
 inline static int bits_is_bit_set(bits*b,int bit_number_starting_at_zero){
