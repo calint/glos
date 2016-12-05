@@ -1,19 +1,21 @@
 #pragma once
 #include"dynf.h"
-
-static/*gives*/dynf read_obj_file_from_path(const char*path);
-
 #define globs_cap 1
 //----------------------------------------------------------------------- calls
+
 inline static void shader_render_triangle_elements(
 		GLuint vbufid,size_t vbufn,
 		GLuint ixbufid,size_t ixbufn,
 		GLuint texid,
 		float*mtx_mw
 );
+
 inline static void shader_render_triangle_array(
 		GLuint vbufid,size_t vbufn,GLuint texid,float*mtx_mw
 );
+
+static/*gives*/dynf read_obj_file_from_path(const char*path);
+
 //---------------------------------------------------------------------
 
 typedef struct vertex{
@@ -23,12 +25,6 @@ typedef struct vertex{
 	float texture[2];
 }vertex;
 
-//static shader_vertex vertbuf[]={
-//	{{ .5,-.5, 0},{ 1, 0, 0,1},{0,0,1},{1,0}},
-//	{{ .5, .5, 0},{ 0, 1, 0,1},{0,0,1},{1,1}},
-//	{{-.5, .5, 0},{ 0, 0, 1,1},{0,0,1},{0,1}},
-//	{{-.5,-.5, 0},{ 0, 0, 0,1},{0,0,1},{0,0}},
-//};
 static vertex glob_def_vertbuf[]={
 	{{ .5,-.5, 0},{ 1, 0, 0,1},{0,0,1},{ 1,-1}},
 	{{ .5, .5, 0},{ 0, 1, 0,1},{0,0,1},{ 1, 1}},
