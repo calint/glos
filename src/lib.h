@@ -3,8 +3,12 @@
 #include<stdlib.h>
 #include<sys/types.h>
 #include<math.h>
-
 //------------------------------------------------------------------- typedefs
+#include"dynp.h"
+#include"dynf.h"
+#include"dyni.h"
+#include"dync.h"
+typedef dync str;
 
 typedef uint8_t bits;
 typedef int8_t byte;
