@@ -35,25 +35,10 @@
 //map_Kd /home/c/w/glos/logo.jpg
 
 typedef struct obj_mtl{
-
 	str name;
-
 	str texture_path;
-
 	GLuint texture_gid;
-
 }obj_mtl;
-
-
-
-
-
-
-
-
-
-
-
 
 // returns array buffer of triangles [ x y z   r g b a   nx ny nz   u v]
 static/*gives*/dynf read_obj_file_from_path(const char*path){
