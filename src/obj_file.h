@@ -27,7 +27,7 @@ inline static void print_token_including_whitespace(token*t){
 	printf("%.*s",(int)token_size_including_whitespace(t),t->begin);
 }
 
-inline static void print_token(token*t){
+inline static void token_print(token*t){
 //	write(1,t->content,(unsigned)(t->content_end-t->content));
 	printf("%.*s",(int)token_size_including_whitespace(t),t->begin);
 }
@@ -62,7 +62,7 @@ inline static int token_get_int(token*t){
 	return i;
 }
 
-inline static token next_token_from_string(const char*s){
+inline static token token_next_from_string(const char*s){
 	const char*p=s;
 	token t;
 	t.begin=s;
@@ -222,7 +222,7 @@ static/*gives*/dynf read_obj_file_from_path(const char*path){
 
 	const char*p=filedata;
 	while(*p){
-		token t=next_token_from_string(p);
+		token t=token_next_from_string(p);
 		p=t.end;//token_size_including_whitespace(&t);
 		if(token_starts_with(&t,"#")){
 			p=scan_to_including_newline(p);
@@ -245,15 +245,15 @@ static/*gives*/dynf read_obj_file_from_path(const char*path){
 			continue;
 		}
 		if(token_equals(&t,"v")){
-			token tx=next_token_from_string(p);
+			token tx=token_next_from_string(p);
 			float x=token_get_float(&tx);
 			p=tx.end;
 
-			token ty=next_token_from_string(p);
+			token ty=token_next_from_string(p);
 			float y=token_get_float(&ty);
 			p=ty.end;
 
-			token tz=next_token_from_string(p);
+			token tz=token_next_from_string(p);
 			float z=token_get_float(&tz);
 			p=tz.end;
 
@@ -263,11 +263,11 @@ static/*gives*/dynf read_obj_file_from_path(const char*path){
 			continue;
 		}
 		if(token_equals(&t,"vt")){
-			token tu=next_token_from_string(p);
+			token tu=token_next_from_string(p);
 			float u=token_get_float(&tu);
 			p=tu.end;
 
-			token tv=next_token_from_string(p);
+			token tv=token_next_from_string(p);
 			float v=token_get_float(&tv);
 			p=tv.end;
 
@@ -277,15 +277,15 @@ static/*gives*/dynf read_obj_file_from_path(const char*path){
 			continue;
 		}
 		if(token_equals(&t,"vn")){
-			token tx=next_token_from_string(p);
+			token tx=token_next_from_string(p);
 			p=tx.end;
 			float x=token_get_float(&tx);
 
-			token ty=next_token_from_string(p);
+			token ty=token_next_from_string(p);
 			p=ty.end;
 			float y=token_get_float(&ty);
 
-			token tz=next_token_from_string(p);
+			token tz=token_next_from_string(p);
 			p=tz.end;
 			float z=token_get_float(&tz);
 

@@ -20,7 +20,7 @@ inline static void main_init(){
 //	drawables_load_file_in_slot(5,"arts/obj/boulder_1.obj");
 //	drawables_load_file_in_slot(6,"arts/obj/car1.obj");
 
-	drawables_load_file_in_slot(6,"obj/cube.obj");
+	drawables_load_file_in_slot(6,"obj/plane.obj");
 
 	object*o=new(&_ninja_);
 	o->velocity=(vec4){0,0,0,0};
