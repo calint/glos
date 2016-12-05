@@ -80,6 +80,9 @@ int main(int argc,char*argv[]){
 		GLclampf blue;
 	}c={0,0,1};
 
+	int draw_default=0;
+	int draw_objects=1;
+
 	for(int running=1;running;){
 		fps__at__frame_begin();
 		SDL_Event event;
@@ -88,42 +91,58 @@ int main(int argc,char*argv[]){
 			case SDL_QUIT:
 				running = 0;
 				break;
+
+
 			case SDL_KEYDOWN:
-				switch (event.key.keysym.sym) {
-				case SDLK_ESCAPE:
-					running = 0;
-					break;
-				case SDLK_w:
-					c.red = 1;
-					c.green = 0;
-					c.blue = 0;
-					break;
-				case SDLK_a:
-					objects[0].angular_velocity.z=90;
-					c.red = 0;
-					c.green = 1;
-					c.blue = 0;
-					break;
-				case SDLK_s:
-					objects[0].angular_velocity.z=0;
-					c.red = 0;
-					c.green = 0;
-					c.blue = 1;
-					break;
-				case SDLK_d:
-					objects[0].angular_velocity.z=-90;
-					c.red = 1;
-					c.green = 1;
-					break;
+				switch (event.key.keysym.sym){
+					case SDLK_ESCAPE:
+						running = 0;
+						break;
+					case SDLK_w:
+						c.red = 1;
+						c.green = 0;
+						c.blue = 0;
+						break;
+					case SDLK_a:
+						objects[0].angular_velocity.z=90;
+						c.red = 0;
+						c.green = 1;
+						c.blue = 0;
+						break;
+					case SDLK_s:
+						objects[0].angular_velocity.z=0;
+						c.red = 0;
+						c.green = 0;
+						c.blue = 1;
+						break;
+					case SDLK_d:
+						objects[0].angular_velocity.z=-90;
+						c.red = 1;
+						c.green = 1;
+						break;
+					case SDLK_1:
+						draw_default=1;
+						break;
+				}
+				break;
+
+
+			case SDL_KEYUP:
+				switch (event.key.keysym.sym){
+					case SDLK_1:
+						draw_default=0;
+						break;
 				}
 			}
+
+
 		}
 
 		glClearColor(c.red,c.green,c.blue,1.0);
 		glClear(GL_COLOR_BUFFER_BIT);
-				shader_render();
-//		objects_update(fps.dt);
-//		objects_render();
+		objects_update(fps.dt);
+		if(draw_objects)objects_render();
+		if(draw_default)shader_render();
 		SDL_GL_SwapWindow(window.ref);
 		fps__at__update_frame_end();
 	}
