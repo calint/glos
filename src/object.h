@@ -135,7 +135,7 @@ inline static void _render_drawable_(object*o) {
 		shader_render_triangle_array(
 				drawables[o->drawable_id].vertex_buf_gid,
 				drawables[o->drawable_id].vertex_count,
-				shader_renderable_def.texbufid,
+				shader_glob_def.texbufid,
 				o->model_to_world_matrix
 			);
 

@@ -55,7 +55,7 @@ typedef struct shader_glob{
 	float*mtx_mw;
 }shader_glob;
 
-static shader_glob shader_renderable_def=(shader_glob){
+static shader_glob shader_glob_def=(shader_glob){
 	.vertbuf=shader_def_vertbuf,
 	.vertbufn=sizeof(shader_def_vertbuf)/sizeof(&shader_def_vertbuf[0]),
 	.vertbufnbytes=sizeof(shader_def_vertbuf),
@@ -111,7 +111,7 @@ varying mediump vec2 vtex;                \n\
 void main(){                               \n\
 	gl_FragColor=texture2D(utex,vtex)+vrgba*dot(vec4(1,0,0,1),vec4(vnorm,1));\n\
 }\n";
-#define _shader_utex 1
+#define shader_utex 1
 
 inline static const char*_get_shader_name_for_type(GLenum shader_type);
 inline static void _check_gl_error(const char*op);
@@ -168,25 +168,25 @@ inline static void shader_program_load(int index,const char*vert_src,const char*
 
 inline static void shader_load(){
 	_check_gl_error("enter shader_load");
-	glGenBuffers(1, &shader_renderable_def.vertbufid);
-	glBindBuffer(GL_ARRAY_BUFFER,shader_renderable_def.vertbufid);
+	glGenBuffers(1, &shader_glob_def.vertbufid);
+	glBindBuffer(GL_ARRAY_BUFFER,shader_glob_def.vertbufid);
 	glBufferData(GL_ARRAY_BUFFER,
-			shader_renderable_def.vertbufnbytes,
-			shader_renderable_def.vertbuf,
+			shader_glob_def.vertbufnbytes,
+			shader_glob_def.vertbuf,
 			GL_STATIC_DRAW
 	);
 
-	glGenBuffers(1,&shader_renderable_def.ixbufid);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,shader_renderable_def.ixbufid);
+	glGenBuffers(1,&shader_glob_def.ixbufid);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,shader_glob_def.ixbufid);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-			shader_renderable_def.ixbufnbytes,
-			shader_renderable_def.ixbuf,
+			shader_glob_def.ixbufnbytes,
+			shader_glob_def.ixbuf,
 			GL_STATIC_DRAW
 	);
 
 //	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
-	glGenTextures(1,&shader_renderable_def.texbufid);
-	glBindTexture(GL_TEXTURE_2D,shader_renderable_def.texbufid);
+	glGenTextures(1,&shader_glob_def.texbufid);
+	glBindTexture(GL_TEXTURE_2D,shader_glob_def.texbufid);
 
 //----------------------------------------------
 //	SDL_Surface*surface=IMG_Load("logo.jpg");
@@ -199,9 +199,9 @@ inline static void shader_load(){
 
 	//----------------------------------------------
 	glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,
-			shader_renderable_def.texwi,shader_renderable_def.texhi,
+			shader_glob_def.texwi,shader_glob_def.texhi,
 			0,GL_RGB,GL_FLOAT,
-			shader_renderable_def.texbuf);
+			shader_glob_def.texbuf);
 	//----------------------------------------------
 
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
@@ -223,13 +223,13 @@ inline static void shader_render() {
 
 
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D,shader_renderable_def.texbufid);
-	glUniform1i(_shader_utex,0);
+	glBindTexture(GL_TEXTURE_2D,shader_glob_def.texbufid);
+	glUniform1i(shader_utex,0);
 
 	float mtxident[]={1,0,0,0,  0,1,0,0,  0,0,1,0,  0,0,0,1};
 	glUniformMatrix4fv(0,1,0,mtxident);
 
-	glBindBuffer(GL_ARRAY_BUFFER,shader_renderable_def.vertbufid);
+	glBindBuffer(GL_ARRAY_BUFFER,shader_glob_def.vertbufid);
 	glVertexAttribPointer(shader_apos,  3,GL_FLOAT,GL_FALSE,
 			sizeof(shader_vertex),0);
 	glVertexAttribPointer(shader_argba, 4,GL_FLOAT,GL_FALSE,
@@ -239,9 +239,9 @@ inline static void shader_render() {
 	glVertexAttribPointer(shader_atex,  2,GL_FLOAT, GL_FALSE,
 			sizeof(shader_vertex),(GLvoid*)((3+4+3)*sizeof(float)));
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,shader_renderable_def.ixbufid);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,shader_glob_def.ixbufid);
 	glDrawElements(GL_TRIANGLES,
-			(signed)shader_renderable_def.vertbufn,
+			(signed)shader_glob_def.vertbufn,
 			GL_UNSIGNED_BYTE,0
 	);
 
@@ -252,7 +252,6 @@ inline static void shader_render() {
 	glDisableVertexAttribArray(shader_argba);//color
 	glDisableVertexAttribArray(shader_anorm);//normal
 	glDisableVertexAttribArray(shader_atex);//texture
-
 }
 
 inline static void shader_render_triangle_array(
@@ -266,7 +265,7 @@ inline static void shader_render_triangle_array(
 	//? enabled
 
 	glUniformMatrix4fv(0,1,0,mtx_mw);
-	glUniform1i(_shader_utex,0);
+	glUniform1i(shader_utex,0);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D,texid);
 

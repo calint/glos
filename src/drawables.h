@@ -44,7 +44,7 @@ static inline void drawables_draw(int id){
 	shader_render_triangle_array(
 			drawables[id].vertex_buf_gid,
 			drawables[id].vertex_count,
-			shader_renderable_def.texbufid,
+			shader_glob_def.texbufid,
 			mtxident
 		);
 //
