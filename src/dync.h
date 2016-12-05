@@ -104,4 +104,13 @@ inline static void dync_add_string(dync*this,/*copies*/const char*str){
 
 //-----------------------------------------------------------------------------
 
+inline static void dync_write_to_fd(dync*this,int fd){
+	if(!this->data)
+		return;
+	write(fd,this->data,this->size);
+}
+
+//-----------------------------------------------------------------------------
+
+
 

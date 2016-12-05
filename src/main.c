@@ -10,6 +10,7 @@
 #include"alloc.h"
 #include"dynv.h"
 #include"obj_file.h"
+#include"dync.h"
 //----------------------------------------------------------------------- init
 inline static void main_init(){
 //	drawables_load_file_in_slot(1,"arts/obj/cube.obj");
@@ -33,6 +34,15 @@ inline static void main_init(){
 }
 //------------------------------------------------------------------------ main
 int main(int argc,char*argv[]){
+	dync str=_dync_init_;
+	dync_add_string(&str,"hello");
+	dync_add(&str,' ');
+	dync_add_string(&str,"world");
+	dync_write_to_fd(&str,1);
+	exit(0);
+
+
+
 	printf(":-%14s : %8s-:\n","--------------","--------");
 	printf(": %14s : %8s :\n","type","size");
 	printf(":-%14s : %8s-:\n","--------------","--------");
