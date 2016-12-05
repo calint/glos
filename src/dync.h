@@ -114,3 +114,13 @@ inline static void dync_write_to_fd(dync*this,int fd){
 
 
 
+
+
+//	dync str=_dync_init_;
+//	dync_add_string(&str,"hello");
+//	dync_add(&str,' ');
+//	dync_add_string(&str,"world");
+//	dync_write_to_fd(&str,1);
+//	exit(0);
+
+
