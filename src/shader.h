@@ -309,9 +309,9 @@ inline static void shader_init() {
 
 	check_gl_error("after shader_init");
 
-	// try the shader render
-
-//	glClearColor(.5f,.5f,0,1.0);
+	//? try the shader render
+//
+//	glClearColor(.5f,.5f,.5f,1);
 //	glClear(GL_COLOR_BUFFER_BIT);
 //	shader_render();
 //	SDL_GL_SwapWindow(window.ref);
@@ -332,13 +332,13 @@ inline static void shader_render() {
 			sizeof(vertex),0);
 
 	glVertexAttribPointer(shader.color_slot,3,GL_FLOAT,GL_FALSE,
-			sizeof(vertex),(void*)(3*sizeof(float)));
+			sizeof(vertex),(void*)(3*sizeof(GLfloat)));
 
 	glVertexAttribPointer(shader.normal_slot,3,GL_FLOAT,GL_FALSE,
-			sizeof(vertex),(void*)((3+3)*sizeof(float)));
+			sizeof(vertex),(void*)((3+3)*sizeof(GLfloat)));
 
 	glVertexAttribPointer(shader.texture_slot,2,GL_FLOAT,GL_FALSE,
-			sizeof(vertex),(void*)((3+3+3)*sizeof(float)));
+			sizeof(vertex),(void*)((3+3+3)*sizeof(GLfloat)));
 
 	glDrawArrays(GL_TRIANGLES,0,3);
 
