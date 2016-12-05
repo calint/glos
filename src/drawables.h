@@ -47,43 +47,5 @@ static inline void drawables_draw(int id){
 			shader_glob_def.texbufid,
 			mtxident
 		);
-//
-//	glEnableVertexAttribArray(_shader_apos);//position
-//	glEnableVertexAttribArray(_shader_argba);//color
-//	glEnableVertexAttribArray(_shader_anorm);//normal
-//	glEnableVertexAttribArray(_shader_atex);//texture
-//	glUseProgram(shader_programs[0].id);
-//	//? enabled
-//
-//
-//	glActiveTexture(GL_TEXTURE0);
-//	glBindTexture(GL_TEXTURE_2D,texbufid);
-//
-//	int stride=(signed)(
-//			drawables[id].vertex_buf_size/
-//			drawables[id].vertex_count
-//		);
-//
-//	glBindBuffer(GL_ARRAY_BUFFER,drawables[id].vertex_buf_gid);
-//
-//	glVertexAttribPointer(_shader_apos,3,GL_FLOAT,GL_FALSE,stride,0);
-//
-//	glVertexAttribPointer(_shader_argba,4,GL_FLOAT,GL_FALSE,stride,
-//		(void*)(3*sizeof(float)));
-//
-//	glVertexAttribPointer(_shader_anorm,3,GL_FLOAT,GL_FALSE,stride,
-//		(void*)((3+4)*sizeof(float)));
-//
-//	glVertexAttribPointer(_shader_atex,2,GL_FLOAT,GL_FALSE,stride,
-//		(void*)((3+4+3)*sizeof(float)));
-//
-//	glDrawArrays(GL_TRIANGLES,0,(signed)drawables[id].vertex_count);
-//
-//	//? reset
-//	glBindTexture(GL_TEXTURE_2D,0);
-//	glDisableVertexAttribArray(_shader_apos);//position
-//	glDisableVertexAttribArray(_shader_argba);//color
-//	glDisableVertexAttribArray(_shader_anorm);//normal
-//	glDisableVertexAttribArray(_shader_atex);//texture
 }
 //----------------------------------------------------------------------------

@@ -131,14 +131,12 @@ inline static void _object_update_model_to_world_matrix(object*this){
 inline static void _render_drawable_(object*o) {
 	if(o->drawable_id){
 		_object_update_model_to_world_matrix(o);
-
 		shader_render_triangle_array(
 				drawables[o->drawable_id].vertex_buf_gid,
 				drawables[o->drawable_id].vertex_count,
 				shader_glob_def.texbufid,
 				o->model_to_world_matrix
 			);
-
 	}
 }
 
