@@ -16,7 +16,7 @@ typedef struct object{
 	float model_to_world_matrix[4*4];
 	bounding_radius bounding_radius;
 	scale scale;
-	color color;
+//	color color;
 	gid glob_id;
 	int model_to_world_matrix_is_updated;
 	void(*init)(struct object*);
@@ -65,7 +65,7 @@ static object _object_={
 	.scale={0,0,0,0},
 	.type={{0,0,0,0,0,0,0,0}},
 	.id=0,
-	.color=0,
+//	.color=0,
 	.bits_ref=NULL,
 	.model_to_world_matrix={1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1},
 	.init=_object_init_,
@@ -96,22 +96,22 @@ inline static void object_update_bounding_radius_using_scale(object*this) {
 
 //----------------------------------------------------------------------------
 
-inline static void _draw_bounding_sphere_(object*o) {
-	circleColor(
-		window.renderer,
-		(short)o->position.x,
-		(short)o->position.y,
-		(short)o->bounding_radius,
-		o->color
-	);
-}
+//inline static void _draw_bounding_sphere_(object*o) {
+//	circleColor(
+//		window.renderer,
+//		(short)o->position.x,
+//		(short)o->position.y,
+//		(short)o->bounding_radius,
+//		o->color
+//	);
+//}
 
 //----------------------------------------------------------------------------
 
-inline static void _draw_texture_and_bounding_sphere_(object*o) {
-	_draw_texture_(o);
-	_draw_bounding_sphere_(o);
-}
+//inline static void _draw_texture_and_bounding_sphere_(object*o) {
+//	_draw_texture_(o);
+//	_draw_bounding_sphere_(o);
+//}
 
 //----------------------------------------------------------------------------
 
