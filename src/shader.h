@@ -38,29 +38,19 @@ void main(){             \n\
 
 typedef struct {
 	float position_xyz[3];
-	float color_rgb[4];
+	float color_rgb[3];
 	float normal_xyz[3];
 	float texture_uv[2];
 } vertex;
 
-static vertex vertices[]={
-	{{ 1,-1, 0},{ 1, 0, 0,1},{0,0,0},{0,0}},
-	{{ 1, 1, 0},{ 0, 1, 0,1},{0,0,0},{0,0}},
-	{{-1, 1, 0},{ 0, 0, 1,1},{0,0,0},{0,0}},
-	{{-1,-1, 0},{ 0, 0, 0,1},{0,0,0},{0,0}},
-};
-
-static GLubyte indices[]={0,1,2,2,3,0};
-
 struct{
-	GLuint program_id,vertex_buffer_id,index_buffer_id;
+	GLuint program_id;
 	GLuint position_slot;
 	GLuint color_slot;
 	GLuint normal_slot;
 	GLuint texture_slot;
 	GLuint model_to_world_matrix_slot;
 	GLuint sampler_slot;
-	int indices_count;
 }shader;
 
 inline static const char*get_shader_name_for_type(GLenum shader_type) {
@@ -165,35 +155,6 @@ inline static void load_program() {
 		exit(10);
 	}
 	shader.sampler_slot=(GLuint)slot;
-
-	// texture
-	int width=2,height=2;
-	float pixels[]={
-			1.0f, 1.0f, 0.0f,   0.0f, 0.0f, .5f,
-			0.0f, 0.0f, 1.0f,   1.0f, 1.0f, 0.0f
-	};
-	GLuint textureID;
-	glGenTextures(1,&textureID);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D,textureID);
-	glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,width,height,0,GL_RGB,GL_FLOAT,pixels);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
-	glGenerateMipmap(GL_TEXTURE_2D);
-
-
-	// render
-	glUniform1i((signed)shader.sampler_slot,0);
-
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D,textureID);
-
-	glEnableVertexAttribArray(shader.position_slot);
-	glEnableVertexAttribArray(shader.color_slot);
-	glEnableVertexAttribArray(shader.normal_slot);
-	glEnableVertexAttribArray(shader.texture_slot);
 }
 
 inline static const char*get_gl_error_string(const GLenum error) {
@@ -248,29 +209,39 @@ inline static void check_gl_error(const char*op) {
 		exit(11);
 }
 
-inline static void create_geometry(GLuint *vertexBuffer, GLuint *indexBuffer,
-		int *numIndices) {
-
-	glGenBuffers(1,vertexBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER,*vertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(vertices),vertices,GL_STATIC_DRAW);
-
-	glGenBuffers(1,indexBuffer);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,*indexBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER,sizeof(indices),indices,
-	GL_STATIC_DRAW);
-
-	*numIndices=sizeof(indices)/sizeof(indices[0]);
-	check_gl_error("generating buffers");
-}
-
 inline static void print_gl_string(const char *name, const GLenum s){
 	const char*v = (const char*) glGetString(s);
 	printf("%s=%s\n", name, v);
 }
 
+
+
+
+
+static vertex __shader_vertbuf[]={
+//	   x  y  z    r  g  b    nx ny nz    u  v
+	{{ 1,-1, 0}, {1, 0, 0}, {0, 0,-1}, { 1,-1}},
+	{{ 1, 1, 0}, {0, 1, 0}, {0, 0,-1}, { 1, 1}},
+	{{-1, 1, 0}, {0, 0, 1}, {0, 0,-1}, {-1, 1}},
+	{{-1,-1, 0}, {1, 1, 0}, {0, 0,-1}, {-1,-1}},
+};
+static GLuint __shader_vertbufid;
+//static GLuint __shader_vertbufn=sizeof(__shader_vertbuf)*sizeof(vertex);
+
+static GLubyte __shader_ixbuf[]={0,1,2,2,3,0};
+static GLuint __shader_ixbufid;
+GLsizei __shader_ixbufn=sizeof(__shader_ixbuf);
+
+int __shader_texwidth=2,__shader_texheight=2;
+float __shader_texpixels[]={
+		1.0f, 1.0f, 0.0f,   0.0f, 0.0f, .5f,
+		0.0f, 0.0f, 1.0f,   1.0f, 1.0f, 0.0f
+};
+GLuint __texid;
+
+inline static void shader_render();
 inline static void shader_init() {
-	check_gl_error("shader_init");
+	check_gl_error("before shader_init");
 	gl_print_context_profile_and_version();
 	print_gl_string("GL_VERSION", GL_VERSION);
 	print_gl_string("GL_VENDOR", GL_VENDOR);
@@ -278,15 +249,80 @@ inline static void shader_init() {
 	print_gl_string("GL_SHADING_LANGUAGE_VERSION",GL_SHADING_LANGUAGE_VERSION);
 	puts("");
 
-	create_geometry(
-		&shader.vertex_buffer_id,
-		&shader.index_buffer_id,
-		&shader.indices_count
-	);
-
 	load_program();
+	check_gl_error("after load_program");
+
+	glGenBuffers(1,&__shader_vertbufid);
+	glBindBuffer(GL_ARRAY_BUFFER,__shader_vertbufid);
+	glBufferData(GL_ARRAY_BUFFER,sizeof(__shader_vertbuf),__shader_vertbuf,GL_STATIC_DRAW);
+
+	glGenBuffers(1,&__shader_ixbufid);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,__shader_ixbufid);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER,sizeof(__shader_ixbuf),__shader_ixbuf,
+	GL_STATIC_DRAW);
+
+	__shader_ixbufn=sizeof(__shader_ixbuf)/sizeof(__shader_ixbuf[0]);
+	check_gl_error("generating buffers");
+
+	glGenTextures(1,&__texid);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D,__texid);
+	glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,__shader_texwidth,__shader_texheight,0,GL_RGB,GL_FLOAT,__shader_texpixels);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
+	glGenerateMipmap(GL_TEXTURE_2D);
+
+
+	// render
+	glUniform1i((signed)shader.sampler_slot,0);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D,__texid);
+
+	glEnableVertexAttribArray(shader.position_slot);
+	glEnableVertexAttribArray(shader.color_slot);
+	glEnableVertexAttribArray(shader.normal_slot);
+	glEnableVertexAttribArray(shader.texture_slot);
 
 	check_gl_error("after shader_init");
+
+//	glClearColor(.5f,.5f,0,1.0);
+//	glClear(GL_COLOR_BUFFER_BIT);
+//	shader_render();
+//	SDL_GL_SwapWindow(window.ref);
+//
+//	check_gl_error("after shader render");
+//
+//	sleep(5);
+//	exit(0);
+}
+
+inline static void shader_render() {
+
+	check_gl_error("entering shader_render");
+
+	glBindBuffer(GL_ARRAY_BUFFER,__shader_vertbufid);
+
+	glVertexAttribPointer(shader.position_slot,3,GL_FLOAT,GL_FALSE,
+			sizeof(vertex),0);
+
+	glVertexAttribPointer(shader.color_slot,3,GL_FLOAT,GL_FALSE,
+			sizeof(vertex),(GLvoid*)(3*sizeof(float)));
+
+	glVertexAttribPointer(shader.normal_slot,3,GL_FLOAT,GL_FALSE,
+			sizeof(vertex),(GLvoid*)((3+3)*sizeof(float)));
+
+
+	glVertexAttribPointer(shader.normal_slot,3,GL_FLOAT,GL_FALSE,
+			sizeof(vertex),(GLvoid*)((3+3+2)*sizeof(float)));
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,__shader_ixbufid);
+
+	check_gl_error("before draw elements");
+
+	glDrawElements(GL_TRIANGLES,__shader_ixbufn,GL_UNSIGNED_BYTE,0);
 }
 
 inline static void shader_free() {
@@ -294,27 +330,3 @@ inline static void shader_free() {
 		glDeleteProgram(shader.program_id);
 }
 
-inline static void shader_render() {
-#ifdef GLOS_EMBEDDED
-	glVertexAttribPointer(
-		position_slot,3, GL_FLOAT,GL_FALSE,sizeof(vertex),vertices
-	);
-	glVertexAttribPointer(
-		color_slot,4,GL_FLOAT,GL_FALSE,sizeof(vertex),vertices);
-
-	glDrawElements(GL_TRIANGLES, indices_count, GL_UNSIGNED_BYTE, indices);
-
-#else
-	glBindBuffer(GL_ARRAY_BUFFER,shader.vertex_buffer_id);
-
-	glVertexAttribPointer(shader.position_slot,3,GL_FLOAT,GL_FALSE,
-			sizeof(vertex),0);
-
-	glVertexAttribPointer(shader.color_slot,4,GL_FLOAT,GL_FALSE,
-			sizeof(vertex),(GLvoid*)(3*sizeof(float)));
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,shader.index_buffer_id);
-
-	glDrawElements(GL_TRIANGLES,shader.indices_count,GL_UNSIGNED_BYTE,0);
-#endif
-}

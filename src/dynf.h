@@ -85,7 +85,7 @@ inline static size_t dynf_size_in_bytes(dynf*this){
 
 //-----------------------------------------------------------------------------
 
-inline static void dynf_free(dynf*this){
+inline static void dynf_free(/*takes*/dynf*this){
 	if(!this->data)
 		return;
 	free(this->data);

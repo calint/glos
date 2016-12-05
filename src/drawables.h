@@ -47,19 +47,9 @@ static inline void drawables_draw(int id){
 			drawables[id].vertex_buf_size/
 			drawables[id].vertex_count
 		);
-#ifdef GLOS_EMBEDDED
-	glVertexAttribPointer(shader.position_slot,3,GL_FLOAT,GL_FALSE,stride,
-			drawable[id].vertex_buf);
 
-	glVertexAttribPointer(shader.color_slot,3,GL_FLOAT,GL_FALSE,stride,
-			(void*)(drawable[id].vertex_buf+(3*sizeof(float))));
-
-	glVertexAttribPointer(shader.normal_slot,3,GL_FLOAT,GL_FALSE,stride,
-			(void*)(drawable[id].vertex_buf+((3+3)*sizeof(float))));
-
-	glDrawArrays(GL_TRIANGLES,0,(signed)drawable[id].vertex_count);
-#else
 	glBindBuffer(GL_ARRAY_BUFFER,drawables[id].vertex_buf_gid);
+
 	glVertexAttribPointer(shader.position_slot,3,GL_FLOAT,GL_FALSE,stride,0);
 
 	glVertexAttribPointer(shader.color_slot,3,GL_FLOAT,GL_FALSE,stride,
@@ -68,12 +58,10 @@ static inline void drawables_draw(int id){
 	glVertexAttribPointer(shader.normal_slot,3,GL_FLOAT,GL_FALSE,stride,
 		(void*)((3+3)*sizeof(float)));
 
-
 	glVertexAttribPointer(shader.texture_slot,2,GL_FLOAT,GL_FALSE,stride,
 		(void*)((3+3+2)*sizeof(float)));
 
 	glDrawArrays(GL_TRIANGLES,0,(signed)drawables[id].vertex_count);
-#endif
-	//	glDrawArrays(GL_LINES,0,(signed)drawable[id].vertex_count);
+
 }
 //----------------------------------------------------------------------------
