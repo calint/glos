@@ -5,8 +5,7 @@
 #include<SDL_ttf.h>
 #include<SDL_mixer.h>
 #include<unistd.h>
-//#define GLOS_EMBEDDED
-//------------------------------------------------------------------------ sdl
+
 static struct sdl{
 	TTF_Font*font;
 	Mix_Music*music;

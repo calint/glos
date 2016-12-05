@@ -7,14 +7,14 @@ typedef struct shader_program{
 }shader_program;
 static shader_program shader_programs[8];
 
-typedef struct {
+typedef struct shader_vertex{
 	float position[3];
 	float color[4];
 	float normal[3];
 	float texture[2];
-}vertex;
+}shader_vertex;
 
-static vertex vertbuf[]={
+static shader_vertex vertbuf[]={
 	{{ .5,-.5, 0},{ 1, 0, 0,1},{0,0,1},{1,0}},
 	{{ .5, .5, 0},{ 0, 1, 0,1},{0,0,1},{1,1}},
 	{{-.5, .5, 0},{ 0, 0, 1,1},{0,0,1},{0,1}},
@@ -34,13 +34,6 @@ static GLfloat texbuf[]={
 struct{
 	GLuint program_id,vertex_buffer_id,index_buffer_id,texture_id;
 }shader;
-
-#define _shader_apos 0
-#define _shader_argba 1
-#define _shader_anorm 2
-#define _shader_atex 3
-#define _shader_umtx_mw 0
-#define _shader_utex 1
 char*vertex_shader_source =
 		"#version 130                                                \n\
 uniform mat4 umtx_mw;// model-to-world-matrix                        \n\
@@ -57,6 +50,11 @@ void main(){                                                 \n\
 	vnorm=anorm;                                             \n\
 	vtex=atex;                                             \n\
 }\n";
+#define _shader_apos 0
+#define _shader_argba 1
+#define _shader_anorm 2
+#define _shader_atex 3
+#define _shader_umtx_mw 0
 
 char*fragment_shader_source =
 		"#version 130                              \n\
@@ -67,6 +65,7 @@ varying mediump vec2 vtex;                \n\
 void main(){                               \n\
 	gl_FragColor=texture2D(utex,vtex)+.00001*vrgba+0.00001*vec4(vnorm,1)+vec4(vtex,0,1);  \n\
 }\n";
+#define _shader_utex 1
 
 
 inline static const char*get_shader_name_for_type(GLenum shader_type);
@@ -118,6 +117,7 @@ inline static void shader_program_load(int index,const char*vert_src,const char*
 		printf("program linking error: %s\n",msg);
 		exit(8);
 	}
+
 	check_gl_error("exit shader_program_load");
 }
 
@@ -126,12 +126,11 @@ inline static void shader_load(){
 	check_gl_error("enter shader_load");
 	glGenBuffers(1, &shader.vertex_buffer_id);
 	glBindBuffer(GL_ARRAY_BUFFER, shader.vertex_buffer_id);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertbuf), vertbuf, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertbuf),vertbuf,GL_STATIC_DRAW);
 
 	glGenBuffers(1, &shader.index_buffer_id);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, shader.index_buffer_id);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(ixbuf), ixbuf,
-	GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(ixbuf),ixbuf,GL_STATIC_DRAW);
 
 //	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
 	glGenTextures(1,&shader.texture_id);
@@ -149,6 +148,55 @@ inline static void shader_load(){
 //	glPixelStorei(GL_UNPACK_ALIGNMENT,4);
 	check_gl_error("exit shader_load");
 }
+
+
+inline static void shader_render() {
+	glEnableVertexAttribArray(_shader_apos);//position
+	glEnableVertexAttribArray(_shader_argba);//color
+	glEnableVertexAttribArray(_shader_anorm);//normal
+	glEnableVertexAttribArray(_shader_atex);//texture
+
+	// Set the active texture unit to texture unit 0.
+//	glActiveTexture(GL_TEXTURE0);
+	// Bind the texture to this unit.
+//	glBindTexture(GL_TEXTURE_2D,shader.texture_id);
+	// Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
+	float mtxident[]={1,0,0,0,  0,1,0,0,  0,0,1,0,  0,0,0,1};
+	glUniformMatrix4fv(0,1,0,mtxident);
+	glUniform1i(_shader_umtx_mw,0);// texture sampler on texture0
+
+	glBindBuffer(GL_ARRAY_BUFFER,shader.vertex_buffer_id);
+	glVertexAttribPointer(_shader_apos, 3, GL_FLOAT, GL_FALSE,
+			sizeof(shader_vertex),0);
+	glVertexAttribPointer(_shader_argba, 4, GL_FLOAT, GL_FALSE,
+			sizeof(shader_vertex),(GLvoid*)(3*sizeof(float)));
+	glVertexAttribPointer(_shader_anorm, 3, GL_FLOAT, GL_FALSE,
+			sizeof(shader_vertex),(GLvoid*)((3+4)*sizeof(float)));
+	glVertexAttribPointer(_shader_atex, 2, GL_FLOAT, GL_FALSE,
+			sizeof(shader_vertex),(GLvoid*)((3+4+3)*sizeof(float)));
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,shader.index_buffer_id);
+	glDrawElements(GL_TRIANGLES,ixbufn,GL_UNSIGNED_BYTE,0);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 inline static void print_gl_string(const char *name, const GLenum s);
 inline static void shader_init() {
@@ -179,35 +227,6 @@ inline static void shader_init() {
 	shader_load();
 
 	check_gl_error("after shader_init");
-}
-
-inline static void shader_render() {
-	glEnableVertexAttribArray(_shader_apos);//position
-	glEnableVertexAttribArray(_shader_argba);//color
-	glEnableVertexAttribArray(_shader_anorm);//normal
-	glEnableVertexAttribArray(_shader_atex);//texture
-
-	// Set the active texture unit to texture unit 0.
-//	glActiveTexture(GL_TEXTURE0);
-	// Bind the texture to this unit.
-//	glBindTexture(GL_TEXTURE_2D,shader.texture_id);
-	// Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
-	float mtxident[]={1,0,0,0,  0,1,0,0,  0,0,1,0,  0,0,0,1};
-	glUniformMatrix4fv(0,1,0,mtxident);
-	glUniform1i(_shader_umtx_mw,0);// texture sampler on texture0
-
-	glBindBuffer(GL_ARRAY_BUFFER,shader.vertex_buffer_id);
-	glVertexAttribPointer(_shader_apos, 3, GL_FLOAT, GL_FALSE,
-			sizeof(vertex),0);
-	glVertexAttribPointer(_shader_argba, 4, GL_FLOAT, GL_FALSE,
-			sizeof(vertex),(GLvoid*)(3*sizeof(float)));
-	glVertexAttribPointer(_shader_anorm, 3, GL_FLOAT, GL_FALSE,
-			sizeof(vertex),(GLvoid*)((3+4)*sizeof(float)));
-	glVertexAttribPointer(_shader_atex, 2, GL_FLOAT, GL_FALSE,
-			sizeof(vertex),(GLvoid*)((3+4+3)*sizeof(float)));
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,shader.index_buffer_id);
-	glDrawElements(GL_TRIANGLES,ixbufn,GL_UNSIGNED_BYTE,0);
 }
 
 inline static const char*get_gl_error_string(const GLenum error) {

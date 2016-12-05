@@ -27,9 +27,6 @@ static void drawables_load_file_in_slot(int id,const char*file_path){
 	drawables[id].vertex_buf_size=buf.size*sizeof(float);
 	drawables[id].vertex_count=buf.size/(3+3+3+2);
 
-#ifdef GLOS_EMBEDDED
-	drawable[id].vertex_buf=buf;
-#else
 	GLuint vertex_buffer_id;
 	glGenBuffers(1,&vertex_buffer_id);
 	glBindBuffer(GL_ARRAY_BUFFER,vertex_buffer_id);
@@ -39,7 +36,6 @@ static void drawables_load_file_in_slot(int id,const char*file_path){
 			buf.data,
 			GL_STATIC_DRAW);
 	dynf_free(/*gives*/&buf);
-#endif
 //	load_drawable(index);
 }
 //----------------------------------------------------------------------------
