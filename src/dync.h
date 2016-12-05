@@ -7,7 +7,7 @@
 #define dync_bounds_check 1
 
 typedef struct dync{
-	float*data;/*owns*/
+	char*data;/*owns*/
 	size_t size;
 	size_t cap;
 }dync;
