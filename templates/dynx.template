@@ -1,27 +1,29 @@
-//------------------------------------------------------------------ ${template}
+// ${name} : name
+// ${type}     : type
+//------------------------------------------------------------------ ${name}
 #pragma once
 #include<stdlib.h>
 
-#define ${template}_initial_cap 8
-#define ${template}_realloc_strategy 'a'
-#define ${template}_bounds_check 1
+#define ${name}_initial_cap 8
+#define ${name}_realloc_strategy 'a'
+#define ${name}_bounds_check 1
 
-typedef struct ${template}{
-	float*data;/*owns*/
+typedef struct ${name}{
+	${type} data;/*owns*/
 	size_t size;
 	size_t cap;
-}${template};
-${template} _${template}_init_={NULL,0,0};
+}${name};
+${name} _${name}_init_={NULL,0,0};
 
 //--------------------------------------------------------------------- private
 
-inline static void __${template}_insure_free_capcity(${template}*this,size_t n){
+inline static void __${name}_insure_free_capcity(${name}*this,size_t n){
 	const size_t rem=this->cap-this->size;
 	if(rem>=n)
 		return;
 	if(this->data){
 		size_t new_cap;
-		switch(${template}_realloc_strategy){
+		switch(${name}_realloc_strategy){
 		case 'a':
 			new_cap=this->cap*2;
 			break;
@@ -32,7 +34,7 @@ inline static void __${template}_insure_free_capcity(${template}*this,size_t n){
 		}
 
 		printf("   re-allocating vector %p\n",this->data);
-		void* *new_data=realloc(this->data,sizeof(float)*new_cap);
+		void* *new_data=realloc(this->data,sizeof(${type})*new_cap);
 		if(!new_data){
 			fprintf(stderr,"\nout-of-memory");
 			fprintf(stderr,"\tfile: '%s'  line: %d\n\n",__FILE__,__LINE__);
@@ -46,8 +48,8 @@ inline static void __${template}_insure_free_capcity(${template}*this,size_t n){
 		return;
 	}
 	// initialize data
-	this->cap=${template}_initial_cap;
-	this->data=malloc(sizeof(float)*this->cap);
+	this->cap=${name}_initial_cap;
+	this->data=malloc(sizeof(${type})*this->cap);
 	if(!this->data){
 		fprintf(stderr,"\nout-of-memory");
 		fprintf(stderr,"\tfile: '%s'  line: %d\n\n",__FILE__,__LINE__);
@@ -58,15 +60,15 @@ inline static void __${template}_insure_free_capcity(${template}*this,size_t n){
 
 //---------------------------------------------------------------------- public
 
-inline static void ${template}_add(${template}*this,float f){
-	__${template}_insure_free_capcity(this,1);
+inline static void ${name}_add(${name}*this,${type} f){
+	__${name}_insure_free_capcity(this,1);
 	*(this->data+this->size++)=f;
 }
 
 //-----------------------------------------------------------------------------
 
-inline static float ${template}_get(${template}*this,size_t index){
-#ifdef ${template}_bounds_check
+inline static ${type} ${name}_get(${name}*this,size_t index){
+#ifdef ${name}_bounds_check
 	if(index>=this->cap){
 		fprintf(stderr,"\nindex-out-of-bounds");
 		fprintf(stderr,"\t%s\n\n%d  index: %zu    capacity: %zu\n",
@@ -79,13 +81,13 @@ inline static float ${template}_get(${template}*this,size_t index){
 
 //-----------------------------------------------------------------------------
 
-inline static size_t ${template}_size_in_bytes(${template}*this){
-	return this->size*sizeof(float);
+inline static size_t ${name}_size_in_bytes(${name}*this){
+	return this->size*sizeof(${type});
 }
 
 //-----------------------------------------------------------------------------
 
-inline static void ${template}_free(${template}*this){
+inline static void ${name}_free(${name}*this){
 	if(!this->data)
 		return;
 	free(this->data);

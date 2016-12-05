@@ -32,7 +32,7 @@ inline static void __dync_insure_free_capcity(dync*this,size_t n){
 		}
 
 		printf("   re-allocating vector %p\n",this->data);
-		void* *new_data=realloc(this->data,sizeof(float)*new_cap);
+		void* *new_data=realloc(this->data,sizeof(char)*new_cap);
 		if(!new_data){
 			fprintf(stderr,"\nout-of-memory");
 			fprintf(stderr,"\tfile: '%s'  line: %d\n\n",__FILE__,__LINE__);
@@ -47,7 +47,7 @@ inline static void __dync_insure_free_capcity(dync*this,size_t n){
 	}
 	// initialize data
 	this->cap=dync_initial_cap;
-	this->data=malloc(sizeof(float)*this->cap);
+	this->data=malloc(sizeof(char)*this->cap);
 	if(!this->data){
 		fprintf(stderr,"\nout-of-memory");
 		fprintf(stderr,"\tfile: '%s'  line: %d\n\n",__FILE__,__LINE__);
@@ -58,14 +58,14 @@ inline static void __dync_insure_free_capcity(dync*this,size_t n){
 
 //---------------------------------------------------------------------- public
 
-inline static void dync_add(dync*this,float f){
+inline static void dync_add(dync*this,char f){
 	__dync_insure_free_capcity(this,1);
 	*(this->data+this->size++)=f;
 }
 
 //-----------------------------------------------------------------------------
 
-inline static float dync_get(dync*this,size_t index){
+inline static char dync_get(dync*this,size_t index){
 #ifdef dync_bounds_check
 	if(index>=this->cap){
 		fprintf(stderr,"\nindex-out-of-bounds");
@@ -80,7 +80,7 @@ inline static float dync_get(dync*this,size_t index){
 //-----------------------------------------------------------------------------
 
 inline static size_t dync_size_in_bytes(dync*this){
-	return this->size*sizeof(float);
+	return this->size*sizeof(char);
 }
 
 //-----------------------------------------------------------------------------
@@ -92,3 +92,16 @@ inline static void dync_free(dync*this){
 }
 
 //-----------------------------------------------------------------------------
+
+inline static void dync_add_string(dync*this,/*copies*/const char*str){
+	//? optimize
+	const char*p=str;
+	while(*p){
+		__dync_insure_free_capcity(this,1);
+		*(this->data+this->size++)=*p++;
+	}
+}
+
+//-----------------------------------------------------------------------------
+
+
