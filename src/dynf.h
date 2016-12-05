@@ -10,9 +10,9 @@ typedef struct dynf{
 
 	float *data;
 
-	size_t size;
+	unsigned size;
 
-	size_t capacity;
+	unsigned capacity;
 
 }dynf;
 
@@ -21,11 +21,11 @@ dynf dynf_def={0,0,0};
 //--------------------------------------------------------------------- private
 
 inline static void _dynf_insure_free_capcity(dynf*this,size_t n){
-	const size_t rem=this->capacity-this->size;
+	const unsigned rem=this->capacity-this->size;
 	if(rem>=n)
 		return;
 	if(this->data){
-		size_t new_cap=this->capacity*2;
+		unsigned new_cap=this->capacity*2;
 		float *new_data=realloc(this->data,sizeof(float)*new_cap);
 		if(!new_data){
 			fprintf(stderr,"\nout-of-memory");

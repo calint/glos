@@ -10,9 +10,9 @@ typedef struct dync{
 
 	char *data;
 
-	size_t size;
+	unsigned size;
 
-	size_t capacity;
+	unsigned capacity;
 
 }dync;
 
@@ -21,11 +21,11 @@ dync dync_def={0,0,0};
 //--------------------------------------------------------------------- private
 
 inline static void _dync_insure_free_capcity(dync*this,size_t n){
-	const size_t rem=this->capacity-this->size;
+	const unsigned rem=this->capacity-this->size;
 	if(rem>=n)
 		return;
 	if(this->data){
-		size_t new_cap=this->capacity*2;
+		unsigned new_cap=this->capacity*2;
 		char *new_data=realloc(this->data,sizeof(char)*new_cap);
 		if(!new_data){
 			fprintf(stderr,"\nout-of-memory");

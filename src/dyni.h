@@ -10,9 +10,9 @@ typedef struct dyni{
 
 	int *data;
 
-	size_t size;
+	unsigned size;
 
-	size_t capacity;
+	unsigned capacity;
 
 }dyni;
 
@@ -21,11 +21,11 @@ dyni dyni_def={0,0,0};
 //--------------------------------------------------------------------- private
 
 inline static void _dyni_insure_free_capcity(dyni*this,size_t n){
-	const size_t rem=this->capacity-this->size;
+	const unsigned rem=this->capacity-this->size;
 	if(rem>=n)
 		return;
 	if(this->data){
-		size_t new_cap=this->capacity*2;
+		unsigned new_cap=this->capacity*2;
 		int *new_data=realloc(this->data,sizeof(int)*new_cap);
 		if(!new_data){
 			fprintf(stderr,"\nout-of-memory");

@@ -10,9 +10,9 @@ typedef struct ${name}{
 
 	${type} *data;
 
-	size_t size;
+	unsigned size;
 
-	size_t capacity;
+	unsigned capacity;
 
 }${name};
 
@@ -21,11 +21,11 @@ ${name} ${name}_def={0,0,0};
 //--------------------------------------------------------------------- private
 
 inline static void _${name}_insure_free_capcity(${name}*this,size_t n){
-	const size_t rem=this->capacity-this->size;
+	const unsigned rem=this->capacity-this->size;
 	if(rem>=n)
 		return;
 	if(this->data){
-		size_t new_cap=this->capacity*2;
+		unsigned new_cap=this->capacity*2;
 		${type} *new_data=realloc(this->data,sizeof(${type})*new_cap);
 		if(!new_data){
 			fprintf(stderr,"\nout-of-memory");

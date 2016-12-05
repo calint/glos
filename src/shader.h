@@ -144,7 +144,7 @@ inline static void shader_render(){
 }
 
 inline static void shader_render_triangle_array(
-		GLuint vbufid,size_t vbufn,GLuint texid,float*mtx_mw
+		GLuint vbufid,size_t vbufn,GLuint texid,const float*mtx_mw
 ){
 	_shader_prepare_for_render(vbufid,texid,mtx_mw);
 	glDrawArrays(GL_TRIANGLES,0,(int)vbufn);

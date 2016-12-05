@@ -4,7 +4,7 @@
 //----------------------------------------------------------------------- calls
 
 inline static void shader_render_triangle_array(
-	GLuint vbufid,size_t vbufn,GLuint texid,float*mtx_mw
+	GLuint vbufid,size_t vbufn,GLuint texid,const float*mtx_mw
 );
 
 static/*gives*/dynf read_obj_file_from_path(const char*path);
@@ -31,13 +31,6 @@ static GLubyte glob_def_ixbuf[]={0,1,2,2,3,0};
 static GLfloat glob_def_texbuf[]={
 		.7f, .7f, .7f,    .2f, .2f, .2f,
 		.2f ,.2f ,.2f,    .7f, .7f, .7f
-};
-
-static float glob_def_mtx_mw[]={
-		1,0,0,0,
-		0,1,0,0,
-		0,0,1,0,
-		0,0,0,1,
 };
 
 typedef struct
