@@ -22,15 +22,17 @@ inline static void main_init(){
 
 	drawables_load_file_in_slot(6,"obj/cube.obj");
 
-	new(&_ninja_);
-
 	object*o=new(&_ninja_);
-	o->position.x=-.5f;
-	o->scale=(scale){.2f,.2f,.2f,1};
-
-	o=new(&_ninja_);
-	o->position.y=.5f;
-	o->scale=(scale){.1f,.1f,.1f,1};
+	o->velocity=(vec4){0,0,0,0};
+	o->angular_velocity=(vec4){0,0,0,0};
+//
+//	object*o=new(&_ninja_);
+//	o->position.x=-.5f;
+//	o->scale=(scale){.2f,.2f,.2f,1};
+//
+//	o=new(&_ninja_);
+//	o->position.y=.5f;
+//	o->scale=(scale){.1f,.1f,.1f,1};
 }
 //------------------------------------------------------------------------ main
 int main(int argc,char*argv[]){
@@ -119,7 +121,7 @@ int main(int argc,char*argv[]){
 		glClear(GL_COLOR_BUFFER_BIT);
 		objects_update(fps.dt);
 		objects_render();
-		shader_render();
+//		shader_render();
 		SDL_GL_SwapWindow(window.ref);
 		fps__at__update_frame_end();
 	}

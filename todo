@@ -1,20 +1,25 @@
  [x] dynamic pointer vector
  [x] texturing
- [ ] obj format
- [ ]    read colors
- [x]    read texture coords
- [ ]    read textures
- [ ]    render materials
+ 
+ [x] obj format
+ [ ]   read colors
+ [x]   read texture coords
+ [ ]   read textures
+ [ ]   render materials
+ 
  [ ] bounding volume
- [ ]    sphere
- [ ]    box
- [ ]    planes
+ [ ]   sphere
+ [ ]   box
+ [ ]   planes
  [ ]     empty/solid space
  [ ]      boolean ops
+ 
  [ ] grid
+ [ ]   render
+ [ ]   cull bounding_volume
  [ ]   multi/single thread
- [ ]    cull
- [ ]      bounding_volume
+ 
  [ ] keymaphub
- [ ]    multiuser
+ [ ]   multiuser
+ 
  [ ] camera
