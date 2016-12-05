@@ -39,7 +39,7 @@ static float shader_def_mtx_mw[]={
 		0,0,0,1,
 };
 
-typedef struct shader_renderable{
+typedef struct shader_glob{
 	shader_vertex*vertbuf;
 	GLuint vertbufid;
 	GLuint vertbufn;
@@ -53,9 +53,9 @@ typedef struct shader_renderable{
 	GLsizei texwi;
 	GLsizei texhi;
 	float*mtx_mw;
-}shader_renderable;
+}shader_glob;
 
-static shader_renderable shader_renderable_def=(shader_renderable){
+static shader_glob shader_renderable_def=(shader_glob){
 	.vertbuf=shader_def_vertbuf,
 	.vertbufn=sizeof(shader_def_vertbuf)/sizeof(&shader_def_vertbuf[0]),
 	.vertbufnbytes=sizeof(shader_def_vertbuf),
@@ -292,7 +292,7 @@ inline static void shader_render_triangle_array(
 
 }
 
-inline static void shader_render_rend(shader_renderable*sr){
+inline static void shader_render_rend(shader_glob*sr){
 	shader_render_triangle_array(
 			sr->vertbufid,
 			sr->vertbufn,
