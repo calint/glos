@@ -19,7 +19,7 @@ inline static void main_init(){
 //	drawables_load_file_in_slot(5,"arts/obj/boulder_1.obj");
 //	drawables_load_file_in_slot(6,"arts/obj/car1.obj");
 
-	drawables_load_file_in_slot(6,"obj/cube.obj");
+	drawables_load_file_in_slot(6,"arts/obj/sphere.obj");
 
 	new(&_ninja_);
 
@@ -46,8 +46,8 @@ int main(int argc,char*argv[]){
 	sdl_init();
 	window_init();
 
-	glCullFace(GL_BACK);
-	glEnable(GL_CULL_FACE);
+//	glCullFace(GL_BACK);
+//	glEnable(GL_CULL_FACE);
 //
 //	glEnable(GL_TEXTURE_2D);
 //	glEnable(GL_BLEND); // transparency rgba

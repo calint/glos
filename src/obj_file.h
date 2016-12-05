@@ -309,10 +309,12 @@ static/*gives*/dynf read_obj_file_from_path(const char*path){
 				p=vert2.end;
 				int ix2=token_get_int(&vert2);
 				vec4 tx,*tex;tex=&tx;
-				if(!ix2){
-					tex=(vec4*)dynv_get(&texuv,(size_t)(ix2-1));
-				}else{
-					*tex=(vec4){0,0,0,0};
+				if(ix2){
+					if(!ix2){
+						tex=(vec4*)dynv_get(&texuv,(size_t)(ix2-1));
+					}else{
+						*tex=(vec4){0,0,0,0};
+					}
 				}
 				// normal
 				token vert3=next_token_from_string_additional_delim(p,'/');

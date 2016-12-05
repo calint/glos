@@ -59,7 +59,7 @@ struct{
 	GLuint normal_slot;
 	GLuint texture_slot;
 	GLuint model_to_world_matrix_slot;
-	GLuint texture_sampler;
+	GLuint sampler_slot;
 	int indices_count;
 }shader;
 
@@ -164,62 +164,42 @@ inline static void load_program() {
 		puts("could not find uniform 'utex' in fragment shader");
 		exit(10);
 	}
-	shader.texture_sampler=(GLuint)slot;
-
-//	SDL_Surface*loaded_surface=IMG_Load("logo.jpeg");
-//	if(!loaded_surface){
-//		printf("%s %d: %s",__FILE__,__LINE__,SDL_GetError());
-//		exit(12);
-//	}
-//	SDL_Texture*tex=SDL_CreateTextureFromSurface(
-//			window.renderer,
-//			loaded_surface);
-//	if(!tex){
-//		printf("%s %d: %s",__FILE__,__LINE__,SDL_GetError());
-//		exit(13);
-//	}
-//	int height=0,width=0;
-//	SDL_QueryTexture(tex,NULL,NULL,width,height);
-//	void*data=loaded_surface->pixels;
-
-//	int height=1,width=1;
-//	unsigned char data[]={
-//			127,0,0,  0,127,0,
-//			0,0,127,  127,127,127,
-//	};
+	shader.sampler_slot=(GLuint)slot;
 
 	GLuint textureID;
-	glGenTextures(1,&textureID);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D,textureID);
 
+//	int width=1,height=1;
+//	float pixels[]={0.0f, 0.5f, 0.0f};
+//
 	int width=2,height=2;
 	float pixels[]={
-	    1.0f, 0.0f, 0.0f,   1.0f, 1.0f, 1.0f,
-	    1.0f, 1.0f, 1.0f,   0.0f, 0.0f, 0.0f
+			1.0f, 0.0f, 0.0f,   0.0f, 1.0f, 0.0f,
+			0.0f, 0.0f, 1.0f,   1.0f, 1.0f, 0.0f
 	};
-	glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,width,height,0,GL_RGB,GL_FLOAT,pixels);
 
 //	unsigned char*image =SOIL_load_image("logo.jpg",&width,&height,0,
 //			SOIL_LOAD_RGB);
-//	glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,width,height,0,GL_RGB,GL_UNSIGNED_BYTE,
-//			image);
-//	SOIL_free_image_data(image);
+
+	glGenTextures(1,&textureID);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D,textureID);
+	glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,width,height,0,GL_RGB,GL_FLOAT,pixels);
+//	glGenerateMipmap(GL_TEXTURE_2D);
+	//	SOIL_free_image_data(image);
+//	glBindTexture(GL_TEXTURE_2D,0);
 
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
 
-	glUniform1i((signed)shader.texture_sampler,0);
+	glUniform1i((signed)shader.sampler_slot,0);
 
 
 	glEnableVertexAttribArray(shader.position_slot);
 	glEnableVertexAttribArray(shader.color_slot);
 	glEnableVertexAttribArray(shader.normal_slot);
 	glEnableVertexAttribArray(shader.texture_slot);
-
-//	SDL_FreeSurface(loaded_surface);
 }
 
 inline static const char*get_gl_error_string(const GLenum error) {
