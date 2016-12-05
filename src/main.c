@@ -7,6 +7,7 @@
 #include"alloc.h"
 #include"obj_file.h"
 #include"fps.h"
+#include"object_alloc.h"
 //----------------------------------------------------------------------- init
 inline static void main_init(){
 //	drawables_load_file_in_slot(6,"obj/plane.obj");

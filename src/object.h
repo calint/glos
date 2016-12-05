@@ -1,20 +1,23 @@
 #pragma once
-//#include<SDL2/SDL2_gfxPrimitives.h>
 #include"lib.h"
-#include"mat4.h"
+
+//---------------------------------------------------------------------- config
+
 #define bit_object_allocated 0
 #define object_part_cap 4
+
 //------------------------------------------------------------------------ def
 
 typedef struct object{
-	position position;
-	velocity velocity;
-	angle angle;
-	angular_velocity angular_velocity;
-	float model_to_world_matrix[4*4];
-	bounding_radius bounding_radius;
-	scale scale;
-//	color color;
+	position position;                                                 // 16 B
+	velocity velocity;                                                 // 16 B
+	angle angle;                                                       // 16 B
+	angular_velocity angular_velocity;                                 // 16 B
+
+	float model_to_world_matrix[4*4];                                  // 64 B
+
+	bounding_radius bounding_radius;                                   //  4 B
+	scale scale;                                                       // 16 B
 	gid glob_id;
 	int model_to_world_matrix_is_updated;
 	void(*init)(struct object*);
@@ -23,9 +26,8 @@ typedef struct object{
 	void(*render)(struct object*);
 	void(*free)(struct object*);
 	void*part[object_part_cap];
-
 	type type;
-	bits*bits_ref;
+	bits*ptr_bits;
 }object;
 
 #define object_ref_validate_cast 0
@@ -68,7 +70,7 @@ static object object_def={
 	.bounding_radius=0,
 	.scale={0,0,0,0},
 	.type={{0,0,0,0,0,0,0,0}},
-	.bits_ref=NULL,
+	.ptr_bits=NULL,
 	.model_to_world_matrix={1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1},
 	.init=_object_init_,
 	.update=_object_update_,

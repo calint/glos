@@ -1,11 +1,11 @@
 #pragma once
-#include"alloc.h"
+#include"object_alloc.h"
 #include"part.h"
 //------------------------------------------------------------------------ init
 inline static void objects_init(){}
 //------------------------------------------------------------------------ free
 inline static void objects_free() {
-	for(int i=0;i<objects_count;i++){
+	for(int i=0;i<object_count;i++){
 		object*o=&objects[i];
 		if(bits_is_bit_set(&objects_bits[i],bit_object_allocated))
 			if(o->free)
