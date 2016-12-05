@@ -4,12 +4,12 @@
 #define shader_program_cap 8
 //---------------------------------------------------------------------
 
-typedef struct shader_vertex{
+typedef struct vertex{
 	float position[3];
 	float color[4];
 	float normal[3];
 	float texture[2];
-}shader_vertex;
+}vertex;
 
 //static shader_vertex vertbuf[]={
 //	{{ .5,-.5, 0},{ 1, 0, 0,1},{0,0,1},{1,0}},
@@ -17,7 +17,7 @@ typedef struct shader_vertex{
 //	{{-.5, .5, 0},{ 0, 0, 1,1},{0,0,1},{0,1}},
 //	{{-.5,-.5, 0},{ 0, 0, 0,1},{0,0,1},{0,0}},
 //};
-static shader_vertex shader_def_vertbuf[]={
+static vertex shader_def_vertbuf[]={
 	{{ .5,-.5, 0},{ 1, 0, 0,1},{0,0,1},{ 1,-1}},
 	{{ .5, .5, 0},{ 0, 1, 0,1},{0,0,1},{ 1, 1}},
 	{{-.5, .5, 0},{ 0, 0, 1,1},{0,0,1},{-1, 1}},
@@ -39,8 +39,9 @@ static float shader_def_mtx_mw[]={
 		0,0,0,1,
 };
 
-typedef struct shader_glob{
-	shader_vertex*vbuf;
+typedef struct
+glob{
+	vertex*vbuf;
 	GLuint ibufid;
 	GLuint vbufn;
 	GLuint vbufnbytes;
@@ -53,9 +54,9 @@ typedef struct shader_glob{
 	GLsizei texwi;
 	GLsizei texhi;
 	float*mtx_mw;
-}shader_glob;
+}glob;
 
-static shader_glob shader_glob_def=(shader_glob){
+static glob glob_def=(glob){
 	.vbufn=sizeof(shader_def_vertbuf)/sizeof(&shader_def_vertbuf[0]),
 	.vbufnbytes=sizeof(shader_def_vertbuf),
 	.ibuf=shader_def_ixbuf,
@@ -168,25 +169,25 @@ inline static void shader_program_load(int index,const char*vert_src,const char*
 
 inline static void shader_load(){
 	_check_gl_error("enter shader_load");
-	glGenBuffers(1, &shader_glob_def.vbufid);
-	glBindBuffer(GL_ARRAY_BUFFER,shader_glob_def.vbufid);
+	glGenBuffers(1, &glob_def.vbufid);
+	glBindBuffer(GL_ARRAY_BUFFER,glob_def.vbufid);
 	glBufferData(GL_ARRAY_BUFFER,
-			shader_glob_def.vbufnbytes,
-			shader_glob_def.vbuf,
+			glob_def.vbufnbytes,
+			glob_def.vbuf,
 			GL_STATIC_DRAW
 	);
 
-	glGenBuffers(1,&shader_glob_def.ibufid);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,shader_glob_def.ibufid);
+	glGenBuffers(1,&glob_def.ibufid);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,glob_def.ibufid);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-			shader_glob_def.ibufnbytes,
-			shader_glob_def.ibuf,
+			glob_def.ibufnbytes,
+			glob_def.ibuf,
 			GL_STATIC_DRAW
 	);
 
 //	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
-	glGenTextures(1,&shader_glob_def.texbufid);
-	glBindTexture(GL_TEXTURE_2D,shader_glob_def.texbufid);
+	glGenTextures(1,&glob_def.texbufid);
+	glBindTexture(GL_TEXTURE_2D,glob_def.texbufid);
 
 //----------------------------------------------
 //	SDL_Surface*surface=IMG_Load("logo.jpg");
@@ -199,9 +200,9 @@ inline static void shader_load(){
 
 	//----------------------------------------------
 	glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,
-			shader_glob_def.texwi,shader_glob_def.texhi,
+			glob_def.texwi,glob_def.texhi,
 			0,GL_RGB,GL_FLOAT,
-			shader_glob_def.texbuf);
+			glob_def.texbuf);
 	//----------------------------------------------
 
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
@@ -232,13 +233,13 @@ inline static void _shader_prepare_for_render(
 
 	glBindBuffer(GL_ARRAY_BUFFER,vbufid);
 	glVertexAttribPointer(shader_apos,  3,GL_FLOAT,GL_FALSE,
-			sizeof(shader_vertex),0);
+			sizeof(vertex),0);
 	glVertexAttribPointer(shader_argba, 4,GL_FLOAT,GL_FALSE,
-			sizeof(shader_vertex),(GLvoid*)(    3*sizeof(float)));
+			sizeof(vertex),(GLvoid*)(    3*sizeof(float)));
 	glVertexAttribPointer(shader_anorm, 3,GL_FLOAT, GL_FALSE,
-			sizeof(shader_vertex),(GLvoid*)( (3+4)*sizeof(float)));
+			sizeof(vertex),(GLvoid*)( (3+4)*sizeof(float)));
 	glVertexAttribPointer(shader_atex,  2,GL_FLOAT, GL_FALSE,
-			sizeof(shader_vertex),(GLvoid*)((3+4+3)*sizeof(float)));
+			sizeof(vertex),(GLvoid*)((3+4+3)*sizeof(float)));
 }
 
 inline static void _shader_after_render(){
@@ -262,15 +263,15 @@ inline static void shader_render_triangle_elements(
 
 inline static void shader_render(){
 	_shader_prepare_for_render(
-			shader_glob_def.vbufid,
-			shader_glob_def.texbufid,
-			shader_glob_def.mtx_mw
+			glob_def.vbufid,
+			glob_def.texbufid,
+			glob_def.mtx_mw
 		);
 	shader_render_triangle_elements(
-			shader_glob_def.vbufid,shader_glob_def.vbufn,
-			shader_glob_def.ibufid,(unsigned)shader_glob_def.ibufn,
-			shader_glob_def.texbufid,
-			shader_glob_def.mtx_mw
+			glob_def.vbufid,glob_def.vbufn,
+			glob_def.ibufid,(unsigned)glob_def.ibufn,
+			glob_def.texbufid,
+			glob_def.mtx_mw
 	);
 	_shader_after_render();
 }
@@ -283,7 +284,7 @@ inline static void shader_render_triangle_array(
 	_shader_after_render();
 }
 
-inline static void shader_render_rend(shader_glob*sr){
+inline static void shader_render_rend(glob*sr){
 	shader_render_triangle_array(
 			sr->vbufid,
 			sr->vbufn,
