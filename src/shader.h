@@ -96,11 +96,11 @@ void main(){                                                 \n\
 	vnorm=anorm;                                             \n\
 	vtex=atex;                                             \n\
 }\n";
-#define _shader_apos 0
-#define _shader_argba 1
-#define _shader_anorm 2
-#define _shader_atex 3
-#define _shader_umtx_mw 0
+#define shader_apos 0
+#define shader_argba 1
+#define shader_anorm 2
+#define shader_atex 3
+#define shader_umtx_mw 0
 
 static char*shader_fragment_shader_source =
 		"#version 130                              \n\
@@ -214,10 +214,10 @@ inline static void shader_load(){
 }
 
 inline static void shader_render() {
-	glEnableVertexAttribArray(_shader_apos);//position
-	glEnableVertexAttribArray(_shader_argba);//color
-	glEnableVertexAttribArray(_shader_anorm);//normal
-	glEnableVertexAttribArray(_shader_atex);//texture
+	glEnableVertexAttribArray(shader_apos);//position
+	glEnableVertexAttribArray(shader_argba);//color
+	glEnableVertexAttribArray(shader_anorm);//normal
+	glEnableVertexAttribArray(shader_atex);//texture
 	glUseProgram(shader_programs[0].id);
 	//? enabled
 
@@ -230,13 +230,13 @@ inline static void shader_render() {
 	glUniformMatrix4fv(0,1,0,mtxident);
 
 	glBindBuffer(GL_ARRAY_BUFFER,shader_renderable_def.vertbufid);
-	glVertexAttribPointer(_shader_apos,  3,GL_FLOAT,GL_FALSE,
+	glVertexAttribPointer(shader_apos,  3,GL_FLOAT,GL_FALSE,
 			sizeof(shader_vertex),0);
-	glVertexAttribPointer(_shader_argba, 4,GL_FLOAT,GL_FALSE,
+	glVertexAttribPointer(shader_argba, 4,GL_FLOAT,GL_FALSE,
 			sizeof(shader_vertex),(GLvoid*)(    3*sizeof(float)));
-	glVertexAttribPointer(_shader_anorm, 3,GL_FLOAT, GL_FALSE,
+	glVertexAttribPointer(shader_anorm, 3,GL_FLOAT, GL_FALSE,
 			sizeof(shader_vertex),(GLvoid*)( (3+4)*sizeof(float)));
-	glVertexAttribPointer(_shader_atex,  2,GL_FLOAT, GL_FALSE,
+	glVertexAttribPointer(shader_atex,  2,GL_FLOAT, GL_FALSE,
 			sizeof(shader_vertex),(GLvoid*)((3+4+3)*sizeof(float)));
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,shader_renderable_def.ixbufid);
@@ -248,20 +248,20 @@ inline static void shader_render() {
 
 	//? reset
 	glBindTexture(GL_TEXTURE_2D,0);
-	glDisableVertexAttribArray(_shader_apos);//position
-	glDisableVertexAttribArray(_shader_argba);//color
-	glDisableVertexAttribArray(_shader_anorm);//normal
-	glDisableVertexAttribArray(_shader_atex);//texture
+	glDisableVertexAttribArray(shader_apos);//position
+	glDisableVertexAttribArray(shader_argba);//color
+	glDisableVertexAttribArray(shader_anorm);//normal
+	glDisableVertexAttribArray(shader_atex);//texture
 
 }
 
 inline static void shader_render_triangle_array(
 		GLuint vbufid,size_t vbufn,GLuint texid,float*mtx_mw
 ){
-	glEnableVertexAttribArray(_shader_apos);//position
-	glEnableVertexAttribArray(_shader_argba);//color
-	glEnableVertexAttribArray(_shader_anorm);//normal
-	glEnableVertexAttribArray(_shader_atex);//texture
+	glEnableVertexAttribArray(shader_apos);//position
+	glEnableVertexAttribArray(shader_argba);//color
+	glEnableVertexAttribArray(shader_anorm);//normal
+	glEnableVertexAttribArray(shader_atex);//texture
 	glUseProgram(shader_programs[0].id);
 	//? enabled
 
@@ -271,13 +271,13 @@ inline static void shader_render_triangle_array(
 	glBindTexture(GL_TEXTURE_2D,texid);
 
 	glBindBuffer(GL_ARRAY_BUFFER,vbufid);
-	glVertexAttribPointer(_shader_apos,  3,GL_FLOAT,GL_FALSE,
+	glVertexAttribPointer(shader_apos,  3,GL_FLOAT,GL_FALSE,
 			sizeof(shader_vertex),0);
-	glVertexAttribPointer(_shader_argba, 4,GL_FLOAT,GL_FALSE,
+	glVertexAttribPointer(shader_argba, 4,GL_FLOAT,GL_FALSE,
 			sizeof(shader_vertex),(GLvoid*)(    3*sizeof(float)));
-	glVertexAttribPointer(_shader_anorm, 3,GL_FLOAT, GL_FALSE,
+	glVertexAttribPointer(shader_anorm, 3,GL_FLOAT, GL_FALSE,
 			sizeof(shader_vertex),(GLvoid*)( (3+4)*sizeof(float)));
-	glVertexAttribPointer(_shader_atex,  2,GL_FLOAT, GL_FALSE,
+	glVertexAttribPointer(shader_atex,  2,GL_FLOAT, GL_FALSE,
 			sizeof(shader_vertex),(GLvoid*)((3+4+3)*sizeof(float)));
 
 	glDrawArrays(GL_TRIANGLES,0,(int)vbufn);
@@ -285,10 +285,10 @@ inline static void shader_render_triangle_array(
 
 	//? reset
 	glBindTexture(GL_TEXTURE_2D,0);
-	glDisableVertexAttribArray(_shader_apos);//position
-	glDisableVertexAttribArray(_shader_argba);//color
-	glDisableVertexAttribArray(_shader_anorm);//normal
-	glDisableVertexAttribArray(_shader_atex);//texture
+	glDisableVertexAttribArray(shader_apos);//position
+	glDisableVertexAttribArray(shader_argba);//color
+	glDisableVertexAttribArray(shader_anorm);//normal
+	glDisableVertexAttribArray(shader_atex);//texture
 
 }
 
