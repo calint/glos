@@ -81,7 +81,7 @@ static shader_program shader_programs[shader_program_cap];
 
 //struct{}shader;
 
-static char*shader_def_vertex_shader_source =
+static char*shader_vertex_source =
 		"#version 130                                                \n\
 uniform mat4 umtx_mw;// model-to-world-matrix                        \n\
 attribute vec3 apos;// vertices                              \n\
@@ -103,7 +103,7 @@ void main(){                                                 \n\
 #define shader_atex 3
 #define shader_umtx_mw 0
 
-static char*shader_fragment_shader_source =
+static char*shader_fragment_source =
 		"#version 130                              \n\
 uniform sampler2D utex;                    \n\
 varying mediump vec4 vrgba;                \n\
@@ -333,7 +333,7 @@ inline static void shader_init() {
 
 	puts("");
 
-	shader_program_load(0,shader_def_vertex_shader_source,shader_fragment_shader_source);
+	shader_program_load(0,shader_vertex_source,shader_fragment_source);
 //	glUseProgram(shader_programs[0].id);
 
 	shader_load();
