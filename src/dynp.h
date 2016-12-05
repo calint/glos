@@ -14,6 +14,7 @@ typedef struct dynp{
 	size_t capacity;
 
 }dynp;
+
 dynp _dynp_init_={NULL,0,0};
 
 //--------------------------------------------------------------------- private
