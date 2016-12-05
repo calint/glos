@@ -1,7 +1,7 @@
 #pragma once
 #include"sdl.h"
 #include"globs.h"
-#include"program.h"
+#include"programs.h"
 //--------------------------------------------------------------------- shader
 //----------------------------------------------------------------------------
 static char*shader_vertex_source =
@@ -123,8 +123,7 @@ inline static void _shader_after_render(){
 inline static void shader_render_triangle_elements(
 		GLuint vbufid,size_t vbufn,
 		GLuint ixbufid,size_t ixbufn,
-		GLuint texid,
-		float*mtx_mw
+		GLuint texid
 ){
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,ixbufid);
 	glDrawElements(GL_TRIANGLES,(signed)ixbufn,GL_UNSIGNED_BYTE,0);
@@ -139,8 +138,7 @@ inline static void shader_render(){
 	shader_render_triangle_elements(
 			glob_def.vbufid,glob_def.vbufn,
 			glob_def.ibufid,(unsigned)glob_def.ibufn,
-			glob_def.texbufid,
-			mat4_ident
+			glob_def.texbufid
 	);
 	_shader_after_render();
 }
