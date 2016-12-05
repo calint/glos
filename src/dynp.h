@@ -1,5 +1,6 @@
 //------------------------------------------------------------------------ dynp
 #pragma once
+
 #define dynp_initial_capacity 8
 #define dynp_bounds_check 1
 
