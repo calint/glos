@@ -92,6 +92,17 @@ inline static void ${name}_free(${name}*this){
 
 //-----------------------------------------------------------------------------
 
+inline static void ${name}_add_list(${name}*this,/*copies*/const ${type}*str,int n){
+	//? optimize
+	const ${type}*p=str;
+	while(n--){
+		_${name}_insure_free_capcity(this,1);
+		*(this->data+this->size++)=*p++;
+	}
+}
+
+//-----------------------------------------------------------------------------
+
 inline static void ${name}_add_string(${name}*this,/*copies*/const ${type}*str){
 	//? optimize
 	const ${type}*p=str;
@@ -110,3 +121,4 @@ inline static void ${name}_write_to_fd(${name}*this,int fd){
 }
 
 //-----------------------------------------------------------------------------
+

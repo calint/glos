@@ -92,6 +92,17 @@ inline static void dynf_free(dynf*this){
 
 //-----------------------------------------------------------------------------
 
+inline static void dynf_add_list(dynf*this,/*copies*/const float*str,int n){
+	//? optimize
+	const float*p=str;
+	while(n--){
+		_dynf_insure_free_capcity(this,1);
+		*(this->data+this->size++)=*p++;
+	}
+}
+
+//-----------------------------------------------------------------------------
+
 inline static void dynf_add_string(dynf*this,/*copies*/const float*str){
 	//? optimize
 	const float*p=str;
@@ -110,3 +121,4 @@ inline static void dynf_write_to_fd(dynf*this,int fd){
 }
 
 //-----------------------------------------------------------------------------
+

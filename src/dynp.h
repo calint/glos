@@ -92,6 +92,17 @@ inline static void dynp_free(dynp*this){
 
 //-----------------------------------------------------------------------------
 
+inline static void dynp_add_list(dynp*this,/*copies*/const void**str,int n){
+	//? optimize
+	const void**p=str;
+	while(n--){
+		_dynp_insure_free_capcity(this,1);
+		*(this->data+this->size++)=*p++;
+	}
+}
+
+//-----------------------------------------------------------------------------
+
 inline static void dynp_add_string(dynp*this,/*copies*/const void**str){
 	//? optimize
 	const void**p=str;
@@ -110,3 +121,4 @@ inline static void dynp_write_to_fd(dynp*this,int fd){
 }
 
 //-----------------------------------------------------------------------------
+

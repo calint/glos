@@ -92,6 +92,17 @@ inline static void dync_free(dync*this){
 
 //-----------------------------------------------------------------------------
 
+inline static void dync_add_list(dync*this,/*copies*/const char*str,int n){
+	//? optimize
+	const char*p=str;
+	while(n--){
+		_dync_insure_free_capcity(this,1);
+		*(this->data+this->size++)=*p++;
+	}
+}
+
+//-----------------------------------------------------------------------------
+
 inline static void dync_add_string(dync*this,/*copies*/const char*str){
 	//? optimize
 	const char*p=str;
@@ -110,3 +121,4 @@ inline static void dync_write_to_fd(dync*this,int fd){
 }
 
 //-----------------------------------------------------------------------------
+

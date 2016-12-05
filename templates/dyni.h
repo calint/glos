@@ -92,6 +92,17 @@ inline static void dyni_free(dyni*this){
 
 //-----------------------------------------------------------------------------
 
+inline static void dyni_add_list(dyni*this,/*copies*/const int*str,int n){
+	//? optimize
+	const int*p=str;
+	while(n--){
+		_dyni_insure_free_capcity(this,1);
+		*(this->data+this->size++)=*p++;
+	}
+}
+
+//-----------------------------------------------------------------------------
+
 inline static void dyni_add_string(dyni*this,/*copies*/const int*str){
 	//? optimize
 	const int*p=str;
@@ -110,3 +121,4 @@ inline static void dyni_write_to_fd(dyni*this,int fd){
 }
 
 //-----------------------------------------------------------------------------
+
