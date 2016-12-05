@@ -187,16 +187,22 @@ inline static void shader_load(){
 //    else {
 //        printf("Error: \"Loaded surface was neither RGB or BGR!\""); return;
 //    }
-	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,
-			surface->w,surface->h,
-			0,GL_RGB,GL_UNSIGNED_BYTE,
-			surface->pixels);
-	SDL_FreeSurface(surface);
 
-//	glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,
-//			texwi,texhi,
-//			0,GL_RGB,GL_FLOAT,
-//			texbuf);
+
+//	//----------------------------------------------
+//	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,
+//			surface->w,surface->h,
+//			0,GL_RGB,GL_UNSIGNED_BYTE,
+//			surface->pixels);
+//	SDL_FreeSurface(surface);
+//	//----------------------------------------------
+
+	//----------------------------------------------
+	glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,
+			texwi,texhi,
+			0,GL_RGB,GL_FLOAT,
+			texbuf);
+	//----------------------------------------------
 
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
