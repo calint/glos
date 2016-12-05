@@ -173,7 +173,7 @@ inline static void load_program() {
 //
 	int width=2,height=2;
 	float pixels[]={
-			1.0f, 0.0f, 0.0f,   0.0f, 1.0f, 0.0f,
+			1.0f, 0.0f, 0.0f,   0.0f, 0.0f, .5f,
 			0.0f, 0.0f, 1.0f,   1.0f, 1.0f, 0.0f
 	};
 

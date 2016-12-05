@@ -328,7 +328,7 @@ static/*gives*/dynf read_obj_file_from_path(const char*path){
 				dynf_add(&vertex_buffer,vtx->z);
 
 				dynf_add(&vertex_buffer,0);
-				dynf_add(&vertex_buffer,1);
+				dynf_add(&vertex_buffer,0);
 				dynf_add(&vertex_buffer,0);
 
 				dynf_add(&vertex_buffer,norm->x);
