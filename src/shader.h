@@ -72,7 +72,7 @@ varying mediump vec4 vrgba;                \n\
 varying mediump vec3 vnorm;                \n\
 varying mediump vec2 vtex;                \n\
 void main(){                               \n\
-	gl_FragColor=texture2D(utex,vtex)+vrgba*dot(vec4(1,0,0,1),vec4(vnorm,1))+.00001*vec4(vtex,0,1);  \n\
+	gl_FragColor=texture2D(utex,vtex)+vrgba*dot(vec4(1,0,0,1),vec4(vnorm,1));\n\
 }\n";
 #define _shader_utex 1
 
