@@ -145,17 +145,17 @@ inline static void shader_load(){
 	glGenTextures(1,&texbufid);
 	glBindTexture(GL_TEXTURE_2D,texbufid);
 
-	SDL_Surface*surface=IMG_Load("logo.jpeg");
-    GLenum data_fmt;
-    Uint8 test = SDL_MapRGB(surface->format, 0xAA,0xBB,0xCC)&0xFF;
-    if      (test==0xAA) data_fmt=         GL_RGB;
-    else if (test==0xCC) data_fmt=0x80E0;//GL_BGR;
-    else {
-        printf("Error: \"Loaded surface was neither RGB or BGR!\""); return;
-    }
+	SDL_Surface*surface=IMG_Load("logo.jpg");
+//    GLenum data_fmt;
+//    Uint8 test = SDL_MapRGB(surface->format, 0xAA,0xBB,0xCC)&0xFF;
+//    if      (test==0xAA) data_fmt=         GL_RGB;
+//    else if (test==0xCC) data_fmt=0x80E0;//GL_BGR;
+//    else {
+//        printf("Error: \"Loaded surface was neither RGB or BGR!\""); return;
+//    }
 	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,
 			surface->w,surface->h,
-			0,data_fmt,GL_UNSIGNED_BYTE,
+			0,GL_RGB,GL_UNSIGNED_BYTE,
 			surface->pixels);
 	SDL_FreeSurface(surface);
 

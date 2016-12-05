@@ -14,14 +14,15 @@
 #include"dyni.h"
 //----------------------------------------------------------------------- init
 inline static void main_init(){
-//	drawables_load_file_in_slot(1,"arts/obj/cube.obj");
-//	drawables_load_file_in_slot(2,"arts/obj/sphere.obj");
-//	drawables_load_file_in_slot(3,"arts/obj/cylinder.obj");
-//	drawables_load_file_in_slot(4,"arts/obj/trunk.obj");
-//	drawables_load_file_in_slot(5,"arts/obj/boulder_1.obj");
-//	drawables_load_file_in_slot(6,"arts/obj/car1.obj");
+//	drawables_load_file_in_slot(6,"obj/plane.obj");
+	drawables_load_file_in_slot(6,"obj/ico_sphere.obj");
+//	drawables_load_file_in_slot(6,"obj/sphere.obj");
+//	drawables_load_file_in_slot(6,"obj/cylinder.obj");
 
-	drawables_load_file_in_slot(6,"obj/sphere.obj");
+
+//	drawables_load_file_in_slot(6,"obj/blender_monkey.obj");
+//	drawables_load_file_in_slot(6,"obj/cube.obj");
+//	drawables_load_file_in_slot(6,"obj/grid_8x8.obj");
 
 	object*o=new(&_ninja_);
 	o->velocity=(vec4){0,0,0,0};
