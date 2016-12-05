@@ -21,7 +21,7 @@ inline static void main_init(){
 
 	globs_load_obj_file(1,"obj/ico_sphere.obj");
 
-	object*o=alloc(&ninja_def);
+	object*o=object_alloc(&ninja_def);
 	o->glob_id=1;
 	o->velocity=(vec4){0,0,0,0};
 	o->angular_velocity=(vec4){0,0,0,0};

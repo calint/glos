@@ -1,5 +1,7 @@
-//-----------------------------------------------------------------------------
 #pragma once
+//-----------------------------------------------------------------------------
+// object allocator generated from template 
+//-----------------------------------------------------------------------------
 #include"object.h"
 #define object_count 1024
 //--------------------------------------------------------------------- storage
@@ -13,7 +15,7 @@ static bits*objects_bits_start_ptr=objects_bits;
 static bits*objects_bits_seek_ptr=objects_bits;
 static bits*objects_bits_end_ptr=objects_bits+object_count;
 //----------------------------------------------------------------------- alloc
-inline static object*alloc(object*initializer){
+inline static object*object_alloc(object*initializer){
 	int iterate_to_scan_the_table=2;
 	while(iterate_to_scan_the_table--){
 		while(objects_bits_seek_ptr<objects_bits_end_ptr){
@@ -38,7 +40,7 @@ inline static object*alloc(object*initializer){
 	exit(6);
 }
 //--------------------------------------------------------------------- recycle
-inline static void recycle(object*o){
+inline static void object_free(object*o){
 	bits_clear(o->ptr_bits,bit_object_allocated);
 }
 //-----------------------------------------------------------------------------
