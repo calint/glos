@@ -1,32 +1,32 @@
-//------------------------------------------------------------------------ dynp
+//------------------------------------------------------------------------ dyni
 #pragma once
 
-#define dynp_initial_capacity 8
-#define dynp_bounds_check 1
+#define dyni_initial_capacity 8
+#define dyni_bounds_check 1
 
 //------------------------------------------------------------------------- def
 
-typedef struct dynp{
+typedef struct dyni{
 
-	void* *data;
+	int *data;
 
 	size_t size;
 
 	size_t capacity;
 
-}dynp;
+}dyni;
 
-dynp dynp_init={NULL,0,0};
+dyni dyni_default={0,0,0};
 
 //--------------------------------------------------------------------- private
 
-inline static void _dynp_insure_free_capcity(dynp*this,size_t n){
+inline static void _dyni_insure_free_capcity(dyni*this,size_t n){
 	const size_t rem=this->capacity-this->size;
 	if(rem>=n)
 		return;
 	if(this->data){
 		size_t new_cap=this->capacity*2;
-		void* *new_data=realloc(this->data,sizeof(void*)*new_cap);
+		int *new_data=realloc(this->data,sizeof(int)*new_cap);
 		if(!new_data){
 			fprintf(stderr,"\nout-of-memory");
 			fprintf(stderr,"\tfile: '%s'  line: %d\n\n",__FILE__,__LINE__);
@@ -38,8 +38,8 @@ inline static void _dynp_insure_free_capcity(dynp*this,size_t n){
 		this->capacity=new_cap;
 		return;
 	}
-	this->capacity=dynp_initial_capacity;
-	this->data=malloc(sizeof(void*)*this->capacity);
+	this->capacity=dyni_initial_capacity;
+	this->data=malloc(sizeof(int)*this->capacity);
 	if(!this->data){
 		fprintf(stderr,"\nout-of-memory");
 		fprintf(stderr,"\tfile: '%s'  line: %d\n\n",__FILE__,__LINE__);
@@ -49,15 +49,15 @@ inline static void _dynp_insure_free_capcity(dynp*this,size_t n){
 
 //---------------------------------------------------------------------- public
 
-inline static void dynp_add(dynp*this,void*ptr){
-	_dynp_insure_free_capcity(this,1);
-	*(this->data+this->size++)=ptr;
+inline static void dyni_add(dyni*this,int o){
+	_dyni_insure_free_capcity(this,1);
+	*(this->data+this->size++)=o;
 }
 
 //-----------------------------------------------------------------------------
 
-inline static void*dynp_get(dynp*this,size_t index){
-#ifdef dynpvec_bounds_check
+inline static intdyni_get(dyni*this,size_t index){
+#ifdef dynivec_bounds_check
 	if(index>=this->capacity){
 		fprintf(stderr,"\nindex-out-of-bounds");
 		fprintf(stderr,"\t%s\n\n%d  index: %zu    capacity: %zu\n",
@@ -65,14 +65,14 @@ inline static void*dynp_get(dynp*this,size_t index){
 		exit(-1);
 	}
 #endif
-	void*p=*(this->data+index);
+	int p=*(this->data+index);
 	return p;
 }
 
 //-----------------------------------------------------------------------------
 
-inline static void*dynp_get_last(dynp*this){
-	void*p=*(this->data+this->size-1);
+inline static intdyni_get_last(dyni*this){
+	int p=*(this->data+this->size-1);
 	return p;
 }
 

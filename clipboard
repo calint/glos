@@ -1,3 +1,17 @@
+	dyni di=dyni_default;
+	dyni_add(&di,2);
+	dyni_add(&di,3);
+	dyni_add(&di,4);
+	dyni_add(&di,5);
+
+
+
+
+
+
+
+
+
 
 //inline static void dynpvec_add_all(dynpvec*this){}
 //inline static void dynpvec_remove_ptr(dynpvec*this,void*ptr){}
