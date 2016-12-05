@@ -78,7 +78,7 @@ inline static ${type} ${name}_get_last(${name}*this){
 
 //-----------------------------------------------------------------------------
 
-inline static ${type} ${name}_size_in_bytes(${name}*this){
+inline static size_t ${name}_size_in_bytes(${name}*this){
 	return this->size*sizeof(${type});
 }
 

@@ -78,7 +78,7 @@ inline static char dync_get_last(dync*this){
 
 //-----------------------------------------------------------------------------
 
-inline static char dync_size_in_bytes(dync*this){
+inline static size_t dync_size_in_bytes(dync*this){
 	return this->size*sizeof(char);
 }
 

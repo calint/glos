@@ -78,7 +78,7 @@ inline static void* dynp_get_last(dynp*this){
 
 //-----------------------------------------------------------------------------
 
-inline static void* dynp_size_in_bytes(dynp*this){
+inline static size_t dynp_size_in_bytes(dynp*this){
 	return this->size*sizeof(void*);
 }
 

@@ -78,7 +78,7 @@ inline static int dyni_get_last(dyni*this){
 
 //-----------------------------------------------------------------------------
 
-inline static int dyni_size_in_bytes(dyni*this){
+inline static size_t dyni_size_in_bytes(dyni*this){
 	return this->size*sizeof(int);
 }
 

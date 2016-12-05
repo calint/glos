@@ -78,7 +78,7 @@ inline static float dynf_get_last(dynf*this){
 
 //-----------------------------------------------------------------------------
 
-inline static float dynf_size_in_bytes(dynf*this){
+inline static size_t dynf_size_in_bytes(dynf*this){
 	return this->size*sizeof(float);
 }
 
