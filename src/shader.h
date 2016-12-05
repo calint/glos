@@ -37,7 +37,7 @@ typedef struct shader_program{
 
 static shader_program shader_programs[shader_program_cap];
 
-struct{}shader;
+//struct{}shader;
 
 char*vertex_shader_source =
 		"#version 130                                                \n\
