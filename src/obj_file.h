@@ -9,6 +9,7 @@
 
 #include"dynv.h"
 #include"dynf.h"
+#include"dync.h"
 #include"lib.h"
 
 typedef struct token{
@@ -161,10 +162,13 @@ inline static const char*scan_to_including_newline(const char*p){
 //illum 2
 //map_Kd /home/c/w/glos/logo.jpg
 
+typedef struct str{
+	dync dync;
+}str;
 
 typedef struct obj_mtl{
-	/*owns*/const char*name;
-	/*owns*/const char*path;
+	str name;
+	str path;
 }obj_mtl;
 
 
@@ -178,7 +182,7 @@ typedef struct obj_mtl{
 
 
 
-// returns triangles:  3 vertices times [ x y z   r g b   nx ny nz   u v]
+// returns array buffer of triangles [ x y z   r g b   nx ny nz   u v]
 static/*gives*/dynf read_obj_file_from_path(const char*path){
 	printf(" * load: %s\n",path);
 	FILE*f=fopen(path,"rb");

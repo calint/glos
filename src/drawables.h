@@ -60,7 +60,7 @@ static inline void drawables_draw(int id){
 
 	glVertexAttribPointer(_shader_apos,3,GL_FLOAT,GL_FALSE,stride,0);
 
-	glVertexAttribPointer(_shader_argba,3,GL_FLOAT,GL_FALSE,stride,
+	glVertexAttribPointer(_shader_argba,4,GL_FLOAT,GL_FALSE,stride,
 		(void*)(3*sizeof(float)));
 
 	glVertexAttribPointer(_shader_anorm,3,GL_FLOAT,GL_FALSE,stride,

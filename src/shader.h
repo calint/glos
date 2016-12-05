@@ -37,11 +37,7 @@ typedef struct shader_program{
 
 static shader_program shader_programs[shader_program_cap];
 
-struct{
-//	GLuint vertex_buffer_id;
-//	GLuint index_buffer_id;
-//	GLuint texture_id;
-}shader;
+struct{}shader;
 
 char*vertex_shader_source =
 		"#version 130                                                \n\
