@@ -96,16 +96,6 @@ inline static void globs_init(){}
 
 inline static void globs_free(){}
 
-inline static void globs_render_id(size_t id){
-	glob*sr=(glob*)&globs[id];
-	shader_render_triangle_array(
-			sr->vbufid,
-			sr->vbufn,
-			sr->texbufid,
-			sr->mtx_mw
-	);
-}
-
 inline static void globs_render(){
 	glob*g=globs;
 	int n=globs_cap;
@@ -113,3 +103,17 @@ inline static void globs_render(){
 		shader_render_glob(g++);
 	}
 }
+
+//inline static void globs_render_id(size_t id){
+//	glob*sr=(glob*)&globs[id];//? bounds
+//	shader_render_triangle_array(
+//			sr->vbufid,
+//			sr->vbufn,
+//			sr->texbufid,
+//			sr->mtx_mw
+//	);
+//}
+
+//inline static glob*get_glob(size_t id){
+//	return&globs[id];//? bounds
+//}
