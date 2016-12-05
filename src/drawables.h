@@ -2,6 +2,7 @@
 #include"mat4.h"
 #include"dynf.h"
 #include"obj_file.h"
+#include"shader.h"
 //-------------------------------------------------------------------- texture
 #define drawables_count 1024
 struct{
@@ -50,15 +51,15 @@ static inline void drawables_draw(int id){
 
 	glBindBuffer(GL_ARRAY_BUFFER,drawables[id].vertex_buf_gid);
 
-	glVertexAttribPointer(shader.position_slot,3,GL_FLOAT,GL_FALSE,stride,0);
+	glVertexAttribPointer(_shader_apos,3,GL_FLOAT,GL_FALSE,stride,0);
 
-	glVertexAttribPointer(shader.color_slot,3,GL_FLOAT,GL_FALSE,stride,
+	glVertexAttribPointer(_shader_argba,3,GL_FLOAT,GL_FALSE,stride,
 		(void*)(3*sizeof(float)));
 
-	glVertexAttribPointer(shader.normal_slot,3,GL_FLOAT,GL_FALSE,stride,
+	glVertexAttribPointer(_shader_anorm,3,GL_FLOAT,GL_FALSE,stride,
 		(void*)((3+4)*sizeof(float)));
 
-	glVertexAttribPointer(shader.texture_slot,2,GL_FLOAT,GL_FALSE,stride,
+	glVertexAttribPointer(_shader_atex,2,GL_FLOAT,GL_FALSE,stride,
 		(void*)((3+4+3)*sizeof(float)));
 
 	glDrawArrays(GL_TRIANGLES,0,(signed)drawables[id].vertex_count);

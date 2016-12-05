@@ -12,33 +12,27 @@ typedef struct {
 	float color[4];
 	float normal[3];
 	float texture[2];
-} vertex;
+}vertex;
 
-static vertex vertices[]={
+static vertex vertbuf[]={
 	{{ .5,-.5, 0},{ 1, 0, 0,1},{0,0,1},{1,0}},
 	{{ .5, .5, 0},{ 0, 1, 0,1},{0,0,1},{1,1}},
 	{{-.5, .5, 0},{ 0, 0, 1,1},{0,0,1},{0,1}},
 	{{-.5,-.5, 0},{ 0, 0, 0,1},{0,0,1},{0,0}},
 };
 
-static GLubyte indices[]={0,1,2,2,3,0};
+static GLubyte ixbuf[]={0,1,2,2,3,0};
+static ssize_t ixbufn=sizeof(ixbuf)/sizeof(ixbuf[0]);
 
-static GLsizei texture_width=2;
-static GLsizei texture_height=2;
-static GLfloat texture_pixels[]={
+static GLsizei texwi=2;
+static GLsizei texhi=2;
+static GLfloat texbuf[]={
 		1.0f, 1.0f, 0.0f,    0.0f, 0.0f, 1.0f,
 		0.0f, 0.0f, 1.0f,    1.0f, 1.0f, 0.0f
 };
 
 struct{
 	GLuint program_id,vertex_buffer_id,index_buffer_id,texture_id;
-	GLuint 	position_slot,
-			color_slot,
-			normal_slot,
-			texture_sampler_slot,
-			model_to_world_matrix_slot,
-			texture_slot;
-	int indices_count;
 }shader;
 
 #define _shader_apos 0
@@ -132,23 +126,21 @@ inline static void shader_load(){
 	check_gl_error("enter shader_load");
 	glGenBuffers(1, &shader.vertex_buffer_id);
 	glBindBuffer(GL_ARRAY_BUFFER, shader.vertex_buffer_id);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertbuf), vertbuf, GL_STATIC_DRAW);
 
 	glGenBuffers(1, &shader.index_buffer_id);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, shader.index_buffer_id);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices,
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(ixbuf), ixbuf,
 	GL_STATIC_DRAW);
-
-	shader.indices_count = sizeof(indices) / sizeof(indices[0]);
 
 //	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
 	glGenTextures(1,&shader.texture_id);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D,shader.texture_id);
 	glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,
-			texture_width,texture_height,
+			texwi,texhi,
 			0,GL_RGB,GL_FLOAT,
-			texture_pixels);
+			texbuf);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
@@ -215,7 +207,7 @@ inline static void shader_render() {
 			sizeof(vertex),(GLvoid*)((3+4+3)*sizeof(float)));
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,shader.index_buffer_id);
-	glDrawElements(GL_TRIANGLES,shader.indices_count,GL_UNSIGNED_BYTE,0);
+	glDrawElements(GL_TRIANGLES,ixbufn,GL_UNSIGNED_BYTE,0);
 }
 
 inline static const char*get_gl_error_string(const GLenum error) {
