@@ -74,13 +74,8 @@ void main(){                               \n\
 	gl_FragColor=texture2D(utex,vtex)+.00001*vrgba+0.00001*vec4(vnorm,1)+vec4(vtex,0,1);  \n\
 }\n";
 
-inline static const char*get_shader_name_for_type(GLenum shader_type) {
-	switch (shader_type){
-	case GL_VERTEX_SHADER:return "vertex";
-	case GL_FRAGMENT_SHADER:return "fragment";
-	default:return "unknown";
-	}
-}
+
+inline static const char*get_shader_name_for_type(GLenum shader_type);
 inline static GLuint compile_shader(GLenum shaderType,const char *code) {
 //	printf("\n ___| %s shader |__________________\n%s\n",
 //			get_shader_name_for_type(shaderType),
@@ -129,7 +124,6 @@ inline static void shader_program_load(int index,const char*vert_src,const char*
 		printf("program linking error: %s\n",msg);
 		exit(8);
 	}
-
 	check_gl_error("exit shader_program_load");
 }
 
@@ -174,22 +168,12 @@ inline static const char*get_gl_error_string(const GLenum error) {
 	return str;
 }
 
-inline static void check_gl_error(const char*op) {
-	int err = 0;
-	for (GLenum error = glGetError(); error; error = glGetError()) {
-		printf("!!! %s   glerror %x   %s\n", op, error,
-				get_gl_error_string(error));
-		err = 1;
-	}
-	if (err)
-		exit(11);
-}
-
 inline static void print_gl_string(const char *name, const GLenum s){
 	const char*v = (const char*) glGetString(s);
 	printf("%s=%s\n", name, v);
 }
 
+inline static void check_gl_error(const char*op);
 inline static void shader_load(){
 	check_gl_error("enter shader_load");
 	glGenBuffers(1, &shader.vertex_buffer_id);
@@ -282,4 +266,22 @@ inline static void shader_render() {
 inline static void shader_free() {
 	if(shader.program_id)
 		glDeleteProgram(shader.program_id);
+}
+
+inline static void check_gl_error(const char*op) {
+	int err = 0;
+	for (GLenum error = glGetError(); error; error = glGetError()) {
+		printf("!!! %s   glerror %x   %s\n", op, error,
+				get_gl_error_string(error));
+		err = 1;
+	}
+	if (err)
+		exit(11);
+}
+inline static const char*get_shader_name_for_type(GLenum shader_type) {
+	switch (shader_type){
+	case GL_VERTEX_SHADER:return "vertex";
+	case GL_FRAGMENT_SHADER:return "fragment";
+	default:return "unknown";
+	}
 }
