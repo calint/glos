@@ -1,12 +1,11 @@
  [x] dynamic pointer vector
  [x] texturing
- 
  [x] obj format
- [ ]   read colors
- [x]   read texture coords
- [ ]   read textures
- [ ]   render list materials
-
+ [ ]   colors
+ [x]   texture coords
+ [ ]   materials
+ [ ]   textures
+ [ ]   render
  [ ] collision detection 
  [ ]   bounding volume
  [ ]     sphere
@@ -23,23 +22,19 @@
  [ ]       planes 
  [ ]     empty/solids
  [ ]       boolean ops
- 
  [ ] collision physics/animatics
  [ ]   sphere vs sphere
  [ ]   box vs box
  [ ]   sphere vs plane
  [ ]   spherer vs box
- 
  [ ] grid
  [ ]   cull
  [ ]   render
  [ ]   update
  [ ]   multicore
- 
  [ ] keyshub
  [ ]   client
  [ ]   server
- 
  [ ] camera
  [ ]   projection
  [ ]     orthonormal
@@ -53,9 +48,9 @@
  [ ]   script
  [ ]     path
  [ ]     focus
-
  [ ] hud
  [ ] draw text
  [ ] mouse
  [ ]   fps controls
  [ ]   alternative controls
+ 
