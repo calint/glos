@@ -127,52 +127,6 @@ inline static void shader_program_load(int index,const char*vert_src,const char*
 	check_gl_error("exit shader_program_load");
 }
 
-inline static const char*get_gl_error_string(const GLenum error) {
-	const char*str;
-	switch (error) {
-	case GL_NO_ERROR:
-		str = "GL_NO_ERROR";
-		break;
-	case GL_INVALID_ENUM:
-		str = "GL_INVALID_ENUM";
-		break;
-	case GL_INVALID_VALUE:
-		str = "GL_INVALID_VALUE";
-		break;
-	case GL_INVALID_OPERATION:
-		str = "GL_INVALID_OPERATION";
-		break;
-#if defined __gl_h_ || defined __gl3_h_
-		case GL_OUT_OF_MEMORY:
-		str = "GL_OUT_OF_MEMORY";
-		break;
-		case GL_INVALID_FRAMEBUFFER_OPERATION:
-		str = "GL_INVALID_FRAMEBUFFER_OPERATION";
-		break;
-#endif
-#if defined __gl_h_
-		case GL_STACK_OVERFLOW:
-		str = "GL_STACK_OVERFLOW";-Wunused-variable
-		break;
-		case GL_STACK_UNDERFLOW:
-		str = "GL_STACK_UNDERFLOW";
-		break;
-		case GL_TABLE_TOO_LARGE:
-		str = "GL_TABLE_TOO_LARGE";
-		break;
-#endif
-	default:
-		str = "(ERROR: Unknown Error Enum)";
-		break;
-	}
-	return str;
-}
-
-inline static void print_gl_string(const char *name, const GLenum s){
-	const char*v = (const char*) glGetString(s);
-	printf("%s=%s\n", name, v);
-}
-
 inline static void check_gl_error(const char*op);
 inline static void shader_load(){
 	check_gl_error("enter shader_load");
@@ -204,6 +158,7 @@ inline static void shader_load(){
 	check_gl_error("exit shader_load");
 }
 
+inline static void print_gl_string(const char *name, const GLenum s);
 inline static void shader_init() {
 	check_gl_error("shader_init");
 
@@ -261,6 +216,52 @@ inline static void shader_render() {
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,shader.index_buffer_id);
 	glDrawElements(GL_TRIANGLES,shader.indices_count,GL_UNSIGNED_BYTE,0);
+}
+
+inline static const char*get_gl_error_string(const GLenum error) {
+	const char*str;
+	switch (error) {
+	case GL_NO_ERROR:
+		str = "GL_NO_ERROR";
+		break;
+	case GL_INVALID_ENUM:
+		str = "GL_INVALID_ENUM";
+		break;
+	case GL_INVALID_VALUE:
+		str = "GL_INVALID_VALUE";
+		break;
+	case GL_INVALID_OPERATION:
+		str = "GL_INVALID_OPERATION";
+		break;
+#if defined __gl_h_ || defined __gl3_h_
+		case GL_OUT_OF_MEMORY:
+		str = "GL_OUT_OF_MEMORY";
+		break;
+		case GL_INVALID_FRAMEBUFFER_OPERATION:
+		str = "GL_INVALID_FRAMEBUFFER_OPERATION";
+		break;
+#endif
+#if defined __gl_h_
+		case GL_STACK_OVERFLOW:
+		str = "GL_STACK_OVERFLOW";-Wunused-variable
+		break;
+		case GL_STACK_UNDERFLOW:
+		str = "GL_STACK_UNDERFLOW";
+		break;
+		case GL_TABLE_TOO_LARGE:
+		str = "GL_TABLE_TOO_LARGE";
+		break;
+#endif
+	default:
+		str = "(ERROR: Unknown Error Enum)";
+		break;
+	}
+	return str;
+}
+
+inline static void print_gl_string(const char *name, const GLenum s){
+	const char*v = (const char*) glGetString(s);
+	printf("%s=%s\n", name, v);
 }
 
 inline static void shader_free() {
