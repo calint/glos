@@ -7,9 +7,9 @@
 #include<stdlib.h>
 #include<fcntl.h>
 
-#include"dynv.h"
 #include"dynf.h"
 #include"dync.h"
+#include "dynp.h"
 #include"lib.h"
 
 typedef struct token{
@@ -162,13 +162,16 @@ inline static const char*scan_to_including_newline(const char*p){
 //illum 2
 //map_Kd /home/c/w/glos/logo.jpg
 
-typedef struct str{
-	dync dync;
-}str;
+typedef dync str;
 
 typedef struct obj_mtl{
+
 	str name;
-	str path;
+
+	str texture_path;
+
+	GLuint texture_gid;
+
 }obj_mtl;
 
 
@@ -219,9 +222,9 @@ static/*gives*/dynf read_obj_file_from_path(const char*path){
 	fclose(f);
 	filedata[length]=0;
 
-	dynv vertices=_dynv_init_;
-	dynv normals=_dynv_init_;
-	dynv texuv=_dynv_init_;
+	dynp vertices=_dynp_init_;
+	dynp normals=_dynp_init_;
+	dynp texuv=_dynp_init_;
 	dynf vertex_buffer=_dynf_init_;
 
 	const char*p=filedata;
@@ -263,7 +266,7 @@ static/*gives*/dynf read_obj_file_from_path(const char*path){
 
 			vec4*ptr=malloc(sizeof(vec4));
 			*ptr=(vec4){x,y,z,0};
-			dynv_add(&vertices,ptr);
+			dynp_add(&vertices,ptr);
 			continue;
 		}
 		if(token_equals(&t,"vt")){
@@ -277,7 +280,7 @@ static/*gives*/dynf read_obj_file_from_path(const char*path){
 
 			vec4*ptr=malloc(sizeof(vec4));
 			*ptr=(vec4){u,v,0,0};
-			dynv_add(&texuv,ptr);
+			dynp_add(&texuv,ptr);
 			continue;
 		}
 		if(token_equals(&t,"vn")){
@@ -296,7 +299,7 @@ static/*gives*/dynf read_obj_file_from_path(const char*path){
 
 			vec4*ptr=malloc(sizeof(vec4));
 			*ptr=(vec4){x,y,z,0};
-			dynv_add(&normals,ptr);
+			dynp_add(&normals,ptr);
 			continue;
 		}
 
@@ -306,7 +309,7 @@ static/*gives*/dynf read_obj_file_from_path(const char*path){
 				token vert1=next_token_from_string_additional_delim(p,'/');
 				p=vert1.end;
 				int ix1=token_get_int(&vert1);
-				vec4*vtx=(vec4*)dynv_get(&vertices,(size_t)(ix1-1));
+				vec4*vtx=(vec4*)dynp_get(&vertices,(size_t)(ix1-1));
 
 				// texture index
 				token vert2=next_token_from_string_additional_delim(p,'/');
@@ -315,7 +318,7 @@ static/*gives*/dynf read_obj_file_from_path(const char*path){
 				vec4 tx,*tex;tex=&tx;
 				if(ix2){
 					if(!ix2){
-						tex=(vec4*)dynv_get(&texuv,(size_t)(ix2-1));
+						tex=(vec4*)dynp_get(&texuv,(size_t)(ix2-1));
 					}else{
 						*tex=(vec4){0,0,0,0};
 					}
@@ -324,7 +327,7 @@ static/*gives*/dynf read_obj_file_from_path(const char*path){
 				token vert3=next_token_from_string_additional_delim(p,'/');
 				p=vert3.end;
 				int ix3=token_get_int(&vert3);
-				vec4*norm=(vec4*)dynv_get(&normals,(size_t)(ix3-1));
+				vec4*norm=(vec4*)dynp_get(&normals,(size_t)(ix3-1));
 
 				// buffer
 				dynf_add(&vertex_buffer,vtx->x);

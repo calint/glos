@@ -8,9 +8,9 @@
 #include"drawables.h"
 #include"app/ninja.h"
 #include"alloc.h"
-#include"dynv.h"
 #include"obj_file.h"
 #include"dync.h"
+#include "dynp.h"
 //----------------------------------------------------------------------- init
 inline static void main_init(){
 //	drawables_load_file_in_slot(1,"arts/obj/cube.obj");
