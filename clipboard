@@ -1,3 +1,43 @@
+
+//inline static void dynpvec_add_all(dynpvec*this){}
+//inline static void dynpvec_remove_ptr(dynpvec*this,void*ptr){}
+//inline static void dynpvec_remove_at_index(dynpvec*this,size_t index){}
+//inline static void dynpvec_insert_before(dynpvec*this,void*ptr){}
+//inline static void dynpvec_insert_after(dynpvec*this,void*ptr){}
+//inline static void dynpvec_insert_before(dynpvec*this,size_t index){}
+//inline static void dynpvec_insert_after(dynpvec*this,size_t index){}
+
+
+
+
+//while(argc--)puts(*argv++);
+//{
+//	dynpvec v=_dynpvec_init_;
+//	int a=1,b=2,c=3;
+//	dynpvec_add(&v,&a);
+//	dynpvec_add(&v,&b);
+//	dynpvec_add(&v,&c);
+//
+//	printf(" %d  %d   %d\n",
+//			*((int*)dynpvec_get(&v,0)),
+//			*((int*)dynpvec_get(&v,1)),
+//			*((int*)dynpvec_get(&v,2))
+//		);
+//
+//	int*p=(int*)dynpvec_get(&v,0);
+//	if(*p!=a){exit(-1);}
+//	if(p!=&a){exit(-1);}
+//	p=dynpvec_get(&v,2);
+//	if(p!=&c){exit(-1);}
+//	puts("ok");
+//	exit(0);
+//}
+
+
+
+
+
+
 //#define cpu_level1_cache_line_size 64
 //#define GLOS_EMBEDDED
 
