@@ -17,6 +17,7 @@ static shader_vertex vertbuf[]={
 	{{-.5, .5, 0},{ 0, 0, 1,1},{0,0,1},{0,1}},
 	{{-.5,-.5, 0},{ 0, 0, 0,1},{0,0,1},{0,0}},
 };
+static GLuint vertbufid;
 
 static GLubyte ixbuf[]={0,1,2,2,3,0};
 static ssize_t ixbufn=sizeof(ixbuf)/sizeof(ixbuf[0]);
@@ -35,8 +36,7 @@ typedef struct shader_program{
 static shader_program shader_programs[shader_program_cap];
 
 struct{
-	GLuint program_id;
-	GLuint vertex_buffer_id;
+//	GLuint vertex_buffer_id;
 	GLuint index_buffer_id;
 	GLuint texture_id;
 }shader;
@@ -131,8 +131,8 @@ inline static void shader_program_load(int index,const char*vert_src,const char*
 inline static void check_gl_error(const char*op);
 inline static void shader_load(){
 	check_gl_error("enter shader_load");
-	glGenBuffers(1, &shader.vertex_buffer_id);
-	glBindBuffer(GL_ARRAY_BUFFER, shader.vertex_buffer_id);
+	glGenBuffers(1, &vertbufid);
+	glBindBuffer(GL_ARRAY_BUFFER, vertbufid);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertbuf),vertbuf,GL_STATIC_DRAW);
 
 	glGenBuffers(1, &shader.index_buffer_id);
@@ -172,7 +172,7 @@ inline static void shader_render() {
 	glUniformMatrix4fv(0,1,0,mtxident);
 	glUniform1i(_shader_umtx_mw,0);// texture sampler on texture0
 
-	glBindBuffer(GL_ARRAY_BUFFER,shader.vertex_buffer_id);
+	glBindBuffer(GL_ARRAY_BUFFER,vertbufid);
 	glVertexAttribPointer(_shader_apos, 3, GL_FLOAT, GL_FALSE,
 			sizeof(shader_vertex),0);
 	glVertexAttribPointer(_shader_argba, 4, GL_FLOAT, GL_FALSE,
