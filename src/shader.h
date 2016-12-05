@@ -2,6 +2,10 @@
 #include "sdl.h"
 
 //--------------------------------------------------------------------- shader
+typedef struct shader_program{
+	GLuint id;
+}shader_program;
+static shader_program shader_programs[8];
 
 typedef struct {
 	float position[3];
@@ -77,10 +81,10 @@ inline static const char*get_shader_name_for_type(GLenum shader_type) {
 	default:return "unknown";
 	}
 }
-inline static GLuint compile_shader(GLenum shaderType, char *code) {
-	printf("\n ___| %s shader |__________________\n%s\n",
-			get_shader_name_for_type(shaderType),
-			code);
+inline static GLuint compile_shader(GLenum shaderType,const char *code) {
+//	printf("\n ___| %s shader |__________________\n%s\n",
+//			get_shader_name_for_type(shaderType),
+//			code);
 	GLuint handle=glCreateShader(shaderType);
 	int length=(int)strlen(code);
 	glShaderSource(handle,1,(const GLchar**)&code,&length);
@@ -98,29 +102,35 @@ inline static GLuint compile_shader(GLenum shaderType, char *code) {
 	return handle;
 }
 
-inline static void load_program() {
-	GLuint vertex=compile_shader(GL_VERTEX_SHADER,vertex_shader_source);
-	GLuint fragment=compile_shader(GL_FRAGMENT_SHADER,fragment_shader_source);
+inline static void check_gl_error(const char*op);
+inline static void shader_program_load(int index,const char*vert_src,const char*frag_src) {
+	check_gl_error("enter shader_program_load");
 
-	shader.program_id=glCreateProgram();
-	glAttachShader(shader.program_id,vertex);
-	glAttachShader(shader.program_id,fragment);
-	glLinkProgram(shader.program_id);
+	GLuint programid=glCreateProgram();
+	shader_programs[index].id=programid;
 
-	GLint ok;glGetProgramiv(shader.program_id,GL_LINK_STATUS,&ok);
+	GLuint vertex=compile_shader(GL_VERTEX_SHADER,vert_src);
+	GLuint fragment=compile_shader(GL_FRAGMENT_SHADER,frag_src);
+
+
+	glAttachShader(programid,vertex);
+	glAttachShader(programid,fragment);
+	glLinkProgram(programid);
+
+	GLint ok;glGetProgramiv(programid,GL_LINK_STATUS,&ok);
 	if(!ok){
-		GLint len;glGetProgramiv(shader.program_id,GL_INFO_LOG_LENGTH,&len);
+		GLint len;glGetProgramiv(programid,GL_INFO_LOG_LENGTH,&len);
 
 		GLchar msg[1024];
 		if(len>(signed)sizeof msg){
 			len=sizeof msg;
 		}
-		glGetProgramInfoLog(shader.program_id,len,NULL,&msg[0]);
+		glGetProgramInfoLog(programid,len,NULL,&msg[0]);
 		printf("program linking error: %s\n",msg);
 		exit(8);
 	}
 
-	glUseProgram(shader.program_id);
+	check_gl_error("exit shader_program_load");
 }
 
 inline static const char*get_gl_error_string(const GLenum error) {
@@ -180,19 +190,8 @@ inline static void print_gl_string(const char *name, const GLenum s){
 	printf("%s=%s\n", name, v);
 }
 
-inline static void shader_init() {
-	check_gl_error("shader_init");
-	gl_print_context_profile_and_version();
-	puts("");
-	print_gl_string("GL_VERSION", GL_VERSION);
-	print_gl_string("GL_VENDOR", GL_VENDOR);
-	print_gl_string("GL_RENDERER", GL_RENDERER);
-	print_gl_string("GL_SHADING_LANGUAGE_VERSION",GL_SHADING_LANGUAGE_VERSION);
-
-
-	load_program(&shader.position_slot,&shader.color_slot);
-
-
+inline static void shader_load(){
+	check_gl_error("enter shader_load");
 	glGenBuffers(1, &shader.vertex_buffer_id);
 	glBindBuffer(GL_ARRAY_BUFFER, shader.vertex_buffer_id);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
@@ -203,7 +202,6 @@ inline static void shader_init() {
 	GL_STATIC_DRAW);
 
 	shader.indices_count = sizeof(indices) / sizeof(indices[0]);
-	check_gl_error("generating buffers");
 
 //	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
 	glGenTextures(1,&shader.texture_id);
@@ -219,27 +217,36 @@ inline static void shader_init() {
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
 //	glGenerateMipmap(GL_TEXTURE_2D);
 //	glPixelStorei(GL_UNPACK_ALIGNMENT,4);
+	check_gl_error("exit shader_load");
+}
 
-//	printf("apos: %d\n",glGetAttribLocation(shader.program_id,"apos"));
-//	printf("argba: %d\n",glGetAttribLocation(shader.program_id,"argba"));
-//	printf("anorm: %d\n",glGetAttribLocation(shader.program_id,"anorm"));
-//	printf("umtx_mw: %d\n",glGetUniformLocation(shader.program_id,"umtx_mw"));
-//	printf("utex: %d\n",glGetUniformLocation(shader.program_id,"utex"));
+inline static void shader_init() {
+	check_gl_error("shader_init");
 
-//	glEnableVertexAttribArray(_shader_apos);//position
-//	glEnableVertexAttribArray(_shader_argba);//color
-//	glEnableVertexAttribArray(_shader_anorm);//normal
-//	glEnableVertexAttribArray(_shader_atex);//texture
-//
-//	// Set the active texture unit to texture unit 0.
-////	glActiveTexture(GL_TEXTURE0);
-//	// Bind the texture to this unit.
-////	glBindTexture(GL_TEXTURE_2D,shader.texture_id);
-//	// Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
-//	float mtxident[]={1,0,0,0,  0,1,0,0,  0,0,1,0,  0,0,0,1};
-//	glUniformMatrix4fv(0,1,0,mtxident);
-//	glUniform1i(_shader_umtx_mw,0);// texture sampler on texture0
-//
+//	gl_print_context_profile_and_version();
+
+
+	puts("");
+	print_gl_string("GL_VERSION", GL_VERSION);
+	print_gl_string("GL_VENDOR", GL_VENDOR);
+	print_gl_string("GL_RENDERER", GL_RENDERER);
+	print_gl_string("GL_SHADING_LANGUAGE_VERSION",GL_SHADING_LANGUAGE_VERSION);
+	puts("");
+	printf(":-%10s-:-%7s-:\n","----------","-------");
+	printf(": %10s :-%7s-:\n","feature","");
+	printf(":-%10s-:-%7s-:\n","----------","-------");
+	printf(": %10s : %-7s :\n","cull face",glIsEnabled(GL_CULL_FACE)?"yes":"no");
+	printf(": %10s : %-7s :\n","blend",glIsEnabled(GL_BLEND)?"yes":"no");
+	printf(":-%10s-:-%7s-:\n","----------","-------");
+	puts("");
+
+	puts("");
+
+	shader_program_load(1,vertex_shader_source,fragment_shader_source);
+	glUseProgram(shader_programs[1].id);
+
+	shader_load();
+
 	check_gl_error("after shader_init");
 }
 
