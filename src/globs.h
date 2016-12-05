@@ -1,6 +1,9 @@
 #pragma once
-#define globs_cap 1
+#include"dynf.h"
 
+static/*gives*/dynf read_obj_file_from_path(const char*path);
+
+#define globs_cap 1
 //----------------------------------------------------------------------- calls
 inline static void shader_render_triangle_elements(
 		GLuint vbufid,size_t vbufn,
@@ -90,6 +93,19 @@ inline static void glob_render(glob*this){
 			this->texbufid,
 			this->mtx_mw
 	);
+}
+
+inline static void glob_load_obj(glob*this,const char*path){
+	dynf buf=/*takes*/read_obj_file_from_path(path);
+	this->vbufn=buf.size;
+	this->vbufnbytes=buf.size*sizeof(float);
+
+	glGenBuffers(1,&this->vbufid);
+	glBindBuffer(GL_ARRAY_BUFFER,this->vbufid);
+	glBufferData(GL_ARRAY_BUFFER,(signed)this->vbufnbytes,buf.data,
+			GL_STATIC_DRAW);
+
+	dynf_free(/*gives*/&buf);
 }
 
 inline static void globs_init(){}

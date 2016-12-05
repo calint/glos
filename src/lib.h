@@ -36,6 +36,7 @@ typedef Uint32 color;
 typedef int id;
 typedef float dt;
 typedef dt time_in_seconds;
+typedef const char*path;
 
 //------------------------------------------------------------------------ lib
 
