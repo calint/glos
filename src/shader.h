@@ -17,22 +17,22 @@ typedef struct shader_vertex{
 //	{{-.5, .5, 0},{ 0, 0, 1,1},{0,0,1},{0,1}},
 //	{{-.5,-.5, 0},{ 0, 0, 0,1},{0,0,1},{0,0}},
 //};
-static shader_vertex _vertbuf[]={
+static shader_vertex shader_def_vertbuf[]={
 	{{ .5,-.5, 0},{ 1, 0, 0,1},{0,0,1},{ 1,-1}},
 	{{ .5, .5, 0},{ 0, 1, 0,1},{0,0,1},{ 1, 1}},
 	{{-.5, .5, 0},{ 0, 0, 1,1},{0,0,1},{-1, 1}},
 	{{-.5,-.5, 0},{ 0, 0, 0,1},{0,0,1},{-1,-1}},
 };
-static GLubyte _ixbuf[]={0,1,2,2,3,0};
+static GLubyte shader_def_ixbuf[]={0,1,2,2,3,0};
 
-#define _texwi 2
-#define _texhi 2
-static GLfloat _texbuf[]={
+#define shader_def_texwi 2
+#define shader_def_texhi 2
+static GLfloat shader_def_texbuf[]={
 		.7f, .7f, .7f,    .2f, .2f, .2f,
 		.2f ,.2f ,.2f,    .7f, .7f, .7f
 };
 
-static float _mtx_mw[]={
+static float shader_def_mtx_mw[]={
 		1,0,0,0,
 		0,1,0,0,
 		0,0,1,0,
@@ -56,19 +56,19 @@ typedef struct shader_renderable{
 }shader_renderable;
 
 static shader_renderable shader_renderable_def=(shader_renderable){
-	.vertbuf=_vertbuf,
-	.vertbufn=sizeof(_vertbuf)/sizeof(&_vertbuf[0]),
-	.vertbufnbytes=sizeof(_vertbuf),
-	.ixbuf=_ixbuf,
-	.ixbufn=sizeof(_ixbuf)/sizeof(&_ixbuf[0]),
-	.ixbufnbytes=sizeof(_ixbuf),
+	.vertbuf=shader_def_vertbuf,
+	.vertbufn=sizeof(shader_def_vertbuf)/sizeof(&shader_def_vertbuf[0]),
+	.vertbufnbytes=sizeof(shader_def_vertbuf),
+	.ixbuf=shader_def_ixbuf,
+	.ixbufn=sizeof(shader_def_ixbuf)/sizeof(&shader_def_ixbuf[0]),
+	.ixbufnbytes=sizeof(shader_def_ixbuf),
 	.texbufid=0,
 	.mtx_mw=NULL,
-	.texbuf=_texbuf,
+	.texbuf=shader_def_texbuf,
 	.texbufid=0,
-	.texwi=_texwi,
-	.texhi=_texhi,
-	.mtx_mw=_mtx_mw,
+	.texwi=shader_def_texwi,
+	.texhi=shader_def_texhi,
+	.mtx_mw=shader_def_mtx_mw,
 };
 
 
@@ -80,7 +80,7 @@ static shader_program shader_programs[shader_program_cap];
 
 //struct{}shader;
 
-char*vertex_shader_source =
+static char*shader_def_vertex_shader_source =
 		"#version 130                                                \n\
 uniform mat4 umtx_mw;// model-to-world-matrix                        \n\
 attribute vec3 apos;// vertices                              \n\
@@ -102,7 +102,7 @@ void main(){                                                 \n\
 #define _shader_atex 3
 #define _shader_umtx_mw 0
 
-char*fragment_shader_source =
+static char*shader_fragment_shader_source =
 		"#version 130                              \n\
 uniform sampler2D utex;                    \n\
 varying mediump vec4 vrgba;                \n\
@@ -113,10 +113,10 @@ void main(){                               \n\
 }\n";
 #define _shader_utex 1
 
-inline static const char*get_shader_name_for_type(GLenum shader_type);
-inline static void check_gl_error(const char*op);
+inline static const char*_get_shader_name_for_type(GLenum shader_type);
+inline static void _check_gl_error(const char*op);
 
-inline static GLuint compile_shader(GLenum shaderType,const char *code) {
+inline static GLuint _compile_shader(GLenum shaderType,const char *code) {
 //	printf("\n ___| %s shader |__________________\n%s\n",
 //			get_shader_name_for_type(shaderType),
 //			code);
@@ -129,7 +129,7 @@ inline static GLuint compile_shader(GLenum shaderType,const char *code) {
 		GLchar messages[1024];
 		glGetShaderInfoLog(id,sizeof(messages),NULL,&messages[0]);
 		printf("compiler error in %s shader:\n%s\n",
-			get_shader_name_for_type(shaderType), messages
+			_get_shader_name_for_type(shaderType), messages
 		);
 		exit(7);
 	}
@@ -137,14 +137,14 @@ inline static GLuint compile_shader(GLenum shaderType,const char *code) {
 }
 
 inline static void shader_program_load(int index,const char*vert_src,const char*frag_src) {
-	check_gl_error("enter shader_program_load");
+	_check_gl_error("enter shader_program_load");
 
 	GLuint id=glCreateProgram();
 	shader_programs[index].id=id;
 
-	GLuint vertex=compile_shader(GL_VERTEX_SHADER,vert_src);
+	GLuint vertex=_compile_shader(GL_VERTEX_SHADER,vert_src);
 
-	GLuint fragment=compile_shader(GL_FRAGMENT_SHADER,frag_src);
+	GLuint fragment=_compile_shader(GL_FRAGMENT_SHADER,frag_src);
 
 	glAttachShader(id,vertex);
 	glAttachShader(id,fragment);
@@ -163,11 +163,11 @@ inline static void shader_program_load(int index,const char*vert_src,const char*
 		exit(8);
 	}
 
-	check_gl_error("exit shader_program_load");
+	_check_gl_error("exit shader_program_load");
 }
 
 inline static void shader_load(){
-	check_gl_error("enter shader_load");
+	_check_gl_error("enter shader_load");
 	glGenBuffers(1, &shader_renderable_def.vertbufid);
 	glBindBuffer(GL_ARRAY_BUFFER,shader_renderable_def.vertbufid);
 	glBufferData(GL_ARRAY_BUFFER,
@@ -210,7 +210,7 @@ inline static void shader_load(){
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
 //	glGenerateMipmap(GL_TEXTURE_2D);
 //	glPixelStorei(GL_UNPACK_ALIGNMENT,4);
-	check_gl_error("exit shader_load");
+	_check_gl_error("exit shader_load");
 }
 
 inline static void shader_render() {
@@ -318,18 +318,18 @@ inline static void shader_render_rend(shader_renderable*sr){
 
 
 
-inline static void print_gl_string(const char *name, const GLenum s);
+inline static void _print_gl_string(const char *name, const GLenum s);
 inline static void shader_init() {
-	check_gl_error("shader_init");
+	_check_gl_error("shader_init");
 
 //	gl_print_context_profile_and_version();
 
 
 	puts("");
-	print_gl_string("GL_VERSION", GL_VERSION);
-	print_gl_string("GL_VENDOR", GL_VENDOR);
-	print_gl_string("GL_RENDERER", GL_RENDERER);
-	print_gl_string("GL_SHADING_LANGUAGE_VERSION",GL_SHADING_LANGUAGE_VERSION);
+	_print_gl_string("GL_VERSION", GL_VERSION);
+	_print_gl_string("GL_VENDOR", GL_VENDOR);
+	_print_gl_string("GL_RENDERER", GL_RENDERER);
+	_print_gl_string("GL_SHADING_LANGUAGE_VERSION",GL_SHADING_LANGUAGE_VERSION);
 	puts("");
 	printf(":-%10s-:-%7s-:\n","----------","-------");
 	printf(": %10s :-%7s-:\n","feature","");
@@ -341,15 +341,15 @@ inline static void shader_init() {
 
 	puts("");
 
-	shader_program_load(0,vertex_shader_source,fragment_shader_source);
+	shader_program_load(0,shader_def_vertex_shader_source,shader_fragment_shader_source);
 //	glUseProgram(shader_programs[0].id);
 
 	shader_load();
 
-	check_gl_error("after shader_init");
+	_check_gl_error("after shader_init");
 }
 
-inline static const char*get_gl_error_string(const GLenum error) {
+inline static const char*_get_gl_error_string(const GLenum error) {
 	const char*str;
 	switch (error) {
 	case GL_NO_ERROR:
@@ -390,7 +390,7 @@ inline static const char*get_gl_error_string(const GLenum error) {
 	return str;
 }
 
-inline static void print_gl_string(const char *name, const GLenum s){
+inline static void _print_gl_string(const char *name, const GLenum s){
 	const char*v = (const char*) glGetString(s);
 	printf("%s=%s\n", name, v);
 }
@@ -401,17 +401,17 @@ inline static void shader_free() {
 //		glDeleteProgram(shader.program_id);
 }
 
-inline static void check_gl_error(const char*op) {
+inline static void _check_gl_error(const char*op) {
 	int err = 0;
 	for (GLenum error = glGetError(); error; error = glGetError()) {
 		printf("!!! %s   glerror %x   %s\n", op, error,
-				get_gl_error_string(error));
+				_get_gl_error_string(error));
 		err = 1;
 	}
 	if (err)
 		exit(11);
 }
-inline static const char*get_shader_name_for_type(GLenum shader_type) {
+inline static const char*_get_shader_name_for_type(GLenum shader_type) {
 	switch (shader_type){
 	case GL_VERTEX_SHADER:return "vertex";
 	case GL_FRAGMENT_SHADER:return "fragment";

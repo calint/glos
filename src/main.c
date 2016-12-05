@@ -99,6 +99,7 @@ int main(int argc,char*argv[]){
 						running = 0;
 						break;
 					case SDLK_w:
+						objects[0].velocity.y=.5f;
 						c.red = 1;
 						c.green = 0;
 						c.blue = 0;
@@ -110,7 +111,7 @@ int main(int argc,char*argv[]){
 						c.blue = 0;
 						break;
 					case SDLK_s:
-						objects[0].angular_velocity.z=0;
+						objects[0].velocity.y=-.5f;
 						c.red = 0;
 						c.green = 0;
 						c.blue = 1;
@@ -129,6 +130,18 @@ int main(int argc,char*argv[]){
 
 			case SDL_KEYUP:
 				switch (event.key.keysym.sym){
+					case SDLK_w:
+						objects[0].velocity.y=0;
+						break;
+					case SDLK_a:
+						objects[0].angular_velocity.z=0;
+						break;
+					case SDLK_s:
+						objects[0].velocity.y=-0;
+						break;
+					case SDLK_d:
+						objects[0].angular_velocity.z=0;
+						break;
 					case SDLK_1:
 						draw_default=0;
 						break;

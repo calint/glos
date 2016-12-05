@@ -5,7 +5,7 @@
  [ ]   read colors
  [x]   read texture coords
  [ ]   read textures
- [ ]   render materials
+ [ ]   render list materials
  
  [ ] bounding volume
  [ ]   sphere
@@ -23,3 +23,6 @@
  [ ]   multiuser
  
  [ ] camera
+
+ [ ] hud
+ 
