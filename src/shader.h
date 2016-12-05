@@ -1,11 +1,8 @@
 #pragma once
 #include "sdl.h"
-
 //--------------------------------------------------------------------- shader
-typedef struct shader_program{
-	GLuint id;
-}shader_program;
-static shader_program shader_programs[8];
+#define shader_program_cap 8
+//---------------------------------------------------------------------
 
 typedef struct shader_vertex{
 	float position[3];
@@ -31,9 +28,19 @@ static GLfloat texbuf[]={
 		0.0f, 0.0f, 1.0f,    1.0f, 1.0f, 0.0f
 };
 
+typedef struct shader_program{
+	GLuint id;
+}shader_program;
+
+static shader_program shader_programs[shader_program_cap];
+
 struct{
-	GLuint program_id,vertex_buffer_id,index_buffer_id,texture_id;
+	GLuint program_id;
+	GLuint vertex_buffer_id;
+	GLuint index_buffer_id;
+	GLuint texture_id;
 }shader;
+
 char*vertex_shader_source =
 		"#version 130                                                \n\
 uniform mat4 umtx_mw;// model-to-world-matrix                        \n\
