@@ -43,6 +43,7 @@ typedef dt time_in_seconds;
 typedef const char*path;
 typedef size_t array_index;
 
+#define PI 3.1415926535897932384626433832795f
 //------------------------------------------------------------------------ lib
 
 inline static int bits_is_bit_set(bits*b,int bit_number_starting_at_zero){

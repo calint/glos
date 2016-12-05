@@ -61,7 +61,7 @@ glob{
 	GLuint texbufid;
 	GLsizei texwi;
 	GLsizei texhi;
-	float*mtx_mw;
+//	float*mtx_mw;
 }glob;
 
 static glob glob_def=(glob){
@@ -77,15 +77,15 @@ static glob glob_def=(glob){
 	.texbufid=0,
 	.texwi=glob_def_texwi,
 	.texhi=glob_def_texhi,
-	.mtx_mw=glob_def_mtx_mw,
+//	.mtx_mw=glob_def_mtx_mw,
 };
 
-inline static void glob_render(glob*this){
+inline static void glob_render(glob*this,float*mat4_model_to_world){
 	shader_render_triangle_array(
 			this->vbufid,
 			this->vbufn,
 			this->texbufid,
-			this->mtx_mw
+			mat4_model_to_world
 	);
 }
 

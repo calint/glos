@@ -2,7 +2,7 @@
 #include<SDL2/SDL2_gfxPrimitives.h>
 #include"lib.h"
 #include"textures.h"
-#include"drawables.h"
+#include"mat4.h"
 #define bit_object_allocated 0
 #define object_part_cap 4
 //------------------------------------------------------------------------ def
@@ -131,20 +131,6 @@ inline static void _object_update_model_to_world_matrix(object*this){
 	mat4_scale(this->model_to_world_matrix,&this->scale);
 
 	this->model_to_world_matrix_is_updated=1;
-}
-
-//----------------------------------------------------------------------------
-
-inline static void _render_drawable_(object*o) {
-	if(o->drawable_id){
-		_object_update_model_to_world_matrix(o);
-		shader_render_triangle_array(
-				drawables[o->drawable_id].vertex_buf_gid,
-				drawables[o->drawable_id].vertex_count,
-				glob_def.texbufid,
-				o->model_to_world_matrix
-			);
-	}
 }
 
 //----------------------------------------------------------------------------

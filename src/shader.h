@@ -194,13 +194,13 @@ inline static void shader_render(){
 	_shader_prepare_for_render(
 			glob_def.vbufid,
 			glob_def.texbufid,
-			glob_def.mtx_mw
+			mat4_ident
 		);
 	shader_render_triangle_elements(
 			glob_def.vbufid,glob_def.vbufn,
 			glob_def.ibufid,(unsigned)glob_def.ibufn,
 			glob_def.texbufid,
-			glob_def.mtx_mw
+			mat4_ident
 	);
 	_shader_after_render();
 }

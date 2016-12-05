@@ -2,6 +2,8 @@
 #include"lib.h"
 #include<math.h>
 
+static const float mat4_ident[]={1,0,0,0,  0,1,0,0,  0,0,1,0,  0,0,0,1};
+
 inline static void mat4_load_translate(float*c,position*p){
 	// [ 0 4  8  x ]
 	// [ 1 5  9  y ]
@@ -21,7 +23,7 @@ inline static void mat4_append_rotation_about_z_axis(float*c,float degrees){
 	// [ 1 5  9 13 ] x [ sin cos  0  0 ]
 	// [ 2 6 10 14 ]   [ 0   0    1  0 ]
 	// [ 3 7 11 15 ]   [ 0   0    0  1 ]
-	const float rad=degrees*(float)(M_PI/180.0f);
+	const float rad=degrees*(float)(PI/180.0f);
 	const float cosrad = cosf(rad);
 	const float sinrad = sinf(rad);
 

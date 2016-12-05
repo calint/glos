@@ -4,14 +4,10 @@
 #include"objects.h"
 #include"textures.h"
 #include"lib.h"
-#include"fps.h"
-#include"drawables.h"
 #include"app/ninja.h"
 #include"alloc.h"
 #include"obj_file.h"
-#include"dync.h"
-#include"dynp.h"
-#include"dyni.h"
+#include"fps.h"
 //----------------------------------------------------------------------- init
 inline static void main_init(){
 //	drawables_load_file_in_slot(6,"obj/plane.obj");
@@ -47,7 +43,8 @@ int main(int argc,char*argv[]){
 	printf(": %14s : %8ld :\n","part",sizeof(part));
 	printf(": %14s : %8ld :\n","object",sizeof(object));
 	printf(": %14s : %8ld :\n","objects",sizeof(objects));
-	printf(": %14s : %8ld :\n","drawables",sizeof(drawables));
+	printf(": %14s : %8ld :\n","glob",sizeof(glob));
+	printf(": %14s : %8ld :\n","globs",sizeof(globs));
 	printf(": %14s : %8ld :\n","textures",sizeof(texture));
 	printf(":-%14s-:-%8s-:\n","--------------","--------");
 
@@ -74,7 +71,6 @@ int main(int argc,char*argv[]){
 	fps_init();
 	shader_init();
 	objects_init();
-	drawables_init();
 	main_init();
 	globs_init();
 
@@ -169,7 +165,6 @@ int main(int argc,char*argv[]){
 	//---------------------------------------------------------------------free
 	//? early-hangup
 	globs_free();
-	drawables_free();
 	objects_free();
 	shader_free();
 	fps_free();
