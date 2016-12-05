@@ -132,9 +132,13 @@ inline static void _render_drawable_(object*o) {
 	if(o->drawable_id){
 		_object_update_model_to_world_matrix(o);
 
-		glUniformMatrix4fv(_shader_umtx_mw,1,0,o->model_to_world_matrix);
+		shader_render_triangle_array(
+				drawables[o->drawable_id].vertex_buf_gid,
+				drawables[o->drawable_id].vertex_count,
+				texbufid,
+				o->model_to_world_matrix
+			);
 
-		drawables_draw(o->drawable_id);
 	}
 }
 

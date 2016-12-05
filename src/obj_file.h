@@ -185,7 +185,7 @@ typedef struct obj_mtl{
 
 
 
-// returns array buffer of triangles [ x y z   r g b   nx ny nz   u v]
+// returns array buffer of triangles [ x y z   r g b a   nx ny nz   u v]
 static/*gives*/dynf read_obj_file_from_path(const char*path){
 	printf(" * load: %s\n",path);
 	FILE*f=fopen(path,"rb");
@@ -337,6 +337,7 @@ static/*gives*/dynf read_obj_file_from_path(const char*path){
 				dynf_add(&vertex_buffer,0);
 				dynf_add(&vertex_buffer,0);
 				dynf_add(&vertex_buffer,0);
+				dynf_add(&vertex_buffer,1);
 
 				dynf_add(&vertex_buffer,norm->x);
 				dynf_add(&vertex_buffer,norm->y);
