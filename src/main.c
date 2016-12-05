@@ -1,13 +1,12 @@
 #include"sdl.h"
+#include"lib.h"
 #include"window.h"
 #include"shader.h"
 #include"objects.h"
-#include"lib.h"
-#include"app/ninja.h"
-#include"alloc.h"
 #include"obj_file.h"
-#include"fps.h"
 #include"object_alloc.h"
+#include"fps.h"
+#include"app/ninja.h"
 //----------------------------------------------------------------------- init
 inline static void main_init(){
 //	drawables_load_file_in_slot(6,"obj/plane.obj");
