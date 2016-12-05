@@ -37,10 +37,10 @@ void main(){             \n\
 }\n";
 
 typedef struct {
-	float position_xyz[3];
-	float color_rgb[3];
-	float normal_xyz[3];
-	float texture_uv[2];
+	GLfloat position_xyz[3];
+	GLfloat color_rgb[3];
+	GLfloat normal_xyz[3];
+	GLfloat texture_uv[2];
 } vertex;
 
 struct{
@@ -199,8 +199,8 @@ inline static const char*get_gl_error_string(const GLenum error) {
 }
 
 inline static void check_gl_error(const char*op) {
-	int err = 0;
-	for (GLenum error = glGetError(); error; error = glGetError()) {
+	int err=0;
+	for(GLenum error = glGetError(); error; error = glGetError()) {
 		printf("!!! %s   glerror %x   %s\n", op, error,
 				get_gl_error_string(error));
 		err = 1;
@@ -215,29 +215,36 @@ inline static void print_gl_string(const char *name, const GLenum s){
 }
 
 
-
-
+//------------------------------------------------------------------ renderable
+//static vertex __shader_vertbuf[]={
+////	   x  y  z    r  g  b    nx ny nz    u  v
+//	{{ 1,-1, 0}, {1, 0, 0}, {0, 0,-1}, { 1,-1}},
+//	{{ 1, 1, 0}, {0, 1, 0}, {0, 0,-1}, { 1, 1}},
+//	{{-1, 1, 0}, {0, 0, 1}, {0, 0,-1}, {-1, 1}},
+//	{{-1,-1, 0}, {1, 1, 0}, {0, 0,-1}, {-1,-1}},
+//};
 
 static vertex __shader_vertbuf[]={
-//	   x  y  z    r  g  b    nx ny nz    u  v
-	{{ 1,-1, 0}, {1, 0, 0}, {0, 0,-1}, { 1,-1}},
-	{{ 1, 1, 0}, {0, 1, 0}, {0, 0,-1}, { 1, 1}},
-	{{-1, 1, 0}, {0, 0, 1}, {0, 0,-1}, {-1, 1}},
-	{{-1,-1, 0}, {1, 1, 0}, {0, 0,-1}, {-1,-1}},
+//	    x   y  z    r  g  b    nx ny nz    u  v
+	{{ .5,-.5, 0}, {1, 0, 0}, {0, 0, 1}, { 1, 0}},
+	{{ .5, .5, 0}, {0, 1, 0}, {0, 0, 1}, { 1, 1}},
+	{{-.5, .5, 0}, {0, 0, 1}, {0, 0, 1}, { 0, 1}},
+	{{-.5,-.5, 0}, {1, 1, 0}, {0, 0, 1}, { 0, 0}},
 };
-static GLuint __shader_vertbufid;
-static GLuint __shader_vertbufnbytes=sizeof(__shader_vertbuf);
-
+static GLuint  __shader_vertbufid;
+static GLuint  __shader_vertbufnbytes=sizeof(__shader_vertbuf);
 static GLubyte __shader_ixbuf[]={0,1,2,2,3,0};
-static GLuint __shader_ixbufid;
-GLsizei __shader_ixbufn=sizeof(__shader_ixbuf);
-
-int __shader_texwidth=2,__shader_texheight=2;
-float __shader_texpixels[]={
-		1.0f, 1.0f, 0.0f,   0.0f, 0.0f, .5f,
+static GLuint  __shader_ixbufid;
+static GLsizei __shader_ixbufnbytes=sizeof(__shader_ixbuf);
+static GLsizei __shader_ixbufn=sizeof(__shader_ixbuf);
+static GLsizei __shader_texwidth=2;
+static GLsizei __shader_texheight=2;
+static GLfloat __shader_texpixels[]={
+		0.0f, 1.0f, 0.0f,   0.0f, 0.0f, .5f,
 		0.0f, 0.0f, 1.0f,   1.0f, 1.0f, 0.0f
 };
-GLuint __shader_texid;
+static GLuint __shader_texid;
+//-----------------------------------------------------------------------------
 
 inline static void shader_render();
 inline static void shader_init() {
@@ -264,7 +271,7 @@ inline static void shader_init() {
 	glGenBuffers(1,&__shader_ixbufid);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,__shader_ixbufid);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-			__shader_ixbufn*(signed)sizeof(GLubyte),
+			__shader_ixbufnbytes,
 			__shader_ixbuf,
 			GL_STATIC_DRAW);
 
@@ -302,15 +309,17 @@ inline static void shader_init() {
 
 	check_gl_error("after shader_init");
 
-	glClearColor(.5f,.5f,0,1.0);
-	glClear(GL_COLOR_BUFFER_BIT);
-	shader_render();
-	SDL_GL_SwapWindow(window.ref);
+	// try the shader render
 
-	check_gl_error("after shader render");
-
-	sleep(5);
-	exit(0);
+//	glClearColor(.5f,.5f,0,1.0);
+//	glClear(GL_COLOR_BUFFER_BIT);
+//	shader_render();
+//	SDL_GL_SwapWindow(window.ref);
+//
+//	check_gl_error("after shader render");
+//
+//	sleep(5);
+//	exit(0);
 }
 
 inline static void shader_render() {
@@ -329,15 +338,14 @@ inline static void shader_render() {
 			sizeof(vertex),(void*)((3+3)*sizeof(float)));
 
 	glVertexAttribPointer(shader.texture_slot,2,GL_FLOAT,GL_FALSE,
-			sizeof(vertex),(void*)((3+3+2)*sizeof(float)));
+			sizeof(vertex),(void*)((3+3+3)*sizeof(float)));
 
+	glDrawArrays(GL_TRIANGLES,0,3);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,__shader_ixbufid);
-
-	check_gl_error("before draw elements");
-
-	glDrawElements(GL_TRIANGLES,__shader_ixbufn,GL_UNSIGNED_BYTE,0);
-//	glDrawArrays(GL_TRIANGLES,0,3);
+//	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,__shader_ixbufid);
+//
+//	glDrawElements(GL_TRIANGLES,__shader_ixbufn,GL_UNSIGNED_BYTE,0);
+	check_gl_error("after draw elements");
 }
 
 inline static void shader_free() {
