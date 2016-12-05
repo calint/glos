@@ -48,7 +48,7 @@ varying vec4 vrgba;                                          \n\
 varying vec3 vnorm;                                          \n\
 varying vec2 vtex;                                          \n\
 void main(){                                                 \n\
-	gl_Position=vec4(apos,1);                                        \n\
+	gl_Position=umtx_mw*vec4(apos,1);                                        \n\
 	vrgba=argba;                                             \n\
 	vnorm=anorm;                                             \n\
 	vtex=atex;                                             \n\
@@ -205,7 +205,7 @@ inline static void shader_init() {
 		&shader.indices_count
 	);
 
-	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
+//	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
 	glGenTextures(1,&shader.texture_id);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D,shader.texture_id);
@@ -217,8 +217,8 @@ inline static void shader_init() {
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
-	glGenerateMipmap(GL_TEXTURE_2D);
-	glPixelStorei(GL_UNPACK_ALIGNMENT,4);
+//	glGenerateMipmap(GL_TEXTURE_2D);
+//	glPixelStorei(GL_UNPACK_ALIGNMENT,4);
 
 	load_program(&shader.position_slot,&shader.color_slot);
 
@@ -226,6 +226,7 @@ inline static void shader_init() {
 	printf("argba: %d\n",glGetAttribLocation(shader.program_id,"argba"));
 	printf("anorm: %d\n",glGetAttribLocation(shader.program_id,"anorm"));
 	printf("utex: %d\n",glGetUniformLocation(shader.program_id,"utex"));
+	printf("umtx_mw: %d\n",glGetUniformLocation(shader.program_id,"umtx_mw"));
 
 
 	glEnableVertexAttribArray(0);//position
@@ -238,14 +239,12 @@ inline static void shader_init() {
 	// Bind the texture to this unit.
 //	glBindTexture(GL_TEXTURE_2D,shader.texture_id);
 	// Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
-	glUniform1i(0,0);// texture sampler on texture0
+	float mtxident[]={1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1};
+	glUniformMatrix4fv((signed)shader.model_to_world_matrix_slot,1,0,mtxident);
+
+	glUniform1i(1,0);// texture sampler on texture0
 
 	check_gl_error("after shader_init");
-}
-
-inline static void shader_free() {
-	if(shader.program_id)
-		glDeleteProgram(shader.program_id);
 }
 
 inline static void shader_render() {
@@ -262,4 +261,9 @@ inline static void shader_render() {
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,shader.index_buffer_id);
 	glDrawElements(GL_TRIANGLES,shader.indices_count,GL_UNSIGNED_BYTE,0);
+}
+
+inline static void shader_free() {
+	if(shader.program_id)
+		glDeleteProgram(shader.program_id);
 }
