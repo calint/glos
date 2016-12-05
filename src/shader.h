@@ -72,7 +72,7 @@ varying mediump vec4 vrgba;                \n\
 varying mediump vec3 vnorm;                \n\
 varying mediump vec2 vtex;                \n\
 void main(){                               \n\
-	gl_FragColor=texture2D(utex,vtex)+.00001*vrgba+0.00001*vec4(vnorm,1)+vec4(vtex,0,1);  \n\
+	gl_FragColor=texture2D(utex,vtex)+vrgba+0.00001*vec4(vnorm,1)+.00001*vec4(vtex,0,1);  \n\
 }\n";
 #define _shader_utex 1
 
@@ -87,8 +87,7 @@ inline static GLuint compile_shader(GLenum shaderType,const char *code) {
 	size_t length=strlen(code);
 	glShaderSource(id,1,(const GLchar**)&code,(GLint*)&length);
 	glCompileShader(id);
-	GLint ok;
-	glGetShaderiv(id, GL_COMPILE_STATUS, &ok);
+	GLint ok;glGetShaderiv(id,GL_COMPILE_STATUS,&ok);
 	if(!ok){
 		GLchar messages[1024];
 		glGetShaderInfoLog(id,sizeof(messages),NULL,&messages[0]);
@@ -103,26 +102,26 @@ inline static GLuint compile_shader(GLenum shaderType,const char *code) {
 inline static void shader_program_load(int index,const char*vert_src,const char*frag_src) {
 	check_gl_error("enter shader_program_load");
 
-	GLuint programid=glCreateProgram();
-	shader_programs[index].id=programid;
+	GLuint id=glCreateProgram();
+	shader_programs[index].id=id;
 
 	GLuint vertex=compile_shader(GL_VERTEX_SHADER,vert_src);
+
 	GLuint fragment=compile_shader(GL_FRAGMENT_SHADER,frag_src);
 
+	glAttachShader(id,vertex);
+	glAttachShader(id,fragment);
+	glLinkProgram(id);
 
-	glAttachShader(programid,vertex);
-	glAttachShader(programid,fragment);
-	glLinkProgram(programid);
-
-	GLint ok;glGetProgramiv(programid,GL_LINK_STATUS,&ok);
+	GLint ok;glGetProgramiv(id,GL_LINK_STATUS,&ok);
 	if(!ok){
-		GLint len;glGetProgramiv(programid,GL_INFO_LOG_LENGTH,&len);
+		GLint len;glGetProgramiv(id,GL_INFO_LOG_LENGTH,&len);
 
 		GLchar msg[1024];
 		if(len>(signed)sizeof msg){
 			len=sizeof msg;
 		}
-		glGetProgramInfoLog(programid,len,NULL,&msg[0]);
+		glGetProgramInfoLog(id,len,NULL,&msg[0]);
 		printf("program linking error: %s\n",msg);
 		exit(8);
 	}

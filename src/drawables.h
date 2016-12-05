@@ -40,6 +40,17 @@ static void drawables_load_file_in_slot(int id,const char*file_path){
 }
 //----------------------------------------------------------------------------
 static inline void drawables_draw(int id){
+	glEnableVertexAttribArray(_shader_apos);//position
+	glEnableVertexAttribArray(_shader_argba);//color
+	glEnableVertexAttribArray(_shader_anorm);//normal
+	glEnableVertexAttribArray(_shader_atex);//texture
+	glUseProgram(shader_programs[0].id);
+	//? enabled
+
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D,texbufid);
+
 	int stride=(signed)(
 			drawables[id].vertex_buf_size/
 			drawables[id].vertex_count
@@ -60,5 +71,11 @@ static inline void drawables_draw(int id){
 
 	glDrawArrays(GL_TRIANGLES,0,(signed)drawables[id].vertex_count);
 
+	//? reset
+	glBindTexture(GL_TEXTURE_2D,0);
+	glDisableVertexAttribArray(_shader_apos);//position
+	glDisableVertexAttribArray(_shader_argba);//color
+	glDisableVertexAttribArray(_shader_anorm);//normal
+	glDisableVertexAttribArray(_shader_atex);//texture
 }
 //----------------------------------------------------------------------------

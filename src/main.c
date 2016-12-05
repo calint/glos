@@ -116,9 +116,9 @@ int main(int argc,char*argv[]){
 
 		glClearColor(c.red,c.green,c.blue,1.0);
 		glClear(GL_COLOR_BUFFER_BIT);
+		objects_update(fps.dt);
+		objects_render();
 		shader_render();
-//		objects_update(fps.dt);
-//		objects_render();
 		SDL_GL_SwapWindow(window.ref);
 		fps__at__update_frame_end();
 	}
