@@ -29,6 +29,7 @@ static GLfloat texbuf[]={
 		1.0f, 1.0f, 0.0f,    0.0f, 0.0f, 1.0f,
 		0.0f, 0.0f, 1.0f,    1.0f, 1.0f, 0.0f
 };
+static GLuint texbufid;
 
 typedef struct shader_program{
 	GLuint id;
@@ -39,7 +40,7 @@ static shader_program shader_programs[shader_program_cap];
 struct{
 //	GLuint vertex_buffer_id;
 //	GLuint index_buffer_id;
-	GLuint texture_id;
+//	GLuint texture_id;
 }shader;
 
 char*vertex_shader_source =
@@ -141,9 +142,9 @@ inline static void shader_load(){
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(ixbuf),ixbuf,GL_STATIC_DRAW);
 
 //	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
-	glGenTextures(1,&shader.texture_id);
+	glGenTextures(1,&texbufid);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D,shader.texture_id);
+	glBindTexture(GL_TEXTURE_2D,texbufid);
 	glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,
 			texwi,texhi,
 			0,GL_RGB,GL_FLOAT,
