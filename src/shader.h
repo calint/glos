@@ -23,20 +23,21 @@ static shader_vertex _vertbuf[]={
 	{{-.5, .5, 0},{ 0, 0, 1,1},{0,0,1},{-1, 1}},
 	{{-.5,-.5, 0},{ 0, 0, 0,1},{0,0,1},{-1,-1}},
 };
-//static GLuint vertbufid;
-
 static GLubyte _ixbuf[]={0,1,2,2,3,0};
-//static GLuint ixbufid;
-//static ssize_t ixbufn=sizeof(ixbuf)/sizeof(ixbuf[0]);
 
-static GLsizei texwi=2;
-static GLsizei texhi=2;
-static GLfloat texbuf[]={
+#define _texwi 2
+#define _texhi 2
+static GLfloat _texbuf[]={
 		.7f, .7f, .7f,    .2f, .2f, .2f,
 		.2f ,.2f ,.2f,    .7f, .7f, .7f
 };
-static GLuint texbufid;
 
+static float _mtx_mw[]={
+		1,0,0,0,
+		0,1,0,0,
+		0,0,1,0,
+		0,0,0,1,
+};
 
 typedef struct shader_renderable{
 	shader_vertex*vertbuf;
@@ -47,7 +48,10 @@ typedef struct shader_renderable{
 	GLuint ixbufid;
 	ssize_t ixbufn;
 	ssize_t ixbufnbytes;
-	GLuint texid;
+	GLfloat*texbuf;
+	GLuint texbufid;
+	GLsizei texwi;
+	GLsizei texhi;
 	float*mtx_mw;
 }shader_renderable;
 
@@ -58,8 +62,13 @@ static shader_renderable shader_renderable_def=(shader_renderable){
 	.ixbuf=_ixbuf,
 	.ixbufn=sizeof(_ixbuf)/sizeof(&_ixbuf[0]),
 	.ixbufnbytes=sizeof(_ixbuf),
-	.texid=0,
+	.texbufid=0,
 	.mtx_mw=NULL,
+	.texbuf=_texbuf,
+	.texbufid=0,
+	.texwi=_texwi,
+	.texhi=_texhi,
+	.mtx_mw=_mtx_mw,
 };
 
 
@@ -176,20 +185,11 @@ inline static void shader_load(){
 	);
 
 //	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
-	glGenTextures(1,&texbufid);
-	glBindTexture(GL_TEXTURE_2D,texbufid);
+	glGenTextures(1,&shader_renderable_def.texbufid);
+	glBindTexture(GL_TEXTURE_2D,shader_renderable_def.texbufid);
 
-	SDL_Surface*surface=IMG_Load("logo.jpg");
-//    GLenum data_fmt;
-//    Uint8 test = SDL_MapRGB(surface->format, 0xAA,0xBB,0xCC)&0xFF;
-//    if      (test==0xAA) data_fmt=         GL_RGB;
-//    else if (test==0xCC) data_fmt=0x80E0;//GL_BGR;
-//    else {
-//        printf("Error: \"Loaded surface was neither RGB or BGR!\""); return;
-//    }
-
-
-//	//----------------------------------------------
+//----------------------------------------------
+//	SDL_Surface*surface=IMG_Load("logo.jpg");
 //	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,
 //			surface->w,surface->h,
 //			0,GL_RGB,GL_UNSIGNED_BYTE,
@@ -199,9 +199,9 @@ inline static void shader_load(){
 
 	//----------------------------------------------
 	glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,
-			texwi,texhi,
+			shader_renderable_def.texwi,shader_renderable_def.texhi,
 			0,GL_RGB,GL_FLOAT,
-			texbuf);
+			shader_renderable_def.texbuf);
 	//----------------------------------------------
 
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
@@ -223,7 +223,7 @@ inline static void shader_render() {
 
 
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D,texbufid);
+	glBindTexture(GL_TEXTURE_2D,shader_renderable_def.texbufid);
 	glUniform1i(_shader_utex,0);
 
 	float mtxident[]={1,0,0,0,  0,1,0,0,  0,0,1,0,  0,0,0,1};
@@ -296,7 +296,7 @@ inline static void shader_render_rend(shader_renderable*sr){
 	shader_render_triangle_array(
 			sr->vertbufid,
 			sr->vertbufn,
-			sr->texid,
+			sr->texbufid,
 			sr->mtx_mw
 	);
 }
