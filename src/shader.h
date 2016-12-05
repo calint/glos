@@ -77,28 +77,29 @@ void main(){                               \n\
 #define _shader_utex 1
 
 inline static const char*get_shader_name_for_type(GLenum shader_type);
+inline static void check_gl_error(const char*op);
+
 inline static GLuint compile_shader(GLenum shaderType,const char *code) {
 //	printf("\n ___| %s shader |__________________\n%s\n",
 //			get_shader_name_for_type(shaderType),
 //			code);
-	GLuint handle=glCreateShader(shaderType);
-	int length=(int)strlen(code);
-	glShaderSource(handle,1,(const GLchar**)&code,&length);
-	glCompileShader(handle);
+	GLuint id=glCreateShader(shaderType);
+	size_t length=strlen(code);
+	glShaderSource(id,1,(const GLchar**)&code,(GLint*)&length);
+	glCompileShader(id);
 	GLint ok;
-	glGetShaderiv(handle, GL_COMPILE_STATUS, &ok);
+	glGetShaderiv(id, GL_COMPILE_STATUS, &ok);
 	if(!ok){
 		GLchar messages[1024];
-		glGetShaderInfoLog(handle,sizeof(messages),NULL,&messages[0]);
+		glGetShaderInfoLog(id,sizeof(messages),NULL,&messages[0]);
 		printf("compiler error in %s shader:\n%s\n",
 			get_shader_name_for_type(shaderType), messages
 		);
 		exit(7);
 	}
-	return handle;
+	return id;
 }
 
-inline static void check_gl_error(const char*op);
 inline static void shader_program_load(int index,const char*vert_src,const char*frag_src) {
 	check_gl_error("enter shader_program_load");
 
@@ -129,7 +130,6 @@ inline static void shader_program_load(int index,const char*vert_src,const char*
 	check_gl_error("exit shader_program_load");
 }
 
-inline static void check_gl_error(const char*op);
 inline static void shader_load(){
 	check_gl_error("enter shader_load");
 	glGenBuffers(1, &vertbufid);
@@ -163,13 +163,15 @@ inline static void shader_render() {
 	glEnableVertexAttribArray(_shader_anorm);//normal
 	glEnableVertexAttribArray(_shader_atex);//texture
 	glUseProgram(shader_programs[0].id);
+	//? enabled
+
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D,texbufid);
 
 	float mtxident[]={1,0,0,0,  0,1,0,0,  0,0,1,0,  0,0,0,1};
 	glUniformMatrix4fv(0,1,0,mtxident);
-	glUniform1i(_shader_umtx_mw,0);// texture sampler on texture0
+	glUniform1i(_shader_umtx_mw,0);
 
 	glBindBuffer(GL_ARRAY_BUFFER,vertbufid);
 	glVertexAttribPointer(_shader_apos, 3, GL_FLOAT, GL_FALSE,
@@ -184,6 +186,8 @@ inline static void shader_render() {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,ixbufid);
 	glDrawElements(GL_TRIANGLES,(signed)ixbufn,GL_UNSIGNED_BYTE,0);
 
+
+	//? reset
 	glBindTexture(GL_TEXTURE_2D,0);
 	glDisableVertexAttribArray(_shader_apos);//position
 	glDisableVertexAttribArray(_shader_argba);//color
