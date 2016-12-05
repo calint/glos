@@ -124,3 +124,126 @@ inline static void ${template}_free(dynf*this){
 }
 
 //-----------------------------------------------------------------------------
+
+
+
+
+
+//	int width=1,height=1;
+//	float pixels[]={0.0f, 0.5f, 0.0f};
+//
+
+	// x,y,  u,v,
+	float vertecies[]={
+			-1,-1,  0,0,
+			 1,-1,  1,0,
+			  1,1,  1,1,
+			 -1,1,  1,0,
+	};
+
+	// texture
+	int width=2,height=2;
+	float pixels[]={
+			1.0f, 0.0f, 0.0f,   0.0f, 0.0f, .5f,
+			0.0f, 0.0f, 1.0f,   1.0f, 1.0f, 0.0f
+	};
+
+	GLuint vertex_buffer_id;
+	glGenBuffers(1,&vertex_buffer_id);
+	glBindBuffer(GL_ARRAY_BUFFER,vertex_buffer_id);
+	glBufferData(GL_ARRAY_BUFFER,sizeof(vertecies)*sizeof(float),vertecies,
+			GL_STATIC_DRAW);
+
+	GLuint textureID;
+	glGenTextures(1,&textureID);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D,textureID);
+	glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,width,height,0,GL_RGB,GL_FLOAT,pixels);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
+
+
+//	fragment_shader_id
+	GLuint program_id=glCreateProgram();
+	GLuint vertex_shader_id=glCreateShader(GL_VERTEX_SHADER);
+	const char vertex_shader_source[]={
+			"#version 100                                                \n\
+	attribute vec2 apos;// positions  xy                            \n\
+	attribute vec2 atex;// texture uv                              \n\
+	varying vec2 vtex;             \n\
+	void main(){                                                 \n\
+		gl_Position=vec4(apos,0,1);                        \n\
+		vtex=atex;                                             \n\
+	}\n"
+	};
+	int length=(int)strlen(vertex_shader_source);
+	glShaderSource(vertex_shader_id,1,
+			(const GLchar**)&vertex_shader_source,&length);
+	glCompileShader(vertex_shader_id);
+	GLint compile_ok;
+	glGetShaderiv(vertex_shader_id,GL_COMPILE_STATUS,&compile_ok);
+	if(!compile_ok){
+		GLchar messages[1024];
+		glGetShaderInfoLog(vertex_shader_id,sizeof(messages),
+				NULL,&messages[0]);
+		printf("compiler error in vertex shader:\n%s\n",messages
+		);
+		exit(7);
+	}
+	glAttachShader(program_id,vertex_shader_id);
+	GLuint fragment_shader_id=glCreateShader(GL_FRAGMENT_SHADER);
+	const char fragment_shader_source[]={
+			"#version 100\n\
+			uniform sampler2D utex;                    \n\
+			varying mediump vec2 vtex;                \n\
+			void main(){             \n\
+				gl_FragColor=texture2D(utex,vtex);         \n\
+			}\n"
+	};
+	glCompileShader(GL_FRAGMENT_SHADER);
+	glGetShaderiv(fragment_shader_id,GL_COMPILE_STATUS,&compile_ok);
+	if(!compile_ok){
+		GLchar messages[1024];
+		glGetShaderInfoLog(fragment_shader_id,
+				sizeof(messages),NULL,&messages[0]);
+		printf("compiler error in vertex shader:\n%s\n",messages
+		);
+		exit(7);
+	}
+	glAttachShader(program_id,vertex_shader_id);
+	glAttachShader(program_id,fragment_shader_id);
+
+
+	glLinkProgram(program_id);
+	glGetProgramiv(program_id,GL_LINK_STATUS,&compile_ok);
+	if(!compile_ok){
+		GLint len;
+		glGetProgramiv(program_id,GL_INFO_LOG_LENGTH,&len);
+		GLchar msg[1024*4];
+		glGetProgramInfoLog(program_id,len,NULL,&msg[0]);
+		printf("program linking error: %s\n",msg);
+		exit(8);
+	}
+
+
+	GLint apos=glGetAttribLocation(program_id,"apos");
+	GLint atex=glGetAttribLocation(program_id,"atex");
+	glUniform1i(glGetUniformLocation(program_id,"utex"),0);
+	glUseProgram(program_id);
+	glEnableVertexAttribArray(apos);
+	glEnableVertexAttribArray(atex);
+
+
+	glDrawArrays(GL_ARRAY_BUFFER,0,6);
+	SDL_GL_SwapWindow(window.ref);
+	sleep(60);
+
+
+
+
+
+
+
+
