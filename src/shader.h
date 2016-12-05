@@ -20,6 +20,7 @@ static shader_vertex vertbuf[]={
 static GLuint vertbufid;
 
 static GLubyte ixbuf[]={0,1,2,2,3,0};
+static GLuint ixbufid;
 static ssize_t ixbufn=sizeof(ixbuf)/sizeof(ixbuf[0]);
 
 static GLsizei texwi=2;
@@ -37,7 +38,7 @@ static shader_program shader_programs[shader_program_cap];
 
 struct{
 //	GLuint vertex_buffer_id;
-	GLuint index_buffer_id;
+//	GLuint index_buffer_id;
 	GLuint texture_id;
 }shader;
 
@@ -135,8 +136,8 @@ inline static void shader_load(){
 	glBindBuffer(GL_ARRAY_BUFFER, vertbufid);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertbuf),vertbuf,GL_STATIC_DRAW);
 
-	glGenBuffers(1, &shader.index_buffer_id);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, shader.index_buffer_id);
+	glGenBuffers(1, &ixbufid);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ixbufid);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(ixbuf),ixbuf,GL_STATIC_DRAW);
 
 //	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
@@ -182,7 +183,7 @@ inline static void shader_render() {
 	glVertexAttribPointer(_shader_atex, 2, GL_FLOAT, GL_FALSE,
 			sizeof(shader_vertex),(GLvoid*)((3+4+3)*sizeof(float)));
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,shader.index_buffer_id);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,ixbufid);
 	glDrawElements(GL_TRIANGLES,ixbufn,GL_UNSIGNED_BYTE,0);
 }
 
