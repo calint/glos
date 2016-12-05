@@ -35,7 +35,7 @@ typedef struct object{
 //----------------------------------------------------------------------- init
 inline static void _object_init_(object*this){
 //	printf(" object init: [ %4s %p ]\n",this->type.path,this);
-	printf(" * new %-12s [ %4s %p ]\n","object",this->type.path,this);
+//	printf(" * new %-12s [ %4s %p ]\n","object",this->type.path,this);
 }
 //---------------------------------------------------------------------- update
 inline static void _object_update_(object*this,dt dt){
@@ -52,7 +52,7 @@ inline static void _object_update_(object*this,dt dt){
 inline static void _object_collision_(object*this,object*other,dt dt){}
 inline static void _object_render_(object*this){}
 inline static void _object_free_(object*this){
-	printf(" * del %-12s [ %4s %p ]\n","object",this->type.path,this);
+//	printf(" * del %-12s [ %4s %p ]\n","object",this->type.path,this);
 }
 //----------------------------------------------------------------------------
 static object _object_={

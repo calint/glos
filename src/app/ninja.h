@@ -27,7 +27,7 @@ inline static void _ninja_init_(object*this);static object ninja_def={
 	.free=_ninja_free_,
 	.part={NULL,NULL,NULL,NULL}
 };inline static void _ninja_init_(object*this){
-	printf(" * new %-12s [ %4s %p ]\n","ninja",this->type.path,this);
+//	printf(" * new %-12s [ %4s %p ]\n","ninja",this->type.path,this);
 	_object_init_(this);
 
 	this->scale=(scale){.5,.5,.5,0};
@@ -44,7 +44,7 @@ inline static void _ninja_init_(object*this);static object ninja_def={
 }
 //---------------------------------------------------------------------------
 inline static void _ninja_free_(object*this){
-	printf(" * del %-12s [ %4s %p ]\n","ninja",this->type.path,this);
+//	printf(" * del %-12s [ %4s %p ]\n","ninja",this->type.path,this);
 	_object_free_(this);
 
 	((ninja_part*)(this->part[0]))->part.free(
