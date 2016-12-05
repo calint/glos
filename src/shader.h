@@ -85,7 +85,7 @@ inline static void shader_load(){
 
 
 inline static void _shader_prepare_for_render(
-		GLuint vbufid,GLuint texid,float*mtx_mw
+		GLuint vbufid,GLuint texid,const float*mtx_mw
 ){
 	//? ifprevdiff
 	glEnableVertexAttribArray(shader_apos);//position
@@ -123,24 +123,24 @@ inline static void _shader_after_render(){
 inline static void shader_render_triangle_elements(
 		GLuint vbufid,size_t vbufn,
 		GLuint ixbufid,size_t ixbufn,
-		GLuint texid
+		GLuint texid,const float*mtx_mw
 ){
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,ixbufid);
-	glDrawElements(GL_TRIANGLES,(signed)ixbufn,GL_UNSIGNED_BYTE,0);
-}
-
-inline static void shader_render(){
 	_shader_prepare_for_render(
 			glob_def.vbufid,
 			glob_def.texbufid,
 			mat4_ident
 		);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,ixbufid);
+	glDrawElements(GL_TRIANGLES,(signed)ixbufn,GL_UNSIGNED_BYTE,0);
+	_shader_after_render();
+}
+
+inline static void shader_render(){
 	shader_render_triangle_elements(
 			glob_def.vbufid,glob_def.vbufn,
 			glob_def.ibufid,(unsigned)glob_def.ibufn,
-			glob_def.texbufid
+			glob_def.texbufid,mat4_ident
 	);
-	_shader_after_render();
 }
 
 inline static void shader_render_triangle_array(

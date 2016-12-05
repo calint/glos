@@ -83,6 +83,37 @@ inline static void object_update_bounding_radius_using_scale(object*this) {
 
 //----------------------------------------------------------------------------
 
+//inline static void _draw_texture_(object*o) {
+//	SDL_Rect d={
+//		(int)(o->position.x-o->scale.x),
+//		(int)(o->position.y-o->scale.y),
+//		(int)o->scale.x*2,
+//		(int)o->scale.y*2
+//	};
+//	SDL_RenderCopy(window.renderer,texture[o->texture_id].ptr,NULL,&d);
+//}
+
+//----------------------------------------------------------------------------
+
+//inline static void _draw_bounding_sphere_(object*o) {
+//	circleColor(
+//		window.renderer,
+//		(short)o->position.x,
+//		(short)o->position.y,
+//		(short)o->bounding_radius,
+//		o->color
+//	);
+//}
+
+//----------------------------------------------------------------------------
+
+//inline static void _draw_texture_and_bounding_sphere_(object*o) {
+//	_draw_texture_(o);
+//	_draw_bounding_sphere_(o);
+//}
+
+//----------------------------------------------------------------------------
+
 inline static void _object_update_model_to_world_matrix(object*this){
 	if(this->model_to_world_matrix_is_updated)
 		return;

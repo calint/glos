@@ -3,15 +3,8 @@
 #include"dynf.h"
 //----------------------------------------------------------------------- calls
 
-//inline static void shader_render_triangle_elements(
-//		GLuint vbufid,size_t vbufn,
-//		GLuint ixbufid,size_t ixbufn,
-//		GLuint texid,
-//		float*mtx_mw
-//);
-
 inline static void shader_render_triangle_array(
-		GLuint vbufid,size_t vbufn,GLuint texid,float*mtx_mw
+	GLuint vbufid,size_t vbufn,GLuint texid,float*mtx_mw
 );
 
 static/*gives*/dynf read_obj_file_from_path(const char*path);
@@ -90,6 +83,7 @@ inline static void glob_render(glob*this,const float*mat4_model_to_world){
 
 inline static void glob_load_obj_file(glob*this,const char*path){
 	dynf buf=/*takes*/read_obj_file_from_path(path);
+
 	this->vbufn=buf.size;
 	this->vbufnbytes=buf.size*sizeof(float);
 	this->texbufid=glob_def.texbufid;//?
