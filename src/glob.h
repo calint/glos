@@ -65,19 +65,19 @@ glob{
 }glob;
 
 static glob glob_def=(glob){
+	.vbuf=glob_def_vertbuf,
 	.vbufn=sizeof(glob_def_vertbuf)/sizeof(&glob_def_vertbuf[0]),
 	.vbufnbytes=sizeof(glob_def_vertbuf),
+	.vbufid=0,
 	.ibuf=glob_def_ixbuf,
 	.ibufn=sizeof(glob_def_ixbuf)/sizeof(GLubyte),
 	.ibufnbytes=sizeof(glob_def_ixbuf),
-	.texbufid=0,
-	.mtx_mw=0,
+	.ibufid=0,
 	.texbuf=glob_def_texbuf,
 	.texbufid=0,
 	.texwi=glob_def_texwi,
 	.texhi=glob_def_texhi,
 	.mtx_mw=glob_def_mtx_mw,
-	.vbuf=glob_def_vertbuf,
 };
 
 inline static void glob_render(glob*this){
@@ -93,6 +93,7 @@ inline static void glob_load_obj_file(glob*this,const char*path){
 	dynf buf=/*takes*/read_obj_file_from_path(path);
 	this->vbufn=buf.size;
 	this->vbufnbytes=buf.size*sizeof(float);
+	this->texbufid=glob_def.texbufid;//?
 
 	glGenBuffers(1,&this->vbufid);
 	glBindBuffer(GL_ARRAY_BUFFER,this->vbufid);

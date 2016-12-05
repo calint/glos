@@ -1,6 +1,6 @@
 #pragma once
+#include "../archived/parts/animator_part.h"
 #include "../object.h"
-#include "../parts/animator_part.h"
 
 //----------------------------------------------------------------------- init
 

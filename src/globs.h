@@ -1,25 +1,39 @@
 #pragma once
 #include"glob.h"
-#define globs_cap 1
-
+#define globs_cap 2
+#define globs_bound_check 0
 //---------------------------------------------------------------------
 
-static glob __globs[globs_cap];
+static glob globs[globs_cap];
+
+inline static glob*globs_ref(size_t id){
+	return&globs[id];
+}
+
+inline static const glob*globs_ro(size_t id){
+	return&globs[id];
+}
 
 inline static void globs_init(){}
-
 inline static void globs_free(){}
-
 inline static void globs_render(){
-	glob*g=__globs;
+	glob*g=globs;
 	int n=globs_cap;
 	while(n--){
-		glob_render(g++);
+		if(g->vbuf)
+			glob_render(g++);
 	}
 }
 
+
+inline static void globs_load_obj_file(size_t ix,const char*path){
+	glob_load_obj_file(&globs[ix],path);
+}
+
 inline static void globs_render_id(size_t id){
-	glob*sr=(glob*)&__globs[id];//? bounds
+	glob*sr=globs_ref(id);
+	if(!sr->vbufid)
+		return;
 	shader_render_triangle_array(
 			sr->vbufid,
 			sr->vbufn,
@@ -28,6 +42,3 @@ inline static void globs_render_id(size_t id){
 	);
 }
 
-inline static glob*globs_get(size_t id){
-	return&__globs[id];//? bounds
-}

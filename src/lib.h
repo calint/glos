@@ -37,10 +37,11 @@ typedef float bounding_radius;
 typedef vec4 velocity;
 typedef vec4 angular_velocity;
 typedef Uint32 color;
-typedef int id;
+typedef size_t id;
 typedef float dt;
 typedef dt time_in_seconds;
 typedef const char*path;
+typedef size_t array_index;
 
 //------------------------------------------------------------------------ lib
 

@@ -6,20 +6,20 @@
 #define bit_object_allocated 0
 #define object_part_cap 4
 //------------------------------------------------------------------------ def
+typedef GLuint gid;
+
 typedef struct object{
 	position position;
 	velocity velocity;
 	angle angle;
 	angular_velocity angular_velocity;
+	float model_to_world_matrix[4*4];
 	bounding_radius bounding_radius;
 	scale scale;
-	type type;
-	id id;
-	id texture_id;
 	color color;
-	bits*bits_ref;
-	id drawable_id;
-	float model_to_world_matrix[4*4];
+	gid texture_id;
+	gid drawable_id;
+	gid glob_id;
 	int model_to_world_matrix_is_updated;
 	void(*init)(struct object*);
 	void(*update)(struct object*,dt);
@@ -27,6 +27,10 @@ typedef struct object{
 	void(*render)(struct object*);
 	void(*free)(struct object*);
 	void*part[object_part_cap];
+
+	type type;
+	id id;
+	bits*bits_ref;
 }object;
 
 //-------------------------------------------------------------------overrides
@@ -141,6 +145,21 @@ inline static void _render_drawable_(object*o) {
 				o->model_to_world_matrix
 			);
 	}
+}
+
+//----------------------------------------------------------------------------
+
+inline static void _render_glob_(object*o) {
+	const glob*g=globs_ro(o->glob_id);
+	if(!g->vbufid)
+		return;
+	_object_update_model_to_world_matrix(o);
+	shader_render_triangle_array(
+			g->vbufid,
+			g->vbufn,
+			g->texbufid,
+			o->model_to_world_matrix
+		);
 }
 
 //----------------------------------------------------------------------------

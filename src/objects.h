@@ -1,8 +1,18 @@
 #pragma once
 #include"object.h"
 #include"part.h"
+
+#define ref_validate_cast 0
 //-------------------------------------------------------------------- objects
 #define objects_count 1024
+typedef object*objectref;
+typedef object*object_ptr;
+typedef void*ref;
+
+inline static objectref object_(ref r){
+	return(object*)r;//? detect cast error
+}
+
 static object objects[objects_count];
 static object*objects_start_ptr=objects;
 static object*objects_seek_ptr=objects;

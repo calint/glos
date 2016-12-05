@@ -15,7 +15,7 @@
 //----------------------------------------------------------------------- init
 inline static void main_init(){
 //	drawables_load_file_in_slot(6,"obj/plane.obj");
-	drawables_load_file_in_slot(6,"obj/ico_sphere.obj");
+//	drawables_load_file_in_slot(6,"obj/ico_sphere.obj");
 //	drawables_load_file_in_slot(6,"obj/sphere.obj");
 //	drawables_load_file_in_slot(6,"obj/cylinder.obj");
 
@@ -24,7 +24,10 @@ inline static void main_init(){
 //	drawables_load_file_in_slot(6,"obj/cube.obj");
 //	drawables_load_file_in_slot(6,"obj/grid_8x8.obj");
 
+	globs_load_obj_file(1,"obj/ico_sphere.obj");
+
 	object*o=alloc(&ninja_def);
+	o->glob_id=1;
 	o->velocity=(vec4){0,0,0,0};
 	o->angular_velocity=(vec4){0,0,0,0};
 //
@@ -73,6 +76,7 @@ int main(int argc,char*argv[]){
 	objects_init();
 	drawables_init();
 	main_init();
+	globs_init();
 
 	struct{
 		GLclampf red;
@@ -156,11 +160,15 @@ int main(int argc,char*argv[]){
 		objects_update(fps.dt);
 		if(draw_objects)objects_render();
 		if(draw_default)shader_render();
+
+		globs_render();
+
 		SDL_GL_SwapWindow(window.ref);
 		fps__at__update_frame_end();
 	}
 	//---------------------------------------------------------------------free
 	//? early-hangup
+	globs_free();
 	drawables_free();
 	objects_free();
 	shader_free();
