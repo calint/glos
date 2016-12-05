@@ -3,6 +3,7 @@
 #include"dynf.h"
 #include"obj_file.h"
 #include"shader.h"
+#include"globs.h"
 //-------------------------------------------------------------------- texture
 #define drawables_count 1024
 struct{

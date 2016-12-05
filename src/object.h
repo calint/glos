@@ -4,6 +4,7 @@
 #include"window.h"
 #include"textures.h"
 #include"drawables.h"
+#include"globs.h"
 #define bit_object_allocated 0
 #define object_part_count 4
 //------------------------------------------------------------------------ def
