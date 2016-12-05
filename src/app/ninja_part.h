@@ -59,9 +59,9 @@ static void _ninja_part_render_(object*o,part*this){
 //	drawables_draw(4);
 }
 static void _ninja_part_init_(object*o,part*this){
-	printf(" * new %-12s [ %p %p ]\n","ninja_part",o,this);
+//	printf(" * new %-12s [ %p %p ]\n","ninja_part",o,this);
 }
 static void _ninja_part_free_(object*o,part*this){
-	printf(" * del %-12s [ %p %p ]\n","ninja_part",o,this);
+//	printf(" * del %-12s [ %p %p ]\n","ninja_part",o,this);
 }
 //-----------------------------------------------------------------------------

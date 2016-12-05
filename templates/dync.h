@@ -57,7 +57,7 @@ inline static void dync_add(dync*this,char o){
 //-----------------------------------------------------------------------------
 
 inline static char dync_get(dync*this,size_t index){
-#ifdef dyncvec_bounds_check
+#ifdef dync_bounds_check
 	if(index>=this->capacity){
 		fprintf(stderr,"\nindex-out-of-bounds");
 		fprintf(stderr,"\t%s\n\n%d  index: %zu    capacity: %zu\n",

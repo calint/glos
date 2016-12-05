@@ -57,7 +57,7 @@ inline static void dynp_add(dynp*this,void* o){
 //-----------------------------------------------------------------------------
 
 inline static void* dynp_get(dynp*this,size_t index){
-#ifdef dynpvec_bounds_check
+#ifdef dynp_bounds_check
 	if(index>=this->capacity){
 		fprintf(stderr,"\nindex-out-of-bounds");
 		fprintf(stderr,"\t%s\n\n%d  index: %zu    capacity: %zu\n",

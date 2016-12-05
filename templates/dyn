@@ -57,7 +57,7 @@ inline static void ${name}_add(${name}*this,${type} o){
 //-----------------------------------------------------------------------------
 
 inline static ${type} ${name}_get(${name}*this,size_t index){
-#ifdef ${name}vec_bounds_check
+#ifdef ${name}_bounds_check
 	if(index>=this->capacity){
 		fprintf(stderr,"\nindex-out-of-bounds");
 		fprintf(stderr,"\t%s\n\n%d  index: %zu    capacity: %zu\n",

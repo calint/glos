@@ -17,17 +17,17 @@ typedef struct shader_vertex{
 //	{{-.5, .5, 0},{ 0, 0, 1,1},{0,0,1},{0,1}},
 //	{{-.5,-.5, 0},{ 0, 0, 0,1},{0,0,1},{0,0}},
 //};
-static shader_vertex vertbuf[]={
+static shader_vertex _vertbuf[]={
 	{{ .5,-.5, 0},{ 1, 0, 0,1},{0,0,1},{ 1,-1}},
 	{{ .5, .5, 0},{ 0, 1, 0,1},{0,0,1},{ 1, 1}},
 	{{-.5, .5, 0},{ 0, 0, 1,1},{0,0,1},{-1, 1}},
 	{{-.5,-.5, 0},{ 0, 0, 0,1},{0,0,1},{-1,-1}},
 };
-static GLuint vertbufid;
+//static GLuint vertbufid;
 
-static GLubyte ixbuf[]={0,1,2,2,3,0};
-static GLuint ixbufid;
-static ssize_t ixbufn=sizeof(ixbuf)/sizeof(ixbuf[0]);
+static GLubyte _ixbuf[]={0,1,2,2,3,0};
+//static GLuint ixbufid;
+//static ssize_t ixbufn=sizeof(ixbuf)/sizeof(ixbuf[0]);
 
 static GLsizei texwi=2;
 static GLsizei texhi=2;
@@ -36,6 +36,32 @@ static GLfloat texbuf[]={
 		.2f ,.2f ,.2f,    .7f, .7f, .7f
 };
 static GLuint texbufid;
+
+
+typedef struct shader_renderable{
+	shader_vertex*vertbuf;
+	GLuint vertbufid;
+	GLuint vertbufn;
+	GLuint vertbufnbytes;
+	GLubyte*ixbuf;
+	GLuint ixbufid;
+	ssize_t ixbufn;
+	ssize_t ixbufnbytes;
+	GLuint texid;
+	float*mtx_mw;
+}shader_renderable;
+
+static shader_renderable shader_renderable_def=(shader_renderable){
+	.vertbuf=_vertbuf,
+	.vertbufn=sizeof(_vertbuf)/sizeof(&_vertbuf[0]),
+	.vertbufnbytes=sizeof(_vertbuf),
+	.ixbuf=_ixbuf,
+	.ixbufn=sizeof(_ixbuf)/sizeof(&_ixbuf[0]),
+	.ixbufnbytes=sizeof(_ixbuf),
+	.texid=0,
+	.mtx_mw=NULL,
+};
+
 
 typedef struct shader_program{
 	GLuint id;
@@ -133,13 +159,21 @@ inline static void shader_program_load(int index,const char*vert_src,const char*
 
 inline static void shader_load(){
 	check_gl_error("enter shader_load");
-	glGenBuffers(1, &vertbufid);
-	glBindBuffer(GL_ARRAY_BUFFER, vertbufid);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertbuf),vertbuf,GL_STATIC_DRAW);
+	glGenBuffers(1, &shader_renderable_def.vertbufid);
+	glBindBuffer(GL_ARRAY_BUFFER,shader_renderable_def.vertbufid);
+	glBufferData(GL_ARRAY_BUFFER,
+			shader_renderable_def.vertbufnbytes,
+			shader_renderable_def.vertbuf,
+			GL_STATIC_DRAW
+	);
 
-	glGenBuffers(1, &ixbufid);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ixbufid);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(ixbuf),ixbuf,GL_STATIC_DRAW);
+	glGenBuffers(1,&shader_renderable_def.ixbufid);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,shader_renderable_def.ixbufid);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+			shader_renderable_def.ixbufnbytes,
+			shader_renderable_def.ixbuf,
+			GL_STATIC_DRAW
+	);
 
 //	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
 	glGenTextures(1,&texbufid);
@@ -189,7 +223,7 @@ inline static void shader_render() {
 	float mtxident[]={1,0,0,0,  0,1,0,0,  0,0,1,0,  0,0,0,1};
 	glUniformMatrix4fv(0,1,0,mtxident);
 
-	glBindBuffer(GL_ARRAY_BUFFER,vertbufid);
+	glBindBuffer(GL_ARRAY_BUFFER,shader_renderable_def.vertbufid);
 	glVertexAttribPointer(_shader_apos,  3,GL_FLOAT,GL_FALSE,
 			sizeof(shader_vertex),0);
 	glVertexAttribPointer(_shader_argba, 4,GL_FLOAT,GL_FALSE,
@@ -199,8 +233,11 @@ inline static void shader_render() {
 	glVertexAttribPointer(_shader_atex,  2,GL_FLOAT, GL_FALSE,
 			sizeof(shader_vertex),(GLvoid*)((3+4+3)*sizeof(float)));
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,ixbufid);
-	glDrawElements(GL_TRIANGLES,(signed)ixbufn,GL_UNSIGNED_BYTE,0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,shader_renderable_def.ixbufid);
+	glDrawElements(GL_TRIANGLES,
+			(signed)shader_renderable_def.vertbufn,
+			GL_UNSIGNED_BYTE,0
+	);
 
 
 	//? reset
@@ -247,6 +284,15 @@ inline static void shader_render_triangle_array(
 	glDisableVertexAttribArray(_shader_anorm);//normal
 	glDisableVertexAttribArray(_shader_atex);//texture
 
+}
+
+inline static void shader_render_rend(shader_renderable*sr){
+	shader_render_triangle_array(
+			sr->vertbufid,
+			sr->vertbufn,
+			sr->texid,
+			sr->mtx_mw
+	);
 }
 
 
