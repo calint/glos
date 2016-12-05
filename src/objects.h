@@ -1,7 +1,4 @@
 #pragma once
-#include"lib.h"
-#include"window.h"
-#include"textures.h"
 #include"object.h"
 #include"part.h"
 //-------------------------------------------------------------------- objects

@@ -1,38 +1,14 @@
 #pragma once
 #include"token.h"
 
-//# Blender MTL File: 'None'
-//# Material Count: 2
-//
-//newmtl blue
-//Ns 96.078431
-//Ka 1.000000 1.000000 1.000000
-//Kd 0.005881 0.000000 0.640000
-//Ks 0.500000 0.500000 0.500000
-//Ke 0.000000 0.000000 0.000000
-//Ni 1.000000
-//d 1.000000
-//illum 2
-//map_Kd /home/c/w/glos/logo.jpg
-//
-//newmtl red
-//Ns 96.078431
-//Ka 1.000000 1.000000 1.000000
-//Kd 0.640000 0.000000 0.012335
-//Ks 0.500000 0.500000 0.500000
-//Ke 0.000000 0.000000 0.000000
-//Ni 1.000000
-//d 1.000000
-//illum 2
-//map_Kd /home/c/w/glos/logo.jpg
-
 typedef struct obj_mtl{
 	str name;
 	str texture_path;
 	GLuint texture_gid;
 }obj_mtl;
 
-// returns array buffer of triangles [ x y z   r g b a   nx ny nz   u v]
+// returns vertex buffer of array of triangles
+//                      [ x y z   r g b a   nx ny nz   u v]
 static/*gives*/dynf read_obj_file_from_path(const char*path){
 	printf(" * load: %s\n",path);
 	FILE*f=fopen(path,"rb");
@@ -196,3 +172,35 @@ static/*gives*/dynf read_obj_file_from_path(const char*path){
 	}
 	return vertex_buffer;
 }
+
+
+
+
+
+//# Blender MTL File: 'None'
+//# Material Count: 2
+//
+//newmtl blue
+//Ns 96.078431
+//Ka 1.000000 1.000000 1.000000
+//Kd 0.005881 0.000000 0.640000
+//Ks 0.500000 0.500000 0.500000
+//Ke 0.000000 0.000000 0.000000
+//Ni 1.000000
+//d 1.000000
+//illum 2
+//map_Kd /home/c/w/glos/logo.jpg
+//
+//newmtl red
+//Ns 96.078431
+//Ka 1.000000 1.000000 1.000000
+//Kd 0.640000 0.000000 0.012335
+//Ks 0.500000 0.500000 0.500000
+//Ke 0.000000 0.000000 0.000000
+//Ni 1.000000
+//d 1.000000
+//illum 2
+//map_Kd /home/c/w/glos/logo.jpg
+
+
+
