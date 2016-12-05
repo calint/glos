@@ -1,57 +1,68 @@
 #pragma once
-#include"sdl.h"
-#include"SOIL/SOIL.h"
+#include "sdl.h"
 
 //--------------------------------------------------------------------- shader
 
+typedef struct {
+	float position[3];
+	float color[4];
+	float normal[3];
+	float texture[2];
+} vertex;
+
+static vertex vertices[]={
+	{{ .5,-.5, 0},{ 1, 0, 0,1},{0,0,1},{1,0}},
+	{{ .5, .5, 0},{ 0, 1, 0,1},{0,0,1},{1,1}},
+	{{-.5, .5, 0},{ 0, 0, 1,1},{0,0,1},{0,1}},
+	{{-.5,-.5, 0},{ 0, 0, 0,1},{0,0,1},{0,0}},
+};
+
+static GLubyte indices[]={0,1,2,2,3,0};
+
+static GLsizei texture_width=2;
+static GLsizei texture_height=2;
+static GLfloat texture_pixels[]={
+		1.0f, 1.0f, 0.0f,    0.0f, 0.0f, 1.0f,
+		0.0f, 0.0f, 1.0f,    1.0f, 1.0f, 0.0f
+};
+
+struct{
+	GLuint program_id,vertex_buffer_id,index_buffer_id,texture_id;
+	GLuint 	position_slot,
+			color_slot,
+			normal_slot,
+			texture_sampler_slot,
+			model_to_world_matrix_slot,
+			texture_slot;
+	int indices_count;
+}shader;
+
 char*vertex_shader_source =
-		"#version 100                                                \n\
+		"#version 130                                                \n\
 uniform mat4 umtx_mw;// model-to-world-matrix                        \n\
-attribute vec3 apos;// positions  xyz                            \n\
-attribute vec3 argb;// colors  rgb                             \n\
-attribute vec3 anorm;// normals  xyz                            \n\
-attribute vec2 atex;// texture uv                              \n\
-varying vec3 vrgb;                                          \n\
+attribute vec3 apos;// vertices                              \n\
+attribute vec4 argba;// colors                               \n\
+attribute vec3 anorm;                               \n\
+attribute vec2 atex;                               \n\
+varying vec4 vrgba;                                          \n\
 varying vec3 vnorm;                                          \n\
 varying vec2 vtex;                                          \n\
 void main(){                                                 \n\
-	gl_Position=umtx_mw*vec4(apos,1);                        \n\
-	vrgb=argb;                                             \n\
+	gl_Position=vec4(apos,1);                                        \n\
+	vrgba=argba;                                             \n\
 	vnorm=anorm;                                             \n\
 	vtex=atex;                                             \n\
 }\n";
 
 char*fragment_shader_source =
-		"#version 100                              \n\
+		"#version 130                              \n\
 uniform sampler2D utex;                    \n\
-varying mediump vec3 vrgb;                \n\
+varying mediump vec4 vrgba;                \n\
 varying mediump vec3 vnorm;                \n\
 varying mediump vec2 vtex;                \n\
-void main(){             \n\
-	                  \n\
-//	mediump vec3 ambient_light_vector=;                  \n\
-	                  \n\
-	                  \n\
-	mediump float al=dot(vec3(-1.0,0,0),vnorm);                  \n\
-	gl_FragColor=texture2D(utex,vtex)+vec4(vrgb+al,1)*.00001;         \n\
+void main(){                               \n\
+	gl_FragColor=texture2D(utex,vtex)+.00001*vrgba+0.00001*vec4(vnorm,1)+vec4(vtex,0,1);  \n\
 }\n";
-
-typedef struct {
-	GLfloat position_xyz[3];
-	GLfloat color_rgb[3];
-	GLfloat normal_xyz[3];
-	GLfloat texture_uv[2];
-} vertex;
-
-struct{
-	GLuint program_id;
-	GLuint position_slot;
-	GLuint color_slot;
-	GLuint normal_slot;
-	GLuint texture_slot;
-	GLuint model_to_world_matrix_slot;
-	GLuint sampler_slot;
-}shader;
 
 inline static const char*get_shader_name_for_type(GLenum shader_type) {
 	switch (shader_type){
@@ -61,9 +72,9 @@ inline static const char*get_shader_name_for_type(GLenum shader_type) {
 	}
 }
 inline static GLuint compile_shader(GLenum shaderType, char *code) {
-//	printf("\n ___| %s shader |__________________\n%s\n",
-//			get_shader_name_for_type(shaderType),
-//			code);
+	printf("\n ___| %s shader |__________________\n%s\n",
+			get_shader_name_for_type(shaderType),
+			code);
 	GLuint handle=glCreateShader(shaderType);
 	int length=(int)strlen(code);
 	glShaderSource(handle,1,(const GLchar**)&code,&length);
@@ -104,57 +115,6 @@ inline static void load_program() {
 	}
 
 	glUseProgram(shader.program_id);
-
-	GLint slot;
-
-	slot=glGetAttribLocation(shader.program_id,"apos");
-	if(slot==-1){
-		puts("could not find 'apos' in vertext shader");
-		printf("%s %d: %s",__FILE__,__LINE__,"");
-		exit(9);
-	}
-	shader.position_slot=(GLuint)slot;
-
-	slot=glGetAttribLocation(shader.program_id,"argb");
-	if(slot==-1){
-		puts("could not find attribute 'argb' in vertex shader");
-		printf("%s %d: %s",__FILE__,__LINE__,"");
-		exit(10);
-	}
-	shader.color_slot=(GLuint)slot;
-
-	slot=glGetAttribLocation(shader.program_id,"anorm");
-	if(slot==-1){
-		puts("could not find attribute 'anorm' in vertex shader");
-		printf("%s %d: %s",__FILE__,__LINE__,"");
-		exit(10);
-	}
-	shader.normal_slot=(GLuint)slot;
-
-
-	slot=glGetAttribLocation(shader.program_id,"atex");
-	if(slot==-1){
-		puts("could not find attribute 'atex' in vertex shader");
-		printf("%s %d: %s",__FILE__,__LINE__,"");
-		exit(10);
-	}
-	shader.texture_slot=(GLuint)slot;
-
-
-	slot=glGetUniformLocation(shader.program_id,"umtx_mw");
-	if(slot==-1){
-		puts("could not find uniform 'umtx_mw' in vertex shader");
-		exit(10);
-	}
-	shader.model_to_world_matrix_slot=(GLuint)slot;
-
-
-	slot=glGetUniformLocation(shader.program_id,"utex");
-	if(slot==-1){
-		puts("could not find uniform 'utex' in fragment shader");
-		exit(10);
-	}
-	shader.sampler_slot=(GLuint)slot;
 }
 
 inline static const char*get_gl_error_string(const GLenum error) {
@@ -199,8 +159,8 @@ inline static const char*get_gl_error_string(const GLenum error) {
 }
 
 inline static void check_gl_error(const char*op) {
-	int err=0;
-	for(GLenum error = glGetError(); error; error = glGetError()) {
+	int err = 0;
+	for (GLenum error = glGetError(); error; error = glGetError()) {
 		printf("!!! %s   glerror %x   %s\n", op, error,
 				get_gl_error_string(error));
 		err = 1;
@@ -209,143 +169,78 @@ inline static void check_gl_error(const char*op) {
 		exit(11);
 }
 
+inline static void create_geometry(GLuint *vertexBuffer, GLuint *indexBuffer,
+		int *numIndices) {
+
+	glGenBuffers(1, vertexBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, *vertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	glGenBuffers(1, indexBuffer);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *indexBuffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices,
+	GL_STATIC_DRAW);
+
+	*numIndices = sizeof(indices) / sizeof(indices[0]);
+	check_gl_error("generating buffers");
+}
+
 inline static void print_gl_string(const char *name, const GLenum s){
 	const char*v = (const char*) glGetString(s);
 	printf("%s=%s\n", name, v);
 }
 
-
-//------------------------------------------------------------------ renderable
-//static vertex __shader_vertbuf[]={
-////	   x  y  z    r  g  b    nx ny nz    u  v
-//	{{ 1,-1, 0}, {1, 0, 0}, {0, 0,-1}, { 1,-1}},
-//	{{ 1, 1, 0}, {0, 1, 0}, {0, 0,-1}, { 1, 1}},
-//	{{-1, 1, 0}, {0, 0, 1}, {0, 0,-1}, {-1, 1}},
-//	{{-1,-1, 0}, {1, 1, 0}, {0, 0,-1}, {-1,-1}},
-//};
-
-static vertex __shader_vertbuf[]={
-//	    x   y  z    r  g  b    nx ny nz    u  v
-	{{ .5,-.5, 0}, {1, 0, 0}, {0, 0, 1}, { 1, 0}},
-	{{ .5, .5, 0}, {0, 1, 0}, {0, 0, 1}, { 1, 1}},
-	{{-.5, .5, 0}, {0, 0, 1}, {0, 0, 1}, { 0, 1}},
-	{{-.5,-.5, 0}, {1, 1, 0}, {0, 0, 1}, { 0, 0}},
-};
-static GLuint  __shader_vertbufid;
-static GLuint  __shader_vertbufnbytes=sizeof(__shader_vertbuf);
-static GLubyte __shader_ixbuf[]={0,1,2,2,3,0};
-static GLuint  __shader_ixbufid;
-static GLsizei __shader_ixbufnbytes=sizeof(__shader_ixbuf);
-static GLsizei __shader_ixbufn=sizeof(__shader_ixbuf);
-static GLsizei __shader_texwidth=2;
-static GLsizei __shader_texheight=2;
-static GLfloat __shader_texpixels[]={
-		0.0f, 1.0f, 0.0f,   0.0f, 0.0f, .5f,
-		0.0f, 0.0f, 1.0f,   1.0f, 1.0f, 0.0f
-};
-static GLuint __shader_texid;
-//-----------------------------------------------------------------------------
-
-inline static void shader_render();
 inline static void shader_init() {
-	check_gl_error("before shader_init");
+	check_gl_error("shader_init");
 	gl_print_context_profile_and_version();
+	puts("");
 	print_gl_string("GL_VERSION", GL_VERSION);
 	print_gl_string("GL_VENDOR", GL_VENDOR);
 	print_gl_string("GL_RENDERER", GL_RENDERER);
 	print_gl_string("GL_SHADING_LANGUAGE_VERSION",GL_SHADING_LANGUAGE_VERSION);
-	puts("");
 
-	load_program();
+	create_geometry(
+		&shader.vertex_buffer_id,
+		&shader.index_buffer_id,
+		&shader.indices_count
+	);
 
-	check_gl_error("after load_program");
-
-	// shader data
-	glGenBuffers(1,&__shader_vertbufid);
-	glBindBuffer(GL_ARRAY_BUFFER,__shader_vertbufid);
-	glBufferData(GL_ARRAY_BUFFER,
-			__shader_vertbufnbytes,
-			__shader_vertbuf,
-			GL_STATIC_DRAW);
-
-	glGenBuffers(1,&__shader_ixbufid);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,__shader_ixbufid);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-			__shader_ixbufnbytes,
-			__shader_ixbuf,
-			GL_STATIC_DRAW);
-
-	glGenTextures(1,&__shader_texid);
+	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
+	glGenTextures(1,&shader.texture_id);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D,__shader_texid);
+	glBindTexture(GL_TEXTURE_2D,shader.texture_id);
 	glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,
-			__shader_texwidth,__shader_texheight,
+			texture_width,texture_height,
 			0,GL_RGB,GL_FLOAT,
-			__shader_texpixels);
-
+			texture_pixels);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
-
 	glGenerateMipmap(GL_TEXTURE_2D);
+	glPixelStorei(GL_UNPACK_ALIGNMENT,4);
 
-	check_gl_error("generating buffers");
+	load_program(&shader.position_slot,&shader.color_slot);
+
+	printf("apos: %d\n",glGetAttribLocation(shader.program_id,"apos"));
+	printf("argba: %d\n",glGetAttribLocation(shader.program_id,"argba"));
+	printf("anorm: %d\n",glGetAttribLocation(shader.program_id,"anorm"));
+	printf("utex: %d\n",glGetUniformLocation(shader.program_id,"utex"));
 
 
+	glEnableVertexAttribArray(0);//position
+	glEnableVertexAttribArray(1);//color
+	glEnableVertexAttribArray(2);//normal
+	glEnableVertexAttribArray(3);//texture
 
-
-
-
-	// init for render
-	glUniform1i((signed)shader.sampler_slot,0);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D,__shader_texid);
-
-	glEnableVertexAttribArray(shader.position_slot);
-	glEnableVertexAttribArray(shader.color_slot);
-	glEnableVertexAttribArray(shader.normal_slot);
-	glEnableVertexAttribArray(shader.texture_slot);
+	// Set the active texture unit to texture unit 0.
+//	glActiveTexture(GL_TEXTURE0);
+	// Bind the texture to this unit.
+//	glBindTexture(GL_TEXTURE_2D,shader.texture_id);
+	// Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
+	glUniform1i(0,0);// texture sampler on texture0
 
 	check_gl_error("after shader_init");
-
-	//? try the shader render
-//
-//	glClearColor(.5f,.5f,.5f,1);
-//	glClear(GL_COLOR_BUFFER_BIT);
-//	shader_render();
-//	SDL_GL_SwapWindow(window.ref);
-//
-//	check_gl_error("after shader render");
-//
-//	sleep(5);
-//	exit(0);
-}
-
-inline static void shader_render() {
-
-	check_gl_error("entering shader_render");
-
-	glBindBuffer(GL_ARRAY_BUFFER,__shader_vertbufid);
-
-	glVertexAttribPointer(shader.position_slot,3,GL_FLOAT,GL_FALSE,
-			sizeof(vertex),0);
-
-	glVertexAttribPointer(shader.color_slot,3,GL_FLOAT,GL_FALSE,
-			sizeof(vertex),(void*)(3*sizeof(GLfloat)));
-
-	glVertexAttribPointer(shader.normal_slot,3,GL_FLOAT,GL_FALSE,
-			sizeof(vertex),(void*)((3+3)*sizeof(GLfloat)));
-
-	glVertexAttribPointer(shader.texture_slot,2,GL_FLOAT,GL_FALSE,
-			sizeof(vertex),(void*)((3+3+3)*sizeof(GLfloat)));
-
-	glDrawArrays(GL_TRIANGLES,0,3);
-
-//	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,__shader_ixbufid);
-//
-//	glDrawElements(GL_TRIANGLES,__shader_ixbufn,GL_UNSIGNED_BYTE,0);
-	check_gl_error("after draw elements");
 }
 
 inline static void shader_free() {
@@ -353,3 +248,18 @@ inline static void shader_free() {
 		glDeleteProgram(shader.program_id);
 }
 
+inline static void shader_render() {
+	glBindBuffer(GL_ARRAY_BUFFER,shader.vertex_buffer_id);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
+			sizeof(vertex),0);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE,
+			sizeof(vertex),(GLvoid*)(3*sizeof(float)));
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE,
+			sizeof(vertex),(GLvoid*)((3+4)*sizeof(float)));
+	glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE,
+			sizeof(vertex),(GLvoid*)((3+4+3)*sizeof(float)));
+
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,shader.index_buffer_id);
+	glDrawElements(GL_TRIANGLES,shader.indices_count,GL_UNSIGNED_BYTE,0);
+}
