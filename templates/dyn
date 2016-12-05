@@ -94,9 +94,9 @@ inline static void ${name}_free(${name}*this){
 
 inline static void ${name}_add_string(${name}*this,/*copies*/const ${type}*str){
 	//? optimize
-	${type}*p=str;
+	const ${type}*p=str;
 	while(*p){
-		__${name}_insure_free_capcity(this,1);
+		_${name}_insure_free_capcity(this,1);
 		*(this->data+this->size++)=*p++;
 	}
 }

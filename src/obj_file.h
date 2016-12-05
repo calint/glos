@@ -222,10 +222,10 @@ static/*gives*/dynf read_obj_file_from_path(const char*path){
 	fclose(f);
 	filedata[length]=0;
 
-	dynp vertices=dynp_init;
-	dynp normals=dynp_init;
-	dynp texuv=dynp_init;
-	dynf vertex_buffer=_dynf_init_;
+	dynp vertices=dynp_default;
+	dynp normals=dynp_default;
+	dynp texuv=dynp_default;
+	dynf vertex_buffer=dynf_default;
 
 	const char*p=filedata;
 	while(*p){

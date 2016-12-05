@@ -94,9 +94,9 @@ inline static void dyni_free(dyni*this){
 
 inline static void dyni_add_string(dyni*this,/*copies*/const int*str){
 	//? optimize
-	int*p=str;
+	const int*p=str;
 	while(*p){
-		__dyni_insure_free_capcity(this,1);
+		_dyni_insure_free_capcity(this,1);
 		*(this->data+this->size++)=*p++;
 	}
 }
