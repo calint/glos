@@ -1,7 +1,6 @@
 #pragma once
-#include<SDL2/SDL2_gfxPrimitives.h>
+//#include<SDL2/SDL2_gfxPrimitives.h>
 #include"lib.h"
-#include"textures.h"
 #include"mat4.h"
 #define bit_object_allocated 0
 #define object_part_cap 4

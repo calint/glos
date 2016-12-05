@@ -2,7 +2,6 @@
 #include"window.h"
 #include"shader.h"
 #include"objects.h"
-#include"textures.h"
 #include"lib.h"
 #include"app/ninja.h"
 #include"alloc.h"
@@ -45,7 +44,6 @@ int main(int argc,char*argv[]){
 	printf(": %14s : %8ld :\n","objects",sizeof(objects));
 	printf(": %14s : %8ld :\n","glob",sizeof(glob));
 	printf(": %14s : %8ld :\n","globs",sizeof(globs));
-	printf(": %14s : %8ld :\n","textures",sizeof(texture));
 	printf(":-%14s-:-%8s-:\n","--------------","--------");
 
 	sdl_init();
@@ -67,12 +65,11 @@ int main(int argc,char*argv[]){
 //	puts("");
 //
 
-	textures_init();
-	fps_init();
 	shader_init();
 	objects_init();
 	main_init();
 	globs_init();
+	fps_init();
 
 	struct{
 		GLclampf red;
@@ -164,11 +161,10 @@ int main(int argc,char*argv[]){
 	}
 	//---------------------------------------------------------------------free
 	//? early-hangup
+	fps_free();
 	globs_free();
 	objects_free();
 	shader_free();
-	fps_free();
-	textures_free();
 	window_free();
 	sdl_free();
 	return 0;

@@ -34,11 +34,11 @@ inline static GLuint _compile_shader(GLenum shaderType,const char *code) {
 	return id;
 }
 
-inline static void program_load(int index,const char*vert_src,const char*frag_src) {
+inline static void programs_load(arrayix i,const char*vert_src,const char*frag_src) {
 	_check_gl_error("enter shader_program_load");
 
 	GLuint id=glCreateProgram();
-	programs[index].id=id;
+	programs[i].id=id;
 
 	GLuint vertex=_compile_shader(GL_VERTEX_SHADER,vert_src);
 

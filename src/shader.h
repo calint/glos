@@ -173,7 +173,7 @@ inline static void shader_init() {
 
 	puts("");
 
-	program_load(0,shader_vertex_source,shader_fragment_source);
+	programs_load(0,shader_vertex_source,shader_fragment_source);
 //	glUseProgram(shader_programs[0].id);
 
 	shader_load();

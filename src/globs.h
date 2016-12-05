@@ -7,12 +7,12 @@
 
 static glob globs[globs_cap];
 
-inline static glob*globs_ref(size_t id){
-	return&globs[id];
+inline static glob*globs_ref(arrayix i){
+	return&globs[i];
 }
 
-inline static const glob*globs_ro(size_t id){
-	return&globs[id];
+inline static const glob*globs_ro(arrayix i){
+	return&globs[i];
 }
 
 inline static void globs_init(){}
@@ -27,8 +27,8 @@ inline static void globs_render(){
 }
 
 
-inline static void globs_load_obj_file(size_t ix,const char*path){
-	glob_load_obj_file(&globs[ix],path);
+inline static void globs_load_obj_file(arrayix i,const char*path){
+	glob_load_obj_file(&globs[i],path);
 }
 
 //inline static void globs_render_id(size_t id,float*mat4_model_to_world){
