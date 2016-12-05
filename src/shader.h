@@ -1,5 +1,6 @@
 #pragma once
 #include"sdl.h"
+#include"SOIL/SOIL.h"
 
 //--------------------------------------------------------------------- shader
 
@@ -36,9 +37,9 @@ void main(){             \n\
 }\n";
 
 typedef struct {
-	float position[3];
-	float color[4];
-	float normal[3];
+	float position_xyz[3];
+	float color_rgb[4];
+	float normal_xyz[3];
 	float texture_uv[2];
 } vertex;
 
@@ -165,12 +166,6 @@ inline static void load_program() {
 	}
 	shader.texture_sampler=(GLuint)slot;
 
-	glEnableVertexAttribArray(shader.position_slot);
-	glEnableVertexAttribArray(shader.color_slot);
-	glEnableVertexAttribArray(shader.normal_slot);
-	glEnableVertexAttribArray(shader.texture_slot);
-
-
 //	SDL_Surface*loaded_surface=IMG_Load("logo.jpeg");
 //	if(!loaded_surface){
 //		printf("%s %d: %s",__FILE__,__LINE__,SDL_GetError());
@@ -187,31 +182,43 @@ inline static void load_program() {
 //	SDL_QueryTexture(tex,NULL,NULL,width,height);
 //	void*data=loaded_surface->pixels;
 
-	int height=1,width=1;
-	unsigned char data[]={
-			127,0,0,  0,127,0,
-			0,0,127,  127,127,127,
-	};
+//	int height=1,width=1;
+//	unsigned char data[]={
+//			127,0,0,  0,127,0,
+//			0,0,127,  127,127,127,
+//	};
 
 	GLuint textureID;
 	glGenTextures(1,&textureID);
 	glBindTexture(GL_TEXTURE_2D,textureID);
-	glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,width,height,0,GL_RGB,
-			GL_UNSIGNED_BYTE,data);
+
+	int width=2,height=2;
+//	float pixels[]={
+//	    1.0f, 0.0f, 0.0f,   1.0f, 1.0f, 1.0f,
+//	    1.0f, 1.0f, 1.0f,   0.0f, 0.0f, 0.0f
+//	};
+//	glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,width,height,0,GL_RGB,GL_FLOAT,pixels);
+
+	unsigned char*image =SOIL_load_image("logo.jpg",&width,&height,0,
+			SOIL_LOAD_RGB);
+	glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,width,height,0,GL_RGB,GL_UNSIGNED_BYTE,
+			image);
+	SOIL_free_image_data(image);
+
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
 
-//	glUniform1i((signed)shader.texture_sampler,0);
-//
-//	glActiveTexture(GL_TEXTURE0);
-//	glBindTexture(GL_TEXTURE_2D,textureID);
+	glUniform1i((signed)shader.texture_sampler,0);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D,textureID);
 
 	glEnableVertexAttribArray(shader.position_slot);
 	glEnableVertexAttribArray(shader.color_slot);
 	glEnableVertexAttribArray(shader.normal_slot);
-//	glEnableVertexAttribArray(shader.texture_slot);
+	glEnableVertexAttribArray(shader.texture_slot);
 
 //	SDL_FreeSurface(loaded_surface);
 }
