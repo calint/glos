@@ -211,8 +211,6 @@ inline static void shader_render_triangle_array(
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D,texid);
 
-
-
 	glBindBuffer(GL_ARRAY_BUFFER,vbufid);
 	glVertexAttribPointer(_shader_apos,  3,GL_FLOAT,GL_FALSE,
 			sizeof(shader_vertex),0);
