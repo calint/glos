@@ -4,7 +4,7 @@
 #include"textures.h"
 #include"drawables.h"
 #define bit_object_allocated 0
-#define object_part_count 4
+#define object_part_cap 4
 //------------------------------------------------------------------------ def
 typedef struct object{
 	position position;
@@ -26,7 +26,7 @@ typedef struct object{
 	void(*collision)(struct object*,struct object*,dt);
 	void(*render)(struct object*);
 	void(*free)(struct object*);
-	void*part[object_part_count];
+	void*part[object_part_cap];
 }object;
 
 //-------------------------------------------------------------------overrides
@@ -120,8 +120,12 @@ inline static void _object_update_model_to_world_matrix(object*this){
 		return;
 
 	mat4_load_translate(this->model_to_world_matrix,&this->position);
-	mat4_append_rotation_about_z_axis(this->model_to_world_matrix,this->angle.z);
+
+	mat4_append_rotation_about_z_axis(
+			this->model_to_world_matrix,this->angle.z);
+
 	mat4_scale(this->model_to_world_matrix,&this->scale);
+
 	this->model_to_world_matrix_is_updated=1;
 }
 

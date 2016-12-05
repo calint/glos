@@ -6,13 +6,29 @@
  [x]   read texture coords
  [ ]   read textures
  [ ]   render list materials
+
+ [ ] collision detection 
+ [ ]   bounding volume
+ [ ]     sphere
+ [ ]       vs sphere
+ [ ]       vs plane
+ [ ]       vs box
+ [ ]     planes
+ [ ]       vs box
+ [ ]       vs planes
+ [ ]     box
+ [ ]       vs box
+ [ ]     line
+ [ ]       vs sphere
+ [ ]       planes 
+ [ ]     empty/solids
+ [ ]       boolean ops
  
- [ ] bounding volume
- [ ]   sphere
- [ ]   box
- [ ]   planes
- [ ]     empty/solid space
- [ ]      boolean ops
+ [ ] physics
+ [ ]   sphere vs sphere
+ [ ]   box vs box
+ [ ]   sphere vs plane
+ [ ]   spherer vs box
  
  [ ] grid
  [ ]   render
