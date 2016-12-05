@@ -1,7 +1,7 @@
 #pragma once
 #include"object.h"
 //------------------------------------------------------------------------- new
-inline static object*new(object*initializer){
+inline static object*alloc(object*initializer){
 	int iterate_to_scan_the_table=2;
 	while(iterate_to_scan_the_table--){
 		while(objects_bits_seek_ptr<objects_bits_end_ptr){

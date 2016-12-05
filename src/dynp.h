@@ -16,7 +16,7 @@ typedef struct dynp{
 
 }dynp;
 
-dynp dynp_default={0,0,0};
+dynp dynp_def={0,0,0};
 
 //--------------------------------------------------------------------- private
 

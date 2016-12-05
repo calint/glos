@@ -16,7 +16,7 @@ typedef struct dyni{
 
 }dyni;
 
-dyni dyni_default={0,0,0};
+dyni dyni_def={0,0,0};
 
 //--------------------------------------------------------------------- private
 

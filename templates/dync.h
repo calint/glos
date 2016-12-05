@@ -16,7 +16,7 @@ typedef struct dync{
 
 }dync;
 
-dync dync_default={0,0,0};
+dync dync_def={0,0,0};
 
 //--------------------------------------------------------------------- private
 

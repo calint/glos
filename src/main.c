@@ -24,7 +24,7 @@ inline static void main_init(){
 //	drawables_load_file_in_slot(6,"obj/cube.obj");
 //	drawables_load_file_in_slot(6,"obj/grid_8x8.obj");
 
-	object*o=new(&_ninja_);
+	object*o=alloc(&ninja_def);
 	o->velocity=(vec4){0,0,0,0};
 	o->angular_velocity=(vec4){0,0,0,0};
 //

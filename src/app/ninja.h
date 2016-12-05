@@ -5,7 +5,7 @@
 //------------------------------------------------------------------ overrides
 inline static void _ninja_free_(object*this);
 //----------------------------------------------------------------------- init
-inline static void _ninja_init_(object*this);static object _ninja_={
+inline static void _ninja_init_(object*this);static object ninja_def={
 //-----------------------------------------------------------------------
 	.position={0,0,0,0},
 	.velocity={0,0,0,0},
