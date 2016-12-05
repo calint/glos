@@ -24,21 +24,38 @@
  [ ]     empty/solids
  [ ]       boolean ops
  
- [ ] physics
+ [ ] collision physics/animatics
  [ ]   sphere vs sphere
  [ ]   box vs box
  [ ]   sphere vs plane
  [ ]   spherer vs box
  
  [ ] grid
+ [ ]   cull
  [ ]   render
- [ ]   cull bounding_volume
- [ ]   multi/single thread
+ [ ]   update
+ [ ]   multicore
  
- [ ] keymaphub
- [ ]   multiuser
+ [ ] keyshub
+ [ ]   client
+ [ ]   server
  
  [ ] camera
+ [ ]   projection
+ [ ]     orthonormal
+ [ ]     iso
+ [ ]     perspective
+ [ ]   look-at
+ [ ]   click select
+ [ ]   follow
+ [ ]     pd regulator
+ [ ]     pid regulator
+ [ ]   script
+ [ ]     path
+ [ ]     focus
 
  [ ] hud
- 
+ [ ] draw text
+ [ ] mouse
+ [ ]   fps controls
+ [ ]   alternative controls
