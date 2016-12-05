@@ -1,7 +1,8 @@
 #pragma once
 #include "sdl.h"
 //--------------------------------------------------------------------- shader
-#define shader_program_cap 8
+#define programs_cap 1
+#define globs_cap 1
 //---------------------------------------------------------------------
 
 typedef struct vertex{
@@ -72,12 +73,13 @@ static glob glob_def=(glob){
 	.vbuf=shader_def_vertbuf,
 };
 
+static glob globs[globs_cap];
 
-typedef struct shader_program{
+typedef struct program{
 	GLuint id;
-}shader_program;
+}program;
 
-static shader_program shader_programs[shader_program_cap];
+static program programs[programs_cap];
 
 //struct{}shader;
 
@@ -137,11 +139,11 @@ inline static GLuint _compile_shader(GLenum shaderType,const char *code) {
 	return id;
 }
 
-inline static void shader_program_load(int index,const char*vert_src,const char*frag_src) {
+inline static void _program_load(int index,const char*vert_src,const char*frag_src) {
 	_check_gl_error("enter shader_program_load");
 
 	GLuint id=glCreateProgram();
-	shader_programs[index].id=id;
+	programs[index].id=id;
 
 	GLuint vertex=_compile_shader(GL_VERTEX_SHADER,vert_src);
 
@@ -223,7 +225,7 @@ inline static void _shader_prepare_for_render(
 	glEnableVertexAttribArray(shader_argba);//color
 	glEnableVertexAttribArray(shader_anorm);//normal
 	glEnableVertexAttribArray(shader_atex);//texture
-	glUseProgram(shader_programs[0].id);
+	glUseProgram(programs[0].id);
 	//? enabled
 
 	glUniformMatrix4fv(0,1,0,mtx_mw);
@@ -284,7 +286,7 @@ inline static void shader_render_triangle_array(
 	_shader_after_render();
 }
 
-inline static void shader_render_rend(glob*sr){
+inline static void shader_render_glob(glob*sr){
 	shader_render_triangle_array(
 			sr->vbufid,
 			sr->vbufn,
@@ -298,6 +300,17 @@ inline static void shader_render_rend(glob*sr){
 
 
 
+inline static void globs_init(){}
+
+inline static void globs_free(){}
+
+inline static void globs_render(){
+	glob*g=globs;
+	int n=globs_cap;
+	while(n--){
+		shader_render_glob(g++);
+	}
+}
 
 
 
@@ -333,7 +346,7 @@ inline static void shader_init() {
 
 	puts("");
 
-	shader_program_load(0,shader_vertex_source,shader_fragment_source);
+	_program_load(0,shader_vertex_source,shader_fragment_source);
 //	glUseProgram(shader_programs[0].id);
 
 	shader_load();
