@@ -31,15 +31,15 @@ inline static void __dync_insure_free_capcity(dync*this,size_t n){
 			exit(-1);
 		}
 
-		printf("   re-allocating vector %p\n",this->data);
-		void* *new_data=realloc(this->data,sizeof(char)*new_cap);
+		printf("   ralloc dynp %p\n",this->data);
+		char*new_data=realloc(this->data,sizeof(char)*new_cap);
 		if(!new_data){
 			fprintf(stderr,"\nout-of-memory");
 			fprintf(stderr,"\tfile: '%s'  line: %d\n\n",__FILE__,__LINE__);
 			exit(-1);
 		}
 		if(new_data!=this->data){ // re-locate
-			printf("   re-allocated vector %p to %p\n",this->data,new_data);
+			printf("      moved data %p to %p\n",this->data,new_data);
 			this->data=new_data;
 		}
 		this->cap=new_cap;

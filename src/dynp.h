@@ -2,7 +2,6 @@
 #include<stdlib.h>
 
 #define dynp_initial_cap 8
-#define dynp_realloc_strategy 'a'
 #define dynp_bounds_check 1
 
 typedef struct dynp{
@@ -18,32 +17,19 @@ inline static void __dynp_insure_free_capcity(dynp*this,size_t n){
 	if(rem>=n)
 		return;
 	if(this->data){
-		size_t new_cap;
-		switch(dynp_realloc_strategy){
-		case 'a':
-			new_cap=this->cap*2;
-			break;
-		default:
-			fprintf(stderr,"\nunknown-strategy");
-			fprintf(stderr,"\tfile: '%s'  line: %d\n\n",__FILE__,__LINE__);
-			exit(-1);
-		}
-
-		printf("   re-allocating vector %p\n",this->data);
+		size_t new_cap=this->cap*2;
 		void* *new_data=realloc(this->data,sizeof(void*)*new_cap);
 		if(!new_data){
 			fprintf(stderr,"\nout-of-memory");
 			fprintf(stderr,"\tfile: '%s'  line: %d\n\n",__FILE__,__LINE__);
 			exit(-1);
 		}
-		if(new_data!=this->data){ // re-locate
-			printf("   re-allocated vector %p to %p\n",this->data,new_data);
+		if(new_data!=this->data){
 			this->data=new_data;
 		}
 		this->cap=new_cap;
 		return;
 	}
-	// initialize data
 	this->cap=dynp_initial_cap;
 	this->data=malloc(sizeof(void*)*this->cap);
 	if(!this->data){

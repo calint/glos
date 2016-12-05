@@ -22,19 +22,9 @@ inline static void __${name}_insure_free_capcity(${name}*this,size_t n){
 	if(rem>=n)
 		return;
 	if(this->data){
-		size_t new_cap;
-		switch(${name}_realloc_strategy){
-		case 'a':
-			new_cap=this->cap*2;
-			break;
-		default:
-			fprintf(stderr,"\nunknown-strategy");
-			fprintf(stderr,"\tfile: '%s'  line: %d\n\n",__FILE__,__LINE__);
-			exit(-1);
-		}
-
+		size_t new_cap=this->cap*2;
 		printf("   re-allocating vector %p\n",this->data);
-		void* *new_data=realloc(this->data,sizeof(${type})*new_cap);
+		${type}*new_data=realloc(this->data,sizeof(${type})*new_cap);
 		if(!new_data){
 			fprintf(stderr,"\nout-of-memory");
 			fprintf(stderr,"\tfile: '%s'  line: %d\n\n",__FILE__,__LINE__);
@@ -47,7 +37,6 @@ inline static void __${name}_insure_free_capcity(${name}*this,size_t n){
 		this->cap=new_cap;
 		return;
 	}
-	// initialize data
 	this->cap=${name}_initial_cap;
 	this->data=malloc(sizeof(${type})*this->cap);
 	if(!this->data){
