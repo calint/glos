@@ -142,7 +142,6 @@ inline static void shader_load(){
 
 //	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
 	glGenTextures(1,&texbufid);
-	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D,texbufid);
 	glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,
 			texwi,texhi,
