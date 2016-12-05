@@ -283,8 +283,9 @@ inline static void print_gl_string(const char *name, const GLenum s){
 }
 
 inline static void shader_free() {
-	if(shader.program_id)
-		glDeleteProgram(shader.program_id);
+	//? free programs?
+//	if(shader.program_id)
+//		glDeleteProgram(shader.program_id);
 }
 
 inline static void check_gl_error(const char*op) {
