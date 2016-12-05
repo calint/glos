@@ -37,6 +37,12 @@ struct{
 	int indices_count;
 }shader;
 
+#define _shader_apos 0
+#define _shader_argba 1
+#define _shader_anorm 2
+#define _shader_atex 3
+#define _shader_umtx_mw 0
+#define _shader_utex 1
 char*vertex_shader_source =
 		"#version 130                                                \n\
 uniform mat4 umtx_mw;// model-to-world-matrix                        \n\
@@ -225,9 +231,8 @@ inline static void shader_init() {
 	printf("apos: %d\n",glGetAttribLocation(shader.program_id,"apos"));
 	printf("argba: %d\n",glGetAttribLocation(shader.program_id,"argba"));
 	printf("anorm: %d\n",glGetAttribLocation(shader.program_id,"anorm"));
-	printf("utex: %d\n",glGetUniformLocation(shader.program_id,"utex"));
 	printf("umtx_mw: %d\n",glGetUniformLocation(shader.program_id,"umtx_mw"));
-
+	printf("utex: %d\n",glGetUniformLocation(shader.program_id,"utex"));
 
 	glEnableVertexAttribArray(0);//position
 	glEnableVertexAttribArray(1);//color
@@ -240,8 +245,7 @@ inline static void shader_init() {
 //	glBindTexture(GL_TEXTURE_2D,shader.texture_id);
 	// Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
 	float mtxident[]={1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1};
-	glUniformMatrix4fv((signed)shader.model_to_world_matrix_slot,1,0,mtxident);
-
+	glUniformMatrix4fv(0,1,0,mtxident);
 	glUniform1i(1,0);// texture sampler on texture0
 
 	check_gl_error("after shader_init");
@@ -249,13 +253,13 @@ inline static void shader_init() {
 
 inline static void shader_render() {
 	glBindBuffer(GL_ARRAY_BUFFER,shader.vertex_buffer_id);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
+	glVertexAttribPointer(_shader_apos, 3, GL_FLOAT, GL_FALSE,
 			sizeof(vertex),0);
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE,
+	glVertexAttribPointer(_shader_argba, 4, GL_FLOAT, GL_FALSE,
 			sizeof(vertex),(GLvoid*)(3*sizeof(float)));
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE,
+	glVertexAttribPointer(_shader_anorm, 3, GL_FLOAT, GL_FALSE,
 			sizeof(vertex),(GLvoid*)((3+4)*sizeof(float)));
-	glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE,
+	glVertexAttribPointer(_shader_atex, 2, GL_FLOAT, GL_FALSE,
 			sizeof(vertex),(GLvoid*)((3+4+3)*sizeof(float)));
 
 
