@@ -175,22 +175,6 @@ inline static void check_gl_error(const char*op) {
 		exit(11);
 }
 
-inline static void create_geometry(GLuint *vertexBuffer, GLuint *indexBuffer,
-		int *numIndices) {
-
-	glGenBuffers(1, vertexBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, *vertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	glGenBuffers(1, indexBuffer);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *indexBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices,
-	GL_STATIC_DRAW);
-
-	*numIndices = sizeof(indices) / sizeof(indices[0]);
-	check_gl_error("generating buffers");
-}
-
 inline static void print_gl_string(const char *name, const GLenum s){
 	const char*v = (const char*) glGetString(s);
 	printf("%s=%s\n", name, v);
@@ -205,11 +189,21 @@ inline static void shader_init() {
 	print_gl_string("GL_RENDERER", GL_RENDERER);
 	print_gl_string("GL_SHADING_LANGUAGE_VERSION",GL_SHADING_LANGUAGE_VERSION);
 
-	create_geometry(
-		&shader.vertex_buffer_id,
-		&shader.index_buffer_id,
-		&shader.indices_count
-	);
+
+	load_program(&shader.position_slot,&shader.color_slot);
+
+
+	glGenBuffers(1, &shader.vertex_buffer_id);
+	glBindBuffer(GL_ARRAY_BUFFER, shader.vertex_buffer_id);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	glGenBuffers(1, &shader.index_buffer_id);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, shader.index_buffer_id);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices,
+	GL_STATIC_DRAW);
+
+	shader.indices_count = sizeof(indices) / sizeof(indices[0]);
+	check_gl_error("generating buffers");
 
 //	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
 	glGenTextures(1,&shader.texture_id);
@@ -226,32 +220,44 @@ inline static void shader_init() {
 //	glGenerateMipmap(GL_TEXTURE_2D);
 //	glPixelStorei(GL_UNPACK_ALIGNMENT,4);
 
-	load_program(&shader.position_slot,&shader.color_slot);
+//	printf("apos: %d\n",glGetAttribLocation(shader.program_id,"apos"));
+//	printf("argba: %d\n",glGetAttribLocation(shader.program_id,"argba"));
+//	printf("anorm: %d\n",glGetAttribLocation(shader.program_id,"anorm"));
+//	printf("umtx_mw: %d\n",glGetUniformLocation(shader.program_id,"umtx_mw"));
+//	printf("utex: %d\n",glGetUniformLocation(shader.program_id,"utex"));
 
-	printf("apos: %d\n",glGetAttribLocation(shader.program_id,"apos"));
-	printf("argba: %d\n",glGetAttribLocation(shader.program_id,"argba"));
-	printf("anorm: %d\n",glGetAttribLocation(shader.program_id,"anorm"));
-	printf("umtx_mw: %d\n",glGetUniformLocation(shader.program_id,"umtx_mw"));
-	printf("utex: %d\n",glGetUniformLocation(shader.program_id,"utex"));
+//	glEnableVertexAttribArray(_shader_apos);//position
+//	glEnableVertexAttribArray(_shader_argba);//color
+//	glEnableVertexAttribArray(_shader_anorm);//normal
+//	glEnableVertexAttribArray(_shader_atex);//texture
+//
+//	// Set the active texture unit to texture unit 0.
+////	glActiveTexture(GL_TEXTURE0);
+//	// Bind the texture to this unit.
+////	glBindTexture(GL_TEXTURE_2D,shader.texture_id);
+//	// Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
+//	float mtxident[]={1,0,0,0,  0,1,0,0,  0,0,1,0,  0,0,0,1};
+//	glUniformMatrix4fv(0,1,0,mtxident);
+//	glUniform1i(_shader_umtx_mw,0);// texture sampler on texture0
+//
+	check_gl_error("after shader_init");
+}
 
-	glEnableVertexAttribArray(0);//position
-	glEnableVertexAttribArray(1);//color
-	glEnableVertexAttribArray(2);//normal
-	glEnableVertexAttribArray(3);//texture
+inline static void shader_render() {
+	glEnableVertexAttribArray(_shader_apos);//position
+	glEnableVertexAttribArray(_shader_argba);//color
+	glEnableVertexAttribArray(_shader_anorm);//normal
+	glEnableVertexAttribArray(_shader_atex);//texture
 
 	// Set the active texture unit to texture unit 0.
 //	glActiveTexture(GL_TEXTURE0);
 	// Bind the texture to this unit.
 //	glBindTexture(GL_TEXTURE_2D,shader.texture_id);
 	// Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
-	float mtxident[]={1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1};
+	float mtxident[]={1,0,0,0,  0,1,0,0,  0,0,1,0,  0,0,0,1};
 	glUniformMatrix4fv(0,1,0,mtxident);
-	glUniform1i(1,0);// texture sampler on texture0
+	glUniform1i(_shader_umtx_mw,0);// texture sampler on texture0
 
-	check_gl_error("after shader_init");
-}
-
-inline static void shader_render() {
 	glBindBuffer(GL_ARRAY_BUFFER,shader.vertex_buffer_id);
 	glVertexAttribPointer(_shader_apos, 3, GL_FLOAT, GL_FALSE,
 			sizeof(vertex),0);
@@ -261,7 +267,6 @@ inline static void shader_render() {
 			sizeof(vertex),(GLvoid*)((3+4)*sizeof(float)));
 	glVertexAttribPointer(_shader_atex, 2, GL_FLOAT, GL_FALSE,
 			sizeof(vertex),(GLvoid*)((3+4+3)*sizeof(float)));
-
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,shader.index_buffer_id);
 	glDrawElements(GL_TRIANGLES,shader.indices_count,GL_UNSIGNED_BYTE,0);
