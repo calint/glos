@@ -1,11 +1,11 @@
 #pragma once
 #include<stdlib.h>
 
-#define dynv_initial_cap 8
-#define dynv_realloc_strategy 'a'
-#define dynv_bounds_check 1
+#define dynp_initial_cap 8
+#define dynp_realloc_strategy 'a'
+#define dynp_bounds_check 1
 
-typedef struct dynv{
+typedef struct dynp{
 	void* *data;
 	size_t size;
 	size_t cap;
@@ -19,7 +19,7 @@ inline static void __dynp_insure_free_capcity(dynp*this,size_t n){
 		return;
 	if(this->data){
 		size_t new_cap;
-		switch(dynv_realloc_strategy){
+		switch(dynp_realloc_strategy){
 		case 'a':
 			new_cap=this->cap*2;
 			break;
@@ -44,7 +44,7 @@ inline static void __dynp_insure_free_capcity(dynp*this,size_t n){
 		return;
 	}
 	// initialize data
-	this->cap=dynv_initial_cap;
+	this->cap=dynp_initial_cap;
 	this->data=malloc(sizeof(void*)*this->cap);
 	if(!this->data){
 		fprintf(stderr,"\nout-of-memory");
