@@ -17,8 +17,6 @@ typedef struct object{
 	bounding_radius bounding_radius;
 	scale scale;
 	color color;
-	gid texture_id;
-	gid drawable_id;
 	gid glob_id;
 	int model_to_world_matrix_is_updated;
 	void(*init)(struct object*);
@@ -67,10 +65,8 @@ static object _object_={
 	.scale={0,0,0,0},
 	.type={{0,0,0,0,0,0,0,0}},
 	.id=0,
-	.texture_id=0,
 	.color=0,
 	.bits_ref=NULL,
-	.drawable_id=0,
 	.model_to_world_matrix={1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1},
 	.init=_object_init_,
 	.update=_object_update_,
@@ -88,15 +84,15 @@ inline static void object_update_bounding_radius_using_scale(object*this) {
 
 //----------------------------------------------------------------------------
 
-inline static void _draw_texture_(object*o) {
-	SDL_Rect d={
-		(int)(o->position.x-o->scale.x),
-		(int)(o->position.y-o->scale.y),
-		(int)o->scale.x*2,
-		(int)o->scale.y*2
-	};
-	SDL_RenderCopy(window.renderer,texture[o->texture_id].ptr,NULL,&d);
-}
+//inline static void _draw_texture_(object*o) {
+//	SDL_Rect d={
+//		(int)(o->position.x-o->scale.x),
+//		(int)(o->position.y-o->scale.y),
+//		(int)o->scale.x*2,
+//		(int)o->scale.y*2
+//	};
+//	SDL_RenderCopy(window.renderer,texture[o->texture_id].ptr,NULL,&d);
+//}
 
 //----------------------------------------------------------------------------
 
