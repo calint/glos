@@ -14,7 +14,6 @@ inline static void _ninja_init_(object*this);static object ninja_def={
 	.bounding_radius=0,
 	.scale={0,0,0,0},
 	.type={{'e',0,0,0,0,0,0,0}},
-	.id=0,
 	.bits_ref=NULL,
 	.glob_id=1,
 	.model_to_world_matrix={1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1},

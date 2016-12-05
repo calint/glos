@@ -5,7 +5,6 @@
 #define bit_object_allocated 0
 #define object_part_cap 4
 //------------------------------------------------------------------------ def
-typedef GLuint gid;
 
 typedef struct object{
 	position position;
@@ -26,9 +25,15 @@ typedef struct object{
 	void*part[object_part_cap];
 
 	type type;
-	id id;
 	bits*bits_ref;
 }object;
+
+#define object_ref_validate_cast 0
+#define object_validate_delete 0
+
+inline static object*object_ptr(ref r){
+	return(object*)r;//? detect cast error
+}
 
 //-------------------------------------------------------------------overrides
 //
@@ -55,7 +60,7 @@ inline static void _object_free_(object*this){
 //	printf(" * del %-12s [ %4s %p ]\n","object",this->type.path,this);
 }
 //----------------------------------------------------------------------------
-static object _object_={
+static object object_def={
 	.position={0,0,0,0},
 	.velocity={0,0,0,0},
 	.angle={0,0,0,0},
@@ -63,8 +68,6 @@ static object _object_={
 	.bounding_radius=0,
 	.scale={0,0,0,0},
 	.type={{0,0,0,0,0,0,0,0}},
-	.id=0,
-//	.color=0,
 	.bits_ref=NULL,
 	.model_to_world_matrix={1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1},
 	.init=_object_init_,

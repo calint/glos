@@ -1,13 +1,6 @@
 #pragma once
 #include"object.h"
 #define objects_count 1024
-typedef object*objectref;
-typedef object*object_ptr;
-typedef void*ref;
-
-inline static objectref object_(ref r){
-	return(object*)r;//? detect cast error
-}
 
 static object objects[objects_count];
 static object*objects_start_ptr=objects;
@@ -32,7 +25,7 @@ inline static object*alloc(object*initializer){
 			object*o=objects_seek_ptr;
 			objects_seek_ptr++;
 			objects_bits_seek_ptr++;      // unset alloc bit
-			*o=initializer?*initializer:_object_;
+			*o=initializer?*initializer:object_def;
 			o->bits_ref=objects_bits_seek_ptr; // used at free to
 			if (o->init)o->init(o);
 			return o;
