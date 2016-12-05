@@ -26,8 +26,8 @@ static ssize_t ixbufn=sizeof(ixbuf)/sizeof(ixbuf[0]);
 static GLsizei texwi=2;
 static GLsizei texhi=2;
 static GLfloat texbuf[]={
-		1.0f, 1.0f, 0.0f,    0.0f, 0.0f, 1.0f,
-		0.0f, 0.0f, 1.0f,    1.0f, 1.0f, 0.0f
+		.7f, .7f, .7f,    .2f, .2f, .2f,
+		.2f ,.2f ,.2f,    .7f, .7f, .7f
 };
 static GLuint texbufid;
 
