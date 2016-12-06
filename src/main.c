@@ -11,9 +11,7 @@
 inline static void main_init(){
 	globs_load_obj_file(1,"obj/ico_sphere.obj");
 
-//	for(int i=0;i<object_cap;i++){
-	for(int i=0;i<1;i++){
-
+	for(int i=0;i<object_cap;i++){
 		object*o=object_alloc(&ninja_def);
 
 		o->glob_id=1;
