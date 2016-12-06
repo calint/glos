@@ -4,19 +4,19 @@
 //-----------------------------------------------------------------------------
 #include"object.h"
 #include"part.h"
-#define object_count 1024
+#define object_cap 1024*8
 #define object_assert_free
 #define object_assert_bounds
 //--------------------------------------------------------------------- storage
-static object objects[object_count];
+static object objects[object_cap];
 static object*objects_start_ptr=objects;
 static object*objects_seek_ptr=objects;
-static object*objects_end_ptr=objects+object_count;
+static object*objects_end_ptr=objects+object_cap;
 //------------------------------------------------------------------------ bits
-static bits objects_bits[object_count];
+static bits objects_bits[object_cap];
 static bits*objects_bits_start_ptr=objects_bits;
 static bits*objects_bits_seek_ptr=objects_bits;
-static bits*objects_bits_end_ptr=objects_bits+object_count;
+static bits*objects_bits_end_ptr=objects_bits+object_cap;
 //----------------------------------------------------------------------- alloc
 inline static object*object_alloc(object*initializer){
 	int iterate_to_scan_the_table=2;
@@ -61,10 +61,10 @@ inline static void object_free(object*o){
 //------------------------------------------------------------------- accessors
 
 inline static void _object_assert_bounds(arrayix i){
-	if(i<object_count)
+	if(i<object_cap)
 		return;
 	fprintf(stderr,"\nobject index %lu out of bounds %lu\n",
-			i,(arrayix)object_count);
+			i,(arrayix)object_cap);
 	fprintf(stderr,"\n\tfile: '%s'  line: %d\n\n",__FILE__,__LINE__);
 	exit(-1);
 }

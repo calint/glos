@@ -4,19 +4,19 @@
 //-----------------------------------------------------------------------------
 #include"${name}.h"
 #include"part.h"
-#define ${name}_count ${count}
+#define ${name}_cap ${cap}
 #define ${name}_assert_free
 #define ${name}_assert_bounds
 //--------------------------------------------------------------------- storage
-static ${name} ${nameplr}[${name}_count];
+static ${name} ${nameplr}[${name}_cap];
 static ${name}*${nameplr}_start_ptr=${nameplr};
 static ${name}*${nameplr}_seek_ptr=${nameplr};
-static ${name}*${nameplr}_end_ptr=${nameplr}+${name}_count;
+static ${name}*${nameplr}_end_ptr=${nameplr}+${name}_cap;
 //------------------------------------------------------------------------ bits
-static bits ${nameplr}_bits[${name}_count];
+static bits ${nameplr}_bits[${name}_cap];
 static bits*${nameplr}_bits_start_ptr=${nameplr}_bits;
 static bits*${nameplr}_bits_seek_ptr=${nameplr}_bits;
-static bits*${nameplr}_bits_end_ptr=${nameplr}_bits+${name}_count;
+static bits*${nameplr}_bits_end_ptr=${nameplr}_bits+${name}_cap;
 //----------------------------------------------------------------------- alloc
 inline static ${name}*${name}_alloc(${name}*initializer){
 	int iterate_to_scan_the_table=2;
@@ -61,10 +61,10 @@ inline static void ${name}_free(${name}*o){
 //------------------------------------------------------------------- accessors
 
 inline static void _${name}_assert_bounds(arrayix i){
-	if(i<${name}_count)
+	if(i<${name}_cap)
 		return;
 	fprintf(stderr,"\n${name} index %lu out of bounds %lu\n",
-			i,(arrayix)${name}_count);
+			i,(arrayix)${name}_cap);
 	fprintf(stderr,"\n\tfile: '%s'  line: %d\n\n",__FILE__,__LINE__);
 	exit(-1);
 }

@@ -47,15 +47,15 @@ inline static void main_init(){
 }
 //------------------------------------------------------------------------ main
 int main(int argc,char*argv[]){
-	printf(":-%15s-:-%-8s-:\n","---------------","--------");
-	printf(": %15s : %-8s :\n","type",           "bytes");
-	printf(":-%15s-:-%-8s-:\n","---------------","--------");
-	printf(": %15s : %-8ld :\n","part",sizeof(part));
-	printf(": %15s : %-8ld :\n","object",sizeof(object));
-	printf(": %15s : %-8ld :\n","objects",sizeof(objects));
-	printf(": %15s : %-8ld :\n","glob",sizeof(glob));
-	printf(": %15s : %-8ld :\n","globs",sizeof(globs));
-	printf(":-%15s-:-%-8s-:\n","---------------","--------");
+	printf(":-%15s-:-%-9s-:\n","---------------","---------");
+	printf(": %15s : %-9s :\n","type",           "bytes");
+	printf(":-%15s-:-%-9s-:\n","---------------","---------");
+	printf(": %15s : %-9ld :\n","part",sizeof(part));
+	printf(": %15s : %-9ld :\n","object",sizeof(object));
+	printf(": %15s : %-9ld :\n","objects",sizeof(objects));
+	printf(": %15s : %-9ld :\n","glob",sizeof(glob));
+	printf(": %15s : %-9ld :\n","globs",sizeof(globs));
+	printf(":-%15s-:-%-9s-:\n","---------------","--------");
 
 	sdl_init();
 	window_init();
@@ -145,8 +145,8 @@ int main(int argc,char*argv[]){
 		objects_update(fps.dt);
 		if(draw_objects)objects_render();
 		if(draw_default)shader_render();
-
-		globs_render();
+//
+//		globs_render();
 
 		SDL_GL_SwapWindow(window.ref);
 		fps__at__update_frame_end();
