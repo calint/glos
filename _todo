@@ -53,4 +53,8 @@
  [ ] mouse
  [ ]   fps controls
  [ ]   alternative controls
+ [ ] shadow map
+ [ ]   render to texture
+ [ ]   use several programs
+ [ ] light source
  
