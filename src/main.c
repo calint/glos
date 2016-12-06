@@ -151,6 +151,7 @@ int main(int argc,char*argv[]){
 	shader_free();
 	window_free();
 	sdl_free();
+	puts(" * clean exit");
 	return 0;
 }
 //----------------------------------------------------------------------------

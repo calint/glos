@@ -65,8 +65,6 @@ inline static object*object_at(arrayix i){return&objects[i];}
 
 inline static const object*object_at_const(arrayix i){return&objects[i];}
 
-//--------------------------------------------------------------------- objects
-
 inline static void objects_free() {
 	object*o=objects;
 	while(o<objects_end_ptr){
