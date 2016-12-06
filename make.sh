@@ -1,6 +1,6 @@
 #!/bin/sh -x
 
-CC='clang -std=c11'
+CC='clang -std=c11 -Rpass=inline'
 SRC=src/main.c
 BIN=glos
 CFLAGS=$(sdl2-config --cflags)
