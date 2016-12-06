@@ -77,6 +77,9 @@ inline static object*object_at(arrayix i){
 }
 
 inline static const object*object_at_const(arrayix i){
+#ifdef object_assert_bounds
+	_object_assert_bounds(i);
+#endif
 	return&objects[i];
 }
 

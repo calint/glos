@@ -34,6 +34,8 @@ inline static void main_init(){
 
 //	object_at(object_count-1);
 //	object_at(object_count);
+//		object_at_const(object_count-1);
+//		object_at_const(object_count);
 //
 //	object*o=new(&_ninja_);
 //	o->position.x=-.5f;
