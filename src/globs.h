@@ -7,11 +7,11 @@
 static glob globs[globs_cap];
 //---------------------------------------------------------------------
 
-inline static glob*globs_ref(arrayix i){
+inline static glob*glob_at(arrayix i){
 	return&globs[i];
 }
 
-inline static const glob*globs_ro(arrayix i){
+inline static const glob*glob_const_at(arrayix i){
 	return&globs[i];
 }
 

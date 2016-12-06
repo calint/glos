@@ -1,6 +1,5 @@
 #pragma once
 #include"lib.h"
-
 //---------------------------------------------------------------------- config
 
 #define object_part_cap 5
@@ -26,7 +25,7 @@ typedef struct object{
 	void(*free)(struct object*);
 	void*part[object_part_cap];
 	type type;
-	bits*ptr_bits;
+	bits*ptr_to_bits;
 }object;
 
 #define object_ref_validate_cast 0
@@ -69,7 +68,7 @@ static object object_def={
 	.bounding_radius=0,
 	.scale={0,0,0,0},
 	.type={{0,0,0,0,0,0,0,0}},
-	.ptr_bits=NULL,
+	.ptr_to_bits=NULL,
 	.model_to_world_matrix={1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1},
 	.init=_object_init_,
 	.update=_object_update_,
@@ -104,7 +103,7 @@ inline static void _object_update_model_to_world_matrix(object*this){
 //----------------------------------------------------------------------------
 
 inline static void _render_glob_(object*o) {
-	const glob*g=globs_ro(o->glob_id);
+	const glob*g=&globs[o->glob_id];
 	if(!g->vbufid)
 		return;
 	_object_update_model_to_world_matrix(o);

@@ -7,20 +7,36 @@ inline static void objects_init(){}
 inline static void objects_free() {
 	for(int i=0;i<object_count;i++){
 		object*o=&objects[i];
-		if(bits_is_bit_set(&objects_bits[i],0))
-			if(o->free)
-				o->free(o);
+		{/*critical*/
+			if((*o->ptr_to_bits&(1|2))==1)
+				objects_bits[i]&=(unsigned char)~(1|2);
+		}
+		if(o->free){
+			o->free(o);
+		}
+		free(o);
 	}
 }
 //--------------------------------------------------------------------- update
 inline static void objects_update(dt dt){
 	object*o=objects;
 	while(o<objects_end_ptr){
-		if(o->update)o->update(o,dt);
+		if(!o->ptr_to_bits){
+			o++;
+			continue;
+		}
+		if((*o->ptr_to_bits&1)){
+			o++;
+			continue;
+		}
+		if(o->update)
+			o->update(o,dt);
 		for(int i=0;i<object_part_cap;i++){
-			if(!o->part[i])continue;
+			if(!o->part[i])
+				continue;
 			part*p=(part*)o->part[i];
-			if(p->update)p->update(o,p,dt);
+			if(p->update)
+				p->update(o,p,dt);
 		}
 		o++;
 	}
