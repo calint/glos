@@ -2,7 +2,7 @@
 #include"glob.h"
 #include"mat4.h"
 //--------------------------------------------------------------------- storage
-#define globs_cap 1024
+#define globs_cap 16
 #define globs_bound_check 0
 static glob globs[globs_cap];
 //---------------------------------------------------------------------

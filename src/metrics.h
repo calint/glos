@@ -8,17 +8,18 @@ struct{
 	unsigned objects_rendered_last_frame;
 	unsigned parts_rendered_last_frame;
 	unsigned average_fps;
+	unsigned vertices_rendered;
 	dt previous_frame_dt;
 }metrics;
 
 inline static void metrics_print_headers(){
-	printf(" %4s   %6s   %6s  %6s  %6s  %6s  %6s  %6s\n",
+	printf(" %4s   %6s   %8s  %6s  %6s  %6s  %6s  %6s\n",
 			"fps","dt","bufs","nobjs","obup","obre","ptup","ptre"
 		);
 }
 
 inline static void metrics_print(){
-	printf(" %04d   %0.4f   %06lu  %06u  %06u  %06u  %06u  %06u\n",
+	printf(" %04d   %0.4f   %08lu  %06u  %06u  %06u  %06u  %06u\n",
 			metrics.average_fps,
 			metrics.previous_frame_dt,
 			metrics.buffered_data,
@@ -56,6 +57,7 @@ inline static void metrics__at__frame_begin(){
 	metrics.objects_updated_last_frame=0;
 	metrics.parts_rendered_last_frame=0;
 	metrics.parts_updated_last_frame=0;
+	metrics.vertices_rendered=0;
 }
 
 //----------------------------------------------------------------------------

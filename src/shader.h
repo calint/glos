@@ -176,8 +176,6 @@ inline static void shader_init() {
 	printf(":-%10s-:-%7s-:\n","----------","-------");
 	puts("");
 
-	puts("");
-
 	programs_load(0,shader_vertex_source,shader_fragment_source);
 //	glUseProgram(shader_programs[0].id);
 

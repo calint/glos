@@ -5,29 +5,60 @@
 #include"objects.h"
 #include"obj_file.h"
 #include"object_alloc.h"
+#include"glob.h"
 #include"metrics.h"
 #include"app/ninja.h"
 //----------------------------------------------------------------------- init
 inline static void main_init(){
 	globs_load_obj_file(1,"obj/ico_sphere.obj");
+	globs_load_obj_file(2,"obj/cylinder.obj");
+	globs_load_obj_file(3,"obj/grid_8x8.obj");
+	globs_load_obj_file(4,"obj/plane.obj");
+	globs_load_obj_file(5,"obj/sphere.obj");
+
+	object*o=object_alloc(&ninja_def);
+	o->glob_id=1;
+	const float vr=.5f;
+	o->velocity=(velocity){
+		random_range(-vr,vr),random_range(-vr,vr),0,0};
+
+	const float ar=360;
+	o->angular_velocity=(angular_velocity){
+		0,0,random_range(-ar,ar),0};
+
+	const float sr=.2f;
+	o->scale=(scale){
+		random_range(-sr,sr),
+		random_range(-sr,sr),
+		random_range(-sr,sr),1};
+}
+inline static void main_init2(){
+	globs_load_obj_file(1,"obj/ico_sphere.obj");
+	globs_load_obj_file(2,"obj/cylinder.obj");
+	globs_load_obj_file(3,"obj/grid_8x8.obj");
+	globs_load_obj_file(4,"obj/plane.obj");
+	globs_load_obj_file(5,"obj/sphere.obj");
 
 	for(int i=0;i<object_cap;i++){
 		object*o=object_alloc(&ninja_def);
 
-		o->glob_id=1;
+		o->glob_id=(gid)random_range(1,6);
+		if(o->glob_id==6)o->glob_id=5;
 
+		const float vr=.5f;
 		o->velocity=(velocity){
-			random_range(-1,1),random_range(-1,1),0,0};
+			random_range(-vr,vr),random_range(-vr,vr),0,0};
 
+		const float ar=360;
 		o->angular_velocity=(angular_velocity){
-			0,0,random_range(-360*8,360*8),0};
+			0,0,random_range(-ar,ar),0};
 
+		const float sr=.02f;
 		o->scale=(scale){
-			random_range(-.05f,.05f),
-			random_range(-.05f,.05f),
-			random_range(-.05f,.05f),1};
+			random_range(-sr,sr),
+			random_range(-sr,sr),
+			random_range(-sr,sr),1};
 	}
-
 }
 //------------------------------------------------------------------------ main
 int main(int argc,char*argv[]){
@@ -58,6 +89,7 @@ int main(int argc,char*argv[]){
 	int draw_default=0,draw_objects=1;
 
 
+	puts("");
 	metrics_print_headers();
 
 	for(int running=1;running;){
@@ -120,6 +152,14 @@ int main(int argc,char*argv[]){
 					case SDLK_1:
 						draw_default=0;
 						break;
+					case SDLK_2:{
+						object*o=object_at(0);
+						o->glob_id++;
+						if(o->glob_id>5){
+							o->glob_id=1;
+						}
+						break;
+					}
 				}
 				break;
 
@@ -149,6 +189,7 @@ int main(int argc,char*argv[]){
 	shader_free();
 	window_free();
 	sdl_free();
+	metrics_print();
 	puts(" * clean exit");
 	return 0;
 }
