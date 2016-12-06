@@ -19,6 +19,9 @@ inline static void main_init(){
 //	drawables_load_file_in_slot(6,"obj/cube.obj");
 //	drawables_load_file_in_slot(6,"obj/grid_8x8.obj");
 
+//	glob*g=glob_alloc(&glob_def);
+//	glob_load_obj_file(g,"obj/ico_sphere.obj");
+//
 	globs_load_obj_file(1,"obj/ico_sphere.obj");
 
 	object*o=object_alloc(&ninja_def);

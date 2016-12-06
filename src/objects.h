@@ -7,7 +7,7 @@ inline static void objects_init(){}
 inline static void objects_free() {
 	for(int i=0;i<object_count;i++){
 		object*o=&objects[i];
-		if(bits_is_bit_set(&objects_bits[i],bit_object_allocated))
+		if(bits_is_bit_set(&objects_bits[i],0))
 			if(o->free)
 				o->free(o);
 	}

@@ -1,9 +1,4 @@
 #pragma once
-#include"SDL.h"
-#include<stdlib.h>
-#include<sys/types.h>
-#include<math.h>
-
 #include "typedefs.h"
 //------------------------------------------------------------------------ lib
 

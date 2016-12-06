@@ -30,7 +30,6 @@ inline static ${name}*${name}_alloc(${name}*initializer){
 			${nameplr}_bits_seek_ptr++;
 			*o=initializer?*initializer:${name}_def;
 			o->ptr_bits=${nameplr}_bits_seek_ptr;
-			if (o->init)o->init(o);
 			return o;
 		}
 		${nameplr}_bits_seek_ptr=${nameplr}_bits_start_ptr;

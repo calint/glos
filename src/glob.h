@@ -1,6 +1,7 @@
 #pragma once
 #include"sdl.h"
 #include"dynf.h"
+#define glob_count 128
 //----------------------------------------------------------------------- calls
 
 inline static void shader_render_triangle_array(
@@ -47,6 +48,7 @@ glob{
 	GLuint texbufid;
 	GLsizei texwi;
 	GLsizei texhi;
+	bits*ptr_bits;
 //	float*mtx_mw;
 }glob;
 

@@ -1,11 +1,11 @@
 #pragma once
 #include"glob.h"
 #include"mat4.h"
-#define globs_cap 2
+//--------------------------------------------------------------------- storage
+#define globs_cap 1024
 #define globs_bound_check 0
-//---------------------------------------------------------------------
-
 static glob globs[globs_cap];
+//---------------------------------------------------------------------
 
 inline static glob*globs_ref(arrayix i){
 	return&globs[i];
