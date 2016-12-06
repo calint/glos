@@ -3,20 +3,6 @@
 #include"part.h"
 //------------------------------------------------------------------------ init
 inline static void objects_init(){}
-//------------------------------------------------------------------------ free
-inline static void objects_free() {
-	for(int i=0;i<object_count;i++){
-		object*o=&objects[i];
-		{/*critical*/
-			if((*o->ptr_to_bits&(1|2))==1)
-				objects_bits[i]&=(unsigned char)~(1|2);
-		}
-		if(o->free){
-			o->free(o);
-		}
-		free(o);
-	}
-}
 //--------------------------------------------------------------------- update
 inline static void objects_update(dt dt){
 	object*o=objects;
@@ -25,12 +11,14 @@ inline static void objects_update(dt dt){
 			o++;
 			continue;
 		}
-		if((*o->ptr_to_bits&1)){
+		if(!(*o->ptr_to_bits&1)){
 			o++;
 			continue;
 		}
+
 		if(o->update)
 			o->update(o,dt);
+
 		for(int i=0;i<object_part_cap;i++){
 			if(!o->part[i])
 				continue;
@@ -45,11 +33,24 @@ inline static void objects_update(dt dt){
 inline static void objects_render() {
 	object*o=objects;
 	while(o<objects_end_ptr){
-		if(o->render)o->render(o);
+		if(!o->ptr_to_bits){
+			o++;
+			continue;
+		}
+		if(!(*o->ptr_to_bits&1)){
+			o++;
+			continue;
+		}
+
+		if(o->render)
+			o->render(o);
+
 		for(int i=0;i<object_part_cap;i++){
-			if(!o->part[i])continue;
+			if(!o->part[i])
+				continue;
 			part*p=(part*)o->part[i];
-			if(p->render)p->render(o,p);
+			if(p->render)
+				p->render(o,p);
 		}
 		o++;
 	}
