@@ -7,9 +7,28 @@
 #include"object_alloc.h"
 #include"glob.h"
 #include"metrics.h"
+#include"dyni.h"
 #include"app/ninja.h"
 //----------------------------------------------------------------------- init
 inline static void main_init(){
+
+	const char*vsrc="#version 130\n\
+uniform mat4 umtx_mw;\n\
+in vec3 apos;\n\
+void main(){\n\
+	gl_Position=umtx_mw*vec4(apos,1);\n\
+}\n";
+
+	const char*fsrc="#version 130\n\
+void main(){\n\
+	gl_FragColor=vec4(gl_FragCoord.z,gl_FragCoord.z,gl_FragCoord.z,1);\n\
+}";
+
+	dyni attrs=dyni_def;
+	dyni_add(&attrs,shader_apos);
+	programs_load(1,vsrc,fsrc,/*gives*/attrs);
+//	shader.active_program_ix=1;
+
 	globs_load_obj_file(1,"obj/plane.obj");
 	globs_load_obj_file(2,"obj/ico_sphere.obj");
 	globs_load_obj_file(3,"obj/cylinder.obj");
@@ -18,7 +37,7 @@ inline static void main_init(){
 	globs_load_obj_file(6,"obj/torus.obj");
 
 	object*o=object_alloc(&ninja_def);
-	o->glob_id=6;
+	o->glob_id=1;
 	const float vr=.5f;
 	o->velocity=(velocity){
 		random_range(-vr,vr),random_range(-vr,vr),0,0};
@@ -34,34 +53,7 @@ inline static void main_init(){
 //		random_range(-sr,sr),1};
 	o->scale=(scale){.5f,.5f,.5f,1};
 }
-inline static void main_init2(){
-	globs_load_obj_file(1,"obj/ico_sphere.obj");
-	globs_load_obj_file(2,"obj/cylinder.obj");
-	globs_load_obj_file(3,"obj/grid_8x8.obj");
-	globs_load_obj_file(4,"obj/plane.obj");
-	globs_load_obj_file(5,"obj/sphere.obj");
 
-	for(int i=0;i<object_cap;i++){
-		object*o=object_alloc(&ninja_def);
-
-		o->glob_id=(gid)random_range(1,6);
-		if(o->glob_id==6)o->glob_id=5;
-
-		const float vr=.5f;
-		o->velocity=(velocity){
-			random_range(-vr,vr),random_range(-vr,vr),0,0};
-
-		const float ar=360;
-		o->angular_velocity=(angular_velocity){
-			0,0,random_range(-ar,ar),0};
-
-		const float sr=.02f;
-		o->scale=(scale){
-			random_range(-sr,sr),
-			random_range(-sr,sr),
-			random_range(-sr,sr),1};
-	}
-}
 //------------------------------------------------------------------------ main
 int main(int argc,char*argv[]){
 	printf(":-%15s-:-%-9s-:\n","---------------","---------");
@@ -79,9 +71,11 @@ int main(int argc,char*argv[]){
 	shader_init();
 	objects_init();
 	globs_init();
-//	fps_init();
-
 	main_init();
+
+	arrayix program_id_min=0;
+	arrayix program_id_max=1;
+
 	struct{
 		GLclampf red;
 		GLclampf green;
@@ -89,10 +83,21 @@ int main(int argc,char*argv[]){
 	}c={.11f,.37f,1};
 
 	int draw_default=0,draw_objects=1;
-
-
 	puts("");
 	metrics_print_headers();
+	{
+		program*p=&programs[shader.active_program_ix];
+		gid progid=p->gid;
+		glUseProgram(progid);
+		dyni*enable=&p->attributes;
+		printf(" * using program at index %u\n",shader.active_program_ix);
+		for(unsigned i=0;i<enable->count;i++){
+			const unsigned ix=(unsigned)dyni_get(enable,i);
+			printf("   * disable vertex attrib array %d\n",ix);
+			glEnableVertexAttribArray(ix);
+		}
+	}
+	gid previous_active_program_ix=shader.active_program_ix;
 
 	for(int running=1;running;){
 		metrics__at__frame_begin();
@@ -162,11 +167,50 @@ int main(int argc,char*argv[]){
 						}
 						break;
 					}
+					case SDLK_3:{
+						shader.active_program_ix++;
+						if(shader.active_program_ix>program_id_max){
+							shader.active_program_ix=program_id_min;
+						}
+						break;
+					}
 				}
 				break;
 
 
 			}
+		}
+
+		if(previous_active_program_ix!=shader.active_program_ix){
+			printf(" * switching to program at index %u\n",
+					shader.active_program_ix);
+
+			dyni disable=programs[previous_active_program_ix]
+								  .attributes;
+
+			for(unsigned i=0;i<disable.count;i++){
+				const unsigned ix=(unsigned)dyni_get(&disable,i);
+				printf("   * disable vertex attrib array %d\n",ix);
+				glDisableVertexAttribArray(ix);//position
+			}
+
+			const unsigned progid=programs[shader.active_program_ix].gid;
+
+			glUseProgram(progid);
+
+			program*p=&programs[shader.active_program_ix];
+			dyni*enable=&p->attributes;
+
+			for(unsigned i=0;i<enable->count;i++){
+				const unsigned ix=(unsigned)dyni_get(enable,i);
+				printf("   * enable vertex attrib array %d\n",ix);
+				glEnableVertexAttribArray(ix);
+			}
+			previous_active_program_ix=shader.active_program_ix;
+//			glEnableVertexAttribArray(shader_apos);//position
+//			glEnableVertexAttribArray(shader_argba);//color
+//			glEnableVertexAttribArray(shader_anorm);//normal
+//			glEnableVertexAttribArray(shader_atex);//texture
 		}
 
 		glClearColor(c.red,c.green,c.blue,1.0);

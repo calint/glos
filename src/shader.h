@@ -8,13 +8,13 @@
 static char*shader_vertex_source =
 "#version 130                                                \n\
 uniform mat4 umtx_mw;// model-to-world-matrix                        \n\
-attribute vec3 apos;// vertices                              \n\
-attribute vec4 argba;// colors                               \n\
-attribute vec3 anorm;                               \n\
-attribute vec2 atex;                               \n\
-varying vec4 vrgba;                                          \n\
-varying vec3 vnorm;                                          \n\
-varying vec2 vtex;                                          \n\
+in vec3 apos;// vertices                              \n\
+in vec4 argba;// colors                               \n\
+in vec3 anorm;                               \n\
+in vec2 atex;                               \n\
+out vec4 vrgba;                                          \n\
+out vec3 vnorm;                                          \n\
+out vec2 vtex;                                          \n\
 void main(){                                                 \n\
 	gl_Position=umtx_mw*vec4(apos,1);                                        \n\
 	vrgba=argba;                                             \n\
@@ -24,11 +24,12 @@ void main(){                                                 \n\
 static char*shader_fragment_source =
 		"#version 130                              \n\
 uniform sampler2D utex;                    \n\
-varying mediump vec4 vrgba;                \n\
-varying mediump vec3 vnorm;                \n\
-varying mediump vec2 vtex;                \n\
+in vec4 vrgba;                \n\
+in vec3 vnorm;                \n\
+in vec2 vtex;                \n\
+out vec4 rgba;                \n\
 void main(){                               \n\
-	gl_FragColor=texture2D(utex,vtex)+vrgba*dot(vec4(1,0,0,1),vec4(vnorm,1));\n\
+	rgba=texture2D(utex,vtex)+vrgba*dot(vec4(1,0,0,1),vec4(vnorm,1));\n\
 }\n";
 #define shader_apos 0
 #define shader_argba 1
@@ -36,6 +37,10 @@ void main(){                               \n\
 #define shader_atex 3
 #define shader_umtx_mw 0
 #define shader_utex 1
+
+struct shader{
+	gid active_program_ix;
+}shader={0};
 
 inline static void shader_load(){
 	_check_gl_error("enter shader_load");
@@ -46,7 +51,7 @@ inline static void shader_load(){
 			glob_def.vbuf,
 			GL_STATIC_DRAW
 	);
-	metrics.buffered_data+=glob_def.vbufnbytes;
+	metrics.buffered_data+=(unsigned)glob_def.vbufnbytes;
 
 	glGenBuffers(1,&glob_def.ibufid);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,glob_def.ibufid);
@@ -55,7 +60,7 @@ inline static void shader_load(){
 			glob_def.ibuf,
 			GL_STATIC_DRAW
 	);
-	metrics.buffered_data+=glob_def.ibufnbytes;
+	metrics.buffered_data+=(unsigned)glob_def.ibufnbytes;
 
 //	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
 	glGenTextures(1,&glob_def.texbufid);
@@ -92,15 +97,9 @@ inline static void shader_load(){
 inline static void _shader_prepare_for_render(
 		GLuint vbufid,GLuint texid,const float*mtx_mw
 ){
-	//? ifprevdiff
-	glEnableVertexAttribArray(shader_apos);//position
-	glEnableVertexAttribArray(shader_argba);//color
-	glEnableVertexAttribArray(shader_anorm);//normal
-	glEnableVertexAttribArray(shader_atex);//texture
-	glUseProgram(programs[0].id);
-	//? enabled
 
 	glUniformMatrix4fv(0,1,0,mtx_mw);
+
 	glUniform1i(shader_utex,0);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D,texid);
@@ -117,12 +116,7 @@ inline static void _shader_prepare_for_render(
 }
 
 inline static void _shader_after_render(){
-	//? ifnextnotsametype
 	glBindTexture(GL_TEXTURE_2D,0);
-	glDisableVertexAttribArray(shader_apos);//position
-	glDisableVertexAttribArray(shader_argba);//color
-	glDisableVertexAttribArray(shader_anorm);//normal
-	glDisableVertexAttribArray(shader_atex);//texture
 }
 
 inline static void shader_render_triangle_elements(
@@ -156,6 +150,12 @@ inline static void shader_render_triangle_array(
 	_shader_after_render();
 }
 
+inline static void shader_free() {
+	//? free programs?
+//	if(shader.program_id)
+//		glDeleteProgram(shader.program_id);
+}
+
 inline static void shader_init() {
 	_check_gl_error("shader_init");
 
@@ -176,17 +176,58 @@ inline static void shader_init() {
 	printf(":-%10s-:-%7s-:\n","----------","-------");
 	puts("");
 
-	programs_load(0,shader_vertex_source,shader_fragment_source);
+	dyni attrs=dyni_def;
+	dyni_add(&attrs,shader_apos);
+	dyni_add(&attrs,shader_argba);
+	dyni_add(&attrs,shader_anorm);
+	dyni_add(&attrs,shader_atex);
+
+	programs_load(0,shader_vertex_source,shader_fragment_source,/*gives*/attrs);
 //	glUseProgram(shader_programs[0].id);
 
 	shader_load();
 
 	_check_gl_error("after shader_init");
+
+	///----------------------------------------------
+
+
+//	// The framebuffer, which regroups 0, 1, or more textures, and 0 or 1 depth buffer.
+//	GLuint FramebufferName = 0;
+//	glGenFramebuffers(1, &FramebufferName);
+//	glBindFramebuffer(GL_FRAMEBUFFER, FramebufferName);
+//
+//	// The texture we're going to render to
+//	GLuint renderedTexture;
+//	glGenTextures(1, &renderedTexture);
+//
+//	// "Bind" the newly created texture : all future texture functions will modify this texture
+//	glBindTexture(GL_TEXTURE_2D, renderedTexture);
+//
+//	// Give an empty image to OpenGL ( the last "0" )
+//	glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, 1024, 768, 0,GL_RGB, GL_UNSIGNED_BYTE, 0);
+//
+//	// Poor filtering. Needed !
+//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+//
+//	// The depth buffer
+//	GLuint depthrenderbuffer;
+//	glGenRenderbuffers(1, &depthrenderbuffer);
+//	glBindRenderbuffer(GL_RENDERBUFFER, depthrenderbuffer);
+//	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, 1024, 768);
+//	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthrenderbuffer);
+//
+//	// Set "renderedTexture" as our colour attachement #0
+//	_check_gl_error("in make texture for render  1");
+//	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, renderedTexture, 0);
+//	_check_gl_error("in make texture for render");
+//
+//	// Set the list of draw buffers.
+//	GLenum DrawBuffers[1] = {GL_COLOR_ATTACHMENT0};
+//	glDrawBuffers(1, DrawBuffers); // "1" is the size of DrawBuffers
+
+
 }
 
-inline static void shader_free() {
-	//? free programs?
-//	if(shader.program_id)
-//		glDeleteProgram(shader.program_id);
-}
 

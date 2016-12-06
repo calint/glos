@@ -72,7 +72,7 @@ struct{
 static inline void window_init() {
 //	puts(" *** requested:");
 //	gl_request_profile_and_version(SDL_GL_CONTEXT_PROFILE_ES,2,0);
-//	gl_request_profile_and_version(SDL_GL_CONTEXT_PROFILE_CORE,4,5);
+	gl_request_profile_and_version(SDL_GL_CONTEXT_PROFILE_CORE,3,0);
 //	puts(" ***  reading:");
 //	gl_print_context_profile();
 
@@ -117,7 +117,7 @@ static inline void window_init() {
 		printf("%s %d: %s",__FILE__,__LINE__,SDL_GetError());
 		exit(3);
 	}
-
+	gl_print_context_profile_and_version();
 }
 
 static inline void window_free() {

@@ -1,11 +1,13 @@
 #pragma once
 #include"sdl.h"
 #include"globs.h"
+#include"dyni.h"
 
-#define programs_cap 1
+#define programs_cap 8
 
 typedef struct program{
-	GLuint id;
+	GLuint gid;
+	/*owns*/dyni attributes;
 }program;
 
 static program programs[programs_cap];
@@ -34,29 +36,46 @@ inline static GLuint _compile_shader(GLenum shaderType,const char *code) {
 	return id;
 }
 
-inline static void programs_load(arrayix i,const char*vert_src,const char*frag_src) {
+inline static void programs_load(
+		arrayix i,
+		const char*vert_src,
+		const char*frag_src,
+		/*takes*/dyni attrs
+){
+	if(i>=programs_cap){
+		fprintf(stderr,"\nindex-out-of-bounds\n");
+		fprintf(stderr,"\t%s %d\n\n  index: %u    capacity: %u\n",
+				__FILE__,__LINE__,i,programs_cap);
+		exit(-1);
+	}
+
 	_check_gl_error("enter shader_program_load");
 
-	GLuint id=glCreateProgram();
-	programs[i].id=id;
+	GLuint gid=glCreateProgram();
+
+	program*p=&programs[i];
+
+	p->gid=gid;
+
+	p->attributes=/*gives*/attrs;
 
 	GLuint vertex=_compile_shader(GL_VERTEX_SHADER,vert_src);
 
 	GLuint fragment=_compile_shader(GL_FRAGMENT_SHADER,frag_src);
 
-	glAttachShader(id,vertex);
-	glAttachShader(id,fragment);
-	glLinkProgram(id);
+	glAttachShader(gid,vertex);
+	glAttachShader(gid,fragment);
+	glLinkProgram(gid);
 
-	GLint ok;glGetProgramiv(id,GL_LINK_STATUS,&ok);
+	GLint ok;glGetProgramiv(gid,GL_LINK_STATUS,&ok);
 	if(!ok){
-		GLint len;glGetProgramiv(id,GL_INFO_LOG_LENGTH,&len);
+		GLint len;glGetProgramiv(gid,GL_INFO_LOG_LENGTH,&len);
 
 		GLchar msg[1024];
 		if(len>(signed)sizeof msg){
 			len=sizeof msg;
 		}
-		glGetProgramInfoLog(id,len,NULL,&msg[0]);
+		glGetProgramInfoLog(gid,len,NULL,&msg[0]);
 		printf("program linking error: %s\n",msg);
 		exit(8);
 	}
