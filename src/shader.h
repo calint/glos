@@ -135,10 +135,16 @@ inline static void shader_render_triangle_elements(
 }
 
 inline static void shader_render(){
+	const float m[]={
+			1,0,0,0,
+			0,1,0,0,
+			0,0,1,.5f,
+			0,0,0,1,
+	};
 	shader_render_triangle_elements(
 			glob_def.vbufid,glob_def.vbufn,
 			glob_def.ibufid,(unsigned)glob_def.ibufn,
-			glob_def.texbufid,mat4_ident
+			glob_def.texbufid,m
 	);
 }
 
@@ -168,22 +174,31 @@ inline static void shader_init() {
 	_print_gl_string("GL_RENDERER", GL_RENDERER);
 	_print_gl_string("GL_SHADING_LANGUAGE_VERSION",GL_SHADING_LANGUAGE_VERSION);
 	puts("");
+//	glEnable(GL_DEPTH_TEST);
+//	glDepthFunc(GL_GREATER);
+	glEnable(GL_CULL_FACE);
 	printf(":-%10s-:-%7s-:\n","----------","-------");
 	printf(": %10s : %-7s :\n","feature","y/n");
 	printf(":-%10s-:-%7s-:\n","----------","-------");
 	printf(": %10s : %-7s :\n","cull face",glIsEnabled(GL_CULL_FACE)?"yes":"no");
 	printf(": %10s : %-7s :\n","blend",glIsEnabled(GL_BLEND)?"yes":"no");
+	printf(": %10s : %-7s :\n","zbuffer",glIsEnabled(GL_DEPTH_TEST)?"yes":"no");
 	printf(":-%10s-:-%7s-:\n","----------","-------");
 	puts("");
 
 	dyni attrs=dyni_def;
-	dyni_add(&attrs,shader_apos);
-	dyni_add(&attrs,shader_argba);
-	dyni_add(&attrs,shader_anorm);
-	dyni_add(&attrs,shader_atex);
+	int e[]={shader_apos,shader_argba,shader_anorm,shader_atex};
+	dyni_add_list(&attrs,e,4);
+//
+//	dyni_add(&attrs,shader_apos);
+//	dyni_add(&attrs,shader_argba);
+//	dyni_add(&attrs,shader_anorm);
+//	dyni_add(&attrs,shader_atex);
 
 	programs_load(0,shader_vertex_source,shader_fragment_source,/*gives*/attrs);
-//	glUseProgram(shader_programs[0].id);
+
+
+	//	glUseProgram(shader_programs[0].id);
 
 	shader_load();
 

@@ -88,7 +88,10 @@ inline static void dyni_free(dyni*this){
 
 //-----------------------------------------------------------------------------
 
-inline static void dyni_add_list(dyni*this,/*copies*/const int*str,int n){
+inline static void dyni_add_list(dyni*this,
+		/*copies*/const int*str,
+		unsigned n
+){
 	//? optimize
 	const int*p=str;
 	while(n--){
