@@ -1,26 +1,22 @@
-//------------------------------------------------------------------------ dyni
 #pragma once
+#include"typedefs.h"
+//----------------------------------------------------------------------config
 
 #define dyni_initial_capacity 8
 #define dyni_bounds_check 1
 
-//------------------------------------------------------------------------- def
+//------------------------------------------------------------------------ def
 
 typedef struct dyni{
-
 	int *data;
-
 	unsigned size;
-
 	unsigned capacity;
-
 }dyni;
-
 dyni dyni_def={0,0,0};
 
 //--------------------------------------------------------------------- private
 
-inline static void _dyni_insure_free_capcity(dyni*this,size_t n){
+inline static void _dyni_insure_free_capcity(dyni*this,arrayix n){
 	const unsigned rem=this->capacity-this->size;
 	if(rem>=n)
 		return;
@@ -56,11 +52,11 @@ inline static void dyni_add(dyni*this,int o){
 
 //-----------------------------------------------------------------------------
 
-inline static int dyni_get(dyni*this,size_t index){
+inline static int dyni_get(dyni*this,arrayix index){
 #ifdef dyni_bounds_check
 	if(index>=this->capacity){
 		fprintf(stderr,"\nindex-out-of-bounds");
-		fprintf(stderr,"\t%s\n\n%d  index: %zu    capacity: %zu\n",
+		fprintf(stderr,"\t%s\n\n%d  index: %u    capacity: %u\n",
 				__FILE__,__LINE__,index,this->capacity);
 		exit(-1);
 	}

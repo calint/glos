@@ -1,26 +1,22 @@
-//------------------------------------------------------------------------ dync
 #pragma once
+#include"typedefs.h"
+//----------------------------------------------------------------------config
 
 #define dync_initial_capacity 8
 #define dync_bounds_check 1
 
-//------------------------------------------------------------------------- def
+//------------------------------------------------------------------------ def
 
 typedef struct dync{
-
 	char *data;
-
 	unsigned size;
-
 	unsigned capacity;
-
 }dync;
-
 dync dync_def={0,0,0};
 
 //--------------------------------------------------------------------- private
 
-inline static void _dync_insure_free_capcity(dync*this,size_t n){
+inline static void _dync_insure_free_capcity(dync*this,arrayix n){
 	const unsigned rem=this->capacity-this->size;
 	if(rem>=n)
 		return;
@@ -56,11 +52,11 @@ inline static void dync_add(dync*this,char o){
 
 //-----------------------------------------------------------------------------
 
-inline static char dync_get(dync*this,size_t index){
+inline static char dync_get(dync*this,arrayix index){
 #ifdef dync_bounds_check
 	if(index>=this->capacity){
 		fprintf(stderr,"\nindex-out-of-bounds");
-		fprintf(stderr,"\t%s\n\n%d  index: %zu    capacity: %zu\n",
+		fprintf(stderr,"\t%s\n\n%d  index: %u    capacity: %u\n",
 				__FILE__,__LINE__,index,this->capacity);
 		exit(-1);
 	}

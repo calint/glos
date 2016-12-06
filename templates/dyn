@@ -1,26 +1,22 @@
-//------------------------------------------------------------------------ ${name}
 #pragma once
+#include"typedefs.h"
+//----------------------------------------------------------------------config
 
 #define ${name}_initial_capacity 8
 #define ${name}_bounds_check 1
 
-//------------------------------------------------------------------------- def
+//------------------------------------------------------------------------ def
 
 typedef struct ${name}{
-
 	${type} *data;
-
 	unsigned size;
-
 	unsigned capacity;
-
 }${name};
-
 ${name} ${name}_def={0,0,0};
 
 //--------------------------------------------------------------------- private
 
-inline static void _${name}_insure_free_capcity(${name}*this,size_t n){
+inline static void _${name}_insure_free_capcity(${name}*this,arrayix n){
 	const unsigned rem=this->capacity-this->size;
 	if(rem>=n)
 		return;
@@ -56,11 +52,11 @@ inline static void ${name}_add(${name}*this,${type} o){
 
 //-----------------------------------------------------------------------------
 
-inline static ${type} ${name}_get(${name}*this,size_t index){
+inline static ${type} ${name}_get(${name}*this,arrayix index){
 #ifdef ${name}_bounds_check
 	if(index>=this->capacity){
 		fprintf(stderr,"\nindex-out-of-bounds");
-		fprintf(stderr,"\t%s\n\n%d  index: %zu    capacity: %zu\n",
+		fprintf(stderr,"\t%s\n\n%d  index: %u    capacity: %u\n",
 				__FILE__,__LINE__,index,this->capacity);
 		exit(-1);
 	}

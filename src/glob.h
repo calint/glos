@@ -80,7 +80,7 @@ inline static void glob_load_obj_file(glob*this,const char*path){
 	dynf buf=/*takes*/read_obj_file_from_path(path);
 
 	this->vbufn=buf.size;
-	this->vbufnbytes=buf.size*sizeof(float);
+	this->vbufnbytes=(GLsizeiptr)(buf.size*sizeof(float));
 	this->texbufid=glob_def.texbufid;//?
 
 	glGenBuffers(1,&this->vbufid);

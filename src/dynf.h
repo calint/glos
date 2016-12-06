@@ -1,26 +1,22 @@
-//------------------------------------------------------------------------ dynf
 #pragma once
+#include"typedefs.h"
+//----------------------------------------------------------------------config
 
 #define dynf_initial_capacity 8
 #define dynf_bounds_check 1
 
-//------------------------------------------------------------------------- def
+//------------------------------------------------------------------------ def
 
 typedef struct dynf{
-
 	float *data;
-
 	unsigned size;
-
 	unsigned capacity;
-
 }dynf;
-
 dynf dynf_def={0,0,0};
 
 //--------------------------------------------------------------------- private
 
-inline static void _dynf_insure_free_capcity(dynf*this,size_t n){
+inline static void _dynf_insure_free_capcity(dynf*this,arrayix n){
 	const unsigned rem=this->capacity-this->size;
 	if(rem>=n)
 		return;
@@ -56,11 +52,11 @@ inline static void dynf_add(dynf*this,float o){
 
 //-----------------------------------------------------------------------------
 
-inline static float dynf_get(dynf*this,size_t index){
+inline static float dynf_get(dynf*this,arrayix index){
 #ifdef dynf_bounds_check
 	if(index>=this->capacity){
 		fprintf(stderr,"\nindex-out-of-bounds");
-		fprintf(stderr,"\t%s\n\n%d  index: %zu    capacity: %zu\n",
+		fprintf(stderr,"\t%s\n\n%d  index: %u    capacity: %u\n",
 				__FILE__,__LINE__,index,this->capacity);
 		exit(-1);
 	}
