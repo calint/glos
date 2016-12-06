@@ -30,7 +30,7 @@ inline static void main_init(){
 	//		object_at_const(object_count-1);
 	//		object_at_const(object_count);
 
-	for(int i=0;i<object_cap+1;i++){
+	for(int i=0;i<object_cap;i++){
 		object*o=object_alloc(&ninja_def);
 //		object_free(o);
 //		object_free(o);
