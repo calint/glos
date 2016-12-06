@@ -38,9 +38,19 @@ inline static void main_init(){
 //		object_at(object_cap);
 
 		o->glob_id=1;
-		o->velocity=(velocity){random_range(-1,1),random_range(-1,1),0,0};
-//		o->angular_velocity=(angular_velocity){0,0,random_range(-180,180),0};
-		o->scale=(scale){.05f,.05f,.05f,1};
+
+		o->velocity=(velocity){
+			random_range(-1,1),random_range(-1,1),0,0};
+
+		o->angular_velocity=(angular_velocity){
+			0,0,random_range(-360*8,360*8),0};
+
+		o->scale=(scale){
+			random_range(-.05,.05),
+			random_range(-.05,.05),
+			random_range(-.05,.05),1}
+		;
+
 	}
 //
 //	object*o=new(&_ninja_);

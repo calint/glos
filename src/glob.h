@@ -30,8 +30,8 @@ static GLubyte glob_def_ixbuf[]={0,1,2,2,3,0};
 #define glob_def_texwi 2
 #define glob_def_texhi 2
 static GLfloat glob_def_texbuf[]={
-		.7f, .7f, .7f,    .2f, .2f, .2f,
-		.2f ,.2f ,.2f,    .7f, .7f, .7f
+		1,1,1,  0,1,1,
+		1,1,0,  1,1,1,
 };
 
 typedef struct
