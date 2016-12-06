@@ -3,9 +3,9 @@
 // ${name} allocator generated from template 
 //-----------------------------------------------------------------------------
 #include"${name}.h"
-#define ${name}_count 1024
+#define ${name}_cap 1024
 //--------------------------------------------------------------------- storage
-static ${name} ${nameplr}[${name}_count];
+static ${name} ${nameplr}[${name}_cap];
 static ${name}*${nameplr}_start_ptr=${nameplr};
 static ${name}*${nameplr}_seek_ptr=${nameplr};
 static ${name}*${nameplr}_end_ptr=${nameplr}+${name}_count;

@@ -39,15 +39,15 @@ inline static void main_init(){
 }
 //------------------------------------------------------------------------ main
 int main(int argc,char*argv[]){
-	printf(":-%14s : %8s-:\n","--------------","--------");
-	printf(": %14s : %8s :\n","type","size");
-	printf(":-%14s : %8s-:\n","--------------","--------");
-	printf(": %14s : %8ld :\n","part",sizeof(part));
-	printf(": %14s : %8ld :\n","object",sizeof(object));
-	printf(": %14s : %8ld :\n","objects",sizeof(objects));
-	printf(": %14s : %8ld :\n","glob",sizeof(glob));
-	printf(": %14s : %8ld :\n","globs",sizeof(globs));
-	printf(":-%14s-:-%8s-:\n","--------------","--------");
+	printf(":-%15s-:-%-8s-:\n","---------------","--------");
+	printf(": %15s : %-8s :\n","type",           "bytes");
+	printf(":-%15s-:-%-8s-:\n","---------------","--------");
+	printf(": %15s : %-8ld :\n","part",sizeof(part));
+	printf(": %15s : %-8ld :\n","object",sizeof(object));
+	printf(": %15s : %-8ld :\n","objects",sizeof(objects));
+	printf(": %15s : %-8ld :\n","glob",sizeof(glob));
+	printf(": %15s : %-8ld :\n","globs",sizeof(globs));
+	printf(":-%15s-:-%-8s-:\n","---------------","--------");
 
 	sdl_init();
 	window_init();

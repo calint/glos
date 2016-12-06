@@ -164,7 +164,7 @@ inline static void shader_init() {
 	_print_gl_string("GL_SHADING_LANGUAGE_VERSION",GL_SHADING_LANGUAGE_VERSION);
 	puts("");
 	printf(":-%10s-:-%7s-:\n","----------","-------");
-	printf(": %10s :-%7s-:\n","feature","");
+	printf(": %10s : %-7s :\n","feature","y/n");
 	printf(":-%10s-:-%7s-:\n","----------","-------");
 	printf(": %10s : %-7s :\n","cull face",glIsEnabled(GL_CULL_FACE)?"yes":"no");
 	printf(": %10s : %-7s :\n","blend",glIsEnabled(GL_BLEND)?"yes":"no");
