@@ -38,9 +38,9 @@ typedef struct
 glob{
 	vertex*vbuf;
 	GLuint vbufn;
-	GLuint vbufnbytes;
+	GLsizeiptr vbufnbytes;
 	GLuint vbufid;
-	GLubyte*ibuf;
+	GLubyte*ibuf;//? void* and ibuf_type_size
 	GLsizei ibufn;
 	GLsizeiptr ibufnbytes;
 	GLuint ibufid;

@@ -51,23 +51,6 @@ int main(int argc,char*argv[]){
 
 	sdl_init();
 	window_init();
-
-//	glCullFace(GL_BACK);
-//	glEnable(GL_CULL_FACE);
-//
-//	glEnable(GL_TEXTURE_2D);
-//	glEnable(GL_BLEND); // transparency rgba
-//
-//	puts("");
-//	printf(":-%10s-:-%7s-:\n","----------","-------");
-//	printf(": %10s :-%7s-:\n","feature","");
-//	printf(":-%10s-:-%7s-:\n","----------","-------");
-//	printf(": %10s : %-7s :\n","cull face",glIsEnabled(GL_CULL_FACE)?"yes":"no");
-//	printf(": %10s : %-7s :\n","blend",glIsEnabled(GL_BLEND)?"yes":"no");
-//	printf(":-%10s-:-%7s-:\n","----------","-------");
-//	puts("");
-//
-
 	shader_init();
 	objects_init();
 	main_init();
@@ -80,19 +63,14 @@ int main(int argc,char*argv[]){
 		GLclampf blue;
 	}c={0,0,1};
 
-	int draw_default=0;
-	int draw_objects=1;
+	int draw_default=0,draw_objects=1;
 
 	for(int running=1;running;){
 		fps__at__frame_begin();
+
 		SDL_Event event;
 		while(SDL_PollEvent(&event)){
 			switch (event.type) {
-			case SDL_QUIT:
-				running = 0;
-				break;
-
-
 			case SDL_KEYDOWN:
 				switch (event.key.keysym.sym){
 					case SDLK_ESCAPE:
@@ -127,7 +105,6 @@ int main(int argc,char*argv[]){
 				}
 				break;
 
-
 			case SDL_KEYUP:
 				switch (event.key.keysym.sym){
 					case SDLK_w:
@@ -146,9 +123,12 @@ int main(int argc,char*argv[]){
 						draw_default=0;
 						break;
 				}
+				break;
+
+				case SDL_QUIT:
+					running = 0;
+					break;
 			}
-
-
 		}
 
 		glClearColor(c.red,c.green,c.blue,1.0);
