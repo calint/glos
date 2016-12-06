@@ -33,7 +33,7 @@ inline static float rnd(){return(float)rand()/(float)RAND_MAX;}
 //----------------------------------------------------------------------------
 
 inline static float random_range(float low,float high){
-	return (float)rand()*(high-low)+low;
+	return (float)rnd()*(high-low)+low;
 }
 
 //----------------------------------------------------------------------------
