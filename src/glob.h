@@ -37,13 +37,13 @@ static GLfloat glob_def_texbuf[]={
 typedef struct
 glob{
 	vertex*vbuf;
-	GLuint ibufid;
 	GLuint vbufn;
 	GLuint vbufnbytes;
-	GLubyte*ibuf;
 	GLuint vbufid;
-	ssize_t ibufn;
-	ssize_t ibufnbytes;
+	GLubyte*ibuf;
+	GLsizei ibufn;
+	GLsizeiptr ibufnbytes;
+	GLuint ibufid;
 	GLfloat*texbuf;
 	GLuint texbufid;
 	GLsizei texwi;
