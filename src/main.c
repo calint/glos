@@ -17,7 +17,7 @@ inline static void main_init(){
 	globs_load_obj_file(5,"obj/sphere.obj");
 
 	object*o=object_alloc(&ninja_def);
-	o->glob_id=4;
+	o->glob_id=1;
 	const float vr=.5f;
 	o->velocity=(velocity){
 		random_range(-vr,vr),random_range(-vr,vr),0,0};
@@ -26,11 +26,12 @@ inline static void main_init(){
 	o->angular_velocity=(angular_velocity){
 		0,0,random_range(-ar,ar),0};
 
-	const float sr=.2f;
-	o->scale=(scale){
-		random_range(-sr,sr),
-		random_range(-sr,sr),
-		random_range(-sr,sr),1};
+//	const float sr=.2f;
+//	o->scale=(scale){
+//		random_range(-sr,sr),
+//		random_range(-sr,sr),
+//		random_range(-sr,sr),1};
+	o->scale=(scale){.5f,.5f,.5f,1};
 }
 inline static void main_init2(){
 	globs_load_obj_file(1,"obj/ico_sphere.obj");
