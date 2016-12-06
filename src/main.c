@@ -10,14 +10,14 @@
 #include"app/ninja.h"
 //----------------------------------------------------------------------- init
 inline static void main_init(){
-	globs_load_obj_file(1,"obj/ico_sphere.obj");
-	globs_load_obj_file(2,"obj/cylinder.obj");
-	globs_load_obj_file(3,"obj/grid_8x8.obj");
-	globs_load_obj_file(4,"obj/plane.obj");
+	globs_load_obj_file(1,"obj/plane.obj");
+	globs_load_obj_file(2,"obj/ico_sphere.obj");
+	globs_load_obj_file(3,"obj/cylinder.obj");
+	globs_load_obj_file(4,"obj/grid_8x8.obj");
 	globs_load_obj_file(5,"obj/sphere.obj");
 
 	object*o=object_alloc(&ninja_def);
-	o->glob_id=1;
+	o->glob_id=4;
 	const float vr=.5f;
 	o->velocity=(velocity){
 		random_range(-vr,vr),random_range(-vr,vr),0,0};

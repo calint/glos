@@ -173,7 +173,7 @@ static/*gives*/dynf read_obj_file_from_path(const char*path){
 		}
 	}
 	printf("  %lu vertices  %lu B\n",
-			vertex_buffer.count/sizeof(float),
+			vertex_buffer.count,
 			dynf_size_in_bytes(&vertex_buffer));
 
 	return vertex_buffer;
