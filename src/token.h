@@ -51,6 +51,15 @@ inline static int token_get_int(token*t){
 	return i;
 }
 
+inline static unsigned token_get_uint(token*t){
+	int i=atoi(t->content);//?  assuming file ends with whitespace, error?
+	if(i<0){
+		//? break
+		exit(-100);
+	}
+	return(unsigned)i;
+}
+
 inline static token token_next_from_string(const char*s){
 	const char*p=s;
 	token t;

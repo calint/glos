@@ -131,24 +131,24 @@ static/*gives*/dynf read_obj_file_from_path(const char*path){
 				// position
 				token vert1=next_token_from_string_additional_delim(p,'/');
 				p=vert1.end;
-				int ix1=token_get_int(&vert1);
-				vec4*vtx=(vec4*)dynp_get(&vertices,(size_t)(ix1-1));
+				arrayix ix1=token_get_uint(&vert1);
+				vec4*vtx=(vec4*)dynp_get(&vertices,ix1-1);
 
 				// texture index
 				token vert2=next_token_from_string_additional_delim(p,'/');
 				p=vert2.end;
-				int ix2=token_get_int(&vert2);
+				arrayix ix2=token_get_uint(&vert2);
 				vec4 tx,*tex;tex=&tx;
 				if(ix2){
-					tex=(vec4*)dynp_get(&texuv,(size_t)(ix2-1));
+					tex=(vec4*)dynp_get(&texuv,ix2-1);
 				}else{
 					*tex=(vec4){0,0,0,0};
 				}
 				// normal
 				token vert3=next_token_from_string_additional_delim(p,'/');
 				p=vert3.end;
-				int ix3=token_get_int(&vert3);
-				vec4*norm=(vec4*)dynp_get(&normals,(size_t)(ix3-1));
+				arrayix ix3=token_get_uint(&vert3);
+				vec4*norm=(vec4*)dynp_get(&normals,ix3-1);
 
 				// buffer
 				dynf_add(&vertex_buffer,vtx->x);

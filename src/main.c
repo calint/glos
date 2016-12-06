@@ -46,9 +46,9 @@ inline static void main_init(){
 			0,0,random_range(-360*8,360*8),0};
 
 		o->scale=(scale){
-			random_range(-.05,.05),
-			random_range(-.05,.05),
-			random_range(-.05,.05),1}
+			random_range(-.05f,.05f),
+			random_range(-.05f,.05f),
+			random_range(-.05f,.05f),1}
 		;
 
 	}
