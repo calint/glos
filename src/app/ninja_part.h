@@ -53,6 +53,15 @@ static void _ninja_part_update_(object*o,part*this,dt dt){
 		o->velocity.x=-o->velocity.x;
 		o->angular_velocity.z=-o->angular_velocity.z;
 	}
+	if(o->position.y>1){
+		o->position.y=1;
+		o->velocity.y=-o->velocity.y;
+		o->angular_velocity.z=-o->angular_velocity.z;
+	}else if(o->position.y<-1){
+		o->position.y=-1;
+		o->velocity.y=-o->velocity.y;
+		o->angular_velocity.z=-o->angular_velocity.z;
+	}
 }
 //-------------------------------------------------------------- implementation
 static void _ninja_part_render_(object*o,part*this){

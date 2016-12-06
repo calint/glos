@@ -4,7 +4,7 @@
 //-----------------------------------------------------------------------------
 #include"object.h"
 #include"part.h"
-#define object_cap 1024*8
+#define object_cap 1024
 #define object_assert_free
 #define object_assert_bounds
 //--------------------------------------------------------------------- storage
@@ -44,15 +44,16 @@ inline static object*object_alloc(object*initializer){
 		objects_bits_seek_ptr=objects_bits_start_ptr;
 		objects_seek_ptr=objects_start_ptr;
 	}
-	perror("out of objects");
-	exit(6);
+	fprintf(stderr,"\n    out of objects\n");
+	fprintf(stderr,"           in %s at line %d\n\n",__FILE__,__LINE__);
+	exit(-1);
 }
 //------------------------------------------------------------------------ free
 inline static void object_free(object*o){
 #ifdef object_assert_free
 	if(*o->ptr_to_bits&2){
-		fprintf(stderr,"\nobject %p already deleted\n",(void*)o);
-		fprintf(stderr,"\n\tfile: '%s'  line: %d\n\n",__FILE__,__LINE__);
+		fprintf(stderr,"\n    object %p already freed\n",(void*)o);
+		fprintf(stderr,"           in %s at line %d\n\n",__FILE__,__LINE__);
 		exit(-1);
 	}
 #endif
@@ -63,9 +64,9 @@ inline static void object_free(object*o){
 inline static void _object_assert_bounds(arrayix i){
 	if(i<object_cap)
 		return;
-	fprintf(stderr,"\nobject index %lu out of bounds %lu\n",
-			i,(arrayix)object_cap);
-	fprintf(stderr,"\n\tfile: '%s'  line: %d\n\n",__FILE__,__LINE__);
+	fprintf(stderr,"\n    object index %u out of bounds %u\n",
+			i,object_cap);
+	fprintf(stderr,"           in %s at line %d\n\n",__FILE__,__LINE__);
 	exit(-1);
 }
 

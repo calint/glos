@@ -44,15 +44,16 @@ inline static ${name}*${name}_alloc(${name}*initializer){
 		${nameplr}_bits_seek_ptr=${nameplr}_bits_start_ptr;
 		${nameplr}_seek_ptr=${nameplr}_start_ptr;
 	}
-	perror("out of ${nameplr}");
-	exit(6);
+	fprintf(stderr,"\n    out of ${nameplr}\n");
+	fprintf(stderr,"           in %s at line %d\n\n",__FILE__,__LINE__);
+	exit(-1);
 }
 //------------------------------------------------------------------------ free
 inline static void ${name}_free(${name}*o){
 #ifdef ${name}_assert_free
 	if(*o->ptr_to_bits&2){
-		fprintf(stderr,"\n${name} %p already deleted\n",(void*)o);
-		fprintf(stderr,"\n\tfile: '%s'  line: %d\n\n",__FILE__,__LINE__);
+		fprintf(stderr,"\n    ${name} %p already freed\n",(void*)o);
+		fprintf(stderr,"           in %s at line %d\n\n",__FILE__,__LINE__);
 		exit(-1);
 	}
 #endif
@@ -63,9 +64,9 @@ inline static void ${name}_free(${name}*o){
 inline static void _${name}_assert_bounds(arrayix i){
 	if(i<${name}_cap)
 		return;
-	fprintf(stderr,"\n${name} index %lu out of bounds %lu\n",
-			i,(arrayix)${name}_cap);
-	fprintf(stderr,"\n\tfile: '%s'  line: %d\n\n",__FILE__,__LINE__);
+	fprintf(stderr,"\n    ${name} index %u out of bounds %u\n",
+			i,${name}_cap);
+	fprintf(stderr,"           in %s at line %d\n\n",__FILE__,__LINE__);
 	exit(-1);
 }
 
