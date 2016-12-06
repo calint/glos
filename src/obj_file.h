@@ -1,11 +1,12 @@
 #pragma once
 #include"token.h"
-
-typedef struct obj_mtl{
-	str name;
-	str texture_path;
-	GLuint texture_gid;
-}obj_mtl;
+#include"dynp.h"
+#include"dynf.h"
+//typedef struct obj_mtl{
+//	str name;
+//	str texture_path;
+//	GLuint texture_gid;
+//}obj_mtl;
 
 // returns vertex buffer of array of triangles
 //                      [ x y z   r g b a   nx ny nz   u v]

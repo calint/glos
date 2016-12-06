@@ -5,37 +5,15 @@
 #include"objects.h"
 #include"obj_file.h"
 #include"object_alloc.h"
-#include"fps.h"
+#include"metrics.h"
 #include"app/ninja.h"
 //----------------------------------------------------------------------- init
 inline static void main_init(){
-//	drawables_load_file_in_slot(6,"obj/plane.obj");
-//	drawables_load_file_in_slot(6,"obj/ico_sphere.obj");
-//	drawables_load_file_in_slot(6,"obj/sphere.obj");
-//	drawables_load_file_in_slot(6,"obj/cylinder.obj");
-
-
-//	drawables_load_file_in_slot(6,"obj/blender_monkey.obj");
-//	drawables_load_file_in_slot(6,"obj/cube.obj");
-//	drawables_load_file_in_slot(6,"obj/grid_8x8.obj");
-
-//	glob*g=glob_alloc(&glob_def);
-//	glob_load_obj_file(g,"obj/ico_sphere.obj");
-//
 	globs_load_obj_file(1,"obj/ico_sphere.obj");
 
-
-	//	object_at(object_count-1);
-	//	object_at(object_count);
-	//		object_at_const(object_count-1);
-	//		object_at_const(object_count);
-
 	for(int i=0;i<object_cap;i++){
+
 		object*o=object_alloc(&ninja_def);
-//		object_free(o);
-//		object_free(o);
-//		object_at(object_cap-1);
-//		object_at(object_cap);
 
 		o->glob_id=1;
 
@@ -48,18 +26,9 @@ inline static void main_init(){
 		o->scale=(scale){
 			random_range(-.05f,.05f),
 			random_range(-.05f,.05f),
-			random_range(-.05f,.05f),1}
-		;
-
+			random_range(-.05f,.05f),1};
 	}
-//
-//	object*o=new(&_ninja_);
-//	o->position.x=-.5f;
-//	o->scale=(scale){.2f,.2f,.2f,1};
-//
-//	o=new(&_ninja_);
-//	o->position.y=.5f;
-//	o->scale=(scale){.1f,.1f,.1f,1};
+
 }
 //------------------------------------------------------------------------ main
 int main(int argc,char*argv[]){
@@ -88,6 +57,9 @@ int main(int argc,char*argv[]){
 	}c={.11f,.37f,1};
 
 	int draw_default=0,draw_objects=1;
+
+
+	metrics_print_headers();
 
 	for(int running=1;running;){
 		fps__at__frame_begin();

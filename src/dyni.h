@@ -9,19 +9,19 @@
 
 typedef struct dyni{
 	int *data;
-	unsigned size;
-	unsigned capacity;
+	unsigned count;
+	unsigned cap;
 }dyni;
 dyni dyni_def={0,0,0};
 
 //--------------------------------------------------------------------- private
 
 inline static void _dyni_insure_free_capcity(dyni*this,arrayix n){
-	const unsigned rem=this->capacity-this->size;
+	const unsigned rem=this->cap-this->count;
 	if(rem>=n)
 		return;
 	if(this->data){
-		unsigned new_cap=this->capacity*2;
+		unsigned new_cap=this->cap*2;
 		int *new_data=realloc(this->data,sizeof(int)*new_cap);
 		if(!new_data){
 			fprintf(stderr,"\nout-of-memory");
@@ -31,11 +31,11 @@ inline static void _dyni_insure_free_capcity(dyni*this,arrayix n){
 		if(new_data!=this->data){
 			this->data=new_data;
 		}
-		this->capacity=new_cap;
+		this->cap=new_cap;
 		return;
 	}
-	this->capacity=dyni_initial_capacity;
-	this->data=malloc(sizeof(int)*this->capacity);
+	this->cap=dyni_initial_capacity;
+	this->data=malloc(sizeof(int)*this->cap);
 	if(!this->data){
 		fprintf(stderr,"\nout-of-memory");
 		fprintf(stderr,"\tfile: '%s'  line: %d\n\n",__FILE__,__LINE__);
@@ -47,17 +47,17 @@ inline static void _dyni_insure_free_capcity(dyni*this,arrayix n){
 
 inline static void dyni_add(dyni*this,int o){
 	_dyni_insure_free_capcity(this,1);
-	*(this->data+this->size++)=o;
+	*(this->data+this->count++)=o;
 }
 
 //-----------------------------------------------------------------------------
 
 inline static int dyni_get(dyni*this,arrayix index){
 #ifdef dyni_bounds_check
-	if(index>=this->capacity){
+	if(index>=this->cap){
 		fprintf(stderr,"\nindex-out-of-bounds");
 		fprintf(stderr,"\t%s\n\n%d  index: %u    capacity: %u\n",
-				__FILE__,__LINE__,index,this->capacity);
+				__FILE__,__LINE__,index,this->cap);
 		exit(-1);
 	}
 #endif
@@ -68,14 +68,14 @@ inline static int dyni_get(dyni*this,arrayix index){
 //-----------------------------------------------------------------------------
 
 inline static int dyni_get_last(dyni*this){
-	int p=*(this->data+this->size-1);
+	int p=*(this->data+this->count-1);
 	return p;
 }
 
 //-----------------------------------------------------------------------------
 
 inline static size_t dyni_size_in_bytes(dyni*this){
-	return this->size*sizeof(int);
+	return this->count*sizeof(int);
 }
 
 //-----------------------------------------------------------------------------
@@ -93,7 +93,7 @@ inline static void dyni_add_list(dyni*this,/*copies*/const int*str,int n){
 	const int*p=str;
 	while(n--){
 		_dyni_insure_free_capcity(this,1);
-		*(this->data+this->size++)=*p++;
+		*(this->data+this->count++)=*p++;
 	}
 }
 
@@ -104,7 +104,7 @@ inline static void dyni_add_string(dyni*this,/*copies*/const int*str){
 	const int*p=str;
 	while(*p){
 		_dyni_insure_free_capcity(this,1);
-		*(this->data+this->size++)=*p++;
+		*(this->data+this->count++)=*p++;
 	}
 }
 
@@ -113,7 +113,7 @@ inline static void dyni_add_string(dyni*this,/*copies*/const int*str){
 inline static void dyni_write_to_fd(dyni*this,int fd){
 	if(!this->data)
 		return;
-	write(fd,this->data,this->size);
+	write(fd,this->data,this->count);
 }
 
 //-----------------------------------------------------------------------------

@@ -2,6 +2,7 @@
 #include"sdl.h"
 #include"globs.h"
 #include"programs.h"
+#include"metrics.h"
 //--------------------------------------------------------------------- shader
 //----------------------------------------------------------------------------
 static char*shader_vertex_source =
@@ -45,6 +46,7 @@ inline static void shader_load(){
 			glob_def.vbuf,
 			GL_STATIC_DRAW
 	);
+	metrics.buffered_data+=glob_def.vbufnbytes;
 
 	glGenBuffers(1,&glob_def.ibufid);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,glob_def.ibufid);
@@ -53,6 +55,7 @@ inline static void shader_load(){
 			glob_def.ibuf,
 			GL_STATIC_DRAW
 	);
+	metrics.buffered_data+=glob_def.ibufnbytes;
 
 //	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
 	glGenTextures(1,&glob_def.texbufid);
@@ -72,6 +75,8 @@ inline static void shader_load(){
 			glob_def.texwi,glob_def.texhi,
 			0,GL_RGB,GL_FLOAT,
 			glob_def.texbuf);
+	metrics.buffered_data+=(unsigned)(
+			glob_def.texhi*glob_def.texwi*(signed)sizeof(GL_FLOAT));
 	//----------------------------------------------
 
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);

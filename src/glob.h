@@ -1,6 +1,7 @@
 #pragma once
 #include"sdl.h"
 #include"dynf.h"
+#include"metrics.h"
 #define glob_count 128
 //----------------------------------------------------------------------- calls
 
@@ -77,19 +78,20 @@ inline static void glob_render(glob*this,const float*mat4_model_to_world){
 }
 
 inline static void glob_load_obj_file(glob*this,const char*path){
-	dynf buf=/*takes*/read_obj_file_from_path(path);
+	dynf df=/*takes*/read_obj_file_from_path(path);
 
-	this->vbufn=buf.size;
-	this->vbufnbytes=(GLsizeiptr)(buf.size*sizeof(float));
+	this->vbufn=df.count;
+	this->vbufnbytes=(GLsizeiptr)(df.count*sizeof(float));
 	this->texbufid=glob_def.texbufid;//?
 
 	glGenBuffers(1,&this->vbufid);
 	glBindBuffer(GL_ARRAY_BUFFER,this->vbufid);
 	glBufferData(GL_ARRAY_BUFFER,
 			(signed)this->vbufnbytes,
-			buf.data,
+			df.data,
 			GL_STATIC_DRAW);
 
-	dynf_free(/*gives*/&buf);
+	metrics.buffered_data+=dynf_size_in_bytes(&df);
+	dynf_free(/*gives*/&df);
 }
 

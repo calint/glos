@@ -12,15 +12,19 @@ inline static void objects_update(dt dt){
 			continue;
 		}
 
-		if(o->update)
+		if(o->update){
 			o->update(o,dt);
+			metrics.objects_updated_last_frame++;
+		}
 
 		for(int i=0;i<object_part_cap;i++){
 			if(!o->part[i])
 				continue;
 			part*p=(part*)o->part[i];
-			if(p->update)
+			if(p->update){
 				p->update(o,p,dt);
+				metrics.parts_updated_last_frame++;
+			}
 		}
 		o++;
 	}
@@ -34,15 +38,19 @@ inline static void objects_render() {
 			continue;
 		}
 
-		if(o->render)
+		if(o->render){
 			o->render(o);
+			metrics.objects_rendered_last_frame++;
+		}
 
 		for(int i=0;i<object_part_cap;i++){
 			if(!o->part[i])
 				continue;
 			part*p=(part*)o->part[i];
-			if(p->render)
+			if(p->render){
 				p->render(o,p);
+				metrics.objects_rendered_last_frame++;
+			}
 		}
 		o++;
 	}

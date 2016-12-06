@@ -7,6 +7,7 @@
 #define ${name}_cap ${cap}
 #define ${name}_assert_free
 #define ${name}_assert_bounds
+#define ${name}_assert_cast
 //--------------------------------------------------------------------- storage
 static ${name} ${nameplr}[${name}_cap];
 static ${name}*${nameplr}_start_ptr=${nameplr};
@@ -60,7 +61,6 @@ inline static void ${name}_free(${name}*o){
 	*o->ptr_to_bits=2;// flag not allocated and deleted
 }
 //------------------------------------------------------------------- accessors
-
 inline static void _${name}_assert_bounds(arrayix i){
 	if(i<${name}_cap)
 		return;
@@ -70,20 +70,27 @@ inline static void _${name}_assert_bounds(arrayix i){
 	exit(-1);
 }
 
+//-----------------------------------------------------------------------------
+inline static const ${name}*${name}_ptr_const(const void*p){
+	return(const ${name}*)p;
+}
+//-----------------------------------------------------------------------------
+inline static ${name}*${name}_ptr(void*p){return(${name}*)p;}
+//-----------------------------------------------------------------------------
 inline static ${name}*${name}_at(arrayix i){
 #ifdef ${name}_assert_bounds
 	_${name}_assert_bounds(i);
 #endif
 	return&${nameplr}[i];
 }
-
+//-----------------------------------------------------------------------------
 inline static const ${name}*${name}_at_const(arrayix i){
 #ifdef ${name}_assert_bounds
 	_${name}_assert_bounds(i);
 #endif
 	return&${nameplr}[i];
 }
-
+//-----------------------------------------------------------------------------
 inline static void ${nameplr}_free() {
 	${name}*o=${nameplr};
 	while(o<${nameplr}_end_ptr){
@@ -115,3 +122,6 @@ inline static void ${nameplr}_free() {
 		o++;
 	}
 }
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------

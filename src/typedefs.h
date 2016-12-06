@@ -1,8 +1,10 @@
 #pragma once
 //------------------------------------------------------------------- typedefs
-typedef unsigned gid;
+typedef uint8_t bool;
+typedef uint8_t bits;
+typedef uint32_t gid;
 typedef void*ref;
-typedef struct class{char path[8];}type;
+typedef struct type{char path[8];}type;
 typedef struct vec4{float x,y,z,q;}vec4;
 typedef vec4 position;
 typedef vec4 velocity;
@@ -15,27 +17,10 @@ typedef unsigned id;
 typedef float dt;
 typedef float time_in_seconds;
 typedef const char*path;
-typedef unsigned arrayix;
-
+typedef uint32_t arrayix;
 #define PI 3.1415926535897932384626433832795f
-
-typedef uint8_t bits;
-typedef int8_t byte;
-typedef int16_t word;
-typedef int32_t dword;
-typedef int64_t quad;
-typedef struct baba{
-	bits bits;
-	byte byte;
-	word word;
-	dword dword;
-	quad quad;
-	char string[32];
-}baba;
-
-
-#include"dynp.h"
-#include"dynf.h"
-#include"dyni.h"
-#include"dync.h"
-typedef dync str;
+//#include"dynp.h"
+//#include"dynf.h"
+//#include"dyni.h"
+//#include"dync.h"
+//typedef dync str;

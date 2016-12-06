@@ -16,8 +16,8 @@ typedef struct object{
 
 	bounding_radius bounding_radius;                                   //  4 B
 	scale scale;                                                       // 16 B
-	gid glob_id;
-	int model_to_world_matrix_is_updated;
+	gid glob_id;                                                       //  4 B
+	bool model_to_world_matrix_is_updated;
 	void(*init)(struct object*);
 	void(*update)(struct object*,dt);
 	void(*collision)(struct object*,struct object*,dt);
@@ -27,15 +27,6 @@ typedef struct object{
 	type type;
 	bits*ptr_to_bits;
 }object;
-
-#define object_ref_validate_cast 0
-#define object_validate_delete 0
-
-inline static object*object_ptr(ref r){
-	return(object*)r;//? detect cast error
-}
-
-//-------------------------------------------------------------------overrides
 //
 //----------------------------------------------------------------------- init
 inline static void _object_init_(object*this){
@@ -68,14 +59,14 @@ static object object_def={
 	.bounding_radius=0,
 	.scale={0,0,0,0},
 	.type={{0,0,0,0,0,0,0,0}},
-	.ptr_to_bits=NULL,
+	.ptr_to_bits=0,
 	.model_to_world_matrix={1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1},
 	.init=_object_init_,
 	.update=_object_update_,
 	.collision=_object_collision_,
 	.render=_object_render_,
 	.free=_object_free_,
-	.part={NULL,NULL,NULL,NULL}
+	.part={0,0,0,0}
 };
 //----------------------------------------------------------- ------ functions
 
