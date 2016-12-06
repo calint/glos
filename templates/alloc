@@ -4,8 +4,9 @@
 //-----------------------------------------------------------------------------
 #include"${name}.h"
 #include"part.h"
-#define ${name}_count 1024
+#define ${name}_count ${count}
 #define ${name}_assert_free
+#define ${name}_assert_bounds
 //--------------------------------------------------------------------- storage
 static ${name} ${nameplr}[${name}_count];
 static ${name}*${nameplr}_start_ptr=${nameplr};
@@ -49,11 +50,9 @@ inline static ${name}*${name}_alloc(${name}*initializer){
 //------------------------------------------------------------------------ free
 inline static void ${name}_free(${name}*o){
 #ifdef ${name}_assert_free
-	if(*o->ptr_to_bits|2){ // is flagged deleted
-		fprintf(stderr,"\n${name}-already-deleted");
-		fprintf(stderr,"\tfile: '%s'  line: %d\n%p\n",
-				__FILE__,__LINE__,
-				(void*)o);
+	if(*o->ptr_to_bits&2){
+		fprintf(stderr,"\n${name} %p already deleted\n",(void*)o);
+		fprintf(stderr,"\n\tfile: '%s'  line: %d\n\n",__FILE__,__LINE__);
 		exit(-1);
 	}
 #endif
@@ -61,9 +60,25 @@ inline static void ${name}_free(${name}*o){
 }
 //------------------------------------------------------------------- accessors
 
-inline static ${name}*${name}_at(arrayix i){return&${nameplr}[i];}
+inline static void _${name}_assert_bounds(arrayix i){
+	if(i<${name}_count)
+		return;
+	fprintf(stderr,"\n${name} index %lu out of bounds %lu\n",
+			i,(arrayix)${name}_count);
+	fprintf(stderr,"\n\tfile: '%s'  line: %d\n\n",__FILE__,__LINE__);
+	exit(-1);
+}
 
-inline static const ${name}*${name}_at_const(arrayix i){return&${nameplr}[i];}
+inline static ${name}*${name}_at(arrayix i){
+#ifdef ${name}_assert_bounds
+	_${name}_assert_bounds(i);
+#endif
+	return&${nameplr}[i];
+}
+
+inline static const ${name}*${name}_at_const(arrayix i){
+	return&${nameplr}[i];
+}
 
 inline static void ${nameplr}_free() {
 	${name}*o=${nameplr};

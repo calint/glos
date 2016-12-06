@@ -28,6 +28,12 @@ inline static void main_init(){
 	o->glob_id=1;
 	o->velocity=(vec4){0,0,0,0};
 	o->angular_velocity=(vec4){0,0,0,0};
+
+//	object_free(o);
+//	object_free(o);
+
+//	object_at(object_count-1);
+//	object_at(object_count);
 //
 //	object*o=new(&_ninja_);
 //	o->position.x=-.5f;
