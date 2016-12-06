@@ -85,7 +85,7 @@ int main(int argc,char*argv[]){
 		GLclampf red;
 		GLclampf green;
 		GLclampf blue;
-	}c={0,0,1};
+	}c={.11f,.37f,1};
 
 	int draw_default=0,draw_objects=1;
 
