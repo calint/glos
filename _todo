@@ -56,5 +56,8 @@
  [ ] shadow map
  [ ]   render to texture
  [ ]   use several programs
- [ ] light source
+ [ ] light sources
+ [ ]   ortho
+ [ ]   persp
+ [ ]  zoom zbuf on viewable 
  
