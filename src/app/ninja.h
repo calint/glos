@@ -32,7 +32,7 @@ inline static void _ninja_init_(object*this);static object ninja_def={
 	this->velocity.x=.5f;
 	object_update_bounding_radius_using_scale(this);
 
-	this->part[0]=&_ninja_part_;
+	this->part[0]=&ninja_part_def;
 
 	((ninja_part*)(this->part[0]))->part.init(
 			this,
@@ -44,9 +44,7 @@ inline static void _ninja_free_(object*this){
 //	printf(" * del %-12s [ %4s %p ]\n","ninja",this->type.path,this);
 	_object_free_(this);
 
-	((ninja_part*)(this->part[0]))->part.free(
-			this,
-			&((ninja_part*)(this->part[0]))->part
-		);
+	part*p=this->part[0];
+	p->free(this,p);
 }
 //---------------------------------------------------------------------------

@@ -24,8 +24,8 @@ inline static void metrics_print(){
 			metrics.buffered_data,
 			metrics.objects_allocated,
 			metrics.objects_updated_last_frame,
-			metrics.parts_updated_last_frame,
 			metrics.objects_rendered_last_frame,
+			metrics.parts_updated_last_frame,
 			metrics.parts_rendered_last_frame
 		);
 }
@@ -42,24 +42,15 @@ struct{
 	uint64_t _timer_tick_at_start_of_frame;
 }fps;
 
-//----------------------------------------------------------------------- init
+//----------------------------------------------------------------------------
 
-static inline void fps_init(){
-	fps.average_during_last_intervall=0;
-	fps.frame_count=0;
-	fps.calculation_intervall_in_ms=1000;
-	fps._time_at_start_of_intervall_in_ms=SDL_GetTicks();
-	fps._timer_tick_at_start_of_frame=SDL_GetPerformanceCounter();
-	fps._timer_frequency=SDL_GetPerformanceFrequency();
-}
-
-//----------------------------------------------------------------------- free
-
-inline static void fps_free(){}
-
-//-------------------------__timer_tick_at_start_of_frame---------------------------------------------------
-
-inline static void fps__at__frame_begin() {
+inline static void metrics__at__frame_begin(){
+	if(!fps.frame_count){
+		fps.calculation_intervall_in_ms=1000;
+		fps._time_at_start_of_intervall_in_ms=SDL_GetTicks();
+		fps._timer_tick_at_start_of_frame=SDL_GetPerformanceCounter();
+		fps._timer_frequency=SDL_GetPerformanceFrequency();
+	}
 	fps.frame_count++;
 	metrics.objects_rendered_last_frame=0;
 	metrics.objects_updated_last_frame=0;
@@ -69,7 +60,7 @@ inline static void fps__at__frame_begin() {
 
 //----------------------------------------------------------------------------
 
-static inline void fps__at__update_frame_end() {
+static inline void metrics__at__update_frame_end() {
 	{
 		Uint64 t1 = SDL_GetPerformanceCounter();
 		Uint64 dt = t1 - fps._timer_tick_at_start_of_frame;

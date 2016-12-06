@@ -11,7 +11,7 @@
 // returns vertex buffer of array of triangles
 //                      [ x y z   r g b a   nx ny nz   u v]
 static/*gives*/dynf read_obj_file_from_path(const char*path){
-	printf(" * load: %s\n",path);
+	printf("  load '%s'\n",path);
 	FILE*f=fopen(path,"rb");
 	if(!f){
 		perror("\ncannot open");

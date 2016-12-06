@@ -11,7 +11,8 @@
 inline static void main_init(){
 	globs_load_obj_file(1,"obj/ico_sphere.obj");
 
-	for(int i=0;i<object_cap;i++){
+//	for(int i=0;i<object_cap;i++){
+	for(int i=0;i<1;i++){
 
 		object*o=object_alloc(&ninja_def);
 
@@ -46,10 +47,10 @@ int main(int argc,char*argv[]){
 	window_init();
 	shader_init();
 	objects_init();
-	main_init();
 	globs_init();
-	fps_init();
+//	fps_init();
 
+	main_init();
 	struct{
 		GLclampf red;
 		GLclampf green;
@@ -62,7 +63,7 @@ int main(int argc,char*argv[]){
 	metrics_print_headers();
 
 	for(int running=1;running;){
-		fps__at__frame_begin();
+		metrics__at__frame_begin();
 
 		SDL_Event event;
 		while(SDL_PollEvent(&event)){
@@ -129,19 +130,22 @@ int main(int argc,char*argv[]){
 		}
 
 		glClearColor(c.red,c.green,c.blue,1.0);
+
 		glClear(GL_COLOR_BUFFER_BIT);
-		objects_update(fps.dt);
+
+		objects_update(metrics.previous_frame_dt);
+
 		if(draw_objects)objects_render();
+
 		if(draw_default)shader_render();
-//
-//		globs_render();
 
 		SDL_GL_SwapWindow(window.ref);
-		fps__at__update_frame_end();
+
+		metrics__at__update_frame_end();
 	}
 	//---------------------------------------------------------------------free
 	//? early-hangup
-	fps_free();
+//	fps_free();
 	globs_free();
 	objects_free();
 	shader_free();

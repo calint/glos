@@ -49,7 +49,7 @@ inline static void objects_render() {
 			part*p=(part*)o->part[i];
 			if(p->render){
 				p->render(o,p);
-				metrics.objects_rendered_last_frame++;
+				metrics.parts_rendered_last_frame++;
 			}
 		}
 		o++;
