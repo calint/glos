@@ -3,6 +3,7 @@
 #include"metrics.h"
 #include"dyni.h"
 #include"mat4.h"
+#include"dynp.h"
 
 #define programs_cap 8
 
@@ -10,8 +11,10 @@ typedef struct program{
 	GLuint gid;
 	dyni attributes;
 }program;
+#define program_def (program){0,dyni_def}
 
-static program programs[programs_cap];
+static dynp __programs=dynp_def;
+//static program programs[programs_cap];
 
 inline static const char*_get_shader_name_for_type(GLenum shader_type);
 inline static void _check_gl_error(const char*op);
@@ -37,24 +40,17 @@ inline static GLuint _compile_shader(GLenum shaderType,const char *code) {
 	return id;
 }
 
-inline static void programs_load(
-		indx i,
+inline static program*program_from_source(
 		const char*vert_src,
 		const char*frag_src,
 		/*takes*/dyni attrs
 ){
-	if(i>=programs_cap){
-		fprintf(stderr,"\nindex-out-of-bounds\n");
-		fprintf(stderr,"\t%s %d\n\n  index: %u    capacity: %u\n",
-				__FILE__,__LINE__,i,programs_cap);
-		exit(-1);
-	}
-
 	_check_gl_error("enter shader_program_load");
 
 	GLuint gid=glCreateProgram();
 
-	program*p=&programs[i];
+	program*p=malloc(sizeof(program));
+	*p=program_def;
 
 	p->gid=gid;
 
@@ -80,7 +76,7 @@ inline static void programs_load(
 		printf("program linking error: %s\n",msg);
 		exit(8);
 	}
-
+	dynp_add(&__programs,p);
 	_check_gl_error("exit shader_program_load");
 }
 
@@ -379,7 +375,10 @@ inline static void shader_init() {
 	dyni attrs=dyni_def;
 	int e[]={shader_apos,shader_argba,shader_anorm,shader_atex};
 	dyni_add_list(&attrs,e,4);
-	programs_load(0,shader_vertex_source,shader_fragment_source,/*gives*/attrs);
+	program_from_source(
+			shader_vertex_source,
+			shader_fragment_source,
+			/*gives*/attrs);
 
 
 	//	glUseProgram(shader_programs[0].id);

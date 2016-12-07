@@ -25,7 +25,7 @@ inline static void main_init(){
 
 	dyni attrs=dyni_def;
 	dyni_add(&attrs,shader_apos);
-	programs_load(1,vtx,frag,/*gives*/attrs);
+	program_from_source(vtx,frag,/*gives*/attrs);
 
 
 
@@ -48,7 +48,7 @@ inline static void main_init(){
 	attrs=dyni_def;
 	dyni_add(&attrs,shader_apos);
 	dyni_add(&attrs,shader_argba);
-	programs_load(2,vtx,frag,/*gives*/attrs);
+	program_from_source(vtx,frag,/*gives*/attrs);
 
 	shader.active_program_ix=0;
 
@@ -123,7 +123,7 @@ int main(int argc,char*argv[]){
 	puts("");
 	metrics_print_headers();
 	{
-		program*p=&programs[shader.active_program_ix];
+		program*p=dynp_get(&__programs,shader.active_program_ix);
 		gid progid=p->gid;
 		glUseProgram(progid);
 		dyni*enable=&p->attributes;
@@ -222,8 +222,8 @@ int main(int argc,char*argv[]){
 			printf(" * switching to program at index %u\n",
 					shader.active_program_ix);
 
-			dyni disable=programs[previous_active_program_ix]
-								  .attributes;
+			program*pp=dynp_get(&__programs,previous_active_program_ix);
+			dyni disable=pp->attributes;
 
 			for(unsigned i=0;i<disable.count;i++){
 				const unsigned ix=(unsigned)dyni_get(&disable,i);
@@ -231,13 +231,12 @@ int main(int argc,char*argv[]){
 				glDisableVertexAttribArray(ix);
 			}
 
-			const unsigned progid=programs[shader.active_program_ix].gid;
+			program*ap=dynp_get(&__programs,shader.active_program_ix);
+//			const unsigned progid=ap->gid;
 
-			glUseProgram(progid);
+			glUseProgram(ap->gid);
 
-			program*p=&programs[shader.active_program_ix];
-			dyni*enable=&p->attributes;
-
+			dyni*enable=&ap->attributes;
 			for(unsigned i=0;i<enable->count;i++){
 				const unsigned ix=(unsigned)dyni_get(enable,i);
 				printf("   * enable vertex attrib array %d\n",ix);
