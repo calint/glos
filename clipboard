@@ -1,3 +1,15 @@
+#ifdef glos_assert_bounds
+	if(i>=glos_cap){
+		fprintf(stderr,"\nout of bounds\n");
+		fprintf(stderr,"\n    %s %d\n",__FILE__,__LINE__);
+		exit(-1);
+	}
+#endif
+
+
+
+
+
 //inline static void main_init2(){
 //	globs_load_obj_file(1,"obj/ico_sphere.obj");
 //	globs_load_obj_file(2,"obj/cylinder.obj");

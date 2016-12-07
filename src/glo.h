@@ -197,7 +197,7 @@ typedef struct glo{
 
 // returns vertex buffer of array of triangles
 //                      [ x y z   r g b a   nx ny nz   u v]
-static/*gives*/glo glo_load_from_file(const char*path){
+static/*gives*/glo*glo_load_from_file(const char*path){
 	dync file=dync_from_file(path);
 	dynp vertices=dynp_def;
 	dynp normals=dynp_def;
@@ -375,7 +375,8 @@ static/*gives*/glo glo_load_from_file(const char*path){
 			vertex_buffer.count,
 			dynf_size_in_bytes(&vertex_buffer));
 
-	glo g={vertex_buffer,material_ranges};
+	glo*g=calloc(1,sizeof(glo));
+	*g=(glo){vertex_buffer,material_ranges,0};
 	return g;
 }
 
@@ -419,20 +420,20 @@ inline static void glo_upload_to_opengl(glo*this){
 }
 
 //----------------------------------------------------------------------- calls
-inline static glo glo_from_file(const char*path){
-	glo g=/*takes*/glo_load_from_file(path);
+inline static glo*glo_from_file(const char*path){
+	glo*g=/*takes*/glo_load_from_file(path);
 
 	// upload vertex buffer
-	glGenBuffers(1,&g.vtxbuf_id);
-	glBindBuffer(GL_ARRAY_BUFFER,g.vtxbuf_id);
+	glGenBuffers(1,&g->vtxbuf_id);
+	glBindBuffer(GL_ARRAY_BUFFER,g->vtxbuf_id);
 	glBufferData(GL_ARRAY_BUFFER,
-			(signed)dynf_size_in_bytes(&g.vtxbuf),
-			g.vtxbuf.data,
+			(signed)dynf_size_in_bytes(&g->vtxbuf),
+			g->vtxbuf.data,
 			GL_STATIC_DRAW);
 
 	// upload materials
-	for(indx i=0;i<g.ranges.count;i++){
-		mtlrng*mr=(mtlrng*)g.ranges.data[i];
+	for(indx i=0;i<g->ranges.count;i++){
+		mtlrng*mr=(mtlrng*)g->ranges.data[i];
 		objmtl*m=(objmtl*)mr->material;
 		if(m->map_Kd.count){// load texture
 			glGenTextures(1,&m->texture_id);
@@ -457,7 +458,7 @@ inline static glo glo_from_file(const char*path){
 		}
 	}
 
-	metrics.buffered_data+=dynf_size_in_bytes(&g.vtxbuf);
+	metrics.buffered_data+=dynf_size_in_bytes(&g->vtxbuf);
 
 	return g;
 }

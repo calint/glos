@@ -78,6 +78,7 @@ inline static program*program_from_source(
 	}
 	dynp_add(&__programs,p);
 	_check_gl_error("exit shader_program_load");
+	return p;
 }
 
 inline static const char*_get_gl_error_string(const GLenum error) {
@@ -260,8 +261,8 @@ inline static void shader_load(){
 
 	//----------------------------------------------
 	glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,
-			shader_def_texbuf_wi,
-			shader_def_texbuf_hi,
+			(signed)shader_def_texbuf_wi,
+			(signed)shader_def_texbuf_hi,
 			0,GL_RGB,GL_FLOAT,
 			shader_def_texbuf);
 	metrics.buffered_data+=shader_def_texbuf_nbytes;
