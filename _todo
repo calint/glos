@@ -1,6 +1,6 @@
  [x] dynamic pointer vector
  [x] texturing
- [x] obj format
+ [o] obj format
  [ ]   colors
  [x]   texture coords
  [ ]   materials
@@ -49,17 +49,23 @@
  [ ]     path
  [ ]     focus
  [ ] hud
+ [ ]   console
  [ ] draw text
  [ ] mouse
  [ ]   fps controls
  [ ]   alternative controls
- [ ] shadow map
+ [o] shadow map
  [ ]   render to texture
- [ ]   use several programs
+ [x]   use several programs
  [ ] light sources
  [ ]   ortho
  [ ]   persp
  [ ]  zoom zbuf on viewable 
- [ ] hierarchial objects
+ [o] hierarchial objects
  [ ]   cached matrices
+ [ ]     model-to-local
+ [ ]     local-to-world
  [ ]   collisions
+ [ ]     root object bounding volume, recursive
+ [ ]     objects individually of hierarchy
+ 
