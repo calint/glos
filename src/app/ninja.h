@@ -14,7 +14,7 @@ static object ninja_def={
 	.angular_velocity={0,0,0,0},
 	.bounding_radius=0,
 	.scale={0,0,0,0},
-	.type={{'e',0,0,0,0,0,0,0}},
+	.type={{'a',0,0,0,0,0,0,0}},
 	.ptr_to_bits=NULL,
 	.glob_id=1,
 	.model_to_world_matrix={1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1},
@@ -25,7 +25,7 @@ static object ninja_def={
 	.free=_ninja_free_,
 	.part={NULL,NULL,NULL,NULL}
 };
-//---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 inline static void _ninja_init_(object*this){
 //	printf(" * new %-12s [ %4s %p ]\n","ninja",this->type.path,this);
 	_object_init_(this);
@@ -42,7 +42,7 @@ inline static void _ninja_init_(object*this){
 			&((ninja_part*)(this->part[0]))->part
 		);
 }
-//---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 inline static void _ninja_free_(object*this){
 //	printf(" * del %-12s [ %4s %p ]\n","ninja",this->type.path,this);
 	_object_free_(this);
@@ -50,4 +50,4 @@ inline static void _ninja_free_(object*this){
 	part*p=this->part[0];
 	p->free(this,p);
 }
-//---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
