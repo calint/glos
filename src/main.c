@@ -243,16 +243,16 @@ int main(int argc,char*argv[]){
 			previous_active_program_ix=shader.active_program_ix;
 		}
 
-		float mtx_wvp[]={
-				1,0,0,0,
-				0,1,0,0,
-				0,0,1,0,
-				0,0,0,1,
-		};
+		float mtx_trans[16];
+		mat4_load_translate(mtx_trans,&(position){0,0,2,0});
 
+		float mtx_proj[16];
 		float aspect_ratio=4;
-		mat4_load_ortho_projection(mtx_wvp,-4,4,
-				-aspect_ratio,aspect_ratio,-1,10);
+		mat4_load_ortho_projection(mtx_proj,-4,4,
+				-aspect_ratio,aspect_ratio,-1000,1000);
+
+		float mtx_wvp[16];
+		mat4_multiply(mtx_wvp,mtx_proj,mtx_trans);
 
 //		printf("uniform wvp %d\n",
 //				glGetUniformLocation(programs[shader.active_program_ix].gid,"utex"));

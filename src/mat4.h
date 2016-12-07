@@ -119,13 +119,13 @@ inline static void mat4_load_ortho_projection(float*c,
 	c[15]=1;
 }
 
-inline static/*gives*/float*mat4_multiply(float*lhs,float*rhs){
+inline static/*gives*/float*mat4_multiply(float*ret,const float*lhs,const float*rhs){
 	// [ 0 4  8 12 ]   [ 0 4  8 12 ]
 	// [ 1 5  9 13 ] x [ 1 5  9 13 ]
 	// [ 2 6 10 14 ]   [ 2 6 10 14 ]
 	// [ 3 7 11 15 ]   [ 3 7 11 15 ]
 
-	float*ret=malloc(sizeof(float)*16);
+//	float*ret=malloc(sizeof(float)*16);
 	ret[ 0] = lhs[ 0]*rhs[ 0] + lhs[ 4]*rhs[ 1] + lhs[ 8]*rhs[ 2] + lhs[12]*rhs[ 3];
 	ret[ 1] = lhs[ 1]*rhs[ 0] + lhs[ 5]*rhs[ 1] + lhs[ 9]*rhs[ 2] + lhs[13]*rhs[ 3];
 	ret[ 2] = lhs[ 2]*rhs[ 0] + lhs[ 6]*rhs[ 1] + lhs[10]*rhs[ 2] + lhs[14]*rhs[ 3];
