@@ -22,7 +22,7 @@ typedef struct obj_material{
 
 }obj_material;
 
-inline static void dync_init_from_file(dync*this,const char*path){
+inline static dync dync_init_from_file(const char*path){
 	FILE*f=fopen(path,"rb");
 	if(!f){
 		perror("\ncannot open");
@@ -57,8 +57,11 @@ inline static void dync_init_from_file(dync*this,const char*path){
 	fclose(f);
 	filedata[length]=0;
 
-	this->count=(unsigned)length+1;
-	this->data=filedata;
+	return (dync){
+		.data=filedata,
+		.count=(unsigned)length+1,
+		.cap=(unsigned)length+1
+	};
 }
 
 static inline obj_material obj_material_read_from_path(const char*path){
@@ -69,8 +72,7 @@ static inline obj_material obj_material_read_from_path(const char*path){
 // returns vertex buffer of array of triangles
 //                      [ x y z   r g b a   nx ny nz   u v]
 static/*gives*/dynf read_obj_file_from_path(const char*path){
-	dync content=dync_def;
-	dync_init_from_file(&content,path);
+	dync content=dync_init_from_file(path);
 	dynp vertices=dynp_def;
 	dynp normals=dynp_def;
 	dynp texuv=dynp_def;
