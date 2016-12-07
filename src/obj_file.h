@@ -4,25 +4,7 @@
 #include"dynf.h"
 #include"dync.h"
 
-
-//newmtl red
-//Ns 96.078431
-//Ka 1.000000 1.000000 1.000000
-//Kd 1.000000 0.000000 0.000000
-//Ks 0.500000 0.500000 0.500000
-//Ke 0.000000 0.000000 0.000000
-//Ni 1.000000
-//d 1.000000
-//illum 2
-
-typedef struct obj_material{
-	const char*name;
-	vec4 Ns,Ka,Kd,Ks,Ke;
-	float Ni,d;
-
-}obj_material;
-
-inline static dync dync_init_from_file(const char*path){
+inline static dync dync_from_file(const char*path){
 	FILE*f=fopen(path,"rb");
 	if(!f){
 		perror("\ncannot open");
@@ -59,26 +41,154 @@ inline static dync dync_init_from_file(const char*path){
 
 	return (dync){
 		.data=filedata,
-		.count=(unsigned)length+1,
+		.count=((unsigned)length+1)/sizeof(char),
 		.cap=(unsigned)length+1
 	};
 }
 
-static inline obj_material obj_material_read_from_path(const char*path){
 
+//newmtl red
+//Ns 96.078431
+//Ka 1.000000 1.000000 1.000000
+//Kd 1.000000 0.000000 0.000000
+//Ks 0.500000 0.500000 0.500000
+//Ke 0.000000 0.000000 0.000000
+//Ni 1.000000
+//d 1.000000
+//illum 2
 
+typedef struct _objmtl{
+	dync name;
+	float Ns;
+	vec4 Ka,Kd,Ks,Ke;
+	float Ni,d;
+}objmtl;
+
+//static objmtl_def={
+//		.name=dync_def,
+//		.Ns=0,
+//		.Ka=vec4_def,
+//		.Kd=vec4_def,
+//		.Ks=vec4_def,
+//		.Ke==vec4_def,
+//		.Ni=0,
+//		.d=0,
+//}
+
+#define DYNC_DEF (dync){0,0,0}
+#define objmtl_def (objmtl){DYNC_DEF,0,vec4_def,vec4_def,vec4_def,vec4_def,0,0}
+
+inline static void objmtl_free(objmtl*this){
+	dync_free(&this->name);
 }
+
+#include"objmtls.h"
+
+static objmtls materials;
+
+inline static objmtl*objmtl_alloc(){
+	objmtl*o=malloc(sizeof(objmtl));
+	if(!o){
+		perror("\nout of memory while allocating a objmtl\n");
+		fprintf(stderr,"\n     %s %d\n",__FILE__,__LINE__);
+		exit(-1);
+	}
+	*o=objmtl_def;
+	return o;
+}
+
+inline static void obj_load_materials_from_file(const char*path){
+	dync file=dync_from_file(path);
+	objmtl*o=NULL;
+	const char*p=file.data;
+	while(*p){
+		token t=token_next_from_string(p);
+		p=t.end;
+
+		if(token_starts_with(&t,"#")){
+			p=scan_to_including_newline(p);
+			continue;
+		}
+		if(token_starts_with(&t,"newmtl")){
+			token t=token_next_from_string(p);
+			o=objmtl_alloc();
+			size_t n=token_size(&t);
+			dync_add_list(&o->name,t.content,n);
+			dync_add(&o->name,0);
+			continue;
+		}
+		if(token_equals(&t,"Ns")){
+			token t=token_next_from_string(p);
+			float f=token_get_float(&t);
+			p=t.end;
+			o->Ns=f;
+			continue;
+		}
+		if(token_equals(&t,"Ka") ||
+				token_equals(&t,"Kd") ||
+				token_equals(&t,"Ks") ||
+				token_equals(&t,"Ke")){
+			vec4 v;
+
+			token x=token_next_from_string(p);
+			v.x=token_get_float(&x);
+			p=x.end;
+
+			token y=token_next_from_string(p);
+			v.y=token_get_float(&y);
+			p=y.end;
+
+			token z=token_next_from_string(p);
+			v.z=token_get_float(&z);
+			p=z.end;
+
+			v.q=0;
+
+			if(token_equals(&t,"Ka")){
+				o->Ka=v;
+			}else if(token_equals(&t,"Kd")){
+				o->Kd=v;
+			}else if(token_equals(&t,"Ks")){
+				o->Ks=v;
+			}else if(token_equals(&t,"Ke")){
+				o->Ke=v;
+			}
+			continue;
+		}
+
+		if(token_equals(&t,"Ni")){
+			token t=token_next_from_string(p);
+			float f=token_get_float(&t);
+			p=t.end;
+			o->Ni=f;
+			continue;
+		}
+
+		if(token_equals(&t,"d")){
+			token t=token_next_from_string(p);
+			float f=token_get_float(&t);
+			p=t.end;
+			o->d=f;
+			continue;
+		}
+	}
+	objmtls_add(&materials,o);
+}
+
+
 
 // returns vertex buffer of array of triangles
 //                      [ x y z   r g b a   nx ny nz   u v]
 static/*gives*/dynf read_obj_file_from_path(const char*path){
-	dync content=dync_init_from_file(path);
+	dync content=dync_from_file(path);
 	dynp vertices=dynp_def;
 	dynp normals=dynp_def;
 	dynp texuv=dynp_def;
 	dynf vertex_buffer=dynf_def;
 
 	const char*p=content.data;
+	objmtl*current_objmtl=NULL;
+	const char*basedir="obj/";
 	while(*p){
 		token t=token_next_from_string(p);
 		p=t.end;//token_size_including_whitespace(&t);
@@ -87,7 +197,12 @@ static/*gives*/dynf read_obj_file_from_path(const char*path){
 			continue;
 		}
 		if(token_equals(&t,"mtllib")){
-			p=scan_to_including_newline(p);
+			token t=token_next_from_string(p);
+			dync s=dync_def;
+			dync_add_string(&s,basedir);
+			dync_add_list(&s,t.content,token_size(&t));
+			dync_add(&s,0);
+			obj_load_materials_from_file(s.data);
 			continue;
 		}
 		if(token_equals(&t,"o")){
@@ -95,8 +210,26 @@ static/*gives*/dynf read_obj_file_from_path(const char*path){
 			continue;
 		}
 		if(token_equals(&t,"usemtl")){
-			p=scan_to_including_newline(p);
-			continue;
+			token t=token_next_from_string(p);
+			dync name=dync_def;
+			dync_add_list(&name,t.content,token_size(&t));
+			dync_add(&name,0);
+
+			int found=0;
+			for(unsigned i=0;i<name.count;i++){
+				objmtl*m=objmtls_get(&materials,i);
+				if(!strcmp(m->name.data,name.data)){
+					current_objmtl=m;
+					found=1;
+					break;
+				}
+			}
+			if(found)
+				continue;
+			fprintf(stderr,"\ncould not find material\n");
+			fprintf(stderr,"   %s\n",name.data);
+			fprintf(stderr,"\n     %s %d\n",__FILE__,__LINE__);
+			exit(-1);
 		}
 		if(token_equals(&t,"s")){
 			p=scan_to_including_newline(p);
@@ -183,9 +316,9 @@ static/*gives*/dynf read_obj_file_from_path(const char*path){
 				dynf_add(&vertex_buffer,vtx->y);
 				dynf_add(&vertex_buffer,vtx->z);
 
-				dynf_add(&vertex_buffer,0);
-				dynf_add(&vertex_buffer,0);
-				dynf_add(&vertex_buffer,0);
+				dynf_add(&vertex_buffer,current_objmtl->Kd.x);
+				dynf_add(&vertex_buffer,current_objmtl->Kd.y);
+				dynf_add(&vertex_buffer,current_objmtl->Kd.z);
 				dynf_add(&vertex_buffer,1);
 
 				dynf_add(&vertex_buffer,norm->x);

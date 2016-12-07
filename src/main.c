@@ -51,21 +51,20 @@ inline static void main_init(){
 	dyni_add(&attrs,shader_argba);
 	programs_load(2,vtx,frag,/*gives*/attrs);
 
+	shader.active_program_ix=2;
 
-
-	//	shader.active_program_ix=1;
-
-	globs_load_obj_file(1,"obj/plane.obj");
-	globs_load_obj_file(2,"obj/ico_sphere.obj");
-	globs_load_obj_file(3,"obj/cylinder.obj");
-	globs_load_obj_file(4,"obj/grid_8x8.obj");
-	globs_load_obj_file(5,"obj/sphere.obj");
-	globs_load_obj_file(6,"obj/torus.obj");
-	globs_load_obj_file(7,"obj/disc.obj");
+//	globs_load_obj_file(1,"obj/plane.obj");
+//	globs_load_obj_file(2,"obj/ico_sphere.obj");
+//	globs_load_obj_file(3,"obj/cylinder.obj");
+//	globs_load_obj_file(4,"obj/grid_8x8.obj");
+//	globs_load_obj_file(5,"obj/sphere.obj");
+//	globs_load_obj_file(6,"obj/torus.obj");
+//	globs_load_obj_file(7,"obj/disc.obj");
+	globs_load_obj_file(8,"obj/plane_red.obj");
 
 	object*o;
 	o=object_alloc(&ninja_def);
-	o->glob_id=1;
+	o->glob_id=8;
 	const float vr=.5f;
 	o->velocity=(velocity){
 		random_range(-vr,vr),random_range(-vr,vr),0,0};
@@ -98,7 +97,7 @@ int main(int argc,char*argv[]){
 	printf(": %15s : %-9ld :\n","object",sizeof(object));
 	printf(": %15s : %-9ld :\n","objects",sizeof(objects));
 	printf(": %15s : %-9ld :\n","glob",sizeof(glob));
-	printf(": %15s : %-9ld :\n","globs",sizeof(globs));
+	printf(": %15s : %-9ld :\n","globs",sizeof(__globs));
 	printf(":-%15s-:-%-9s-:\n","---------------","--------");
 
 	sdl_init();
@@ -251,9 +250,9 @@ int main(int argc,char*argv[]){
 				0,0,0,1,
 		};
 
-		float aspect_ratio=1;
-		mat4_load_ortho_projection(mtx_wvp, -1,1,
-				-aspect_ratio,aspect_ratio,  0,2);
+//		float aspect_ratio=1;
+//		mat4_load_ortho_projection(mtx_wvp, -1,1,
+//				-aspect_ratio,aspect_ratio,  0,2);
 
 //		printf("uniform wvp %d\n",
 //				glGetUniformLocation(programs[shader.active_program_ix].gid,"utex"));
