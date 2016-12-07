@@ -5,10 +5,10 @@
 #include"objects.h"
 #include"obj_file.h"
 #include"object_alloc.h"
-#include"glob.h"
 #include"metrics.h"
 #include"dyni.h"
 #include"app/ninja.h"
+#include"globs.h"
 //----------------------------------------------------------------------- init
 inline static void main_init(){
 

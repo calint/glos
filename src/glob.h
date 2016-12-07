@@ -8,54 +8,53 @@
 #define glob_count 128
 //----------------------------------------------------------------------- calls
 
-inline static void shader_render_triangle_array(
-	GLuint vbufid,size_t vbufn,GLuint texid,const float*mtx_mw
-);
+//inline static void shader_render_triangle_array(
+//	GLuint vbufid,size_t vbufn,GLuint texid,const float*mtx_mw
+//);
 
 //---------------------------------------------------------------------
+//
+//typedef struct vertex{
+//	float position[3];
+//	float color[4];
+//	float normal[3];
+//	float texture[2];
+//}vertex;
+//
+//static vertex shader_def_vtxbuf[]={
+//	{{ .5,-.5, 0},{ 1, 0, 0,1},{0,0,1},{ 1,-1}},
+//	{{ .5, .5, 0},{ 0, 1, 0,1},{0,0,1},{ 1, 1}},
+//	{{-.5, .5, 0},{ 0, 0, 1,1},{0,0,1},{-1, 1}},
+//	{{-.5,-.5, 0},{ 0, 0, 0,1},{0,0,1},{-1,-1}},
+//};
+//
+//static unsigned shader_def_vtxbuf_nbytes=sizeof(shader_def_vtxbuf);
+//
+//static unsigned shader_def_vtxbuf_nelems=
+//		sizeof(shader_def_vtxbuf)/sizeof(vertex);
+//
+//static unsigned shader_def_vtxbuf_id;
+//
+//static GLubyte shader_def_ixbuf[]={0,1,2,2,3,0};
+//
+//static unsigned shader_def_ixbuf_nbytes=sizeof(shader_def_ixbuf);
+//
+//static unsigned shader_def_ixbuf_nelems=
+//		sizeof(shader_def_ixbuf)/sizeof(GLubyte);
+//
+//static unsigned shader_def_ixbuf_id;
+//
+//static unsigned shader_def_texbuf_wi=2;
+//static unsigned shader_def_texbuf_hi=2;
+//static GLfloat shader_def_texbuf[]={
+//		1,1,1,  0,1,1,
+//		1,1,0,  1,1,1,
+//};
+//static unsigned shader_def_texbuf_nbytes=sizeof(shader_def_texbuf);
+//
+//static unsigned shader_def_texbuf_id;
 
-typedef struct vertex{
-	float position[3];
-	float color[4];
-	float normal[3];
-	float texture[2];
-}vertex;
-
-static vertex shader_def_vtxbuf[]={
-	{{ .5,-.5, 0},{ 1, 0, 0,1},{0,0,1},{ 1,-1}},
-	{{ .5, .5, 0},{ 0, 1, 0,1},{0,0,1},{ 1, 1}},
-	{{-.5, .5, 0},{ 0, 0, 1,1},{0,0,1},{-1, 1}},
-	{{-.5,-.5, 0},{ 0, 0, 0,1},{0,0,1},{-1,-1}},
-};
-
-static unsigned shader_def_vtxbuf_nbytes=sizeof(shader_def_vtxbuf);
-
-static unsigned shader_def_vtxbuf_nelems=
-		sizeof(shader_def_vtxbuf)/sizeof(vertex);
-
-static unsigned shader_def_vtxbuf_id;
-
-static GLubyte shader_def_ixbuf[]={0,1,2,2,3,0};
-
-static unsigned shader_def_ixbuf_nbytes=sizeof(shader_def_ixbuf);
-
-static unsigned shader_def_ixbuf_nelems=
-		sizeof(shader_def_ixbuf)/sizeof(GLubyte);
-
-static unsigned shader_def_ixbuf_id;
-
-static unsigned shader_def_texbuf_wi=2;
-static unsigned shader_def_texbuf_hi=2;
-static GLfloat shader_def_texbuf[]={
-		1,1,1,  0,1,1,
-		1,1,0,  1,1,1,
-};
-static unsigned shader_def_texbuf_nbytes=sizeof(shader_def_texbuf);
-
-static unsigned shader_def_texbuf_id;
-
-typedef struct
-glob{
+typedef struct glob{
 //	vertex*vbuf;
 //	GLuint vbufn;
 //	GLsizeiptr vbufnbytes;
