@@ -3,10 +3,11 @@
  [o] obj format
  [x]   colors
  [x]   texture coords
- [o]   materials
- [ ]   textures
- [ ]   render
- [o] multiple materials in render
+ [x]   materials
+ [x]   textures
+ [x]   render
+ [ ]   scene
+ [x] multiple materials in render
  [ ] collision detection 
  [ ]   bounding volume
  [ ]     sphere
