@@ -54,8 +54,8 @@ inline static void shader_load(){
 	);
 	metrics.buffered_data+=shader_def_vtxbuf_nbytes;
 
-	glGenBuffers(1,&glob_def.ibufid);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,glob_def.ibufid);
+	glGenBuffers(1,&shader_def_ixbuf_id);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,shader_def_ixbuf_id);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER,
 			shader_def_ixbuf_nbytes,
 			shader_def_ixbuf,
@@ -145,7 +145,7 @@ inline static void shader_render(){
 	shader_render_triangle_elements(
 			shader_def_vtxbuf_id,
 			shader_def_vtxbuf_nelems,
-			glob_def.ibufid,
+			shader_def_ixbuf_id,
 			shader_def_ixbuf_nelems,
 			glob_def.texbufid,
 			mtx_wvp);

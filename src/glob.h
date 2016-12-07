@@ -42,6 +42,8 @@ static unsigned shader_def_ixbuf_nbytes=sizeof(shader_def_ixbuf);
 static unsigned shader_def_ixbuf_nelems=
 		sizeof(shader_def_ixbuf)/sizeof(GLubyte);
 
+static unsigned shader_def_ixbuf_id;
+
 #define shader_def_tex_wi 2
 #define shader_def_tex_hi 2
 static GLfloat shader_def_texbuf[]={
@@ -58,7 +60,7 @@ glob{
 //	GLubyte*ibuf;//? void* and ibuf_type_size
 //	GLsizei ibufn;
 //	GLsizeiptr ibufnbytes;
-	GLuint ibufid;
+//	GLuint ibufid;
 	GLfloat*texbuf;
 	GLuint texbufid;
 	GLsizei texwi;
@@ -82,7 +84,7 @@ static glob glob_def=(glob){
 //	.ibuf=shader_def_ixbuf,
 //	.ibufn=sizeof(shader_def_ixbuf)/sizeof(GLubyte),
 //	.ibufnbytes=sizeof(shader_def_ixbuf),
-	.ibufid=0,
+//	.ibufid=0,
 	.texbuf=shader_def_texbuf,
 	.texbufid=0,
 	.texwi=shader_def_tex_wi,
