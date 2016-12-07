@@ -13,14 +13,14 @@ typedef struct program{
 }program;
 #define program_def (program){0,dyni_def}
 
-static dynp __programs=dynp_def;
+static dynp programs=dynp_def;
 //static program programs[programs_cap];
 
-inline static const char*_get_shader_name_for_type(GLenum shader_type);
-inline static void _check_gl_error(const char*op);
-inline static void _print_gl_string(const char *name, const GLenum s);
+inline static const char*shader_name_for_type(GLenum shader_type);
+inline static void gl_check_error(const char*op);
+inline static void gl_print_string(const char *name, const GLenum s);
 
-inline static GLuint _compile_shader(GLenum shaderType,const char *code) {
+inline static GLuint shader_compile(GLenum shaderType,const char *code) {
 //	printf("\n ___| %s shader |__________________\n%s\n",
 //			get_shader_name_for_type(shaderType),
 //			code);
@@ -33,19 +33,19 @@ inline static GLuint _compile_shader(GLenum shaderType,const char *code) {
 		GLchar messages[1024];
 		glGetShaderInfoLog(id,sizeof(messages),NULL,&messages[0]);
 		printf("compiler error in %s shader:\n%s\n",
-			_get_shader_name_for_type(shaderType), messages
+			shader_name_for_type(shaderType), messages
 		);
 		exit(7);
 	}
 	return id;
 }
 
-inline static program*program_from_source(
+inline static program*program_load_from_source(
 		const char*vert_src,
 		const char*frag_src,
 		/*takes*/dyni attrs
 ){
-	_check_gl_error("enter shader_program_load");
+	gl_check_error("enter shader_program_load");
 
 	GLuint gid=glCreateProgram();
 
@@ -56,9 +56,9 @@ inline static program*program_from_source(
 
 	p->attributes=/*gives*/attrs;
 
-	GLuint vertex=_compile_shader(GL_VERTEX_SHADER,vert_src);
+	GLuint vertex=shader_compile(GL_VERTEX_SHADER,vert_src);
 
-	GLuint fragment=_compile_shader(GL_FRAGMENT_SHADER,frag_src);
+	GLuint fragment=shader_compile(GL_FRAGMENT_SHADER,frag_src);
 
 	glAttachShader(gid,vertex);
 	glAttachShader(gid,fragment);
@@ -76,12 +76,12 @@ inline static program*program_from_source(
 		printf("program linking error: %s\n",msg);
 		exit(8);
 	}
-	dynp_add(&__programs,p);
-	_check_gl_error("exit shader_program_load");
+	dynp_add(&programs,p);
+	gl_check_error("exit shader_program_load");
 	return p;
 }
 
-inline static const char*_get_gl_error_string(const GLenum error) {
+inline static const char*gl_get_error_string(const GLenum error) {
 	const char*str;
 	switch (error) {
 	case GL_NO_ERROR:
@@ -122,22 +122,22 @@ inline static const char*_get_gl_error_string(const GLenum error) {
 	return str;
 }
 
-inline static void _print_gl_string(const char *name, const GLenum s){
-	const char*v = (const char*) glGetString(s);
-	printf("%s=%s\n", name, v);
+inline static void gl_print_string(const char*name,const GLenum s){
+	const char*v=(const char*)glGetString(s);
+	printf("%s=%s\n",name,v);
 }
 
-inline static void _check_gl_error(const char*op) {
+inline static void gl_check_error(const char*op) {
 	int err = 0;
 	for (GLenum error = glGetError(); error; error = glGetError()) {
 		printf("!!! %s   glerror %x   %s\n", op, error,
-				_get_gl_error_string(error));
+				gl_get_error_string(error));
 		err = 1;
 	}
 	if (err)
 		exit(11);
 }
-inline static const char*_get_shader_name_for_type(GLenum shader_type) {
+inline static const char*shader_name_for_type(GLenum shader_type) {
 	switch (shader_type){
 	case GL_VERTEX_SHADER:return "vertex";
 	case GL_FRAGMENT_SHADER:return "fragment";
@@ -227,7 +227,7 @@ struct shader{
 }shader={0};
 
 inline static void shader_load(){
-	_check_gl_error("enter shader_load");
+	gl_check_error("enter shader_load");
 	glGenBuffers(1, &shader_def_vtxbuf_id);
 	glBindBuffer(GL_ARRAY_BUFFER,shader_def_vtxbuf_id);
 	glBufferData(GL_ARRAY_BUFFER,
@@ -274,11 +274,11 @@ inline static void shader_load(){
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
 //	glGenerateMipmap(GL_TEXTURE_2D);
 //	glPixelStorei(GL_UNPACK_ALIGNMENT,4);
-	_check_gl_error("exit shader_load");
+	gl_check_error("exit shader_load");
 }
 
 
-inline static void _shader_prepare_for_render(
+inline static void shader_prepare_for_render(
 		GLuint vbufid,GLuint texid,const float*mtx_mw
 ){
 
@@ -299,23 +299,19 @@ inline static void _shader_prepare_for_render(
 			sizeof(vertex),(GLvoid*)((3+4+3)*sizeof(float)));
 }
 
-inline static void _shader_after_render(){
-	glBindTexture(GL_TEXTURE_2D,0);
-}
-
 inline static void shader_render_triangle_elements(
 		GLuint vbufid,size_t vbufn,
 		GLuint ixbufid,size_t ixbufn,
 		GLuint texid,const float*mtx_mw
 ){
-	_shader_prepare_for_render(
+	shader_prepare_for_render(
 			shader_def_vtxbuf_id,
 			shader_def_texbuf_id,
 			mat4_ident
 		);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,ixbufid);
 	glDrawElements(GL_TRIANGLES,(signed)ixbufn,GL_UNSIGNED_BYTE,0);
-	_shader_after_render();
+	glBindTexture(GL_TEXTURE_2D,0);
 }
 
 inline static void shader_render(){
@@ -333,15 +329,15 @@ inline static void shader_render(){
 			shader_def_texbuf_id,
 			mtx_wvp);
 }
-
-inline static void shader_render_triangle_array(
-		GLuint vbufid,size_t vbufn,GLuint texid,const float*mtx_mw
-){
-	_shader_prepare_for_render(vbufid,texid,mtx_mw);
-	glDrawArrays(GL_TRIANGLES,0,(int)vbufn);
-	_shader_after_render();
-}
-
+//
+//inline static void shader_render_triangle_array(
+//		GLuint vbufid,size_t vbufn,GLuint texid,const float*mtx_mw
+//){
+//	shader_prepare_for_render(vbufid,texid,mtx_mw);
+//	glDrawArrays(GL_TRIANGLES,0,(int)vbufn);
+//	glBindTexture(GL_TEXTURE_2D,0);
+//}
+//
 inline static void shader_free() {
 	//? free programs?
 //	if(shader.program_id)
@@ -349,16 +345,16 @@ inline static void shader_free() {
 }
 
 inline static void shader_init() {
-	_check_gl_error("shader_init");
+	gl_check_error("shader_init");
 
 //	gl_print_context_profile_and_version();
 
 
 	puts("");
-	_print_gl_string("GL_VERSION", GL_VERSION);
-	_print_gl_string("GL_VENDOR", GL_VENDOR);
-	_print_gl_string("GL_RENDERER", GL_RENDERER);
-	_print_gl_string("GL_SHADING_LANGUAGE_VERSION",GL_SHADING_LANGUAGE_VERSION);
+	gl_print_string("GL_VERSION", GL_VERSION);
+	gl_print_string("GL_VENDOR", GL_VENDOR);
+	gl_print_string("GL_RENDERER", GL_RENDERER);
+	gl_print_string("GL_SHADING_LANGUAGE_VERSION",GL_SHADING_LANGUAGE_VERSION);
 	puts("");
 //	glEnable(GL_DEPTH_TEST);
 //	glDepthFunc(GL_GREATER);
@@ -376,7 +372,7 @@ inline static void shader_init() {
 	dyni attrs=dyni_def;
 	int e[]={shader_apos,shader_argba,shader_anorm,shader_atex};
 	dyni_add_list(&attrs,e,4);
-	program_from_source(
+	program_load_from_source(
 			shader_vertex_source,
 			shader_fragment_source,
 			/*gives*/attrs);
@@ -386,7 +382,7 @@ inline static void shader_init() {
 
 	shader_load();
 
-	_check_gl_error("after shader_init");
+	gl_check_error("after shader_init");
 
 	///----------------------------------------------
 

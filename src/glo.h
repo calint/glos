@@ -278,13 +278,13 @@ static/*gives*/glo*glo_load_from_file(const char*path){
 		if(token_equals(&t,"f")){
 			for(int i=0;i<3;i++){
 				// position
-				token vert1=next_token_from_string_additional_delim(p,'/');
+				token vert1=token_from_string_additional_delim(p,'/');
 				p=vert1.end;
 				indx ix1=token_get_uint(&vert1);
 				vec4*vtx=(vec4*)dynp_get(&vertices,ix1-1);
 
 				// texture index
-				token vert2=next_token_from_string_additional_delim(p,'/');
+				token vert2=token_from_string_additional_delim(p,'/');
 				p=vert2.end;
 				indx ix2=token_get_uint(&vert2);
 				vec4 tx,*tex;tex=&tx;
@@ -294,7 +294,7 @@ static/*gives*/glo*glo_load_from_file(const char*path){
 					*tex=(vec4){0,0,0,0};
 				}
 				// normal
-				token vert3=next_token_from_string_additional_delim(p,'/');
+				token vert3=token_from_string_additional_delim(p,'/');
 				p=vert3.end;
 				indx ix3=token_get_uint(&vert3);
 				vec4*norm=(vec4*)dynp_get(&normals,ix3-1);

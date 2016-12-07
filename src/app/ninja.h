@@ -19,9 +19,9 @@ static object ninja_def={
 	.glo=NULL,
 	.model_to_world_matrix={1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1},
 	.init=_ninja_init_,
-	.update=_object_update_,
-	.collision=_object_collision_,
-	.render=_render_glob_,
+	.update=object_update,
+	.collision=NULL,
+	.render=object_render_glob,
 	.free=_ninja_free_,
 	.part={NULL,NULL,NULL,NULL}
 };

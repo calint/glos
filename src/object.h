@@ -35,7 +35,7 @@ inline static void _object_init_(object*this){
 //	printf(" * new %-12s [ %4s %p ]\n","object",this->type.path,this);
 }
 //---------------------------------------------------------------------- update
-inline static void _object_update_(object*this,dt dt){
+inline static void object_update(object*this,dt dt){
 	vec4_increase_with_vec4_over_dt(&this->position,&this->velocity,dt);
 	vec4_increase_with_vec4_over_dt(&this->angle,&this->angular_velocity,dt);
 	if(this->model_to_world_matrix_is_updated &&
@@ -63,7 +63,7 @@ static object object_def={
 	.ptr_to_bits=0,
 	.model_to_world_matrix={1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1},
 	.init=_object_init_,
-	.update=_object_update_,
+	.update=object_update,
 	.collision=_object_collision_,
 	.render=_object_render_,
 	.free=_object_free_,
@@ -94,11 +94,11 @@ inline static void _object_update_model_to_world_matrix(object*this){
 
 //----------------------------------------------------------------------------
 
-inline static void _render_glob_(object*o) {
-	if(!o->glo)
+inline static void object_render_glob(object*this) {
+	if(!this->glo)
 		return;
-	_object_update_model_to_world_matrix(o);
-	glo_render(o->glo,o->model_to_world_matrix);
+	_object_update_model_to_world_matrix(this);
+	glo_render(this->glo,this->model_to_world_matrix);
 }
 
 //----------------------------------------------------------------------------

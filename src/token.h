@@ -11,7 +11,7 @@ inline static size_t token_size_including_whitespace(token*t){
 	return (size_t)(t->end-t->begin);
 }
 
-inline static void print_token_including_whitespace(token*t){
+inline static void token_print_including_whitespace(token*t){
 //	write(1,t->begin,(unsigned)(t->end-t->begin));
 	printf("%.*s",(int)token_size_including_whitespace(t),t->begin);
 }
@@ -85,7 +85,7 @@ inline static token token_next_from_string(const char*s){
 	return t;
 }
 
-inline static token next_token_from_string_additional_delim(
+inline static token token_from_string_additional_delim(
 		const char*s,
 		char delim)
 {
