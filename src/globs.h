@@ -2,13 +2,13 @@
 #include"glob.h"
 #include"mat4.h"
 //--------------------------------------------------------------------- storage
-#define globs_cap 16
-#define globs_assert_bounds
-static glob __globs[globs_cap];
+#define glos_cap 16
+#define glos_assert_bounds
+static glo __glo[glos_cap];
 
-inline static void _globs_assert_index_(indx i){
-#ifdef globs_assert_bounds
-	if(i>=globs_cap){
+inline static void _glos_assert_index_(indx i){
+#ifdef glos_assert_bounds
+	if(i>=glos_cap){
 		fprintf(stderr,"\nout of bounds\n");
 		fprintf(stderr,"\n    %s %d\n",__FILE__,__LINE__);
 		exit(-1);
@@ -17,21 +17,21 @@ inline static void _globs_assert_index_(indx i){
 }
 //---------------------------------------------------------------------
 
-inline static glob*glob_at(indx i){
-	_globs_assert_index_(i);
-	return&__globs[i];
+inline static glo*glo_at(indx i){
+	_glos_assert_index_(i);
+	return&__glo[i];
 }
 
 inline static const glob*glob_at_const(indx i){
-	_globs_assert_index_(i);
-	return&__globs[i];
+	_glos_assert_index_(i);
+	return&__glo[i];
 }
 
-inline static void globs_init(){}
-inline static void globs_free(){}
-inline static void globs_render(){
-	glob*g=__globs;
-	int n=globs_cap;
+inline static void glos_init(){}
+inline static void glos_free(){}
+inline static void glos_render(){
+	glob*g=__glo;
+	int n=glos_cap;
 	while(n--){
 		if(g->glo.ranges.count)
 			glob_render(g++,mat4_ident);
@@ -40,19 +40,7 @@ inline static void globs_render(){
 
 
 inline static void globs_load_obj_file(indx i,const char*path){
-	_globs_assert_index_(i);
-	glob_load_obj_file(&__globs[i],path);
+	_glos_assert_index_(i);
+	glob_load_obj_file(&__glo[i],path);
 }
-
-//inline static void globs_render_id(size_t id,float*mat4_model_to_world){
-//	glob*sr=globs_ref(id);
-//	if(!sr->vbufid)
-//		return;
-//	shader_render_triangle_array(
-//			sr->vbufid,
-//			sr->vbufn,
-//			sr->texbufid,
-//			mat4_model_to_world
-//	);
-//}
 

@@ -29,7 +29,7 @@ static object ninja_def={
 inline static void _ninja_init_(object*this){
 //	printf(" * new %-12s [ %4s %p ]\n","ninja",this->type.path,this);
 	_object_init_(this);
-	this->glo=&glob_at(1)->glo;
+	this->glo=glo_at(1);
 	this->scale=(scale){.5,.5,.5,0};
 	this->angular_velocity.z=90;
 	this->velocity.x=.5f;

@@ -66,7 +66,7 @@ inline static void main_init(){
 
 	object*o;
 	o=object_alloc(&ninja_def);
-	o->glo=&glob_at(1)->glo;
+	o->glo=glo_at(1);
 	const float vr=.5f;
 	o->velocity=(velocity){
 		random_range(-vr,vr),random_range(-vr,vr),0,0};
@@ -101,14 +101,14 @@ int main(int argc,char*argv[]){
 	printf(": %15s : %-9ld :\n","object",sizeof(object));
 	printf(": %15s : %-9ld :\n","objects",sizeof(objects));
 	printf(": %15s : %-9ld :\n","glob",sizeof(glob));
-	printf(": %15s : %-9ld :\n","globs",sizeof(__globs));
+	printf(": %15s : %-9ld :\n","globs",sizeof(__glo));
 	printf(":-%15s-:-%-9s-:\n","---------------","--------");
 
 	sdl_init();
 	window_init();
 	shader_init();
 	objects_init();
-	globs_init();
+	glos_init();
 	main_init();
 
 	indx program_id_min=0;
@@ -280,7 +280,7 @@ int main(int argc,char*argv[]){
 	//---------------------------------------------------------------------free
 	//? early-hangup
 //	fps_free();
-	globs_free();
+	glos_free();
 	objects_free();
 	shader_free();
 	window_free();
