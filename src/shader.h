@@ -48,11 +48,11 @@ inline static void shader_load(){
 	glGenBuffers(1, &glob_def.vbufid);
 	glBindBuffer(GL_ARRAY_BUFFER,glob_def.vbufid);
 	glBufferData(GL_ARRAY_BUFFER,
-			glob_def.vbufnbytes,
+			shader_def_vtxbuf_nbytes,
 			shader_def_vtxbuf,
 			GL_STATIC_DRAW
 	);
-	metrics.buffered_data+=(unsigned)glob_def.vbufnbytes;
+	metrics.buffered_data+=shader_def_vtxbuf_nbytes;
 
 	glGenBuffers(1,&glob_def.ibufid);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,glob_def.ibufid);
