@@ -3,7 +3,6 @@
 #include"window.h"
 #include"shader.h"
 #include"objects.h"
-#include"obj_file.h"
 #include"object_alloc.h"
 #include"metrics.h"
 #include"dyni.h"

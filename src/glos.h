@@ -41,6 +41,6 @@ inline static void glos_render(){
 
 inline static void globs_load_obj_file(indx i,const char*path){
 	_glos_assert_index_(i);
-	__glo[i]=glo_load_obj_file(path);
+	__glo[i]=glo_from_file(path);
 }
 
