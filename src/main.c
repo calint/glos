@@ -261,7 +261,8 @@ int main(int argc,char*argv[]){
 
 		glClearColor(c.red,c.green,c.blue,1.0);
 
-		glClear(GL_COLOR_BUFFER_BIT);
+//		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		objects_update(metrics.previous_frame_dt);
 

@@ -356,10 +356,10 @@ inline static void shader_init() {
 	gl_print_string("GL_RENDERER", GL_RENDERER);
 	gl_print_string("GL_SHADING_LANGUAGE_VERSION",GL_SHADING_LANGUAGE_VERSION);
 	puts("");
-//	glEnable(GL_DEPTH_TEST);
-//	glDepthFunc(GL_GREATER);
+	glEnable(GL_DEPTH_TEST);
+//	glDepthFunc(GL_LESS);
 	glEnable(GL_CULL_FACE);
-//	glCullFace(GL_FRONT);
+	glCullFace(GL_BACK);
 	printf(":-%10s-:-%7s-:\n","----------","-------");
 	printf(": %10s : %-7s :\n","feature","y/n");
 	printf(":-%10s-:-%7s-:\n","----------","-------");
@@ -378,51 +378,11 @@ inline static void shader_init() {
 			/*gives*/attrs);
 
 
-	//	glUseProgram(shader_programs[0].id);
-
 	shader_load();
 
 	gl_check_error("after shader_init");
 
 	///----------------------------------------------
-
-
-//	// The framebuffer, which regroups 0, 1, or more textures, and 0 or 1 depth buffer.
-//	GLuint FramebufferName = 0;
-//	glGenFramebuffers(1, &FramebufferName);
-//	glBindFramebuffer(GL_FRAMEBUFFER, FramebufferName);
-//
-//	// The texture we're going to render to
-//	GLuint renderedTexture;
-//	glGenTextures(1, &renderedTexture);
-//
-//	// "Bind" the newly created texture : all future texture functions will modify this texture
-//	glBindTexture(GL_TEXTURE_2D, renderedTexture);
-//
-//	// Give an empty image to OpenGL ( the last "0" )
-//	glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, 1024, 768, 0,GL_RGB, GL_UNSIGNED_BYTE, 0);
-//
-//	// Poor filtering. Needed !
-//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-//
-//	// The depth buffer
-//	GLuint depthrenderbuffer;
-//	glGenRenderbuffers(1, &depthrenderbuffer);
-//	glBindRenderbuffer(GL_RENDERBUFFER, depthrenderbuffer);
-//	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, 1024, 768);
-//	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthrenderbuffer);
-//
-//	// Set "renderedTexture" as our colour attachement #0
-//	_check_gl_error("in make texture for render  1");
-//	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, renderedTexture, 0);
-//	_check_gl_error("in make texture for render");
-//
-//	// Set the list of draw buffers.
-//	GLenum DrawBuffers[1] = {GL_COLOR_ATTACHMENT0};
-//	glDrawBuffers(1, DrawBuffers); // "1" is the size of DrawBuffers
-
-
 }
 
 
