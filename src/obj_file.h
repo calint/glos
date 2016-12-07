@@ -188,6 +188,7 @@ typedef struct material_range{
 typedef struct glo{
 	dynf vtxbuf;
 	dynp ranges;
+	glid vtxbuf_id;
 }glo;
 //#define glo_def (glo){dynf_def,dynp_def}
 #define glo_def (glo){dynf_def,dynp_def}

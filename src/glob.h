@@ -30,6 +30,7 @@ static vertex shader_def_vtxbuf[]={
 static unsigned shader_def_vtxbuf_nbytes=sizeof(shader_def_vtxbuf);
 static unsigned shader_def_vtxbuf_nelems=
 		sizeof(shader_def_vtxbuf)/sizeof(vertex);
+static unsigned shader_def_vtxbuf_id;
 
 static GLubyte shader_def_ixbu[]={0,1,2,2,3,0};
 
@@ -45,7 +46,7 @@ glob{
 //	vertex*vbuf;
 //	GLuint vbufn;
 //	GLsizeiptr vbufnbytes;
-	GLuint vbufid;
+//	GLuint vbufid;
 	GLubyte*ibuf;//? void* and ibuf_type_size
 	GLsizei ibufn;
 	GLsizeiptr ibufnbytes;
@@ -69,7 +70,7 @@ static glob glob_def=(glob){
 //	.vbuf=shader_def_vtxbuf,
 //	.vbufn=sizeof(shader_def_vtxbuf)/sizeof(&shader_def_vtxbuf[0]),
 //	.vbufnbytes=sizeof(shader_def_vtxbuf),
-	.vbufid=0,
+//	.vbufid=0,
 	.ibuf=shader_def_ixbu,
 	.ibufn=sizeof(shader_def_ixbu)/sizeof(GLubyte),
 	.ibufnbytes=sizeof(shader_def_ixbu),
@@ -89,8 +90,8 @@ inline static void glob_load_obj_file(glob*this,const char*path){
 //	this->vbufn=g.vtxbuf.count;
 
 	// upload vertex buffer
-	glGenBuffers(1,&this->vbufid);
-	glBindBuffer(GL_ARRAY_BUFFER,this->vbufid);
+	glGenBuffers(1,&this->glo.vtxbuf_id);
+	glBindBuffer(GL_ARRAY_BUFFER,this->glo.vtxbuf_id);
 	glBufferData(GL_ARRAY_BUFFER,
 			(signed)dynf_size_in_bytes(&g.vtxbuf),
 			g.vtxbuf.data,
@@ -142,7 +143,7 @@ inline static void glob_render(glob*this,const float*mtxmw){
 
 	glUniformMatrix4fv(shader_umtx_mw,1,0,mtxmw);
 
-	glBindBuffer(GL_ARRAY_BUFFER,this->vbufid);
+	glBindBuffer(GL_ARRAY_BUFFER,this->glo.vtxbuf_id);
 
 	glVertexAttribPointer(shader_apos,  3,GL_FLOAT,GL_FALSE,
 			sizeof(vertex),0);

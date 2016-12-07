@@ -45,8 +45,8 @@ struct shader{
 
 inline static void shader_load(){
 	_check_gl_error("enter shader_load");
-	glGenBuffers(1, &glob_def.vbufid);
-	glBindBuffer(GL_ARRAY_BUFFER,glob_def.vbufid);
+	glGenBuffers(1, &shader_def_vtxbuf_id);
+	glBindBuffer(GL_ARRAY_BUFFER,shader_def_vtxbuf_id);
 	glBufferData(GL_ARRAY_BUFFER,
 			shader_def_vtxbuf_nbytes,
 			shader_def_vtxbuf,
@@ -126,7 +126,7 @@ inline static void shader_render_triangle_elements(
 		GLuint texid,const float*mtx_mw
 ){
 	_shader_prepare_for_render(
-			glob_def.vbufid,
+			shader_def_vtxbuf_id,
 			glob_def.texbufid,
 			mat4_ident
 		);
@@ -143,10 +143,12 @@ inline static void shader_render(){
 			0,0,0,1,
 	};
 	shader_render_triangle_elements(
-			glob_def.vbufid,shader_def_vtxbuf,
-			glob_def.ibufid,(unsigned)glob_def.ibufn,
-			glob_def.texbufid,mtx_wvp
-	);
+			shader_def_vtxbuf_id,
+			shader_def_vtxbuf,
+			glob_def.ibufid,
+			(unsigned)glob_def.ibufn,
+			glob_def.texbufid,
+			mtx_wvp);
 }
 
 inline static void shader_render_triangle_array(
