@@ -80,7 +80,7 @@ inline static void shader_load(){
 	glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,
 			glob_def.texwi,glob_def.texhi,
 			0,GL_RGB,GL_FLOAT,
-			glob_def.texbuf);
+			shader_def_texbuf);
 	metrics.buffered_data+=(unsigned)(
 			glob_def.texhi*glob_def.texwi*(signed)sizeof(GL_FLOAT));
 	//----------------------------------------------
