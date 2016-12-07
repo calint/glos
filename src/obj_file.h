@@ -2,17 +2,27 @@
 #include"token.h"
 #include"dynp.h"
 #include"dynf.h"
-//typedef struct obj_mtl{
-//	str name;
-//	str texture_path;
-//	GLuint texture_gid;
-//}obj_mtl;
+#include"dync.h"
 
-// returns vertex buffer of array of triangles
-//                      [ x y z   r g b a   nx ny nz   u v]
-static/*gives*/dynf read_obj_file_from_path(const char*path){
-	printf(" * load '%s' ",path);
-	fflush(stdout);
+
+//newmtl red
+//Ns 96.078431
+//Ka 1.000000 1.000000 1.000000
+//Kd 1.000000 0.000000 0.000000
+//Ks 0.500000 0.500000 0.500000
+//Ke 0.000000 0.000000 0.000000
+//Ni 1.000000
+//d 1.000000
+//illum 2
+
+typedef struct obj_material{
+	const char*name;
+	vec4 Ns,Ka,Kd,Ks,Ke;
+	float Ni,d;
+
+}obj_material;
+
+inline static void dync_init_from_file(dync*this,const char*path){
 	FILE*f=fopen(path,"rb");
 	if(!f){
 		perror("\ncannot open");
@@ -47,12 +57,26 @@ static/*gives*/dynf read_obj_file_from_path(const char*path){
 	fclose(f);
 	filedata[length]=0;
 
+	this->count=(unsigned)length+1;
+	this->data=filedata;
+}
+
+static inline obj_material obj_material_read_from_path(const char*path){
+
+
+}
+
+// returns vertex buffer of array of triangles
+//                      [ x y z   r g b a   nx ny nz   u v]
+static/*gives*/dynf read_obj_file_from_path(const char*path){
+	dync content=dync_def;
+	dync_init_from_file(&content,path);
 	dynp vertices=dynp_def;
 	dynp normals=dynp_def;
 	dynp texuv=dynp_def;
 	dynf vertex_buffer=dynf_def;
 
-	const char*p=filedata;
+	const char*p=content.data;
 	while(*p){
 		token t=token_next_from_string(p);
 		p=t.end;//token_size_including_whitespace(&t);
