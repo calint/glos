@@ -65,7 +65,7 @@ typedef struct objmtl{
 	float Ni,d;
 	dync map_Kd;
 
-	GLuint gid_texture;
+	id texture_id;
 }objmtl;
 #define objmtl_def (objmtl){dync_def,0,vec4_def,vec4_def,vec4_def,vec4_def,0,0,dync_def,0}
 
@@ -88,7 +88,7 @@ inline static objmtl*objmtl_alloc(){
 	return o;
 }
 
-inline static void obj_load_materials_from_file(const char*path){
+inline static void objmtls_load_from_file(const char*path){
 	dync file=dync_from_file(path);
 	objmtl*o=NULL;
 	const char*p=file.data;
@@ -195,7 +195,7 @@ typedef struct glo{
 
 // returns vertex buffer of array of triangles
 //                      [ x y z   r g b a   nx ny nz   u v]
-static/*gives*/glo read_obj_file_from_path(const char*path){
+static/*gives*/glo glo_load_from_file(const char*path){
 	dync file=dync_from_file(path);
 	dynp vertices=dynp_def;
 	dynp normals=dynp_def;
@@ -221,7 +221,7 @@ static/*gives*/glo read_obj_file_from_path(const char*path){
 			dync_add_string(&s,basedir);
 			dync_add_list(&s,t.content,token_size(&t));
 			dync_add(&s,0);
-			obj_load_materials_from_file(s.data);
+			objmtls_load_from_file(s.data);
 			continue;
 		}
 		if(token_equals(&t,"o")){
@@ -377,3 +377,41 @@ static/*gives*/glo read_obj_file_from_path(const char*path){
 	return g;
 }
 
+inline static void glo_upload_to_opengl(glo*this){
+	// upload vertex buffer
+	glGenBuffers(1,&this->vtxbuf_id);
+	glBindBuffer(GL_ARRAY_BUFFER,this->vtxbuf_id);
+	glBufferData(GL_ARRAY_BUFFER,
+			(signed)dynf_size_in_bytes(&this->vtxbuf),
+			this->vtxbuf.data,
+			GL_STATIC_DRAW);
+
+	// upload materials
+	for(indx i=0;i<this->ranges.count;i++){
+		mtlrng*mr=(mtlrng*)this->ranges.data[i];
+		objmtl*m=(objmtl*)mr->material;
+		if(m->map_Kd.count){// load texture
+			glGenTextures(1,&m->texture_id);
+
+			printf(" * loading texture %u from '%s'\n",
+					m->texture_id,m->map_Kd.data);
+
+			glBindTexture(GL_TEXTURE_2D,m->texture_id);
+
+			SDL_Surface*surface=IMG_Load(m->map_Kd.data);
+			if(!surface)exit(-1);
+			glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,
+					surface->w,surface->h,
+					0,GL_RGB,GL_UNSIGNED_BYTE,
+					surface->pixels);
+			SDL_FreeSurface(surface);
+
+			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
+			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
+		}
+	}
+
+	metrics.buffered_data+=dynf_size_in_bytes(&this->vtxbuf);
+}

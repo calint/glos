@@ -26,7 +26,7 @@ static glob glob_def=(glob){
 
 
 inline static void glob_load_obj_file(glob*this,const char*path){
-	this->glo=/*takes*/read_obj_file_from_path(path);
+	this->glo=/*takes*/glo_load_from_file(path);
 
 	// upload vertex buffer
 	glGenBuffers(1,&this->glo.vtxbuf_id);
@@ -41,12 +41,12 @@ inline static void glob_load_obj_file(glob*this,const char*path){
 		mtlrng*mr=(mtlrng*)this->glo.ranges.data[i];
 		objmtl*m=(objmtl*)mr->material;
 		if(m->map_Kd.count){// load texture
-			glGenTextures(1,&m->gid_texture);
+			glGenTextures(1,&m->texture_id);
 
 			printf(" * loading texture %u from '%s'\n",
-					m->gid_texture,m->map_Kd.data);
+					m->texture_id,m->map_Kd.data);
 
-			glBindTexture(GL_TEXTURE_2D,m->gid_texture);
+			glBindTexture(GL_TEXTURE_2D,m->texture_id);
 
 			SDL_Surface*surface=IMG_Load(m->map_Kd.data);
 			if(!surface)exit(-1);
@@ -66,11 +66,11 @@ inline static void glob_load_obj_file(glob*this,const char*path){
 	metrics.buffered_data+=dynf_size_in_bytes(&this->glo.vtxbuf);
 }
 
-inline static void glob_render(glob*this,const float*mtxmw){
+inline static void glo_render(glo*this,const float*mtxmw){
 
 	glUniformMatrix4fv(shader_umtx_mw,1,0,mtxmw);
 
-	glBindBuffer(GL_ARRAY_BUFFER,this->glo.vtxbuf_id);
+	glBindBuffer(GL_ARRAY_BUFFER,this->vtxbuf_id);
 
 	glVertexAttribPointer(shader_apos,  3,GL_FLOAT,GL_FALSE,
 			sizeof(vertex),0);
@@ -81,14 +81,14 @@ inline static void glob_render(glob*this,const float*mtxmw){
 	glVertexAttribPointer(shader_atex,  2,GL_FLOAT, GL_FALSE,
 			sizeof(vertex),(GLvoid*)((3+4+3)*sizeof(float)));
 
-	for(indx i=0;i<this->glo.ranges.count;i++){
-		mtlrng*mr=(mtlrng*)this->glo.ranges.data[i];
+	for(indx i=0;i<this->ranges.count;i++){
+		mtlrng*mr=(mtlrng*)this->ranges.data[i];
 		objmtl*m=mr->material;
 
-		if(m->gid_texture){
+		if(m->texture_id){
 			glUniform1i(shader_utex,0);
 			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D,m->gid_texture);
+			glBindTexture(GL_TEXTURE_2D,m->texture_id);
 			glEnableVertexAttribArray(shader_atex);
 		}else{
 			glDisableVertexAttribArray(shader_atex);
@@ -96,7 +96,7 @@ inline static void glob_render(glob*this,const float*mtxmw){
 
 		glDrawArrays(GL_TRIANGLES,(signed)mr->begin,(signed)(mr->end-mr->begin));
 
-		if(m->gid_texture){
+		if(m->texture_id){
 			glBindTexture(GL_TEXTURE_2D,0);
 		}
 	}

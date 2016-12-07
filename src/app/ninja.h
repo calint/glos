@@ -16,7 +16,7 @@ static object ninja_def={
 	.scale={0,0,0,0},
 	.type={{'a',0,0,0,0,0,0,0}},
 	.ptr_to_bits=NULL,
-	.glob_id=1,
+	.glo=NULL,
 	.model_to_world_matrix={1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1},
 	.init=_ninja_init_,
 	.update=_object_update_,
@@ -29,7 +29,7 @@ static object ninja_def={
 inline static void _ninja_init_(object*this){
 //	printf(" * new %-12s [ %4s %p ]\n","ninja",this->type.path,this);
 	_object_init_(this);
-
+	this->glo=&glob_at(1)->glo;
 	this->scale=(scale){.5,.5,.5,0};
 	this->angular_velocity.z=90;
 	this->velocity.x=.5f;

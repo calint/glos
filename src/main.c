@@ -66,7 +66,7 @@ inline static void main_init(){
 
 	object*o;
 	o=object_alloc(&ninja_def);
-	o->glob_id=1;
+	o->glo=&glob_at(1)->glo;
 	const float vr=.5f;
 	o->velocity=(velocity){
 		random_range(-vr,vr),random_range(-vr,vr),0,0};
@@ -198,11 +198,11 @@ int main(int argc,char*argv[]){
 						draw_default=0;
 						break;
 					case SDLK_2:{
-						object*o=object_at(0);
-						o->glob_id++;
-						if(o->glob_id>maxglobid){
-							o->glob_id=minglobid;
-						}
+//						object*o=object_at(0);
+//						o->glo_id++;
+//						if(o->glo_id>maxglobid){
+//							o->glo_id=minglobid;
+//						}
 						break;
 					}
 					case SDLK_3:{

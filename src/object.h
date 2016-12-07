@@ -16,7 +16,7 @@ typedef struct object{
 
 	bounding_radius bounding_radius;                                   //  4 B
 	scale scale;                                                       // 16 B
-	gid glob_id;                                                       //  4 B
+	glo*glo;                                                       //  4 B
 	bool model_to_world_matrix_is_updated;
 	void(*init)(struct object*);
 	void(*update)(struct object*,dt);
@@ -95,11 +95,10 @@ inline static void _object_update_model_to_world_matrix(object*this){
 //----------------------------------------------------------------------------
 
 inline static void _render_glob_(object*o) {
-	glob*g=glob_at(o->glob_id);
-	if(!g->glo.vtxbuf_id)
+	if(!o->glo)
 		return;
 	_object_update_model_to_world_matrix(o);
-	glob_render(g,o->model_to_world_matrix);
+	glo_render(o->glo,o->model_to_world_matrix);
 }
 
 //----------------------------------------------------------------------------
