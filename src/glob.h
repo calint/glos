@@ -27,12 +27,20 @@ static vertex shader_def_vtxbuf[]={
 	{{-.5, .5, 0},{ 0, 0, 1,1},{0,0,1},{-1, 1}},
 	{{-.5,-.5, 0},{ 0, 0, 0,1},{0,0,1},{-1,-1}},
 };
+
 static unsigned shader_def_vtxbuf_nbytes=sizeof(shader_def_vtxbuf);
+
 static unsigned shader_def_vtxbuf_nelems=
 		sizeof(shader_def_vtxbuf)/sizeof(vertex);
+
 static unsigned shader_def_vtxbuf_id;
 
-static GLubyte shader_def_ixbu[]={0,1,2,2,3,0};
+static GLubyte shader_def_ixbuf[]={0,1,2,2,3,0};
+
+static unsigned shader_def_ixbuf_nbytes=sizeof(shader_def_ixbuf);
+
+static unsigned shader_def_ixbuf_nelems=
+		sizeof(shader_def_ixbuf)/sizeof(GLubyte);
 
 #define shader_def_tex_wi 2
 #define shader_def_tex_hi 2
@@ -71,9 +79,9 @@ static glob glob_def=(glob){
 //	.vbufn=sizeof(shader_def_vtxbuf)/sizeof(&shader_def_vtxbuf[0]),
 //	.vbufnbytes=sizeof(shader_def_vtxbuf),
 //	.vbufid=0,
-	.ibuf=shader_def_ixbu,
-	.ibufn=sizeof(shader_def_ixbu)/sizeof(GLubyte),
-	.ibufnbytes=sizeof(shader_def_ixbu),
+	.ibuf=shader_def_ixbuf,
+	.ibufn=sizeof(shader_def_ixbuf)/sizeof(GLubyte),
+	.ibufnbytes=sizeof(shader_def_ixbuf),
 	.ibufid=0,
 	.texbuf=shader_def_texbuf,
 	.texbufid=0,
