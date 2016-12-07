@@ -155,7 +155,7 @@ typedef struct glo{
 
 // returns vertex buffer of array of triangles
 //                      [ x y z   r g b a   nx ny nz   u v]
-static/*gives*/glo*glo_load_from_file(const char*path){
+static/*gives*/glo*glo_load_first_from_file(const char*path){
 	dync file=dync_from_file(path);
 	dynp vertices=dynp_def;
 	dynp normals=dynp_def;
@@ -461,7 +461,7 @@ inline static void glos_render(){
 
 
 inline static void glos_load_obj_file(indx i,const char*path){
-	glo*g=/*takes*/glo_load_from_file(path);
+	glo*g=/*takes*/glo_load_first_from_file(path);
 	glo_upload_to_opengl(g);
 	dynp_add(&glos,g);
 }
