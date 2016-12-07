@@ -98,14 +98,31 @@ inline static void glob_load_obj_file(glob*this,const char*path){
 		objmtl*m=(objmtl*)mr->material;
 		if(m->map_Kd.count){// load texture
 			glGenTextures(1,&m->gid_texture);
+
+			printf(" * loading texture %u from '%s'\n",
+					m->gid_texture,m->map_Kd.data);
+
 			glBindTexture(GL_TEXTURE_2D,m->gid_texture);
 
-			SDL_Surface*surface=IMG_Load("logo.jpg");
+			SDL_Surface*surface=IMG_Load(m->map_Kd.data);
+			if(!surface){
+				exit(-1);
+			}
+
 			glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,
 					surface->w,surface->h,
 					0,GL_RGB,GL_UNSIGNED_BYTE,
 					surface->pixels);
 			SDL_FreeSurface(surface);
+
+			//----------------------------------------------
+//			glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,
+//					glob_def.texwi,glob_def.texhi,
+//					0,GL_RGB,GL_FLOAT,
+//					glob_def.texbuf);
+//			metrics.buffered_data+=(unsigned)(
+//					glob_def.texhi*glob_def.texwi*(signed)sizeof(GL_FLOAT));
+			//----------------------------------------------
 
 			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
 			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
@@ -140,14 +157,16 @@ inline static void glob_render(glob*this,const float*mtxmw){
 			glUniform1i(shader_utex,0);
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D,m->gid_texture);
+			glEnableVertexAttribArray(shader_atex);
 		}else{
 			glDisableVertexAttribArray(shader_atex);
 		}
 
 		glDrawArrays(GL_TRIANGLES,(signed)mr->begin,(signed)(mr->end-mr->begin));
 
-		if(m->gid_texture)
+		if(m->gid_texture){
 			glBindTexture(GL_TEXTURE_2D,0);
+		}
 	}
 }
 

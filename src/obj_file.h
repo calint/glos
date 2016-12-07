@@ -172,7 +172,7 @@ inline static void obj_load_materials_from_file(const char*path){
 			p=t.end;
 			size_t n=token_size(&t);
 			dync_add_list(&o->map_Kd,t.content,n);
-			dync_add(&o->name,0);
+			dync_add(&o->map_Kd,0);
 			continue;
 		}
 	}

@@ -51,22 +51,22 @@ inline static void main_init(){
 	dyni_add(&attrs,shader_argba);
 	programs_load(2,vtx,frag,/*gives*/attrs);
 
-	shader.active_program_ix=2;
+	shader.active_program_ix=0;
 
-//	globs_load_obj_file(1,"obj/plane.obj");
-//	globs_load_obj_file(2,"obj/ico_sphere.obj");
-//	globs_load_obj_file(3,"obj/cylinder.obj");
-//	globs_load_obj_file(4,"obj/grid_8x8.obj");
-//	globs_load_obj_file(5,"obj/sphere.obj");
-//	globs_load_obj_file(6,"obj/torus.obj");
-//	globs_load_obj_file(7,"obj/disc.obj");
-//	globs_load_obj_file(8,"obj/plane_red.obj");
-//	globs_load_obj_file(9,"obj/cube-blue-red.obj");
+	globs_load_obj_file(1,"obj/plane.obj");
+	globs_load_obj_file(2,"obj/ico_sphere.obj");
+	globs_load_obj_file(3,"obj/cylinder.obj");
+	globs_load_obj_file(4,"obj/grid_8x8.obj");
+	globs_load_obj_file(5,"obj/sphere.obj");
+	globs_load_obj_file(6,"obj/torus.obj");
+	globs_load_obj_file(7,"obj/disc.obj");
+	globs_load_obj_file(8,"obj/plane_red.obj");
+	globs_load_obj_file(9,"obj/cube-blue-red.obj");
 	globs_load_obj_file(10,"obj/cubo.obj");
 
 	object*o;
 	o=object_alloc(&ninja_def);
-	o->glob_id=10;
+	o->glob_id=1;
 	const float vr=.5f;
 	o->velocity=(velocity){
 		random_range(-vr,vr),random_range(-vr,vr),0,0};
@@ -92,6 +92,8 @@ inline static void main_init(){
 
 //------------------------------------------------------------------------ main
 int main(int argc,char*argv[]){
+	arrayix minglobid=0,maxglobid=10;
+
 	printf(":-%15s-:-%-9s-:\n","---------------","---------");
 	printf(": %15s : %-9s :\n","type",           "bytes");
 	printf(":-%15s-:-%-9s-:\n","---------------","---------");
@@ -198,8 +200,8 @@ int main(int argc,char*argv[]){
 					case SDLK_2:{
 						object*o=object_at(0);
 						o->glob_id++;
-						if(o->glob_id>8){
-							o->glob_id=1;
+						if(o->glob_id>maxglobid){
+							o->glob_id=minglobid;
 						}
 						break;
 					}
