@@ -1,9 +1,9 @@
  [x] dynamic pointer vector
  [x] texturing
  [o] obj format
- [ ]   colors
+ [x]   colors
  [x]   texture coords
- [ ]   materials
+ [o]   materials
  [ ]   textures
  [ ]   render
  [ ] collision detection 
