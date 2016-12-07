@@ -21,17 +21,17 @@ typedef struct vertex{
 	float texture[2];
 }vertex;
 
-static vertex glob_def_vertbuf[]={
+static vertex shader_def_vtxbuf[]={
 	{{ .5,-.5, 0},{ 1, 0, 0,1},{0,0,1},{ 1,-1}},
 	{{ .5, .5, 0},{ 0, 1, 0,1},{0,0,1},{ 1, 1}},
 	{{-.5, .5, 0},{ 0, 0, 1,1},{0,0,1},{-1, 1}},
 	{{-.5,-.5, 0},{ 0, 0, 0,1},{0,0,1},{-1,-1}},
 };
-static GLubyte glob_def_ixbuf[]={0,1,2,2,3,0};
+static GLubyte shader_def_ixbu[]={0,1,2,2,3,0};
 
-#define glob_def_texwi 2
-#define glob_def_texhi 2
-static GLfloat glob_def_texbuf[]={
+#define shader_def_tex_wi 2
+#define shader_def_tex_hi 2
+static GLfloat shader_def_texbuf[]={
 		1,1,1,  0,1,1,
 		1,1,0,  1,1,1,
 };
@@ -62,18 +62,18 @@ glob{
 #define shader_umtx_wvp 1
 #define shader_utex 2
 static glob glob_def=(glob){
-	.vbuf=glob_def_vertbuf,
-	.vbufn=sizeof(glob_def_vertbuf)/sizeof(&glob_def_vertbuf[0]),
-	.vbufnbytes=sizeof(glob_def_vertbuf),
+	.vbuf=shader_def_vtxbuf,
+	.vbufn=sizeof(shader_def_vtxbuf)/sizeof(&shader_def_vtxbuf[0]),
+	.vbufnbytes=sizeof(shader_def_vtxbuf),
 	.vbufid=0,
-	.ibuf=glob_def_ixbuf,
-	.ibufn=sizeof(glob_def_ixbuf)/sizeof(GLubyte),
-	.ibufnbytes=sizeof(glob_def_ixbuf),
+	.ibuf=shader_def_ixbu,
+	.ibufn=sizeof(shader_def_ixbu)/sizeof(GLubyte),
+	.ibufnbytes=sizeof(shader_def_ixbu),
 	.ibufid=0,
-	.texbuf=glob_def_texbuf,
+	.texbuf=shader_def_texbuf,
 	.texbufid=0,
-	.texwi=glob_def_texwi,
-	.texhi=glob_def_texhi,
+	.texwi=shader_def_tex_wi,
+	.texhi=shader_def_tex_hi,
 	.glo={{0,0,0},{0,0,0}},
 };
 
