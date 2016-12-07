@@ -47,36 +47,27 @@ inline static dync dync_from_file(const char*path){
 }
 
 
-//newmtl red
+//newmtl texture
 //Ns 96.078431
 //Ka 1.000000 1.000000 1.000000
-//Kd 1.000000 0.000000 0.000000
+//Kd 0.640000 0.640000 0.640000
 //Ks 0.500000 0.500000 0.500000
 //Ke 0.000000 0.000000 0.000000
 //Ni 1.000000
 //d 1.000000
 //illum 2
+//map_Kd /home/c/w/glos/logo.jpeg
 
 typedef struct _objmtl{
 	dync name;
 	float Ns;
 	vec4 Ka,Kd,Ks,Ke;
 	float Ni,d;
+	dync map_Kd;
 }objmtl;
 
-//static objmtl_def={
-//		.name=dync_def,
-//		.Ns=0,
-//		.Ka=vec4_def,
-//		.Kd=vec4_def,
-//		.Ks=vec4_def,
-//		.Ke==vec4_def,
-//		.Ni=0,
-//		.d=0,
-//}
-
 #define DYNC_DEF (dync){0,0,0}
-#define objmtl_def (objmtl){DYNC_DEF,0,vec4_def,vec4_def,vec4_def,vec4_def,0,0}
+#define objmtl_def (objmtl){DYNC_DEF,0,vec4_def,vec4_def,vec4_def,vec4_def,0,0,DYNC_DEF}
 
 inline static void objmtl_free(objmtl*this){
 	dync_free(&this->name);
@@ -115,6 +106,7 @@ inline static void obj_load_materials_from_file(const char*path){
 			}
 			o=objmtl_alloc();
 			token t=token_next_from_string(p);
+			p=t.end;
 			size_t n=token_size(&t);
 			dync_add_list(&o->name,t.content,n);
 			dync_add(&o->name,0);
@@ -174,24 +166,46 @@ inline static void obj_load_materials_from_file(const char*path){
 			o->d=f;
 			continue;
 		}
+
+		if(token_equals(&t,"map_Kd")){
+			token t=token_next_from_string(p);
+			p=t.end;
+			size_t n=token_size(&t);
+			dync_add_list(&o->map_Kd,t.content,n);
+			dync_add(&o->name,0);
+			continue;
+		}
 	}
 	objmtls_add(&materials,o);
 }
 
+typedef struct material_range{
+	arrayix begin,end;
+	objmtl*material;
+}material_range;
+#define material_range_def (material_range){0,0,0}
 
+typedef struct glo{
+	dynf vertex_buffer;
+	dynp render_ranges;
+}glo;
+#define glo_def (glo){dynf_def,dynp_def}
 
 // returns vertex buffer of array of triangles
 //                      [ x y z   r g b a   nx ny nz   u v]
-static/*gives*/dynf read_obj_file_from_path(const char*path){
-	dync content=dync_from_file(path);
+static/*gives*/glo*read_obj_file_from_path(const char*path){
+	dync file=dync_from_file(path);
 	dynp vertices=dynp_def;
 	dynp normals=dynp_def;
 	dynp texuv=dynp_def;
 	dynf vertex_buffer=dynf_def;
+	dynp material_ranges=dynp_def;
 
-	const char*p=content.data;
+	const char*p=file.data;
 	objmtl*current_objmtl=NULL;
 	const char*basedir="obj/";
+	arrayix vtxbufix=0;
+	arrayix prev_vtxbufix=0;
 	while(*p){
 		token t=token_next_from_string(p);
 		p=t.end;//token_size_including_whitespace(&t);
@@ -218,17 +232,26 @@ static/*gives*/dynf read_obj_file_from_path(const char*path){
 			dync_add_list(&name,t.content,token_size(&t));
 			dync_add(&name,0);
 
-			int found=0;
+			objmtl*m=NULL;
 			for(unsigned i=0;i<name.count;i++){
-				objmtl*m=objmtls_get(&materials,i);
+				m=objmtls_get(&materials,i);
 				if(!strcmp(m->name.data,name.data)){
-					current_objmtl=m;
-					found=1;
 					break;
 				}
 			}
-			if(found)
+			if(m){
+				if(prev_vtxbufix!=vtxbufix){
+					material_range*mr=malloc(sizeof(material_range));
+//					*mr=material_range_def;
+					mr->begin=prev_vtxbufix;
+					mr->end=vtxbufix;
+					mr->material=current_objmtl;
+					dynp_add(&material_ranges,mr);
+					prev_vtxbufix=vtxbufix;
+				}
+				current_objmtl=m;
 				continue;
+			}
 			fprintf(stderr,"\ncould not find material\n");
 			fprintf(stderr,"   %s\n",name.data);
 			fprintf(stderr,"\n     %s %d\n",__FILE__,__LINE__);
@@ -330,45 +353,27 @@ static/*gives*/dynf read_obj_file_from_path(const char*path){
 
 				dynf_add(&vertex_buffer,tex->x);
 				dynf_add(&vertex_buffer,tex->y);
+
+				vtxbufix++;
 			}
 			continue;
 		}
 	}
-	printf("  %lu vertices  %lu B\n",
+	material_range*mr=malloc(sizeof(material_range));
+//					*mr=material_range_def;
+	mr->begin=prev_vtxbufix;
+	mr->end=vtxbufix;
+	mr->material=current_objmtl;
+	dynp_add(&material_ranges,mr);
+
+	printf(" ranges %u   %lu vertices   %lu B\n",
+			material_ranges.count,
 			vertex_buffer.count,
 			dynf_size_in_bytes(&vertex_buffer));
 
-	return vertex_buffer;
+	glo*g=malloc(sizeof(glo));
+	g->render_ranges=material_ranges;
+	g->vertex_buffer=vertex_buffer;
+	return g;
 }
-
-
-
-
-
-//# Blender MTL File: 'None'
-//# Material Count: 2
-//
-//newmtl blue
-//Ns 96.078431
-//Ka 1.000000 1.000000 1.000000
-//Kd 0.005881 0.000000 0.640000
-//Ks 0.500000 0.500000 0.500000
-//Ke 0.000000 0.000000 0.000000
-//Ni 1.000000
-//d 1.000000
-//illum 2
-//map_Kd /home/c/w/glos/logo.jpg
-//
-//newmtl red
-//Ns 96.078431
-//Ka 1.000000 1.000000 1.000000
-//Kd 0.640000 0.000000 0.012335
-//Ks 0.500000 0.500000 0.500000
-//Ke 0.000000 0.000000 0.000000
-//Ni 1.000000
-//d 1.000000
-//illum 2
-//map_Kd /home/c/w/glos/logo.jpg
-
-
 

@@ -2,7 +2,7 @@
 #include"typedefs.h"
 //----------------------------------------------------------------------config
 
-#define objmtls_initial_capacity 8
+#define objmtls_initial_capacity 128
 #define objmtls_bounds_check 1
 
 //------------------------------------------------------------------------ def
@@ -12,7 +12,7 @@ typedef struct objmtls{
 	unsigned count;
 	unsigned cap;
 }objmtls;
-objmtls objmtls_def={0,0,0};
+#define objmtls_def (objmtls){0,0,0}
 
 //--------------------------------------------------------------------- private
 

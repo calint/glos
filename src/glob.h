@@ -2,14 +2,13 @@
 #include"sdl.h"
 #include"dynf.h"
 #include"metrics.h"
+#include"obj_file.h"
 #define glob_count 128
 //----------------------------------------------------------------------- calls
 
 inline static void shader_render_triangle_array(
 	GLuint vbufid,size_t vbufn,GLuint texid,const float*mtx_mw
 );
-
-static/*gives*/dynf read_obj_file_from_path(const char*path);
 
 //---------------------------------------------------------------------
 
@@ -51,6 +50,7 @@ glob{
 	GLsizei texhi;
 	bits*ptr_bits;
 //	float*mtx_mw;
+	dynp material_ranges;
 }glob;
 
 static glob glob_def=(glob){
@@ -66,6 +66,7 @@ static glob glob_def=(glob){
 	.texbufid=0,
 	.texwi=glob_def_texwi,
 	.texhi=glob_def_texhi,
+	.material_ranges=dynp_def,
 };
 
 inline static void glob_render(glob*this,const float*mat4_model_to_world){
@@ -78,20 +79,20 @@ inline static void glob_render(glob*this,const float*mat4_model_to_world){
 }
 
 inline static void glob_load_obj_file(glob*this,const char*path){
-	dynf df=/*takes*/read_obj_file_from_path(path);
+	glo*g=/*takes*/read_obj_file_from_path(path);
 
-	this->vbufn=df.count;
-	this->vbufnbytes=(GLsizeiptr)(df.count*sizeof(float));
+	this->vbufn=g->vertex_buffer.count;
+	this->vbufnbytes=(GLsizeiptr)(this->vbufn*sizeof(float));
 	this->texbufid=glob_def.texbufid;//?
+	this->material_ranges=g->render_ranges;
 
 	glGenBuffers(1,&this->vbufid);
 	glBindBuffer(GL_ARRAY_BUFFER,this->vbufid);
 	glBufferData(GL_ARRAY_BUFFER,
 			(signed)this->vbufnbytes,
-			df.data,
+			g->vertex_buffer.data,
 			GL_STATIC_DRAW);
 
-	metrics.buffered_data+=dynf_size_in_bytes(&df);
-	dynf_free(/*gives*/&df);
+	metrics.buffered_data+=(unsigned)this->vbufnbytes;
 }
 
