@@ -157,17 +157,24 @@ typedef struct glo{
 //                      [ x y z   r g b a   nx ny nz   u v]
 static/*gives*/glo*glo_load_first_from_file(const char*path){
 	dync file=dync_from_file(path);
+//	dynp glos=dynp_def;
+
 	dynp vertices=dynp_def;
 	dynp normals=dynp_def;
 	dynp texuv=dynp_def;
+
+
 	dynf vertex_buffer=dynf_def;
 	dynp material_ranges=dynp_def;
+
+
 
 	const char*p=file.data;
 	objmtl*current_objmtl=NULL;
 	const char*basedir="obj/";
 	indx vtxbufix=0;
 	indx prev_vtxbufix=0;
+	int first_o=1;
 	while(*p){
 		token t=token_next_from_string(p);
 		p=t.end;//token_size_including_whitespace(&t);
@@ -185,8 +192,13 @@ static/*gives*/glo*glo_load_first_from_file(const char*path){
 			continue;
 		}
 		if(token_equals(&t,"o")){
-			p=scan_to_including_newline(p);
-			continue;
+			if(first_o){
+				first_o=0;
+				p=scan_to_including_newline(p);
+				continue;
+			}
+			p=t.begin;
+			break;
 		}
 		if(token_equals(&t,"usemtl")){
 			token t=token_next_from_string(p);
@@ -460,7 +472,7 @@ inline static void glos_render(){
 }
 
 
-inline static void glos_load_obj_file(indx i,const char*path){
+inline static void glos_load_obj_file(const char*path){
 	glo*g=/*takes*/glo_load_first_from_file(path);
 	glo_upload_to_opengl(g);
 	dynp_add(&glos,g);

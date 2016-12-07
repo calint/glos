@@ -52,20 +52,21 @@ inline static void main_init(){
 
 	shader.active_program_ix=0;
 
-	glos_load_obj_file(1,"obj/plane.obj");
-	glos_load_obj_file(2,"obj/ico_sphere.obj");
-	glos_load_obj_file(3,"obj/cylinder.obj");
-	glos_load_obj_file(4,"obj/grid_8x8.obj");
-	glos_load_obj_file(5,"obj/sphere.obj");
-	glos_load_obj_file(6,"obj/torus.obj");
-	glos_load_obj_file(7,"obj/disc.obj");
-	glos_load_obj_file(8,"obj/plane_red.obj");
-	glos_load_obj_file(9,"obj/cube-blue-red.obj");
-	glos_load_obj_file(10,"obj/cubo.obj");
+//	glos_load_obj_file(1,"obj/plane.obj");
+//	glos_load_obj_file(2,"obj/ico_sphere.obj");
+//	glos_load_obj_file(3,"obj/cylinder.obj");
+//	glos_load_obj_file(4,"obj/grid_8x8.obj");
+//	glos_load_obj_file(5,"obj/sphere.obj");
+//	glos_load_obj_file(6,"obj/torus.obj");
+//	glos_load_obj_file(7,"obj/disc.obj");
+//	glos_load_obj_file(8,"obj/plane_red.obj");
+//	glos_load_obj_file(9,"obj/cube-blue-red.obj");
+//	glos_load_obj_file(10,"obj/cubo.obj");
+	glos_load_obj_file("obj/sceno.obj");
 
 	object*o;
 	o=object_alloc(&ninja_def);
-	o->glo=glo_at(1);
+	o->glo=glo_at(0);
 	const float vr=.5f;
 	o->velocity=(velocity){
 		random_range(-vr,vr),random_range(-vr,vr),0,0};
