@@ -49,7 +49,7 @@ inline static void shader_load(){
 	glBindBuffer(GL_ARRAY_BUFFER,glob_def.vbufid);
 	glBufferData(GL_ARRAY_BUFFER,
 			glob_def.vbufnbytes,
-			glob_def.vbuf,
+			shader_def_vtxbuf,
 			GL_STATIC_DRAW
 	);
 	metrics.buffered_data+=(unsigned)glob_def.vbufnbytes;
@@ -143,7 +143,7 @@ inline static void shader_render(){
 			0,0,0,1,
 	};
 	shader_render_triangle_elements(
-			glob_def.vbufid,glob_def.vbufn,
+			glob_def.vbufid,shader_def_vtxbuf,
 			glob_def.ibufid,(unsigned)glob_def.ibufn,
 			glob_def.texbufid,mtx_wvp
 	);

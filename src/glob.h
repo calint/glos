@@ -38,7 +38,7 @@ static GLfloat shader_def_texbuf[]={
 
 typedef struct
 glob{
-	vertex*vbuf;
+//	vertex*vbuf;
 	GLuint vbufn;
 	GLsizeiptr vbufnbytes;
 	GLuint vbufid;
@@ -62,7 +62,7 @@ glob{
 #define shader_umtx_wvp 1
 #define shader_utex 2
 static glob glob_def=(glob){
-	.vbuf=shader_def_vtxbuf,
+//	.vbuf=shader_def_vtxbuf,
 	.vbufn=sizeof(shader_def_vtxbuf)/sizeof(&shader_def_vtxbuf[0]),
 	.vbufnbytes=sizeof(shader_def_vtxbuf),
 	.vbufid=0,

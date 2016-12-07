@@ -33,7 +33,7 @@ inline static void globs_render(){
 	glob*g=__globs;
 	int n=globs_cap;
 	while(n--){
-		if(g->vbuf)
+		if(g->glo.ranges.count)
 			glob_render(g++,mat4_ident);
 	}
 }
