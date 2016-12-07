@@ -62,7 +62,9 @@ inline static void main_init(){
 //	glos_load_obj_file(8,"obj/plane_red.obj");
 //	glos_load_obj_file(9,"obj/cube-blue-red.obj");
 //	glos_load_obj_file(10,"obj/cubo.obj");
-	glos_load_obj_file("obj/sceno.obj");
+//	glos_load_obj_file("obj/sceno.obj");
+
+	glos_load_scene_from_file("obj/sceno.obj");
 
 	object*o;
 	o=object_alloc(&ninja_def);
@@ -265,11 +267,12 @@ int main(int argc,char*argv[]){
 //		glClear(GL_COLOR_BUFFER_BIT);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		objects_update(metrics.previous_frame_dt);
-
-		if(draw_objects)objects_render();
+//		objects_update(metrics.previous_frame_dt);
+//		if(draw_objects)objects_render();
 
 		if(draw_default)shader_render();
+
+		glos_render();
 
 		SDL_GL_SwapWindow(window.ref);
 

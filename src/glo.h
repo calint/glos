@@ -358,6 +358,17 @@ static/*gives*/glo*glo_load_first_from_file(const char*path){
 	return glo_load_next_from_string(&p);
 }
 
+static/*gives*/dynp glo_load_all_from_file(const char*path){
+	dync file=dync_from_file(path);
+	const char*p=file.data;
+	dynp ls=dynp_def;
+	while(*p){
+		glo*g=glo_load_next_from_string(&p);
+		dynp_add(&ls,g);
+	}
+	return ls;
+}
+
 inline static void glo_upload_to_opengl(glo*this){
 	// upload vertex buffer
 	glGenBuffers(1,&this->vtxbuf_id);
@@ -486,6 +497,15 @@ inline static void glos_load_obj_file(const char*path){
 	dynp_add(&glos,g);
 }
 
+
+inline static void glos_load_scene_from_file(const char*path){
+	dynp ls=glo_load_all_from_file(path);
+	for(indx i=0;i<ls.count;i++){
+		glo*g=ls.data[i];
+		glo_upload_to_opengl(g);
+		dynp_add(&glos,g);
+	}
+}
 
 
 
