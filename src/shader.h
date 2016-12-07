@@ -146,7 +146,7 @@ inline static void shader_render(){
 			shader_def_vtxbuf_id,
 			shader_def_vtxbuf,
 			glob_def.ibufid,
-			(unsigned)glob_def.ibufn,
+			shader_def_ixbuf_nelems,
 			glob_def.texbufid,
 			mtx_wvp);
 }

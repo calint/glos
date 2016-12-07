@@ -56,7 +56,7 @@ glob{
 //	GLsizeiptr vbufnbytes;
 //	GLuint vbufid;
 //	GLubyte*ibuf;//? void* and ibuf_type_size
-	GLsizei ibufn;
+//	GLsizei ibufn;
 	GLsizeiptr ibufnbytes;
 	GLuint ibufid;
 	GLfloat*texbuf;
@@ -80,7 +80,7 @@ static glob glob_def=(glob){
 //	.vbufnbytes=sizeof(shader_def_vtxbuf),
 //	.vbufid=0,
 //	.ibuf=shader_def_ixbuf,
-	.ibufn=sizeof(shader_def_ixbuf)/sizeof(GLubyte),
+//	.ibufn=sizeof(shader_def_ixbuf)/sizeof(GLubyte),
 	.ibufnbytes=sizeof(shader_def_ixbuf),
 	.ibufid=0,
 	.texbuf=shader_def_texbuf,
