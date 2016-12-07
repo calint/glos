@@ -153,11 +153,9 @@ typedef struct glo{
 //#define glo_def (glo){dynf_def,dynp_def}
 #define glo_def (glo){dynf_def,dynp_def}
 
-// returns vertex buffer of array of triangles
-//                      [ x y z   r g b a   nx ny nz   u v]
-static/*gives*/glo*glo_load_first_from_file(const char*path){
-	dync file=dync_from_file(path);
-//	dynp glos=dynp_def;
+
+static/*gives*/glo*glo_load_next_from_string(const char**ptr_p){
+	const char*p=*ptr_p;
 
 	dynp vertices=dynp_def;
 	dynp normals=dynp_def;
@@ -169,7 +167,7 @@ static/*gives*/glo*glo_load_first_from_file(const char*path){
 
 
 
-	const char*p=file.data;
+
 	objmtl*current_objmtl=NULL;
 	const char*basedir="obj/";
 	indx vtxbufix=0;
@@ -347,7 +345,17 @@ static/*gives*/glo*glo_load_first_from_file(const char*path){
 
 	glo*g=calloc(1,sizeof(glo));
 	*g=(glo){vertex_buffer,material_ranges,0};
+	*ptr_p=p;
 	return g;
+}
+
+
+// returns vertex buffer of array of triangles
+//                      [ x y z   r g b a   nx ny nz   u v]
+static/*gives*/glo*glo_load_first_from_file(const char*path){
+	dync file=dync_from_file(path);
+	const char*p=file.data;
+	return glo_load_next_from_string(&p);
 }
 
 inline static void glo_upload_to_opengl(glo*this){
