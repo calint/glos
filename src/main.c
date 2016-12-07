@@ -7,7 +7,7 @@
 #include"metrics.h"
 #include"dyni.h"
 #include"app/ninja.h"
-#include "glos.h"
+#include"glo.h"
 //----------------------------------------------------------------------- init
 inline static void main_init(){
 

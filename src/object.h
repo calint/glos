@@ -1,5 +1,5 @@
 #pragma once
-#include "glos.h"
+#include"glo.h"
 //---------------------------------------------------------------------- config
 
 #define object_part_cap 5
