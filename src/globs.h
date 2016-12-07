@@ -17,12 +17,12 @@ inline static void _globs_assert_index_(arrayix i){
 }
 //---------------------------------------------------------------------
 
-inline static glob*globs_at(arrayix i){
+inline static glob*glob_at(arrayix i){
 	_globs_assert_index_(i);
 	return&__globs[i];
 }
 
-inline static const glob*globs_at_const(arrayix i){
+inline static const glob*glob_at_const(arrayix i){
 	_globs_assert_index_(i);
 	return&__globs[i];
 }

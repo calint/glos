@@ -95,7 +95,7 @@ inline static void _object_update_model_to_world_matrix(object*this){
 //----------------------------------------------------------------------------
 
 inline static void _render_glob_(object*o) {
-	glob*g=globs_at(o->glob_id);
+	glob*g=glob_at(o->glob_id);
 	if(!g->glo.vtxbuf_id)
 		return;
 	_object_update_model_to_world_matrix(o);
