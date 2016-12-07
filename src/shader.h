@@ -64,8 +64,8 @@ inline static void shader_load(){
 	metrics.buffered_data+=shader_def_ixbuf_nbytes;
 
 //	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
-	glGenTextures(1,&glob_def.texbufid);
-	glBindTexture(GL_TEXTURE_2D,glob_def.texbufid);
+	glGenTextures(1,&shader_def_texbuf_id);
+	glBindTexture(GL_TEXTURE_2D,shader_def_texbuf_id);
 
 //----------------------------------------------
 //	SDL_Surface*surface=IMG_Load("logo.jpg");
@@ -127,7 +127,7 @@ inline static void shader_render_triangle_elements(
 ){
 	_shader_prepare_for_render(
 			shader_def_vtxbuf_id,
-			glob_def.texbufid,
+			shader_def_texbuf_id,
 			mat4_ident
 		);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,ixbufid);
@@ -147,7 +147,7 @@ inline static void shader_render(){
 			shader_def_vtxbuf_nelems,
 			shader_def_ixbuf_id,
 			shader_def_ixbuf_nelems,
-			glob_def.texbufid,
+			shader_def_texbuf_id,
 			mtx_wvp);
 }
 

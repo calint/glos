@@ -50,6 +50,7 @@ static GLfloat shader_def_texbuf[]={
 		1,1,1,  0,1,1,
 		1,1,0,  1,1,1,
 };
+static unsigned shader_def_texbuf_id;
 
 typedef struct
 glob{
@@ -62,7 +63,7 @@ glob{
 //	GLsizeiptr ibufnbytes;
 //	GLuint ibufid;
 //	GLfloat*texbuf;
-	GLuint texbufid;
+//	GLuint texbufid;
 	GLsizei texwi;
 	GLsizei texhi;
 	bits*ptr_bits;
@@ -86,7 +87,7 @@ static glob glob_def=(glob){
 //	.ibufnbytes=sizeof(shader_def_ixbuf),
 //	.ibufid=0,
 //	.texbuf=shader_def_texbuf,
-	.texbufid=0,
+//	.texbufid=0,
 	.texwi=shader_def_tex_wi,
 	.texhi=shader_def_tex_hi,
 	.glo={{0,0,0},{0,0,0}},
