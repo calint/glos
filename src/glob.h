@@ -28,7 +28,8 @@ static vertex shader_def_vtxbuf[]={
 	{{-.5,-.5, 0},{ 0, 0, 0,1},{0,0,1},{-1,-1}},
 };
 static unsigned shader_def_vtxbuf_nbytes=sizeof(shader_def_vtxbuf);
-
+static unsigned shader_def_vtxbuf_nelems=
+		sizeof(shader_def_vtxbuf)/sizeof(vertex);
 
 static GLubyte shader_def_ixbu[]={0,1,2,2,3,0};
 
@@ -42,7 +43,7 @@ static GLfloat shader_def_texbuf[]={
 typedef struct
 glob{
 //	vertex*vbuf;
-	GLuint vbufn;
+//	GLuint vbufn;
 //	GLsizeiptr vbufnbytes;
 	GLuint vbufid;
 	GLubyte*ibuf;//? void* and ibuf_type_size
@@ -66,7 +67,7 @@ glob{
 #define shader_utex 2
 static glob glob_def=(glob){
 //	.vbuf=shader_def_vtxbuf,
-	.vbufn=sizeof(shader_def_vtxbuf)/sizeof(&shader_def_vtxbuf[0]),
+//	.vbufn=sizeof(shader_def_vtxbuf)/sizeof(&shader_def_vtxbuf[0]),
 //	.vbufnbytes=sizeof(shader_def_vtxbuf),
 	.vbufid=0,
 	.ibuf=shader_def_ixbu,
@@ -85,7 +86,7 @@ inline static void glob_load_obj_file(glob*this,const char*path){
 	glo g=/*takes*/read_obj_file_from_path(path);
 	this->glo=g;
 //	this->vbufnbytes=(unsigned)dynf_size_in_bytes(&g.vtxbuf);
-	this->vbufn=g.vtxbuf.count;
+//	this->vbufn=g.vtxbuf.count;
 
 	// upload vertex buffer
 	glGenBuffers(1,&this->vbufid);
