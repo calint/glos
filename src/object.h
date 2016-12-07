@@ -1,5 +1,5 @@
 #pragma once
-#include"globs.h"
+#include "glos.h"
 //---------------------------------------------------------------------- config
 
 #define object_part_cap 5

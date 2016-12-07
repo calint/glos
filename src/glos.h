@@ -1,5 +1,5 @@
 #pragma once
-#include"glob.h"
+#include "glo.h"
 #include"mat4.h"
 //--------------------------------------------------------------------- storage
 #define glos_cap 16
@@ -22,7 +22,7 @@ inline static glo*glo_at(indx i){
 	return&__glo[i];
 }
 
-inline static const glob*glob_at_const(indx i){
+inline static const glo*glo_at_const(indx i){
 	_glos_assert_index_(i);
 	return&__glo[i];
 }
@@ -30,17 +30,17 @@ inline static const glob*glob_at_const(indx i){
 inline static void glos_init(){}
 inline static void glos_free(){}
 inline static void glos_render(){
-	glob*g=__glo;
+	glo*g=__glo;
 	int n=glos_cap;
 	while(n--){
-		if(g->glo.ranges.count)
-			glob_render(g++,mat4_ident);
+		if(g->ranges.count)
+			glo_render(g++,mat4_ident);
 	}
 }
 
 
 inline static void globs_load_obj_file(indx i,const char*path){
 	_glos_assert_index_(i);
-	glob_load_obj_file(&__glo[i],path);
+	__glo[i]=glo_load_obj_file(path);
 }
 

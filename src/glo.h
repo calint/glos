@@ -8,14 +8,6 @@
 #define glob_count 128
 //----------------------------------------------------------------------- calls
 
-typedef struct glob{
-	glo glo;
-}glob;
-
-static glob glob_def=(glob){
-	.glo={{0,0,0},{0,0,0}},
-};
-
 #define shader_apos 0
 #define shader_argba 1
 #define shader_anorm 2
@@ -25,20 +17,20 @@ static glob glob_def=(glob){
 #define shader_utex 2
 
 
-inline static void glob_load_obj_file(glob*this,const char*path){
-	this->glo=/*takes*/glo_load_from_file(path);
+inline static glo glo_load_obj_file(const char*path){
+	glo g=/*takes*/glo_load_from_file(path);
 
 	// upload vertex buffer
-	glGenBuffers(1,&this->glo.vtxbuf_id);
-	glBindBuffer(GL_ARRAY_BUFFER,this->glo.vtxbuf_id);
+	glGenBuffers(1,&g.vtxbuf_id);
+	glBindBuffer(GL_ARRAY_BUFFER,g.vtxbuf_id);
 	glBufferData(GL_ARRAY_BUFFER,
-			(signed)dynf_size_in_bytes(&this->glo.vtxbuf),
-			this->glo.vtxbuf.data,
+			(signed)dynf_size_in_bytes(&g.vtxbuf),
+			g.vtxbuf.data,
 			GL_STATIC_DRAW);
 
 	// upload materials
-	for(indx i=0;i<this->glo.ranges.count;i++){
-		mtlrng*mr=(mtlrng*)this->glo.ranges.data[i];
+	for(indx i=0;i<g.ranges.count;i++){
+		mtlrng*mr=(mtlrng*)g.ranges.data[i];
 		objmtl*m=(objmtl*)mr->material;
 		if(m->map_Kd.count){// load texture
 			glGenTextures(1,&m->texture_id);
@@ -63,7 +55,9 @@ inline static void glob_load_obj_file(glob*this,const char*path){
 		}
 	}
 
-	metrics.buffered_data+=dynf_size_in_bytes(&this->glo.vtxbuf);
+	metrics.buffered_data+=dynf_size_in_bytes(&g.vtxbuf);
+
+	return g;
 }
 
 inline static void glo_render(glo*this,const float*mtxmw){

@@ -8,7 +8,7 @@
 #include"metrics.h"
 #include"dyni.h"
 #include"app/ninja.h"
-#include"globs.h"
+#include "glos.h"
 //----------------------------------------------------------------------- init
 inline static void main_init(){
 
@@ -100,8 +100,8 @@ int main(int argc,char*argv[]){
 	printf(": %15s : %-9ld :\n","part",sizeof(part));
 	printf(": %15s : %-9ld :\n","object",sizeof(object));
 	printf(": %15s : %-9ld :\n","objects",sizeof(objects));
-	printf(": %15s : %-9ld :\n","glob",sizeof(glob));
-	printf(": %15s : %-9ld :\n","globs",sizeof(__glo));
+	printf(": %15s : %-9ld :\n","glo",sizeof(glo));
+	printf(": %15s : %-9ld :\n","glos",sizeof(__glo));
 	printf(":-%15s-:-%-9s-:\n","---------------","--------");
 
 	sdl_init();
