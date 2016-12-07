@@ -8,67 +8,8 @@
 #define glob_count 128
 //----------------------------------------------------------------------- calls
 
-//inline static void shader_render_triangle_array(
-//	GLuint vbufid,size_t vbufn,GLuint texid,const float*mtx_mw
-//);
-
-//---------------------------------------------------------------------
-//
-//typedef struct vertex{
-//	float position[3];
-//	float color[4];
-//	float normal[3];
-//	float texture[2];
-//}vertex;
-//
-//static vertex shader_def_vtxbuf[]={
-//	{{ .5,-.5, 0},{ 1, 0, 0,1},{0,0,1},{ 1,-1}},
-//	{{ .5, .5, 0},{ 0, 1, 0,1},{0,0,1},{ 1, 1}},
-//	{{-.5, .5, 0},{ 0, 0, 1,1},{0,0,1},{-1, 1}},
-//	{{-.5,-.5, 0},{ 0, 0, 0,1},{0,0,1},{-1,-1}},
-//};
-//
-//static unsigned shader_def_vtxbuf_nbytes=sizeof(shader_def_vtxbuf);
-//
-//static unsigned shader_def_vtxbuf_nelems=
-//		sizeof(shader_def_vtxbuf)/sizeof(vertex);
-//
-//static unsigned shader_def_vtxbuf_id;
-//
-//static GLubyte shader_def_ixbuf[]={0,1,2,2,3,0};
-//
-//static unsigned shader_def_ixbuf_nbytes=sizeof(shader_def_ixbuf);
-//
-//static unsigned shader_def_ixbuf_nelems=
-//		sizeof(shader_def_ixbuf)/sizeof(GLubyte);
-//
-//static unsigned shader_def_ixbuf_id;
-//
-//static unsigned shader_def_texbuf_wi=2;
-//static unsigned shader_def_texbuf_hi=2;
-//static GLfloat shader_def_texbuf[]={
-//		1,1,1,  0,1,1,
-//		1,1,0,  1,1,1,
-//};
-//static unsigned shader_def_texbuf_nbytes=sizeof(shader_def_texbuf);
-//
-//static unsigned shader_def_texbuf_id;
-
 typedef struct glob{
-//	vertex*vbuf;
-//	GLuint vbufn;
-//	GLsizeiptr vbufnbytes;
-//	GLuint vbufid;
-//	GLubyte*ibuf;//? void* and ibuf_type_size
-//	GLsizei ibufn;
-//	GLsizeiptr ibufnbytes;
-//	GLuint ibufid;
-//	GLfloat*texbuf;
-//	GLuint texbufid;
-//	GLsizei texwi;
-//	GLsizei texhi;
-//	bits*ptr_bits;
-//	float*mtx_mw;
+
 	glo glo;
 }glob;
 #define shader_apos 0
@@ -79,39 +20,25 @@ typedef struct glob{
 #define shader_umtx_wvp 1
 #define shader_utex 2
 static glob glob_def=(glob){
-//	.vbuf=shader_def_vtxbuf,
-//	.vbufn=sizeof(shader_def_vtxbuf)/sizeof(&shader_def_vtxbuf[0]),
-//	.vbufnbytes=sizeof(shader_def_vtxbuf),
-//	.vbufid=0,
-//	.ibuf=shader_def_ixbuf,
-//	.ibufn=sizeof(shader_def_ixbuf)/sizeof(GLubyte),
-//	.ibufnbytes=sizeof(shader_def_ixbuf),
-//	.ibufid=0,
-//	.texbuf=shader_def_texbuf,
-//	.texbufid=0,
-//	.texwi=shader_def_tex_wi,
-//	.texhi=shader_def_tex_hi,
+
 	.glo={{0,0,0},{0,0,0}},
 };
 
 
 inline static void glob_load_obj_file(glob*this,const char*path){
-	glo g=/*takes*/read_obj_file_from_path(path);
-	this->glo=g;
-//	this->vbufnbytes=(unsigned)dynf_size_in_bytes(&g.vtxbuf);
-//	this->vbufn=g.vtxbuf.count;
+	this->glo=/*takes*/read_obj_file_from_path(path);
 
 	// upload vertex buffer
 	glGenBuffers(1,&this->glo.vtxbuf_id);
 	glBindBuffer(GL_ARRAY_BUFFER,this->glo.vtxbuf_id);
 	glBufferData(GL_ARRAY_BUFFER,
-			(signed)dynf_size_in_bytes(&g.vtxbuf),
-			g.vtxbuf.data,
+			(signed)dynf_size_in_bytes(&this->glo.vtxbuf),
+			this->glo.vtxbuf.data,
 			GL_STATIC_DRAW);
 
 	// upload materials
-	for(arrayix i=0;i<g.ranges.count;i++){
-		material_range*mr=(material_range*)g.ranges.data[i];
+	for(arrayix i=0;i<this->glo.ranges.count;i++){
+		material_range*mr=(material_range*)this->glo.ranges.data[i];
 		objmtl*m=(objmtl*)mr->material;
 		if(m->map_Kd.count){// load texture
 			glGenTextures(1,&m->gid_texture);
