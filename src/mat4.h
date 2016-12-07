@@ -93,6 +93,32 @@ inline static void mat4_scale(float*c,scale*s){
 	c[11]*=s->z;
 }
 
+inline static void mat4_load_ortho_projection(float*c,
+		const float left,const float right,
+		const float bottom,const float top,
+		const float nearz,const float farz
+){
+	c[ 0]=2.f/(right-left);
+	c[ 1]=0;
+	c[ 2]=0;
+	c[ 3]=0;
+
+	c[ 4]=0;
+	c[ 5]=2.f/(top-bottom);
+	c[ 6]=0;
+	c[ 7]=0;
+
+	c[ 8]=0;
+	c[ 9]=0;
+	c[10]=-2.f/(farz-nearz);
+	c[11]=0;
+
+	c[12]=-(right+left)/(right-left);
+	c[13]=-(top+bottom)/(top-bottom);
+	c[14]=-(farz+nearz)/(farz-nearz);
+	c[15]=1;
+}
+
 inline static/*gives*/float*mat4_multiply(float*lhs,float*rhs){
 	// [ 0 4  8 12 ]   [ 0 4  8 12 ]
 	// [ 1 5  9 13 ] x [ 1 5  9 13 ]

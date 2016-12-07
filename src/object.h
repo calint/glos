@@ -26,6 +26,7 @@ typedef struct object{
 	void*part[object_part_cap];
 	type type;
 	bits*ptr_to_bits;
+	struct object*parent;
 }object;
 //
 //----------------------------------------------------------------------- init

@@ -6,20 +6,21 @@
 //--------------------------------------------------------------------- shader
 //----------------------------------------------------------------------------
 static char*shader_vertex_source =
-"#version 130                                                \n\
-uniform mat4 umtx_mw;// model-to-world-matrix                        \n\
-in vec3 apos;// vertices                              \n\
-in vec4 argba;// colors                               \n\
-in vec3 anorm;                               \n\
-in vec2 atex;                               \n\
-out vec4 vrgba;                                          \n\
-out vec3 vnorm;                                          \n\
-out vec2 vtex;                                          \n\
-void main(){                                                 \n\
-	gl_Position=umtx_mw*vec4(apos,1);                                        \n\
-	vrgba=argba;                                             \n\
-	vnorm=anorm;                                             \n\
-	vtex=atex;                                             \n\
+"#version 130                                              \n\
+uniform mat4 umtx_mw; // model-to-world-matrix              \n\
+uniform mat4 umtx_wvp;// world-to-view-to-projection         \n\
+in vec3 apos;                                                 \n\
+in vec4 argba;                                                 \n\
+in vec3 anorm;                                                  \n\
+in vec2 atex;                                                    \n\
+out vec4 vrgba;                                                   \n\
+out vec3 vnorm;                                                    \n\
+out vec2 vtex;                                                      \n\
+void main(){                                                         \n\
+	gl_Position=umtx_wvp*umtx_mw*vec4(apos,1);                        \n\
+	vrgba=argba;                                            \n\
+	vnorm=anorm;                                            \n\
+	vtex=atex;                                              \n\
 }\n";
 static char*shader_fragment_source =
 		"#version 130                              \n\
@@ -36,7 +37,8 @@ void main(){                               \n\
 #define shader_anorm 2
 #define shader_atex 3
 #define shader_umtx_mw 0
-#define shader_utex 1
+#define shader_umtx_wvp 1
+#define shader_utex 2
 
 struct shader{
 	gid active_program_ix;
@@ -98,7 +100,7 @@ inline static void _shader_prepare_for_render(
 		GLuint vbufid,GLuint texid,const float*mtx_mw
 ){
 
-	glUniformMatrix4fv(0,1,0,mtx_mw);
+	glUniformMatrix4fv(shader_umtx_mw,1,0,mtx_mw);
 
 	glUniform1i(shader_utex,0);
 	glActiveTexture(GL_TEXTURE0);
@@ -138,7 +140,7 @@ inline static void shader_render(){
 	const float m[]={
 			1,0,0,0,
 			0,1,0,0,
-			0,0,1,.5f,
+			0,0,1,0,
 			0,0,0,1,
 	};
 	shader_render_triangle_elements(
@@ -177,6 +179,7 @@ inline static void shader_init() {
 //	glEnable(GL_DEPTH_TEST);
 //	glDepthFunc(GL_GREATER);
 	glEnable(GL_CULL_FACE);
+//	glCullFace(GL_FRONT);
 	printf(":-%10s-:-%7s-:\n","----------","-------");
 	printf(": %10s : %-7s :\n","feature","y/n");
 	printf(":-%10s-:-%7s-:\n","----------","-------");
@@ -189,12 +192,6 @@ inline static void shader_init() {
 	dyni attrs=dyni_def;
 	int e[]={shader_apos,shader_argba,shader_anorm,shader_atex};
 	dyni_add_list(&attrs,e,4);
-//
-//	dyni_add(&attrs,shader_apos);
-//	dyni_add(&attrs,shader_argba);
-//	dyni_add(&attrs,shader_anorm);
-//	dyni_add(&attrs,shader_atex);
-
 	programs_load(0,shader_vertex_source,shader_fragment_source,/*gives*/attrs);
 
 

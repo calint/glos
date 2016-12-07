@@ -35,8 +35,10 @@ void main(){\n\
 	globs_load_obj_file(4,"obj/grid_8x8.obj");
 	globs_load_obj_file(5,"obj/sphere.obj");
 	globs_load_obj_file(6,"obj/torus.obj");
+	globs_load_obj_file(7,"obj/disc.obj");
 
-	object*o=object_alloc(&ninja_def);
+	object*o;
+	o=object_alloc(&ninja_def);
 	o->glob_id=1;
 	const float vr=.5f;
 	o->velocity=(velocity){
@@ -45,6 +47,13 @@ void main(){\n\
 	const float ar=360;
 	o->angular_velocity=(angular_velocity){
 		0,0,random_range(-ar,ar),0};
+
+//	o=object_alloc(&object_def);
+//	o->glob_id=1;
+//	o->scale=(scale){2,2,2,1};
+//	o->position=(position){0,0,-.5f,1};
+//	o->bounding_radius=bounding_radius_for_scale(&o->scale);
+
 
 //	const float sr=.2f;
 //	o->scale=(scale){
@@ -162,7 +171,7 @@ int main(int argc,char*argv[]){
 					case SDLK_2:{
 						object*o=object_at(0);
 						o->glob_id++;
-						if(o->glob_id>6){
+						if(o->glob_id>8){
 							o->glob_id=1;
 						}
 						break;
@@ -191,7 +200,7 @@ int main(int argc,char*argv[]){
 			for(unsigned i=0;i<disable.count;i++){
 				const unsigned ix=(unsigned)dyni_get(&disable,i);
 				printf("   * disable vertex attrib array %d\n",ix);
-				glDisableVertexAttribArray(ix);//position
+				glDisableVertexAttribArray(ix);
 			}
 
 			const unsigned progid=programs[shader.active_program_ix].gid;
@@ -207,11 +216,23 @@ int main(int argc,char*argv[]){
 				glEnableVertexAttribArray(ix);
 			}
 			previous_active_program_ix=shader.active_program_ix;
-//			glEnableVertexAttribArray(shader_apos);//position
-//			glEnableVertexAttribArray(shader_argba);//color
-//			glEnableVertexAttribArray(shader_anorm);//normal
-//			glEnableVertexAttribArray(shader_atex);//texture
 		}
+
+		float mtx_wvp[]={
+				1,0,0,0,
+				0,1,0,0,
+				0,0,1,0,
+				0,0,0,1,
+		};
+
+		float aspect_ratio=1;
+		mat4_load_ortho_projection(mtx_wvp, -1,1,
+				-aspect_ratio,aspect_ratio,  0,2);
+
+//		printf("uniform wvp %d\n",
+//				glGetUniformLocation(programs[shader.active_program_ix].gid,"utex"));
+
+		glUniformMatrix4fv(shader_umtx_wvp,1,0,mtx_wvp);
 
 		glClearColor(c.red,c.green,c.blue,1.0);
 

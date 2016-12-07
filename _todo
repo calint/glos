@@ -60,4 +60,6 @@
  [ ]   ortho
  [ ]   persp
  [ ]  zoom zbuf on viewable 
- 
+ [ ] hierarchial objects
+ [ ]   cached matrices
+ [ ]   collisions
