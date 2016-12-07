@@ -179,11 +179,11 @@ inline static void obj_load_materials_from_file(const char*path){
 	objmtls_add(&materials,o);
 }
 
-typedef struct material_range{
+typedef struct _mtlrng{
 	arrayix begin,end;
 	objmtl*material;
-}material_range;
-#define material_range_def (material_range){0,0,0}
+}mtlrng;
+#define mtlrng_def (mtlrng){0,0,0}
 
 typedef struct glo{
 	dynf vtxbuf;
@@ -243,7 +243,7 @@ static/*gives*/glo read_obj_file_from_path(const char*path){
 			}
 			if(m){
 				if(prev_vtxbufix!=vtxbufix){
-					material_range*mr=malloc(sizeof(material_range));
+					mtlrng*mr=malloc(sizeof(mtlrng));
 //					*mr=material_range_def;
 					mr->begin=prev_vtxbufix;
 					mr->end=vtxbufix;
@@ -361,7 +361,7 @@ static/*gives*/glo read_obj_file_from_path(const char*path){
 			continue;
 		}
 	}
-	material_range*mr=malloc(sizeof(material_range));
+	mtlrng*mr=malloc(sizeof(mtlrng));
 //					*mr=material_range_def;
 	mr->begin=prev_vtxbufix;
 	mr->end=vtxbufix;
