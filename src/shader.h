@@ -58,7 +58,7 @@ inline static void shader_load(){
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,glob_def.ibufid);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER,
 			glob_def.ibufnbytes,
-			glob_def.ibuf,
+			shader_def_ixbuf,
 			GL_STATIC_DRAW
 	);
 	metrics.buffered_data+=(unsigned)glob_def.ibufnbytes;
