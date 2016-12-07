@@ -60,11 +60,12 @@ inline static void main_init(){
 //	globs_load_obj_file(5,"obj/sphere.obj");
 //	globs_load_obj_file(6,"obj/torus.obj");
 //	globs_load_obj_file(7,"obj/disc.obj");
-	globs_load_obj_file(8,"obj/plane_red.obj");
+//	globs_load_obj_file(8,"obj/plane_red.obj");
+	globs_load_obj_file(9,"obj/cube-blue-red.obj");
 
 	object*o;
 	o=object_alloc(&ninja_def);
-	o->glob_id=8;
+	o->glob_id=9;
 	const float vr=.5f;
 	o->velocity=(velocity){
 		random_range(-vr,vr),random_range(-vr,vr),0,0};

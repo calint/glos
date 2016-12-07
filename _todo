@@ -6,6 +6,7 @@
  [o]   materials
  [ ]   textures
  [ ]   render
+ [o] multiple materials in render
  [ ] collision detection 
  [ ]   bounding volume
  [ ]     sphere
@@ -60,7 +61,7 @@
  [ ] light sources
  [ ]   ortho
  [ ]   persp
- [ ]  zoom zbuf on viewable 
+ [ ] zoom zbuf on viewable 
  [o] hierarchial objects
  [ ]   cached matrices
  [ ]     model-to-local

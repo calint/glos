@@ -110,8 +110,11 @@ inline static void obj_load_materials_from_file(const char*path){
 			continue;
 		}
 		if(token_starts_with(&t,"newmtl")){
-			token t=token_next_from_string(p);
+			if(o){
+				objmtls_add(&materials,o);
+			}
 			o=objmtl_alloc();
+			token t=token_next_from_string(p);
 			size_t n=token_size(&t);
 			dync_add_list(&o->name,t.content,n);
 			dync_add(&o->name,0);
