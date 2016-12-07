@@ -250,9 +250,9 @@ int main(int argc,char*argv[]){
 				0,0,0,1,
 		};
 
-//		float aspect_ratio=1;
-//		mat4_load_ortho_projection(mtx_wvp, -1,1,
-//				-aspect_ratio,aspect_ratio,  0,2);
+		float aspect_ratio=4;
+		mat4_load_ortho_projection(mtx_wvp,-4,4,
+				-aspect_ratio,aspect_ratio,-1,10);
 
 //		printf("uniform wvp %d\n",
 //				glGetUniformLocation(programs[shader.active_program_ix].gid,"utex"));
