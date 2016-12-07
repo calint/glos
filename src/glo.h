@@ -8,13 +8,13 @@
 #define glob_count 128
 //----------------------------------------------------------------------- calls
 
-#define shader_apos 0
-#define shader_argba 1
-#define shader_anorm 2
-#define shader_atex 3
-#define shader_umtx_mw 0
-#define shader_umtx_wvp 1
-#define shader_utex 2
+//#define shader_apos 0
+//#define shader_argba 1
+//#define shader_anorm 2
+//#define shader_atex 3
+//#define shader_umtx_mw 0
+//#define shader_umtx_wvp 1
+//#define shader_utex 2
 
 
 inline static glo glo_load_obj_file(const char*path){
