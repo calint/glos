@@ -60,6 +60,7 @@
  [ ]   render to texture
  [x]   use several programs
  [ ] light sources
+ [ ]   ambient
  [ ]   ortho
  [ ]   persp
  [ ] zoom zbuf on viewable 
