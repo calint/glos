@@ -1,5 +1,6 @@
 #pragma once
 #include"typedefs.h"
+#include<stdio.h>
 //----------------------------------------------------------------------config
 
 #define dyni_initial_capacity 8
@@ -12,7 +13,7 @@ typedef struct dyni{
 	unsigned count;
 	unsigned cap;
 }dyni;
-dyni dyni_def={0,0,0};
+#define dyni_def (dyni){0,0,0}
 
 //--------------------------------------------------------------------- private
 
@@ -88,11 +89,8 @@ inline static void dyni_free(dyni*this){
 
 //-----------------------------------------------------------------------------
 
-inline static void dyni_add_list(dyni*this,
-		/*copies*/const int*str,
-		unsigned n
-){
-	//? optimize
+inline static void dyni_add_list(dyni*this,/*copies*/const int*str,size_t n){
+	//? optimize memcpy
 	const int*p=str;
 	while(n--){
 		_dyni_insure_free_capcity(this,1);
@@ -121,3 +119,46 @@ inline static void dyni_write_to_fd(dyni*this,int fd){
 
 //-----------------------------------------------------------------------------
 
+inline static dyni dyni_from_file(const int*path){
+	FILE*f=fopen(path,"rb");
+	if(!f){
+		perror("\ncannot open");
+		fprintf(stderr,"\t%s\n\n%s %d\n",path,__FILE__,__LINE__);
+		exit(-1);
+	}
+	long sk=fseek(f,0,SEEK_END);
+	if(sk<0){
+		fprintf(stderr,"\nwhile fseek\n");
+		fprintf(stderr,"\t\n%s %d\n",__FILE__,__LINE__);
+		exit(-1);
+	}
+	long length=ftell(f);
+	if(length<0){
+		fprintf(stderr,"\nwhile ftell\n");
+		fprintf(stderr,"\t\n%s %d\n",__FILE__,__LINE__);
+		exit(-1);
+	}
+	rewind(f);
+	int*filedata=(int*)malloc((size_t)length+1);
+	if(!filedata){
+		fprintf(stderr,"\nout-of-memory\n");
+		fprintf(stderr,"\t\n%s %d\n",__FILE__,__LINE__);
+		exit(-1);
+	}
+	size_t n=fread(filedata,1,(size_t)length+1,f);
+	if(n!=(size_t)length){
+		fprintf(stderr,"\nnot-a-full-read\n");
+		fprintf(stderr,"\t\n%s %d\n",__FILE__,__LINE__);
+		exit(-1);
+	}
+	fclose(f);
+	filedata[length]=0;
+
+	return (dyni){
+		.data=filedata,
+		.count=((unsigned)length+1)/sizeof(int),
+		.cap=(unsigned)length+1
+	};
+}
+
+//-----------------------------------------------------------------------------

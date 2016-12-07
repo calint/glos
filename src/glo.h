@@ -6,49 +6,6 @@
 #include"dynf.h"
 #include"dync.h"
 
-inline static dync dync_from_file(const char*path){
-	FILE*f=fopen(path,"rb");
-	if(!f){
-		perror("\ncannot open");
-		fprintf(stderr,"\t%s\n\n%s %d\n",path,__FILE__,__LINE__);
-		exit(-1);
-	}
-	long sk=fseek(f,0,SEEK_END);
-	if(sk<0){
-		fprintf(stderr,"\nwhile fseek\n");
-		fprintf(stderr,"\t\n%s %d\n",__FILE__,__LINE__);
-		exit(-1);
-	}
-	long length=ftell(f);
-	if(length<0){
-		fprintf(stderr,"\nwhile ftell\n");
-		fprintf(stderr,"\t\n%s %d\n",__FILE__,__LINE__);
-		exit(-1);
-	}
-	rewind(f);
-	char*filedata=(char*)malloc((size_t)length+1);
-	if(!filedata){
-		fprintf(stderr,"\nout-of-memory\n");
-		fprintf(stderr,"\t\n%s %d\n",__FILE__,__LINE__);
-		exit(-1);
-	}
-	size_t ncharsread=fread(filedata,1,(size_t)length+1,f);
-	if(ncharsread!=(size_t)length){
-		fprintf(stderr,"\nnot-a-full-read\n");
-		fprintf(stderr,"\t\n%s %d\n",__FILE__,__LINE__);
-		exit(-1);
-	}
-	fclose(f);
-	filedata[length]=0;
-
-	return (dync){
-		.data=filedata,
-		.count=((unsigned)length+1)/sizeof(char),
-		.cap=(unsigned)length+1
-	};
-}
-
-
 //newmtl texture
 //Ns 96.078431
 //Ka 1.000000 1.000000 1.000000
@@ -73,6 +30,7 @@ typedef struct objmtl{
 
 inline static void objmtl_free(objmtl*this){
 	dync_free(&this->name);
+	dync_free(&this->map_Kd);
 }
 
 #include"objmtls.h"

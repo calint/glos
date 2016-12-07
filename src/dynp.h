@@ -1,5 +1,6 @@
 #pragma once
 #include"typedefs.h"
+#include<stdio.h>
 //----------------------------------------------------------------------config
 
 #define dynp_initial_capacity 8
@@ -88,8 +89,8 @@ inline static void dynp_free(dynp*this){
 
 //-----------------------------------------------------------------------------
 
-inline static void dynp_add_list(dynp*this,/*copies*/const void**str,int n){
-	//? optimize
+inline static void dynp_add_list(dynp*this,/*copies*/const void**str,size_t n){
+	//? optimize memcpy
 	const void**p=str;
 	while(n--){
 		_dynp_insure_free_capcity(this,1);
@@ -118,3 +119,46 @@ inline static void dynp_write_to_fd(dynp*this,int fd){
 
 //-----------------------------------------------------------------------------
 
+inline static dynp dynp_from_file(const void**path){
+	FILE*f=fopen(path,"rb");
+	if(!f){
+		perror("\ncannot open");
+		fprintf(stderr,"\t%s\n\n%s %d\n",path,__FILE__,__LINE__);
+		exit(-1);
+	}
+	long sk=fseek(f,0,SEEK_END);
+	if(sk<0){
+		fprintf(stderr,"\nwhile fseek\n");
+		fprintf(stderr,"\t\n%s %d\n",__FILE__,__LINE__);
+		exit(-1);
+	}
+	long length=ftell(f);
+	if(length<0){
+		fprintf(stderr,"\nwhile ftell\n");
+		fprintf(stderr,"\t\n%s %d\n",__FILE__,__LINE__);
+		exit(-1);
+	}
+	rewind(f);
+	void**filedata=(void**)malloc((size_t)length+1);
+	if(!filedata){
+		fprintf(stderr,"\nout-of-memory\n");
+		fprintf(stderr,"\t\n%s %d\n",__FILE__,__LINE__);
+		exit(-1);
+	}
+	size_t n=fread(filedata,1,(size_t)length+1,f);
+	if(n!=(size_t)length){
+		fprintf(stderr,"\nnot-a-full-read\n");
+		fprintf(stderr,"\t\n%s %d\n",__FILE__,__LINE__);
+		exit(-1);
+	}
+	fclose(f);
+	filedata[length]=0;
+
+	return (dynp){
+		.data=filedata,
+		.count=((unsigned)length+1)/sizeof(void*),
+		.cap=(unsigned)length+1
+	};
+}
+
+//-----------------------------------------------------------------------------

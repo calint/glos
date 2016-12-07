@@ -1,5 +1,6 @@
 #pragma once
 #include"typedefs.h"
+#include<stdio.h>
 //----------------------------------------------------------------------config
 
 #define ${name}_initial_capacity 8
@@ -12,11 +13,11 @@ typedef struct ${name}{
 	unsigned count;
 	unsigned cap;
 }${name};
-${name} ${name}_def={0,0,0};
+#define ${name}_def (${name}){0,0,0}
 
 //--------------------------------------------------------------------- private
 
-inline static void _${name}_insure_free_capcity(${name}*this,arrayix n){
+inline static void _${name}_insure_free_capcity(${name}*this,indx n){
 	const unsigned rem=this->cap-this->count;
 	if(rem>=n)
 		return;
@@ -52,7 +53,7 @@ inline static void ${name}_add(${name}*this,${type} o){
 
 //-----------------------------------------------------------------------------
 
-inline static ${type} ${name}_get(${name}*this,arrayix index){
+inline static ${type} ${name}_get(${name}*this,indx index){
 #ifdef ${name}_bounds_check
 	if(index>=this->cap){
 		fprintf(stderr,"\nindex-out-of-bounds");
@@ -88,8 +89,8 @@ inline static void ${name}_free(${name}*this){
 
 //-----------------------------------------------------------------------------
 
-inline static void ${name}_add_list(${name}*this,/*copies*/const ${type}*str,int n){
-	//? optimize
+inline static void ${name}_add_list(${name}*this,/*copies*/const ${type}*str,size_t n){
+	//? optimize memcpy
 	const ${type}*p=str;
 	while(n--){
 		_${name}_insure_free_capcity(this,1);
@@ -118,3 +119,46 @@ inline static void ${name}_write_to_fd(${name}*this,int fd){
 
 //-----------------------------------------------------------------------------
 
+inline static ${name} ${name}_from_file(const ${type}*path){
+	FILE*f=fopen(path,"rb");
+	if(!f){
+		perror("\ncannot open");
+		fprintf(stderr,"\t%s\n\n%s %d\n",path,__FILE__,__LINE__);
+		exit(-1);
+	}
+	long sk=fseek(f,0,SEEK_END);
+	if(sk<0){
+		fprintf(stderr,"\nwhile fseek\n");
+		fprintf(stderr,"\t\n%s %d\n",__FILE__,__LINE__);
+		exit(-1);
+	}
+	long length=ftell(f);
+	if(length<0){
+		fprintf(stderr,"\nwhile ftell\n");
+		fprintf(stderr,"\t\n%s %d\n",__FILE__,__LINE__);
+		exit(-1);
+	}
+	rewind(f);
+	${type}*filedata=(${type}*)malloc((size_t)length+1);
+	if(!filedata){
+		fprintf(stderr,"\nout-of-memory\n");
+		fprintf(stderr,"\t\n%s %d\n",__FILE__,__LINE__);
+		exit(-1);
+	}
+	size_t n=fread(filedata,1,(size_t)length+1,f);
+	if(n!=(size_t)length){
+		fprintf(stderr,"\nnot-a-full-read\n");
+		fprintf(stderr,"\t\n%s %d\n",__FILE__,__LINE__);
+		exit(-1);
+	}
+	fclose(f);
+	filedata[length]=0;
+
+	return (${name}){
+		.data=filedata,
+		.count=((unsigned)length+1)/sizeof(${type}),
+		.cap=(unsigned)length+1
+	};
+}
+
+//-----------------------------------------------------------------------------

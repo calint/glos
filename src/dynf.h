@@ -1,5 +1,6 @@
 #pragma once
 #include"typedefs.h"
+#include<stdio.h>
 //----------------------------------------------------------------------config
 
 #define dynf_initial_capacity 8
@@ -88,8 +89,8 @@ inline static void dynf_free(dynf*this){
 
 //-----------------------------------------------------------------------------
 
-inline static void dynf_add_list(dynf*this,/*copies*/const float*str,int n){
-	//? optimize
+inline static void dynf_add_list(dynf*this,/*copies*/const float*str,size_t n){
+	//? optimize memcpy
 	const float*p=str;
 	while(n--){
 		_dynf_insure_free_capcity(this,1);
@@ -118,3 +119,46 @@ inline static void dynf_write_to_fd(dynf*this,int fd){
 
 //-----------------------------------------------------------------------------
 
+inline static dynf dynf_from_file(const float*path){
+	FILE*f=fopen(path,"rb");
+	if(!f){
+		perror("\ncannot open");
+		fprintf(stderr,"\t%s\n\n%s %d\n",path,__FILE__,__LINE__);
+		exit(-1);
+	}
+	long sk=fseek(f,0,SEEK_END);
+	if(sk<0){
+		fprintf(stderr,"\nwhile fseek\n");
+		fprintf(stderr,"\t\n%s %d\n",__FILE__,__LINE__);
+		exit(-1);
+	}
+	long length=ftell(f);
+	if(length<0){
+		fprintf(stderr,"\nwhile ftell\n");
+		fprintf(stderr,"\t\n%s %d\n",__FILE__,__LINE__);
+		exit(-1);
+	}
+	rewind(f);
+	float*filedata=(float*)malloc((size_t)length+1);
+	if(!filedata){
+		fprintf(stderr,"\nout-of-memory\n");
+		fprintf(stderr,"\t\n%s %d\n",__FILE__,__LINE__);
+		exit(-1);
+	}
+	size_t n=fread(filedata,1,(size_t)length+1,f);
+	if(n!=(size_t)length){
+		fprintf(stderr,"\nnot-a-full-read\n");
+		fprintf(stderr,"\t\n%s %d\n",__FILE__,__LINE__);
+		exit(-1);
+	}
+	fclose(f);
+	filedata[length]=0;
+
+	return (dynf){
+		.data=filedata,
+		.count=((unsigned)length+1)/sizeof(float),
+		.cap=(unsigned)length+1
+	};
+}
+
+//-----------------------------------------------------------------------------
