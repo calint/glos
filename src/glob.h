@@ -68,7 +68,7 @@ glob{
 //	GLuint texbufid;
 //	GLsizei texwi;
 //	GLsizei texhi;
-	bits*ptr_bits;
+//	bits*ptr_bits;
 //	float*mtx_mw;
 	glo glo;
 }glob;
