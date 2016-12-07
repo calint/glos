@@ -44,12 +44,14 @@ static unsigned shader_def_ixbuf_nelems=
 
 static unsigned shader_def_ixbuf_id;
 
-#define shader_def_tex_wi 2
-#define shader_def_tex_hi 2
+static unsigned shader_def_texbuf_wi=2;
+static unsigned shader_def_texbuf_hi=2;
 static GLfloat shader_def_texbuf[]={
 		1,1,1,  0,1,1,
 		1,1,0,  1,1,1,
 };
+static unsigned shader_def_texbuf_nbytes=sizeof(shader_def_texbuf);
+
 static unsigned shader_def_texbuf_id;
 
 typedef struct
@@ -64,8 +66,8 @@ glob{
 //	GLuint ibufid;
 //	GLfloat*texbuf;
 //	GLuint texbufid;
-	GLsizei texwi;
-	GLsizei texhi;
+//	GLsizei texwi;
+//	GLsizei texhi;
 	bits*ptr_bits;
 //	float*mtx_mw;
 	glo glo;
@@ -88,8 +90,8 @@ static glob glob_def=(glob){
 //	.ibufid=0,
 //	.texbuf=shader_def_texbuf,
 //	.texbufid=0,
-	.texwi=shader_def_tex_wi,
-	.texhi=shader_def_tex_hi,
+//	.texwi=shader_def_tex_wi,
+//	.texhi=shader_def_tex_hi,
 	.glo={{0,0,0},{0,0,0}},
 };
 

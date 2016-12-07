@@ -78,11 +78,11 @@ inline static void shader_load(){
 
 	//----------------------------------------------
 	glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,
-			glob_def.texwi,glob_def.texhi,
+			shader_def_texbuf_wi,
+			shader_def_texbuf_hi,
 			0,GL_RGB,GL_FLOAT,
 			shader_def_texbuf);
-	metrics.buffered_data+=(unsigned)(
-			glob_def.texhi*glob_def.texwi*(signed)sizeof(GL_FLOAT));
+	metrics.buffered_data+=shader_def_texbuf_nbytes;
 	//----------------------------------------------
 
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
