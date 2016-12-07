@@ -95,16 +95,11 @@ inline static void _object_update_model_to_world_matrix(object*this){
 //----------------------------------------------------------------------------
 
 inline static void _render_glob_(object*o) {
-	const glob*g=globs_at(o->glob_id);
+	glob*g=globs_at(o->glob_id);
 	if(!g->vbufid)
 		return;
 	_object_update_model_to_world_matrix(o);
-	shader_render_triangle_array(
-			g->vbufid,
-			g->vbufn,
-			g->texbufid,
-			o->model_to_world_matrix
-		);
+	glob_render(g,o->model_to_world_matrix);
 }
 
 //----------------------------------------------------------------------------

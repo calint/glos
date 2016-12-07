@@ -1,6 +1,5 @@
 #pragma once
 #include"sdl.h"
-#include"globs.h"
 #include"programs.h"
 #include"metrics.h"
 //--------------------------------------------------------------------- shader

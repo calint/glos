@@ -3,6 +3,8 @@
 #include"dynf.h"
 #include"metrics.h"
 #include"obj_file.h"
+#include"shader.h"
+
 #define glob_count 128
 //----------------------------------------------------------------------- calls
 
@@ -50,9 +52,15 @@ glob{
 	GLsizei texhi;
 	bits*ptr_bits;
 //	float*mtx_mw;
-	dynp material_ranges;
+	glo glo;
 }glob;
-
+#define shader_apos 0
+#define shader_argba 1
+#define shader_anorm 2
+#define shader_atex 3
+#define shader_umtx_mw 0
+#define shader_umtx_wvp 1
+#define shader_utex 2
 static glob glob_def=(glob){
 	.vbuf=glob_def_vertbuf,
 	.vbufn=sizeof(glob_def_vertbuf)/sizeof(&glob_def_vertbuf[0]),
@@ -66,33 +74,113 @@ static glob glob_def=(glob){
 	.texbufid=0,
 	.texwi=glob_def_texwi,
 	.texhi=glob_def_texhi,
-	.material_ranges=dynp_def,
+	.glo={{0,0,0},{0,0,0}},
 };
 
-inline static void glob_render(glob*this,const float*mat4_model_to_world){
-	shader_render_triangle_array(
-			this->vbufid,
-			this->vbufn,
-			this->texbufid,
-			mat4_model_to_world
-	);
-}
 
 inline static void glob_load_obj_file(glob*this,const char*path){
-	glo*g=/*takes*/read_obj_file_from_path(path);
+	glo g=/*takes*/read_obj_file_from_path(path);
+	this->glo=g;
+	this->vbufnbytes=(unsigned)dynf_size_in_bytes(&g.vtxbuf);
+	this->vbufn=g.vtxbuf.count;
 
-	this->vbufn=g->vertex_buffer.count;
-	this->vbufnbytes=(GLsizeiptr)(this->vbufn*sizeof(float));
-	this->texbufid=glob_def.texbufid;//?
-	this->material_ranges=g->render_ranges;
-
+	// upload vertex buffer
 	glGenBuffers(1,&this->vbufid);
 	glBindBuffer(GL_ARRAY_BUFFER,this->vbufid);
 	glBufferData(GL_ARRAY_BUFFER,
-			(signed)this->vbufnbytes,
-			g->vertex_buffer.data,
+			(signed)dynf_size_in_bytes(&g.vtxbuf),
+			g.vtxbuf.data,
 			GL_STATIC_DRAW);
+
+	// upload materials
+	for(arrayix i=0;i<g.ranges.count;i++){
+		material_range*mr=(material_range*)g.ranges.data[i];
+		objmtl*m=(objmtl*)mr->material;
+		if(m->map_Kd.count){// load texture
+			glGenTextures(1,&m->gid_texture);
+			glBindTexture(GL_TEXTURE_2D,m->gid_texture);
+
+			SDL_Surface*surface=IMG_Load("logo.jpg");
+			glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,
+					surface->w,surface->h,
+					0,GL_RGB,GL_UNSIGNED_BYTE,
+					surface->pixels);
+			SDL_FreeSurface(surface);
+
+			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
+			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
+		}
+	}
 
 	metrics.buffered_data+=(unsigned)this->vbufnbytes;
 }
+
+inline static void glob_render(glob*this,const float*mtxmw){
+
+	glUniformMatrix4fv(shader_umtx_mw,1,0,mtxmw);
+
+	glBindBuffer(GL_ARRAY_BUFFER,this->vbufid);
+
+	glVertexAttribPointer(shader_apos,  3,GL_FLOAT,GL_FALSE,
+			sizeof(vertex),0);
+	glVertexAttribPointer(shader_argba, 4,GL_FLOAT,GL_FALSE,
+			sizeof(vertex),(GLvoid*)(    3*sizeof(float)));
+	glVertexAttribPointer(shader_anorm, 3,GL_FLOAT, GL_FALSE,
+			sizeof(vertex),(GLvoid*)( (3+4)*sizeof(float)));
+	glVertexAttribPointer(shader_atex,  2,GL_FLOAT, GL_FALSE,
+			sizeof(vertex),(GLvoid*)((3+4+3)*sizeof(float)));
+
+	for(arrayix i=0;i<this->glo.ranges.count;i++){
+		material_range*mr=(material_range*)this->glo.ranges.data[i];
+		objmtl*m=mr->material;
+
+		if(m->gid_texture){
+			glUniform1i(shader_utex,0);
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D,m->gid_texture);
+		}else{
+			glDisableVertexAttribArray(shader_atex);
+		}
+
+		glDrawArrays(GL_TRIANGLES,(signed)mr->begin,(signed)(mr->end-mr->begin));
+
+		if(m->gid_texture)
+			glBindTexture(GL_TEXTURE_2D,0);
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

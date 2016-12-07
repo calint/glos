@@ -12,7 +12,7 @@ typedef struct dync{
 	unsigned count;
 	unsigned cap;
 }dync;
-dync dync_def={0,0,0};
+#define dync_def (dync){0,0,0}
 
 //--------------------------------------------------------------------- private
 

@@ -64,10 +64,10 @@ typedef struct _objmtl{
 	vec4 Ka,Kd,Ks,Ke;
 	float Ni,d;
 	dync map_Kd;
-}objmtl;
 
-#define DYNC_DEF (dync){0,0,0}
-#define objmtl_def (objmtl){DYNC_DEF,0,vec4_def,vec4_def,vec4_def,vec4_def,0,0,DYNC_DEF}
+	GLuint gid_texture;
+}objmtl;
+#define objmtl_def (objmtl){dync_def,0,vec4_def,vec4_def,vec4_def,vec4_def,0,0,dync_def,0}
 
 inline static void objmtl_free(objmtl*this){
 	dync_free(&this->name);
@@ -186,14 +186,15 @@ typedef struct material_range{
 #define material_range_def (material_range){0,0,0}
 
 typedef struct glo{
-	dynf vertex_buffer;
-	dynp render_ranges;
+	dynf vtxbuf;
+	dynp ranges;
 }glo;
+//#define glo_def (glo){dynf_def,dynp_def}
 #define glo_def (glo){dynf_def,dynp_def}
 
 // returns vertex buffer of array of triangles
 //                      [ x y z   r g b a   nx ny nz   u v]
-static/*gives*/glo*read_obj_file_from_path(const char*path){
+static/*gives*/glo read_obj_file_from_path(const char*path){
 	dync file=dync_from_file(path);
 	dynp vertices=dynp_def;
 	dynp normals=dynp_def;
@@ -371,9 +372,7 @@ static/*gives*/glo*read_obj_file_from_path(const char*path){
 			vertex_buffer.count,
 			dynf_size_in_bytes(&vertex_buffer));
 
-	glo*g=malloc(sizeof(glo));
-	g->render_ranges=material_ranges;
-	g->vertex_buffer=vertex_buffer;
+	glo g={vertex_buffer,material_ranges};
 	return g;
 }
 

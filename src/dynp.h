@@ -12,7 +12,7 @@ typedef struct dynp{
 	unsigned count;
 	unsigned cap;
 }dynp;
-#define dynp_def {0,0,0}
+#define dynp_def (dynp){0,0,0}
 
 //--------------------------------------------------------------------- private
 
