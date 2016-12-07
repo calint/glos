@@ -12,22 +12,48 @@
 //----------------------------------------------------------------------- init
 inline static void main_init(){
 
-	const char*vsrc="#version 130\n\
-uniform mat4 umtx_mw;\n\
-in vec3 apos;\n\
-void main(){\n\
-	gl_Position=umtx_mw*vec4(apos,1);\n\
-}\n";
+	const char*vtx="#version 130\n"
+			"uniform mat4 umtx_mw;\n"
+			"in vec3 apos;\n"
+			"void main(){\n"
+			"    gl_Position=umtx_mw*vec4(apos,1);\n"
+			"}\n";
 
-	const char*fsrc="#version 130\n\
-void main(){\n\
-	gl_FragColor=vec4(gl_FragCoord.z,gl_FragCoord.z,gl_FragCoord.z,1);\n\
-}";
+	const char*frag="#version 130\n"
+			"void main(){\n"
+			"    gl_FragColor=vec4(gl_FragCoord.z,gl_FragCoord.z,gl_FragCoord.z,1);\n"
+			"}";
 
 	dyni attrs=dyni_def;
 	dyni_add(&attrs,shader_apos);
-	programs_load(1,vsrc,fsrc,/*gives*/attrs);
-//	shader.active_program_ix=1;
+	programs_load(1,vtx,frag,/*gives*/attrs);
+
+
+
+	vtx="#version 130\n"
+			"uniform mat4 umtx_mw;\n"
+			"in vec3 apos;\n"
+			"in vec4 argba;\n"
+			"out vec4 color;\n"
+			"void main(){\n"
+			"   gl_Position=umtx_mw*vec4(apos,1);\n"
+			"   color=argba;\n"
+			"}\n";
+
+	frag="#version 130\n"
+			"in vec4 color;\n"
+			"void main(){\n"
+			"   gl_FragColor=color;\n"
+			"}";
+
+	attrs=dyni_def;
+	dyni_add(&attrs,shader_apos);
+	dyni_add(&attrs,shader_argba);
+	programs_load(2,vtx,frag,/*gives*/attrs);
+
+
+
+	//	shader.active_program_ix=1;
 
 	globs_load_obj_file(1,"obj/plane.obj");
 	globs_load_obj_file(2,"obj/ico_sphere.obj");
@@ -83,7 +109,7 @@ int main(int argc,char*argv[]){
 	main_init();
 
 	arrayix program_id_min=0;
-	arrayix program_id_max=1;
+	arrayix program_id_max=2;
 
 	struct{
 		GLclampf red;
