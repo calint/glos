@@ -235,7 +235,7 @@ inline static void shader_load(){
 			shader_def_vtxbuf,
 			GL_STATIC_DRAW
 	);
-	metrics.buffered_data+=shader_def_vtxbuf_nbytes;
+	metrics.buffered_vertex_data+=shader_def_vtxbuf_nbytes;
 
 	glGenBuffers(1,&shader_def_ixbuf_id);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,shader_def_ixbuf_id);
@@ -244,7 +244,7 @@ inline static void shader_load(){
 			shader_def_ixbuf,
 			GL_STATIC_DRAW
 	);
-	metrics.buffered_data+=shader_def_ixbuf_nbytes;
+	metrics.buffered_vertex_data+=shader_def_ixbuf_nbytes;
 
 //	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
 	glGenTextures(1,&shader_def_texbuf_id);
@@ -265,7 +265,7 @@ inline static void shader_load(){
 			(signed)shader_def_texbuf_hi,
 			0,GL_RGB,GL_FLOAT,
 			shader_def_texbuf);
-	metrics.buffered_data+=shader_def_texbuf_nbytes;
+	metrics.buffered_texture_data+=shader_def_texbuf_nbytes;
 	//----------------------------------------------
 
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);

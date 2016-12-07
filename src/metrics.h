@@ -1,7 +1,8 @@
 #pragma once
 
 struct{
-	size_t buffered_data;
+	size_t buffered_vertex_data;
+	size_t buffered_texture_data;
 	unsigned objects_allocated;
 	unsigned objects_updated_last_frame;
 	unsigned parts_updated_last_frame;
@@ -13,16 +14,17 @@ struct{
 }metrics;
 
 inline static void metrics_print_headers(){
-	printf(" %4s   %6s   %8s  %6s  %6s  %6s  %6s  %6s\n",
-			"fps","dt","bufs","nobjs","obup","obre","ptup","ptre"
+	printf(" %4s   %6s   %8s  %8s  %6s  %6s  %6s  %6s  %6s\n",
+			"fps","dt","bufs","buftex","nobjs","obup","obre","ptup","ptre"
 		);
 }
 
 inline static void metrics_print(){
-	printf(" %04d   %0.4f   %08lu  %06u  %06u  %06u  %06u  %06u\n",
+	printf(" %04d   %0.4f   %08lu  %08lu  %06u  %06u  %06u  %06u  %06u\n",
 			metrics.average_fps,
 			metrics.previous_frame_dt,
-			metrics.buffered_data,
+			metrics.buffered_vertex_data,
+			metrics.buffered_texture_data,
 			metrics.objects_allocated,
 			metrics.objects_updated_last_frame,
 			metrics.objects_rendered_last_frame,

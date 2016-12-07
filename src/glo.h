@@ -367,6 +367,9 @@ inline static void glo_upload_to_opengl(glo*this){
 					surface->pixels);
 			SDL_FreeSurface(surface);
 
+			metrics.buffered_texture_data+=
+					(unsigned)surface->w*(unsigned)surface->h*sizeof(uint32_t);
+
 			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
 			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
 			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
@@ -374,50 +377,51 @@ inline static void glo_upload_to_opengl(glo*this){
 		}
 	}
 
-	metrics.buffered_data+=dynf_size_in_bytes(&this->vtxbuf);
+	metrics.buffered_vertex_data+=dynf_size_in_bytes(&this->vtxbuf);
 }
 
 //----------------------------------------------------------------------- calls
 inline static glo*glo_from_file(const char*path){
 	glo*g=/*takes*/glo_load_from_file(path);
-
-	// upload vertex buffer
-	glGenBuffers(1,&g->vtxbuf_id);
-	glBindBuffer(GL_ARRAY_BUFFER,g->vtxbuf_id);
-	glBufferData(GL_ARRAY_BUFFER,
-			(signed)dynf_size_in_bytes(&g->vtxbuf),
-			g->vtxbuf.data,
-			GL_STATIC_DRAW);
-
-	// upload materials
-	for(indx i=0;i<g->ranges.count;i++){
-		mtlrng*mr=(mtlrng*)g->ranges.data[i];
-		objmtl*m=(objmtl*)mr->material;
-		if(m->map_Kd.count){// load texture
-			glGenTextures(1,&m->texture_id);
-
-			printf(" * loading texture %u from '%s'\n",
-					m->texture_id,m->map_Kd.data);
-
-			glBindTexture(GL_TEXTURE_2D,m->texture_id);
-
-			SDL_Surface*surface=IMG_Load(m->map_Kd.data);
-			if(!surface)exit(-1);
-			glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,
-					surface->w,surface->h,
-					0,GL_RGB,GL_UNSIGNED_BYTE,
-					surface->pixels);
-			SDL_FreeSurface(surface);
-
-			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
-			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
-		}
-	}
-
-	metrics.buffered_data+=dynf_size_in_bytes(&g->vtxbuf);
-
+	glo_upload_to_opengl(g);
+	//
+//	// upload vertex buffer
+//	glGenBuffers(1,&g->vtxbuf_id);
+//	glBindBuffer(GL_ARRAY_BUFFER,g->vtxbuf_id);
+//	glBufferData(GL_ARRAY_BUFFER,
+//			(signed)dynf_size_in_bytes(&g->vtxbuf),
+//			g->vtxbuf.data,
+//			GL_STATIC_DRAW);
+//
+//	// upload materials
+//	for(indx i=0;i<g->ranges.count;i++){
+//		mtlrng*mr=(mtlrng*)g->ranges.data[i];
+//		objmtl*m=(objmtl*)mr->material;
+//		if(m->map_Kd.count){// load texture
+//			glGenTextures(1,&m->texture_id);
+//
+//			printf(" * loading texture %u from '%s'\n",
+//					m->texture_id,m->map_Kd.data);
+//
+//			glBindTexture(GL_TEXTURE_2D,m->texture_id);
+//
+//			SDL_Surface*surface=IMG_Load(m->map_Kd.data);
+//			if(!surface)exit(-1);
+//			glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,
+//					surface->w,surface->h,
+//					0,GL_RGB,GL_UNSIGNED_BYTE,
+//					surface->pixels);
+//			SDL_FreeSurface(surface);
+//
+//			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+//			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+//			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
+//			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
+//		}
+//	}
+//
+//	metrics.buffered_data+=dynf_size_in_bytes(&g->vtxbuf);
+//
 	return g;
 }
 
