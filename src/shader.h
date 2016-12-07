@@ -57,11 +57,11 @@ inline static void shader_load(){
 	glGenBuffers(1,&glob_def.ibufid);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,glob_def.ibufid);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-			glob_def.ibufnbytes,
+			shader_def_ixbuf_nbytes,
 			shader_def_ixbuf,
 			GL_STATIC_DRAW
 	);
-	metrics.buffered_data+=(unsigned)glob_def.ibufnbytes;
+	metrics.buffered_data+=shader_def_ixbuf_nbytes;
 
 //	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
 	glGenTextures(1,&glob_def.texbufid);
@@ -144,7 +144,7 @@ inline static void shader_render(){
 	};
 	shader_render_triangle_elements(
 			shader_def_vtxbuf_id,
-			shader_def_vtxbuf,
+			shader_def_vtxbuf_nelems,
 			glob_def.ibufid,
 			shader_def_ixbuf_nelems,
 			glob_def.texbufid,
