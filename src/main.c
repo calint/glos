@@ -52,16 +52,16 @@ inline static void main_init(){
 
 	shader.active_program_ix=0;
 
-	globs_load_obj_file(1,"obj/plane.obj");
-	globs_load_obj_file(2,"obj/ico_sphere.obj");
-	globs_load_obj_file(3,"obj/cylinder.obj");
-	globs_load_obj_file(4,"obj/grid_8x8.obj");
-	globs_load_obj_file(5,"obj/sphere.obj");
-	globs_load_obj_file(6,"obj/torus.obj");
-	globs_load_obj_file(7,"obj/disc.obj");
-	globs_load_obj_file(8,"obj/plane_red.obj");
-	globs_load_obj_file(9,"obj/cube-blue-red.obj");
-	globs_load_obj_file(10,"obj/cubo.obj");
+	glos_load_obj_file(1,"obj/plane.obj");
+	glos_load_obj_file(2,"obj/ico_sphere.obj");
+	glos_load_obj_file(3,"obj/cylinder.obj");
+	glos_load_obj_file(4,"obj/grid_8x8.obj");
+	glos_load_obj_file(5,"obj/sphere.obj");
+	glos_load_obj_file(6,"obj/torus.obj");
+	glos_load_obj_file(7,"obj/disc.obj");
+	glos_load_obj_file(8,"obj/plane_red.obj");
+	glos_load_obj_file(9,"obj/cube-blue-red.obj");
+	glos_load_obj_file(10,"obj/cubo.obj");
 
 	object*o;
 	o=object_alloc(&ninja_def);
@@ -91,7 +91,7 @@ inline static void main_init(){
 
 //------------------------------------------------------------------------ main
 int main(int argc,char*argv[]){
-	indx minglobid=0,maxglobid=10;
+	indx gloid=0,mingloid=0,maxgloid=10;
 
 	printf(":-%15s-:-%-9s-:\n","---------------","---------");
 	printf(": %15s : %-9s :\n","type",           "bytes");
@@ -197,11 +197,11 @@ int main(int argc,char*argv[]){
 						draw_default=0;
 						break;
 					case SDLK_2:{
-//						object*o=object_at(0);
-//						o->glo_id++;
-//						if(o->glo_id>maxglobid){
-//							o->glo_id=minglobid;
-//						}
+						gloid++;
+						if(gloid>maxgloid){
+							gloid=mingloid;
+						}
+						object_at(0)->glo=glo_at(gloid);
 						break;
 					}
 					case SDLK_3:{

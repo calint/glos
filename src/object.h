@@ -16,8 +16,8 @@ typedef struct object{
 
 	bounding_radius bounding_radius;                                   //  4 B
 	scale scale;                                                       // 16 B
-	glo*glo;                                                       //  4 B
-	bool model_to_world_matrix_is_updated;
+	glo*glo;                                                           //  8 B
+	bool model_to_world_matrix_is_updated;                             //  4 B
 	void(*init)(struct object*);
 	void(*update)(struct object*,dt);
 	void(*collision)(struct object*,struct object*,dt);

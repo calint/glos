@@ -1,16 +1,14 @@
 #pragma once
-#include"sdl.h"
+//#include"sdl.h"
 #include"metrics.h"
 #include"dyni.h"
 #include"mat4.h"
-
-
 
 #define programs_cap 8
 
 typedef struct program{
 	GLuint gid;
-	/*owns*/dyni attributes;
+	dyni attributes;
 }program;
 
 static program programs[programs_cap];
