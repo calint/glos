@@ -137,7 +137,7 @@ inline static void shader_render_triangle_elements(
 }
 
 inline static void shader_render(){
-	const float m[]={
+	const float mtx_wvp[]={
 			1,0,0,0,
 			0,1,0,0,
 			0,0,1,0,
@@ -146,7 +146,7 @@ inline static void shader_render(){
 	shader_render_triangle_elements(
 			glob_def.vbufid,glob_def.vbufn,
 			glob_def.ibufid,(unsigned)glob_def.ibufn,
-			glob_def.texbufid,m
+			glob_def.texbufid,mtx_wvp
 	);
 }
 

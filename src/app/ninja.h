@@ -1,12 +1,13 @@
-//---------------------------------------------------------------------- ninja
 #pragma once
+//---------------------------------------------------------------------- ninja
 #include"../object.h"
 #include"ninja_part.h"
 //------------------------------------------------------------------ overrides
+inline static void _ninja_init_(object*this);
 inline static void _ninja_free_(object*this);
 //----------------------------------------------------------------------- init
-inline static void _ninja_init_(object*this);static object ninja_def={
-//-----------------------------------------------------------------------
+static object ninja_def={
+//----------------------------------------------------------------------------
 	.position={0,0,0,0},
 	.velocity={0,0,0,0},
 	.angle={0,0,0,0},
@@ -23,7 +24,9 @@ inline static void _ninja_init_(object*this);static object ninja_def={
 	.render=_render_glob_,
 	.free=_ninja_free_,
 	.part={NULL,NULL,NULL,NULL}
-};inline static void _ninja_init_(object*this){
+};
+//---------------------------------------------------------------------------
+inline static void _ninja_init_(object*this){
 //	printf(" * new %-12s [ %4s %p ]\n","ninja",this->type.path,this);
 	_object_init_(this);
 
