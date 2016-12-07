@@ -6,7 +6,7 @@
 #define globs_assert_bounds
 static glob __globs[globs_cap];
 
-inline static void _globs_assert_index_(arrayix i){
+inline static void _globs_assert_index_(indx i){
 #ifdef globs_assert_bounds
 	if(i>=globs_cap){
 		fprintf(stderr,"\nout of bounds\n");
@@ -17,12 +17,12 @@ inline static void _globs_assert_index_(arrayix i){
 }
 //---------------------------------------------------------------------
 
-inline static glob*glob_at(arrayix i){
+inline static glob*glob_at(indx i){
 	_globs_assert_index_(i);
 	return&__globs[i];
 }
 
-inline static const glob*glob_at_const(arrayix i){
+inline static const glob*glob_at_const(indx i){
 	_globs_assert_index_(i);
 	return&__globs[i];
 }
@@ -39,7 +39,7 @@ inline static void globs_render(){
 }
 
 
-inline static void globs_load_obj_file(arrayix i,const char*path){
+inline static void globs_load_obj_file(indx i,const char*path){
 	_globs_assert_index_(i);
 	glob_load_obj_file(&__globs[i],path);
 }

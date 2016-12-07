@@ -92,7 +92,7 @@ inline static void main_init(){
 
 //------------------------------------------------------------------------ main
 int main(int argc,char*argv[]){
-	arrayix minglobid=0,maxglobid=10;
+	indx minglobid=0,maxglobid=10;
 
 	printf(":-%15s-:-%-9s-:\n","---------------","---------");
 	printf(": %15s : %-9s :\n","type",           "bytes");
@@ -111,8 +111,8 @@ int main(int argc,char*argv[]){
 	globs_init();
 	main_init();
 
-	arrayix program_id_min=0;
-	arrayix program_id_max=2;
+	indx program_id_min=0;
+	indx program_id_max=2;
 
 	struct{
 		GLclampf red;

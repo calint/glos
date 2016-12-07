@@ -16,7 +16,7 @@ typedef struct dync{
 
 //--------------------------------------------------------------------- private
 
-inline static void _dync_insure_free_capcity(dync*this,arrayix n){
+inline static void _dync_insure_free_capcity(dync*this,indx n){
 	const unsigned rem=this->cap-this->count;
 	if(rem>=n)
 		return;
@@ -52,7 +52,7 @@ inline static void dync_add(dync*this,char o){
 
 //-----------------------------------------------------------------------------
 
-inline static char dync_get(dync*this,arrayix index){
+inline static char dync_get(dync*this,indx index){
 #ifdef dync_bounds_check
 	if(index>=this->cap){
 		fprintf(stderr,"\nindex-out-of-bounds");

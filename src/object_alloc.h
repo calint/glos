@@ -62,7 +62,7 @@ inline static void object_free(object*o){
 	metrics.objects_allocated--;
 }
 //------------------------------------------------------------------- accessors
-inline static void _object_assert_bounds(arrayix i){
+inline static void _object_assert_bounds(indx i){
 	if(i<object_cap)
 		return;
 	fprintf(stderr,"\n    object index %u out of bounds %u\n",
@@ -78,14 +78,14 @@ inline static const object*object_ptr_const(const void*p){
 //-----------------------------------------------------------------------------
 inline static object*object_ptr(void*p){return(object*)p;}
 //-----------------------------------------------------------------------------
-inline static object*object_at(arrayix i){
+inline static object*object_at(indx i){
 #ifdef object_assert_bounds
 	_object_assert_bounds(i);
 #endif
 	return&objects[i];
 }
 //-----------------------------------------------------------------------------
-inline static const object*object_at_const(arrayix i){
+inline static const object*object_at_const(indx i){
 #ifdef object_assert_bounds
 	_object_assert_bounds(i);
 #endif

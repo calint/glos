@@ -58,7 +58,7 @@ inline static dync dync_from_file(const char*path){
 //illum 2
 //map_Kd /home/c/w/glos/logo.jpeg
 
-typedef struct _objmtl{
+typedef struct objmtl{
 	dync name;
 	float Ns;
 	vec4 Ka,Kd,Ks,Ke;
@@ -179,16 +179,16 @@ inline static void obj_load_materials_from_file(const char*path){
 	objmtls_add(&materials,o);
 }
 
-typedef struct _mtlrng{
-	arrayix begin,end;
+typedef struct mtlrng{
+	indx begin,end;
 	objmtl*material;
 }mtlrng;
-#define mtlrng_def (mtlrng){0,0,0}
+#define mtlrng_def (mtlrng){0,0,NULL}
 
 typedef struct glo{
 	dynf vtxbuf;
 	dynp ranges;
-	glid vtxbuf_id;
+	id vtxbuf_id;
 }glo;
 //#define glo_def (glo){dynf_def,dynp_def}
 #define glo_def (glo){dynf_def,dynp_def}
@@ -206,8 +206,8 @@ static/*gives*/glo read_obj_file_from_path(const char*path){
 	const char*p=file.data;
 	objmtl*current_objmtl=NULL;
 	const char*basedir="obj/";
-	arrayix vtxbufix=0;
-	arrayix prev_vtxbufix=0;
+	indx vtxbufix=0;
+	indx prev_vtxbufix=0;
 	while(*p){
 		token t=token_next_from_string(p);
 		p=t.end;//token_size_including_whitespace(&t);
@@ -320,13 +320,13 @@ static/*gives*/glo read_obj_file_from_path(const char*path){
 				// position
 				token vert1=next_token_from_string_additional_delim(p,'/');
 				p=vert1.end;
-				arrayix ix1=token_get_uint(&vert1);
+				indx ix1=token_get_uint(&vert1);
 				vec4*vtx=(vec4*)dynp_get(&vertices,ix1-1);
 
 				// texture index
 				token vert2=next_token_from_string_additional_delim(p,'/');
 				p=vert2.end;
-				arrayix ix2=token_get_uint(&vert2);
+				indx ix2=token_get_uint(&vert2);
 				vec4 tx,*tex;tex=&tx;
 				if(ix2){
 					tex=(vec4*)dynp_get(&texuv,ix2-1);
@@ -336,7 +336,7 @@ static/*gives*/glo read_obj_file_from_path(const char*path){
 				// normal
 				token vert3=next_token_from_string_additional_delim(p,'/');
 				p=vert3.end;
-				arrayix ix3=token_get_uint(&vert3);
+				indx ix3=token_get_uint(&vert3);
 				vec4*norm=(vec4*)dynp_get(&normals,ix3-1);
 
 				// buffer

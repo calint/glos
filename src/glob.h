@@ -37,7 +37,7 @@ inline static void glob_load_obj_file(glob*this,const char*path){
 			GL_STATIC_DRAW);
 
 	// upload materials
-	for(arrayix i=0;i<this->glo.ranges.count;i++){
+	for(indx i=0;i<this->glo.ranges.count;i++){
 		mtlrng*mr=(mtlrng*)this->glo.ranges.data[i];
 		objmtl*m=(objmtl*)mr->material;
 		if(m->map_Kd.count){// load texture
@@ -81,7 +81,7 @@ inline static void glob_render(glob*this,const float*mtxmw){
 	glVertexAttribPointer(shader_atex,  2,GL_FLOAT, GL_FALSE,
 			sizeof(vertex),(GLvoid*)((3+4+3)*sizeof(float)));
 
-	for(arrayix i=0;i<this->glo.ranges.count;i++){
+	for(indx i=0;i<this->glo.ranges.count;i++){
 		mtlrng*mr=(mtlrng*)this->glo.ranges.data[i];
 		objmtl*m=mr->material;
 

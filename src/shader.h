@@ -40,7 +40,7 @@ inline static GLuint _compile_shader(GLenum shaderType,const char *code) {
 }
 
 inline static void programs_load(
-		arrayix i,
+		indx i,
 		const char*vert_src,
 		const char*frag_src,
 		/*takes*/dyni attrs

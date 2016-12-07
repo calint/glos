@@ -16,7 +16,7 @@ dyni dyni_def={0,0,0};
 
 //--------------------------------------------------------------------- private
 
-inline static void _dyni_insure_free_capcity(dyni*this,arrayix n){
+inline static void _dyni_insure_free_capcity(dyni*this,indx n){
 	const unsigned rem=this->cap-this->count;
 	if(rem>=n)
 		return;
@@ -52,7 +52,7 @@ inline static void dyni_add(dyni*this,int o){
 
 //-----------------------------------------------------------------------------
 
-inline static int dyni_get(dyni*this,arrayix index){
+inline static int dyni_get(dyni*this,indx index){
 #ifdef dyni_bounds_check
 	if(index>=this->cap){
 		fprintf(stderr,"\nindex-out-of-bounds");

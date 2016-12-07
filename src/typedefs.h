@@ -19,7 +19,7 @@ typedef unsigned id;
 typedef float dt;
 typedef float time_in_seconds;
 typedef const char*path;
-typedef uint32_t arrayix;
+typedef uint32_t indx;
 typedef unsigned glid;
 #define PI 3.1415926535897932384626433832795f
 //#include"dynp.h"
