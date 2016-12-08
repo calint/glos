@@ -54,7 +54,7 @@ void stacktrace_print(){
 	fprintf(stderr,"stacktrace %d frames:\n",size);
 
 	for(int i=0;i<size;i++)
-		printf ("%s\n",strings[i]);
+		fprintf(stderr,"%s\n",strings[i]);
 
 	free (strings);
 }

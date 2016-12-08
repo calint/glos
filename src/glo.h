@@ -372,6 +372,7 @@ static/*gives*/glo*glo_load_first_from_file(const char*path){
 //}
 
 static/*gives*/dynp glo_load_all_from_file(const char*path){
+	printf(" * loading objects from '%s'\n",path);
 	dync file=dync_from_file(path);
 	const char*p=file.data;
 
@@ -382,9 +383,7 @@ static/*gives*/dynp glo_load_all_from_file(const char*path){
 
 	dynf vertex_buffer=dynf_def;
 	dynp mtlrngs=dynp_def;
-
-	dynp ls=dynp_def;
-
+	dynp reuslt=dynp_def;
 	const char*basedir="obj/";
 	while(*p){
 		token t=token_next_from_string(p);
@@ -458,6 +457,12 @@ static/*gives*/dynp glo_load_all_from_file(const char*path){
 		token t=token_next_from_string(p);
 		p=t.end;
 		if(token_equals(&t,"o")){
+			token t=token_next_from_string(p);
+			p=t.end;
+			dync str=dync_def;
+			dync_add_list(&str,t.content,t.content_end-t.content);
+			dync_add(&str,0);
+			printf("    * loading object '%s'\n",str.data);
 			p=scan_to_including_newline(p);
 			if(first_o){
 				first_o=0;
@@ -472,7 +477,13 @@ static/*gives*/dynp glo_load_all_from_file(const char*path){
 
 			glo*g=calloc(1,sizeof(glo));
 			*g=(glo){/*gives*/vertex_buffer,/*gives*/mtlrngs,0};
-			dynp_add(&ls,g);
+			dynp_add(&reuslt,g);
+
+			printf("      %u range\%c   %lu vertices   %lu B\n",
+					mtlrngs.count,mtlrngs.count==1?' ':'s',
+					vertex_buffer.count,
+					dynf_size_in_bytes(&vertex_buffer));
+
 
 			prev_vtxbufix=vtxbufix;
 			vertex_buffer=dynf_def;
@@ -570,14 +581,14 @@ static/*gives*/dynp glo_load_all_from_file(const char*path){
 
 	glo*g=calloc(1,sizeof(glo));
 	*g=(glo){/*gives*/vertex_buffer,/*gives*/mtlrngs,0};
-	dynp_add(&ls,g);
+	dynp_add(&reuslt,g);
 
-	printf(" ranges %u   %lu vertices   %lu B\n",
-			mtlrngs.count,
+	printf("      %u range%c   %lu vertices   %lu B\n",
+			mtlrngs.count,mtlrngs.count==1?' ':'s',
 			vertex_buffer.count,
 			dynf_size_in_bytes(&vertex_buffer));
 
-	return/*gives*/ls;
+	return/*gives*/reuslt;
 
 }
 
@@ -656,7 +667,7 @@ inline static void glo_render(glo*this,const float*mtxmw){
 			glDisableVertexAttribArray(shader_atex);
 		}
 
-		glDrawArrays(GL_TRIANGLES,(signed)mr->begin,(signed)(mr->end-mr->begin));
+		glDrawArrays(GL_TRIANGLES,0,(signed)(mr->end-mr->begin));
 
 		if(m->texture_id){
 			glBindTexture(GL_TEXTURE_2D,0);

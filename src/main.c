@@ -51,11 +51,11 @@ inline static void main_init(){
 	program_load_from_source(vtx,frag,/*gives*/attrs);
 
 	shader.active_program_ix=0;
-	glos_load_scene_from_file("obj/untitled.obj");
+	glos_load_scene_from_file("obj/red-cube.obj");
 
-	object*o;
-	o=object_alloc(&ninja_def);
-	o->glo=glo_at(0);
+//	object*o;
+//	o=object_alloc(&ninja_def);
+//	o->glo=glo_at(0);
 //	o->angle=(angle){0,0,90};
 //	const float vr=.5f;
 //	o->velocity=(velocity){
@@ -254,10 +254,10 @@ int main(int argc,char*argv[]){
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		objects_update(metrics.previous_frame_dt);
-		if(draw_objects)objects_render();
+//		objects_update(metrics.previous_frame_dt);
+//		if(draw_objects)objects_render();
 
-//		glos_render();
+		glos_render();
 
 		if(draw_default)shader_render();
 
