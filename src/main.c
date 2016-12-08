@@ -8,6 +8,7 @@
 #include"dyni.h"
 #include"app/ninja.h"
 #include"glo.h"
+#include"mat4.h"
 //----------------------------------------------------------------------- init
 inline static void main_init(){
 
@@ -51,7 +52,7 @@ inline static void main_init(){
 	program_load_from_source(vtx,frag,/*gives*/attrs);
 
 	shader.active_program_ix=0;
-	glos_load_scene_from_file("obj/untitled.obj");
+	glos_load_scene_from_file("obj/bounding_volumes.obj");
 
 //	object*o;
 //	o=object_alloc(&ninja_def);
@@ -79,6 +80,7 @@ inline static void main_init(){
 //		random_range(-sr,sr),
 //		random_range(-sr,sr),1};
 }
+
 
 //------------------------------------------------------------------------ main
 int main(int argc,char*argv[]){
@@ -233,17 +235,28 @@ int main(int argc,char*argv[]){
 			}
 			previous_active_program_ix=shader.active_program_ix;
 		}
-
+		float mtx_wvp[16];
+		//----
+		position pos_eye=(position){3,3,10,0};
+		position pos_lookat=(position){0,0,0,0};
+		vec4 upvec=(vec4){0,1,0,0};
+		//----
+		float mtx_lookat[16];
+		mat4_set_look_at(mtx_lookat,&pos_eye,&pos_lookat,&upvec);
+		//----
+		vec4_negate(&pos_eye);
 		float mtx_trans[16];
-		mat4_load_translate(mtx_trans,&(position){0,0,10,0});
-
+		mat4_set_translate(mtx_trans,&pos_eye);
+		vec4_negate(&pos_eye);
+		//----
 		float mtx_proj[16];
 		float aspect_ratio=10;
 		mat4_load_ortho_projection(mtx_proj,-10,10,
 				-aspect_ratio,aspect_ratio, -12,1000);
-
-		float mtx_wvp[16];
-		mat4_multiply(mtx_wvp,mtx_proj,mtx_trans);
+		//----
+		float m1[16];
+		mat4_multiply(m1,mtx_trans,mtx_lookat);
+		mat4_multiply(mtx_wvp,mtx_proj,m1);
 
 //		printf("uniform wvp %d\n",
 //				glGetUniformLocation(programs[shader.active_program_ix].gid,"utex"));

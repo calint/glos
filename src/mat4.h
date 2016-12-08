@@ -4,7 +4,34 @@
 
 static const float mat4_ident[]={1,0,0,0,  0,1,0,0,  0,0,1,0,  0,0,0,1};
 
-inline static void mat4_load_translate(float*c,position*p){
+
+inline static void mat4_set_look_at(float*c,
+		const position*eye,
+		const position*lookat,
+		const vec4*up){
+
+	// [ 0 4  8 12 ]
+	// [ 1 5  9 13 ]
+	// [ 2 6 10 14 ]
+	// [ 3 7 11 15 ]
+	vec4 zaxis=vec4_def;
+	vec4_minus(&zaxis,lookat,eye);
+	vec4_normalize(&zaxis);// zaxis
+
+	vec4 xaxis=vec4_def;
+	vec4_cross(&xaxis,up,&zaxis); // xaxis
+	vec4_normalize(&xaxis);
+
+	vec4 yaxis=vec4_def;
+	vec4_cross(&yaxis,&zaxis,&xaxis);
+
+	c[0]=xaxis.x;c[4]=xaxis.y;c[ 8]=xaxis.z; c[12]=0;
+	c[1]=yaxis.x;c[5]=yaxis.y;c[ 9]=yaxis.z; c[13]=0;
+	c[2]=zaxis.x;c[6]=zaxis.y;c[10]=zaxis.z; c[14]=0;
+	c[3]=0;      c[7]=0;      c[11]=0;       c[15]=1;
+}
+
+inline static void mat4_set_translate(float*c,const position*p){
 	// [ 0 4  8  x ]
 	// [ 1 5  9  y ]
 	// [ 2 6 10  z ]
@@ -45,7 +72,7 @@ inline static void mat4_append_rotation_about_z_axis(float*c,float degrees){
 	c[ 7]=c[ 7]*cosrad-mtx03*sinrad;
 }
 
-inline static void mat4_load_scale(float*c,scale*s){
+inline static void mat4_set_scale(float*c,scale*s){
 	// [ 0 4  8 12 ]   [ x 0 0 0 ]
 	// [ 1 5  9 13 ] x [ 0 y 0 0 ]
 	// [ 2 6 10 14 ]   [ 0 0 z 0 ]
