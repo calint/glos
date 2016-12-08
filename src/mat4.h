@@ -120,7 +120,7 @@ inline static void mat4_scale(float*c,scale*s){
 	c[11]*=s->z;
 }
 
-inline static void mat4_load_ortho_projection(float*c,
+inline static void mat4_set_ortho_projection(float*c,
 		const float left,const float right,
 		const float bottom,const float top,
 		const float nearz,const float farz
