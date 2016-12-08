@@ -82,6 +82,18 @@ inline static void main_init(){
 }
 
 
+struct{
+	position pos_eye;
+	float mtx_wvp[16];
+	position pos_lookat;
+	vec4 upvec;
+}camera={
+		.pos_eye={0,0,0,0},
+		.mtx_wvp={1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1},
+		.pos_lookat={0,0,0,0},
+		.upvec={0,1,0,0},
+};
+
 //------------------------------------------------------------------------ main
 int main(int argc,char*argv[]){
 	indx gloid=0,mingloid=0,maxgloid=10;
@@ -126,6 +138,8 @@ int main(int argc,char*argv[]){
 		}
 	}
 	gid previous_active_program_ix=shader.active_program_ix;
+
+	camera.pos_eye=(vec4){2,2,0,0};
 
 	for(int running=1;running;){
 		metrics__at__frame_begin();
@@ -235,19 +249,17 @@ int main(int argc,char*argv[]){
 			}
 			previous_active_program_ix=shader.active_program_ix;
 		}
-		float mtx_wvp[16];
 		//----
-		position pos_eye=(position){3,3,10,0};
-		position pos_lookat=(position){0,0,0,0};
-		vec4 upvec=(vec4){0,1,0,0};
+		vec4_increase_with_vec4_over_dt(&camera.pos_eye,&(vec4){0,.5f,0,0},
+				metrics.previous_frame_dt);
 		//----
 		float mtx_lookat[16];
-		mat4_set_look_at(mtx_lookat,&pos_eye,&pos_lookat,&upvec);
+		mat4_set_look_at(mtx_lookat,&camera.pos_eye,&camera.pos_lookat,&camera.upvec);
 		//----
-		vec4_negate(&pos_eye);
+		vec4 t=camera.pos_eye;
+		vec4_negate(&t);
 		float mtx_trans[16];
-		mat4_set_translate(mtx_trans,&pos_eye);
-		vec4_negate(&pos_eye);
+		mat4_set_translate(mtx_trans,&t);
 		//----
 		float mtx_proj[16];
 		float aspect_ratio=10;
@@ -256,12 +268,12 @@ int main(int argc,char*argv[]){
 		//----
 		float m1[16];
 		mat4_multiply(m1,mtx_trans,mtx_lookat);
-		mat4_multiply(mtx_wvp,mtx_proj,m1);
+		mat4_multiply(camera.mtx_wvp,mtx_proj,m1);
 
 //		printf("uniform wvp %d\n",
 //				glGetUniformLocation(programs[shader.active_program_ix].gid,"utex"));
 
-		glUniformMatrix4fv(shader_umtx_wvp,1,0,mtx_wvp);
+		glUniformMatrix4fv(shader_umtx_wvp,1,0,camera.mtx_wvp);
 
 		glClearColor(c.red,c.green,c.blue,1.0);
 
