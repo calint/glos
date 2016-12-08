@@ -277,31 +277,8 @@ int main(int argc,char*argv[]){
 			}
 			previous_active_program_ix=shader.active_program_ix;
 		}
-		//----
 
 		camera_update();
-
-		//
-//		//----
-//		float mtx_lookat[16];
-//		mat4_set_look_at(mtx_lookat,&camera.eye,&camera.lookat,&camera.up);
-//		//----
-//		vec4 t=camera.eye;
-//		vec4_negate(&t);
-//		float mtx_trans[16];
-//		mat4_set_translate(mtx_trans,&t);
-//		//----
-//		float mtx_proj[16];
-//		float aspect_ratio=10;
-//		mat4_set_ortho_projection(mtx_proj,-10,10,
-//				-aspect_ratio,aspect_ratio, camera.znear,camera.zfar);
-//		//----
-//		float m1[16];
-//		mat4_multiply(m1,mtx_trans,mtx_lookat);
-//		mat4_multiply(camera.mxwvp,mtx_proj,m1);
-
-//		printf("uniform wvp %d\n",
-//				glGetUniformLocation(programs[shader.active_program_ix].gid,"utex"));
 
 		glUniformMatrix4fv(shader_umtx_wvp,1,0,camera.mxwvp);
 
