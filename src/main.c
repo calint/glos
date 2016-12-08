@@ -100,6 +100,10 @@ struct{
 		.hi=1024,
 };
 inline static void camera_update(){
+	vec4_increase_with_vec4_over_dt(&camera.eye,&(vec4){-1,0,0,0},
+			metrics.previous_frame_dt);
+
+
 	float mtx_lookat[16];
 	mat4_set_look_at(mtx_lookat,&camera.eye,&camera.lookat,&camera.up);
 	//----
@@ -274,8 +278,6 @@ int main(int argc,char*argv[]){
 			previous_active_program_ix=shader.active_program_ix;
 		}
 		//----
-		vec4_increase_with_vec4_over_dt(&camera.eye,&(vec4){-1,0,0,0},
-				metrics.previous_frame_dt);
 
 		camera_update();
 
