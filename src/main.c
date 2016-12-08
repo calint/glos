@@ -51,24 +51,12 @@ inline static void main_init(){
 	program_load_from_source(vtx,frag,/*gives*/attrs);
 
 	shader.active_program_ix=0;
+	glos_load_scene_from_file("obj/untitled.obj");
 
-//	glos_load_obj_file("obj/plane.obj");
-//	glos_load_obj_file(2,"obj/ico_sphere.obj");
-//	glos_load_obj_file(3,"obj/cylinder.obj");
-//	glos_load_obj_file(4,"obj/grid_8x8.obj");
-//	glos_load_obj_file(5,"obj/sphere.obj");
-//	glos_load_obj_file(6,"obj/torus.obj");
-//	glos_load_obj_file(7,"obj/disc.obj");
-//	glos_load_obj_file(8,"obj/plane_red.obj");
-//	glos_load_obj_file(9,"obj/cube-blue-red.obj");
-//	glos_load_obj_file(10,"obj/cubo.obj");
-	glos_load_obj_file("obj/sceno.obj");
-
-//	glos_load_scene_from_file("obj/sceno.obj");
-//
 	object*o;
 	o=object_alloc(&ninja_def);
 	o->glo=glo_at(0);
+//	o->angle=(angle){0,0,90};
 //	const float vr=.5f;
 //	o->velocity=(velocity){
 //		random_range(-vr,vr),random_range(-vr,vr),0,0};
@@ -252,7 +240,7 @@ int main(int argc,char*argv[]){
 		float mtx_proj[16];
 		float aspect_ratio=10;
 		mat4_load_ortho_projection(mtx_proj,-10,10,
-				-aspect_ratio,aspect_ratio,-1000,1000);
+				-aspect_ratio,aspect_ratio, -12,1000);
 
 		float mtx_wvp[16];
 		mat4_multiply(mtx_wvp,mtx_proj,mtx_trans);
@@ -264,7 +252,6 @@ int main(int argc,char*argv[]){
 
 		glClearColor(c.red,c.green,c.blue,1.0);
 
-//		glClear(GL_COLOR_BUFFER_BIT);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		objects_update(metrics.previous_frame_dt);

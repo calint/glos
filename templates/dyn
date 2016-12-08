@@ -55,7 +55,7 @@ inline static void ${name}_add(${name}*this,${type} o){
 
 inline static ${type} ${name}_get(${name}*this,indx index){
 #ifdef ${name}_bounds_check
-	if(index>=this->cap){
+	if(index>=this->count){
 		fprintf(stderr,"\nindex-out-of-bounds");
 		fprintf(stderr,"\t%s\n\n%d  index: %u    capacity: %u\n",
 				__FILE__,__LINE__,index,this->cap);
