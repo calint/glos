@@ -212,7 +212,7 @@ in vec3 vnorm;                \n\
 in vec2 vtex;                \n\
 out vec4 rgba;                \n\
 void main(){                               \n\
-	rgba=texture2D(utex,vtex);\n\
+	rgba=texture2D(utex,vtex)+vrgba;\n\
 }\n";
 #define shader_apos 0
 #define shader_argba 1

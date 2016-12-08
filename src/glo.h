@@ -651,6 +651,8 @@ inline static void glo_render(glo*this,const float*mtxmw){
 			glBindTexture(GL_TEXTURE_2D,m->texture_id);
 			glEnableVertexAttribArray(shader_atex);
 		}else{
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D,0);
 			glDisableVertexAttribArray(shader_atex);
 		}
 
