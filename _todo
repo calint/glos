@@ -6,7 +6,13 @@
  [x]   materials
  [x]   textures
  [x]   render
- [ ]   scene
+ [x]   scene
+ [ ]     to objects
+ [ ]     center/scale/position
+ [ ] draw bounding volume
+ [ ]   sphere
+ [ ]   box
+ [ ]   planes
  [x] multiple materials in render
  [ ] collision detection 
  [ ]   bounding volume
