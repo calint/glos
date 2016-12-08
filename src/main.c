@@ -51,7 +51,7 @@ inline static void main_init(){
 	program_load_from_source(vtx,frag,/*gives*/attrs);
 
 	shader.active_program_ix=0;
-	glos_load_scene_from_file("obj/red-cube.obj");
+	glos_load_scene_from_file("obj/untitled.obj");
 
 //	object*o;
 //	o=object_alloc(&ninja_def);

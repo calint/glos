@@ -140,7 +140,7 @@ inline static void objmtls_load_from_file(const char*path){
 }
 
 typedef struct mtlrng{
-	indx begin,end;
+	indx begin,count;
 	objmtl*material;
 }mtlrng;
 #define mtlrng_def (mtlrng){0,0,NULL}
@@ -217,7 +217,7 @@ static/*gives*/glo*glo_load_next_from_string(const char**ptr_p){
 					mtlrng*mr=malloc(sizeof(mtlrng));
 //					*mr=material_range_def;
 					mr->begin=prev_vtxbufix;
-					mr->end=vtxbufix;
+					mr->count=vtxbufix;
 					mr->material=current_objmtl;
 					dynp_add(&material_ranges,mr);
 					prev_vtxbufix=vtxbufix;
@@ -335,7 +335,7 @@ static/*gives*/glo*glo_load_next_from_string(const char**ptr_p){
 	mtlrng*mr=malloc(sizeof(mtlrng));
 //					*mr=material_range_def;
 	mr->begin=prev_vtxbufix;
-	mr->end=vtxbufix;
+	mr->count=vtxbufix;
 	mr->material=current_objmtl;
 	dynp_add(&material_ranges,mr);
 
@@ -453,6 +453,7 @@ static/*gives*/dynp glo_load_all_from_file(const char*path){
 	indx prev_vtxbufix=0;
 	int first_o=1;
 	p=file.data;
+	unsigned vtxbufix_base=0;
 	while(*p){
 		token t=token_next_from_string(p);
 		p=t.end;
@@ -470,8 +471,8 @@ static/*gives*/dynp glo_load_all_from_file(const char*path){
 			}
 			mtlrng*mr=malloc(sizeof(mtlrng));
 		//					*mr=material_range_def;
-			mr->begin=prev_vtxbufix;
-			mr->end=vtxbufix;
+			mr->begin=prev_vtxbufix-vtxbufix_base;
+			mr->count=vtxbufix-prev_vtxbufix;
 			mr->material=current_objmtl;
 			dynp_add(&mtlrngs,mr);
 
@@ -485,7 +486,7 @@ static/*gives*/dynp glo_load_all_from_file(const char*path){
 					dynf_size_in_bytes(&vertex_buffer));
 
 
-			prev_vtxbufix=vtxbufix;
+			vtxbufix_base=prev_vtxbufix=vtxbufix;
 			vertex_buffer=dynf_def;
 			mtlrngs=dynp_def;
 
@@ -509,8 +510,8 @@ static/*gives*/dynp glo_load_all_from_file(const char*path){
 				if(prev_vtxbufix!=vtxbufix){
 					mtlrng*mr=malloc(sizeof(mtlrng));
 	//					*mr=material_range_def;
-					mr->begin=prev_vtxbufix;
-					mr->end=vtxbufix;
+					mr->begin=prev_vtxbufix-vtxbufix_base;
+					mr->count=vtxbufix-prev_vtxbufix;
 					mr->material=current_objmtl;
 					dynp_add(&mtlrngs,mr);
 					prev_vtxbufix=vtxbufix;
@@ -573,8 +574,8 @@ static/*gives*/dynp glo_load_all_from_file(const char*path){
 
 	mtlrng*mr=malloc(sizeof(mtlrng));
 //					*mr=material_range_def;
-	mr->begin=prev_vtxbufix;
-	mr->end=vtxbufix;
+	mr->begin=prev_vtxbufix-vtxbufix_base;
+	mr->count=vtxbufix-prev_vtxbufix;
 	mr->material=current_objmtl;
 	dynp_add(&mtlrngs,mr);
 
@@ -667,7 +668,7 @@ inline static void glo_render(glo*this,const float*mtxmw){
 			glDisableVertexAttribArray(shader_atex);
 		}
 
-		glDrawArrays(GL_TRIANGLES,0,(signed)(mr->end-mr->begin));
+		glDrawArrays(GL_TRIANGLES,(signed)mr->begin,(signed)mr->count);
 
 		if(m->texture_id){
 			glBindTexture(GL_TEXTURE_2D,0);
