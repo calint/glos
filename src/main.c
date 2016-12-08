@@ -87,11 +87,17 @@ struct{
 	float mxwvp[16];
 	position lookat;
 	vec4 up;
+	float znear,zfar;
+	float wi,hi;
 }camera={
 		.eye={0,0,0,0},
 		.mxwvp={1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1},
 		.lookat={0,0,0,0},
 		.up={0,1,0,0},
+		.znear=0.01f,
+		.zfar=100,
+		.wi=1024,
+		.hi=1024,
 };
 
 //------------------------------------------------------------------------ main
@@ -265,7 +271,7 @@ int main(int argc,char*argv[]){
 		float mtx_proj[16];
 		float aspect_ratio=10;
 		mat4_set_ortho_projection(mtx_proj,-10,10,
-				-aspect_ratio,aspect_ratio, -12,1000);
+				-aspect_ratio,aspect_ratio, camera.znear,camera.zfar);
 		//----
 		float m1[16];
 		mat4_multiply(m1,mtx_trans,mtx_lookat);
