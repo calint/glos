@@ -65,17 +65,17 @@ inline static void main_init(){
 //	glos_load_obj_file("obj/sceno.obj");
 
 	glos_load_scene_from_file("obj/sceno.obj");
-
-	object*o;
-	o=object_alloc(&ninja_def);
-	o->glo=glo_at(0);
-	const float vr=.5f;
-	o->velocity=(velocity){
-		random_range(-vr,vr),random_range(-vr,vr),0,0};
-
-	const float ar=360;
-	o->angular_velocity=(angular_velocity){
-		0,0,random_range(-ar,ar),0};
+//
+//	object*o;
+//	o=object_alloc(&ninja_def);
+//	o->glo=glo_at(0);
+//	const float vr=.5f;
+//	o->velocity=(velocity){
+//		random_range(-vr,vr),random_range(-vr,vr),0,0};
+//
+//	const float ar=360;
+//	o->angular_velocity=(angular_velocity){
+//		0,0,random_range(-ar,ar),0};
 
 //	o=object_alloc(&object_def);
 //	o->glob_id=1;
@@ -89,7 +89,7 @@ inline static void main_init(){
 //		random_range(-sr,sr),
 //		random_range(-sr,sr),
 //		random_range(-sr,sr),1};
-	o->scale=(scale){.5f,.5f,.5f,1};
+//	o->scale=(scale){.5f,.5f,.5f,1};
 }
 
 //------------------------------------------------------------------------ main
@@ -247,11 +247,11 @@ int main(int argc,char*argv[]){
 		}
 
 		float mtx_trans[16];
-		mat4_load_translate(mtx_trans,&(position){0,0,2,0});
+		mat4_load_translate(mtx_trans,&(position){0,0,10,0});
 
 		float mtx_proj[16];
-		float aspect_ratio=4;
-		mat4_load_ortho_projection(mtx_proj,-4,4,
+		float aspect_ratio=10;
+		mat4_load_ortho_projection(mtx_proj,-10,10,
 				-aspect_ratio,aspect_ratio,-1000,1000);
 
 		float mtx_wvp[16];

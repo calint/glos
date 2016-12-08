@@ -1,4 +1,7 @@
 #pragma once
+#include <execinfo.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include "typedefs.h"
 //------------------------------------------------------------------------ lib
 
@@ -44,3 +47,14 @@ inline static float bounding_radius_for_scale(scale*s){
 
 //----------------------------------------------------------------------------
 
+void stacktrace_print(){
+	void*array[10];
+	int size=backtrace(array,10);
+	char**strings=backtrace_symbols(array,size);
+	fprintf(stderr,"stacktrace %d frames:\n",size);
+
+	for(int i=0;i<size;i++)
+		printf ("%s\n",strings[i]);
+
+	free (strings);
+}

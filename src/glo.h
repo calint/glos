@@ -74,8 +74,8 @@ inline static void objmtls_load_from_file(const char*path){
 		}
 		if(token_equals(&t,"Ns")){
 			token t=token_next_from_string(p);
-			float f=token_get_float(&t);
 			p=t.end;
+			float f=token_get_float(&t);
 			o->Ns=f;
 			continue;
 		}
@@ -86,16 +86,16 @@ inline static void objmtls_load_from_file(const char*path){
 			vec4 v;
 
 			token x=token_next_from_string(p);
-			v.x=token_get_float(&x);
 			p=x.end;
+			v.x=token_get_float(&x);
 
 			token y=token_next_from_string(p);
-			v.y=token_get_float(&y);
 			p=y.end;
+			v.y=token_get_float(&y);
 
 			token z=token_next_from_string(p);
-			v.z=token_get_float(&z);
 			p=z.end;
+			v.z=token_get_float(&z);
 
 			v.q=0;
 
@@ -113,16 +113,16 @@ inline static void objmtls_load_from_file(const char*path){
 
 		if(token_equals(&t,"Ni")){
 			token t=token_next_from_string(p);
-			float f=token_get_float(&t);
 			p=t.end;
+			float f=token_get_float(&t);
 			o->Ni=f;
 			continue;
 		}
 
 		if(token_equals(&t,"d")){
 			token t=token_next_from_string(p);
-			float f=token_get_float(&t);
 			p=t.end;
+			float f=token_get_float(&t);
 			o->d=f;
 			continue;
 		}
@@ -182,6 +182,7 @@ static/*gives*/glo*glo_load_next_from_string(const char**ptr_p){
 		}
 		if(token_equals(&t,"mtllib")){
 			token t=token_next_from_string(p);
+			p=t.end;
 			dync s=dync_def;
 			dync_add_string(&s,basedir);
 			dync_add_list(&s,t.content,token_size(&t));
@@ -358,16 +359,228 @@ static/*gives*/glo*glo_load_first_from_file(const char*path){
 	return glo_load_next_from_string(&p);
 }
 
+//static/*gives*/dynp glo_load_all_from_file(const char*path){
+////	stacktrace_print();
+//	dync file=dync_from_file(path);
+//	const char*p=file.data;
+//	dynp ls=dynp_def;
+//	while(*p){
+//		glo*g=glo_load_next_from_string(&p);
+//		dynp_add(&ls,g);
+//	}
+//	return ls;
+//}
+
 static/*gives*/dynp glo_load_all_from_file(const char*path){
 	dync file=dync_from_file(path);
 	const char*p=file.data;
+
+	dynp vertices=dynp_def;
+	dynp normals=dynp_def;
+	dynp texuv=dynp_def;
+
+
+	dynf vertex_buffer=dynf_def;
+	dynp mtlrngs=dynp_def;
+
 	dynp ls=dynp_def;
+
+	const char*basedir="obj/";
 	while(*p){
-		glo*g=glo_load_next_from_string(&p);
-		dynp_add(&ls,g);
+		token t=token_next_from_string(p);
+		p=t.end;//token_size_including_whitespace(&t);
+		if(token_starts_with(&t,"#")){
+			p=scan_to_including_newline(p);
+		}else if(token_equals(&t,"mtllib")){
+			token t=token_next_from_string(p);
+			p=t.end;
+			dync s=dync_def;
+			dync_add_string(&s,basedir);
+			dync_add_list(&s,t.content,token_size(&t));
+			dync_add(&s,0);
+			objmtls_load_from_file(s.data);
+		}else if(token_equals(&t,"v")){
+			token tx=token_next_from_string(p);
+			float x=token_get_float(&tx);
+			p=tx.end;
+
+			token ty=token_next_from_string(p);
+			float y=token_get_float(&ty);
+			p=ty.end;
+
+			token tz=token_next_from_string(p);
+			float z=token_get_float(&tz);
+			p=tz.end;
+
+			vec4*ptr=malloc(sizeof(vec4));
+			*ptr=(vec4){x,y,z,0};
+			dynp_add(&vertices,ptr);
+			continue;
+		}else if(token_equals(&t,"vt")){
+			token tu=token_next_from_string(p);
+			float u=token_get_float(&tu);
+			p=tu.end;
+
+			token tv=token_next_from_string(p);
+			float v=token_get_float(&tv);
+			p=tv.end;
+
+			vec4*ptr=malloc(sizeof(vec4));
+			*ptr=(vec4){u,v,0,0};
+			dynp_add(&texuv,ptr);
+		}else if(token_equals(&t,"vn")){
+			token tx=token_next_from_string(p);
+			p=tx.end;
+			float x=token_get_float(&tx);
+
+			token ty=token_next_from_string(p);
+			p=ty.end;
+			float y=token_get_float(&ty);
+
+			token tz=token_next_from_string(p);
+			p=tz.end;
+			float z=token_get_float(&tz);
+
+
+			vec4*ptr=malloc(sizeof(vec4));
+			*ptr=(vec4){x,y,z,0};
+			dynp_add(&normals,ptr);
+		}else{
+			p=scan_to_including_newline(p);
+		}
 	}
-	return ls;
+	objmtl*current_objmtl=NULL;
+	indx vtxbufix=0;
+	indx prev_vtxbufix=0;
+	int first_o=1;
+	p=file.data;
+	while(*p){
+		token t=token_next_from_string(p);
+		p=t.end;
+		if(token_equals(&t,"o")){
+			p=scan_to_including_newline(p);
+			if(first_o){
+				first_o=0;
+				continue;
+			}
+			mtlrng*mr=malloc(sizeof(mtlrng));
+		//					*mr=material_range_def;
+			mr->begin=prev_vtxbufix;
+			mr->end=vtxbufix;
+			mr->material=current_objmtl;
+			dynp_add(&mtlrngs,mr);
+
+			glo*g=calloc(1,sizeof(glo));
+			*g=(glo){/*gives*/vertex_buffer,/*gives*/mtlrngs,0};
+			dynp_add(&ls,g);
+
+			prev_vtxbufix=vtxbufix;
+			vertex_buffer=dynf_def;
+			mtlrngs=dynp_def;
+
+			continue;
+		}
+		if(token_equals(&t,"usemtl")){
+			token t=token_next_from_string(p);
+			p=t.end;
+			dync name=dync_def;
+			dync_add_list(&name,t.content,token_size(&t));
+			dync_add(&name,0);
+
+			objmtl*m=NULL;
+			for(unsigned i=0;i<name.count;i++){
+				m=objmtls_get(&materials,i);
+				if(!strcmp(m->name.data,name.data)){
+					break;
+				}
+			}
+			if(m){
+				if(prev_vtxbufix!=vtxbufix){
+					mtlrng*mr=malloc(sizeof(mtlrng));
+	//					*mr=material_range_def;
+					mr->begin=prev_vtxbufix;
+					mr->end=vtxbufix;
+					mr->material=current_objmtl;
+					dynp_add(&mtlrngs,mr);
+					prev_vtxbufix=vtxbufix;
+				}
+				current_objmtl=m;
+				continue;
+			}
+			fprintf(stderr,"\ncould not find material\n");
+			fprintf(stderr,"   %s\n",name.data);
+			fprintf(stderr,"\n     %s %d\n",__FILE__,__LINE__);
+			exit(-1);
+		}
+		if(token_equals(&t,"f")){
+			for(int i=0;i<3;i++){
+				// position
+				token vert1=token_from_string_additional_delim(p,'/');
+				p=vert1.end;
+				indx ix1=token_get_uint(&vert1);
+				vec4*vtx=(vec4*)dynp_get(&vertices,ix1-1);
+
+				// texture index
+				token vert2=token_from_string_additional_delim(p,'/');
+				p=vert2.end;
+				indx ix2=token_get_uint(&vert2);
+				vec4 tx,*tex;tex=&tx;
+				if(ix2){
+					tex=(vec4*)dynp_get(&texuv,ix2-1);
+				}else{
+					*tex=(vec4){0,0,0,0};
+				}
+				// normal
+				token vert3=token_from_string_additional_delim(p,'/');
+				p=vert3.end;
+				indx ix3=token_get_uint(&vert3);
+				vec4*norm=(vec4*)dynp_get(&normals,ix3-1);
+
+				// buffer
+				dynf_add(&vertex_buffer,vtx->x);
+				dynf_add(&vertex_buffer,vtx->y);
+				dynf_add(&vertex_buffer,vtx->z);
+
+				dynf_add(&vertex_buffer,current_objmtl->Kd.x);
+				dynf_add(&vertex_buffer,current_objmtl->Kd.y);
+				dynf_add(&vertex_buffer,current_objmtl->Kd.z);
+				dynf_add(&vertex_buffer,1);
+
+				dynf_add(&vertex_buffer,norm->x);
+				dynf_add(&vertex_buffer,norm->y);
+				dynf_add(&vertex_buffer,norm->z);
+
+				dynf_add(&vertex_buffer,tex->x);
+				dynf_add(&vertex_buffer,tex->y);
+
+				vtxbufix++;
+			}
+			continue;
+		}
+		p=scan_to_including_newline(p);
+	}
+
+	mtlrng*mr=malloc(sizeof(mtlrng));
+//					*mr=material_range_def;
+	mr->begin=prev_vtxbufix;
+	mr->end=vtxbufix;
+	mr->material=current_objmtl;
+	dynp_add(&mtlrngs,mr);
+
+
+	glo*g=calloc(1,sizeof(glo));
+	*g=(glo){/*gives*/vertex_buffer,/*gives*/mtlrngs,0};
+	dynp_add(&ls,g);
+
+	printf(" ranges %u   %lu vertices   %lu B\n",
+			mtlrngs.count,
+			vertex_buffer.count,
+			dynf_size_in_bytes(&vertex_buffer));
+
+	return/*gives*/ls;
+
 }
+
 
 inline static void glo_upload_to_opengl(glo*this){
 	// upload vertex buffer
@@ -505,6 +718,10 @@ inline static void glos_load_scene_from_file(const char*path){
 		glo_upload_to_opengl(g);
 		dynp_add(&glos,g);
 	}
+}
+
+inline static size_t glos_count(){
+	return glos.count;
 }
 
 
