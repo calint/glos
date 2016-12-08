@@ -52,7 +52,7 @@ inline static void main_init(){
 
 	shader.active_program_ix=0;
 
-//	glos_load_obj_file(1,"obj/plane.obj");
+//	glos_load_obj_file("obj/plane.obj");
 //	glos_load_obj_file(2,"obj/ico_sphere.obj");
 //	glos_load_obj_file(3,"obj/cylinder.obj");
 //	glos_load_obj_file(4,"obj/grid_8x8.obj");
@@ -62,13 +62,13 @@ inline static void main_init(){
 //	glos_load_obj_file(8,"obj/plane_red.obj");
 //	glos_load_obj_file(9,"obj/cube-blue-red.obj");
 //	glos_load_obj_file(10,"obj/cubo.obj");
-//	glos_load_obj_file("obj/sceno.obj");
+	glos_load_obj_file("obj/sceno.obj");
 
-	glos_load_scene_from_file("obj/sceno.obj");
+//	glos_load_scene_from_file("obj/sceno.obj");
 //
-//	object*o;
-//	o=object_alloc(&ninja_def);
-//	o->glo=glo_at(0);
+	object*o;
+	o=object_alloc(&ninja_def);
+	o->glo=glo_at(0);
 //	const float vr=.5f;
 //	o->velocity=(velocity){
 //		random_range(-vr,vr),random_range(-vr,vr),0,0};
@@ -76,12 +76,13 @@ inline static void main_init(){
 //	const float ar=360;
 //	o->angular_velocity=(angular_velocity){
 //		0,0,random_range(-ar,ar),0};
-
+//
 //	o=object_alloc(&object_def);
-//	o->glob_id=1;
+//	o->glo=glo_at;
 //	o->scale=(scale){2,2,2,1};
 //	o->position=(position){0,0,-.5f,1};
 //	o->bounding_radius=bounding_radius_for_scale(&o->scale);
+//	o->scale=(scale){.5f,.5f,.5f,1};
 
 
 //	const float sr=.2f;
@@ -89,7 +90,6 @@ inline static void main_init(){
 //		random_range(-sr,sr),
 //		random_range(-sr,sr),
 //		random_range(-sr,sr),1};
-//	o->scale=(scale){.5f,.5f,.5f,1};
 }
 
 //------------------------------------------------------------------------ main
@@ -267,12 +267,12 @@ int main(int argc,char*argv[]){
 //		glClear(GL_COLOR_BUFFER_BIT);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-//		objects_update(metrics.previous_frame_dt);
-//		if(draw_objects)objects_render();
+		objects_update(metrics.previous_frame_dt);
+		if(draw_objects)objects_render();
+
+//		glos_render();
 
 		if(draw_default)shader_render();
-
-		glos_render();
 
 		SDL_GL_SwapWindow(window.ref);
 

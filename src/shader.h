@@ -277,11 +277,11 @@ inline static void shader_load(){
 	gl_check_error("exit shader_load");
 }
 
-
-inline static void shader_prepare_for_render(
-		GLuint vbufid,GLuint texid,const float*mtx_mw
+inline static void shader_render_triangle_elements(
+		GLuint vbufid,size_t vbufn,
+		GLuint ixbufid,size_t ixbufn,
+		GLuint texid,const float*mtx_mw
 ){
-
 	glUniformMatrix4fv(shader_umtx_mw,1,0,mtx_mw);
 
 	glUniform1i(shader_utex,0);
@@ -297,20 +297,10 @@ inline static void shader_prepare_for_render(
 			sizeof(vertex),(GLvoid*)( (3+4)*sizeof(float)));
 	glVertexAttribPointer(shader_atex,  2,GL_FLOAT, GL_FALSE,
 			sizeof(vertex),(GLvoid*)((3+4+3)*sizeof(float)));
-}
 
-inline static void shader_render_triangle_elements(
-		GLuint vbufid,size_t vbufn,
-		GLuint ixbufid,size_t ixbufn,
-		GLuint texid,const float*mtx_mw
-){
-	shader_prepare_for_render(
-			shader_def_vtxbuf_id,
-			shader_def_texbuf_id,
-			mat4_ident
-		);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,ixbufid);
 	glDrawElements(GL_TRIANGLES,(signed)ixbufn,GL_UNSIGNED_BYTE,0);
+
 	glBindTexture(GL_TEXTURE_2D,0);
 }
 
@@ -356,8 +346,8 @@ inline static void shader_init() {
 	gl_print_string("GL_RENDERER", GL_RENDERER);
 	gl_print_string("GL_SHADING_LANGUAGE_VERSION",GL_SHADING_LANGUAGE_VERSION);
 	puts("");
-//	glEnable(GL_DEPTH_TEST);
-//	glDepthFunc(GL_LESS);
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
 //	glEnable(GL_CULL_FACE);
 //	glCullFace(GL_BACK);
 	printf(":-%10s-:-%7s-:\n","----------","-------");
