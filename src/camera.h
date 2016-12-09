@@ -14,8 +14,8 @@ struct{
 		.up={0,1,0,0},
 		.znear=-10000,
 		.zfar=100000,
-		.wi=5,
-		.hi=5,
+		.wi=2,
+		.hi=2,
 };
 inline static void camera_update_matrix_wvp(){
 	float Mt[16];
@@ -25,8 +25,8 @@ inline static void camera_update_matrix_wvp(){
 
 	float Mp[16];
 	mat4_set_identity(Mp);
-//	mat4_set_ortho_projection(Mp,-camera.wi,camera.wi,
-//			-camera.hi,camera.hi, camera.znear,camera.zfar);
+	mat4_set_ortho_projection(Mp,-camera.wi,camera.wi,
+			-camera.hi,camera.hi, camera.znear,camera.zfar);
 
 
 	float Mtp[16];

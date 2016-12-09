@@ -349,9 +349,19 @@ inline static void shader_init() {
 	gl_print_string("GL_RENDERER", GL_RENDERER);
 	gl_print_string("GL_SHADING_LANGUAGE_VERSION",GL_SHADING_LANGUAGE_VERSION);
 	puts("");
+
+
+//	without projection -z if farther
+//	glEnable(GL_DEPTH_TEST);
+//	glDepthFunc(GL_GREATER);
+//	glClearDepthf(-1);
+
+	// with projection
 	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_GREATER);
-	glClearDepthf(-1);
+	glDepthFunc(GL_LESS);
+	glClearDepthf(1);
+
+
 //	glEnable(GL_CULL_FACE);
 //	glFrontFace(GL_CCW);
 	printf(":-%10s-:-%7s-:\n","----------","-------");
