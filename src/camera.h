@@ -41,7 +41,7 @@ inline static void camera_update_matrix_wvp(){
 		mat4_set_ortho_projection(Mp,
 					-camera.wi,camera.wi,
 					-camera.hi,camera.hi,
-					1,-2);// 1,-2
+					-2,2);// 1,-2
 	}else{
 		mat4_set_perpective_projection(Mp,
 					camera.znear,camera.zfar,

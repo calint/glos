@@ -36,8 +36,7 @@ inline static void mat4_set_ortho_projection(float*c,
 
 	c[12]=-(right+left)/(right-left);
 	c[13]=-(top+bottom)/(top-bottom);
-	c[14]=-(farz+nearz)/(farz-nearz);
-	c[14]=-(farz+nearz)/(farz-nearz);
+	c[14]=(farz+nearz)/(farz-nearz);
 	c[15]=1;
 }
 
