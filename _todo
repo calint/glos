@@ -80,7 +80,9 @@
  [ ]     objects individually of hierarchy
  [x] look at
  [ ] draw grid
- [o] perspective projection
+ [o] projection
+ [x]   ortho
+ [o]   perspective
  
  
  
