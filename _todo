@@ -79,7 +79,8 @@
  [ ]     root object bounding volume, recursive
  [ ]     objects individually of hierarchy
  [ ] draw grid
- 
+ [ ]   sky dome
+ [ ]   ground plane
  
  
  

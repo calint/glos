@@ -14,7 +14,7 @@ struct{
 		.lookat={0,0,0,0},
 		.up={0,1,0,0},
 		.znear=.1f,
-		.zfar=10,
+		.zfar=-10,
 		.wi=1,
 		.hi=1,
 		.ortho=0,
