@@ -45,11 +45,11 @@
  [ ]   client
  [ ]   server
  [ ] camera
- [ ]   projection
- [ ]     orthonormal
+ [o]   projection
+ [x]     orthonormal
  [ ]     iso
- [ ]     perspective
- [ ]   look-at
+ [o]     perspective
+ [x]   look-at
  [ ]   click select
  [ ]   follow
  [ ]     pd regulator
@@ -78,11 +78,7 @@
  [ ]   collisions
  [ ]     root object bounding volume, recursive
  [ ]     objects individually of hierarchy
- [x] look at
  [ ] draw grid
- [o] projection
- [x]   ortho
- [o]   perspective
  
  
  
