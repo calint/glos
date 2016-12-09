@@ -141,6 +141,7 @@ int main(int argc,char*argv[]){
 
 //	camera.eye=(vec4){10,10,10,0};
 //	float agl=0;
+	uint64_t keymap=0;
 	for(int running=1;running;){
 //		agl+=31.14f/10.f*metrics.previous_frame_dt;
 		metrics__at__frame_begin();
@@ -161,27 +162,26 @@ int main(int argc,char*argv[]){
 			case SDL_KEYDOWN:
 				switch (event.key.keysym.sym){
 					case SDLK_ESCAPE:
-						running = 0;
+						running=0;
 						break;
 					case SDLK_w:
-						camera.eye.z-=20*(metrics.previous_frame_dt);
+						keymap|=1;
 						break;
 					case SDLK_a:
-						camera.eye.x-=20*(metrics.previous_frame_dt);
+						keymap|=2;
 						break;
 					case SDLK_s:
-						camera.eye.z+=20*(metrics.previous_frame_dt);
+						keymap|=4;
 						break;
 					case SDLK_d:
-						camera.eye.x+=20*(metrics.previous_frame_dt);
+						keymap|=8;
 						break;
 					case SDLK_q:
-						camera.eye.y+=20*(metrics.previous_frame_dt);
+						keymap|=16;
 						break;
 					case SDLK_e:
-						camera.eye.y-=20*(metrics.previous_frame_dt);
+						keymap|=32;
 						break;
-
 					case SDLK_1:
 						draw_default=1;
 						break;
@@ -191,16 +191,22 @@ int main(int argc,char*argv[]){
 			case SDL_KEYUP:
 				switch (event.key.keysym.sym){
 					case SDLK_w:
-//						objects[0].velocity.y=0;
+						keymap&=~1;
 						break;
 					case SDLK_a:
-						objects[0].angular_velocity.z=0;
+						keymap&=~2;
 						break;
 					case SDLK_s:
-						objects[0].velocity.y=-0;
+						keymap&=~4;
 						break;
 					case SDLK_d:
-						objects[0].angular_velocity.z=0;
+						keymap&=~8;
+						break;
+					case SDLK_q:
+						keymap&=~16;
+						break;
+					case SDLK_e:
+						keymap&=~32;
 						break;
 					case SDLK_1:
 						draw_default=0;
@@ -231,10 +237,17 @@ int main(int argc,char*argv[]){
 						break;
 				}
 				break;
-
-
 			}
 		}
+
+		float speed=10;
+		if(keymap&1)camera.eye.z-=speed*(metrics.previous_frame_dt);
+		if(keymap&2)camera.eye.x-=speed*(metrics.previous_frame_dt);
+		if(keymap&4)camera.eye.z+=speed*(metrics.previous_frame_dt);
+		if(keymap&8)camera.eye.x+=speed*(metrics.previous_frame_dt);
+		if(keymap&16)camera.eye.y+=speed*(metrics.previous_frame_dt);
+		if(keymap&32)camera.eye.y-=speed*(metrics.previous_frame_dt);
+
 
 		if(previous_active_program_ix!=shader.active_program_ix){
 			printf(" * switching to program at index %u\n",
