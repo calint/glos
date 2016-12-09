@@ -14,7 +14,7 @@ struct{
 		.lookat={0,0,0,0},
 		.up={0,1,0,0},
 		.znear=1,// -.6
-		.zfar=5,//-2
+		.zfar=2,//-2
 		.wi=2,
 		.hi=2,
 		.ortho=0,
@@ -22,10 +22,10 @@ struct{
 inline static void camera_update_matrix_wvp(){
 	float Ml[16];
 	if(camera.ortho){
-		mat4_set_look_at(Ml,&camera.eye,&(vec4){0,0,0,0},&(vec4){0,1,0,0});
+		mat4_set_look_at(Ml,&camera.eye,&camera.lookat,&(vec4){0,1,0,0});
 	}else{
-//		mat4_set_look_at(Ml,&camera.eye,&(vec4){0,0,0,0},&(vec4){0,1,0,0});
-		mat4_set_identity(Ml);
+		mat4_set_look_at(Ml,&camera.eye,&camera.lookat,&(vec4){0,1,0,0});
+//		mat4_set_identity(Ml);
 	}
 
 	float Mt[16];
