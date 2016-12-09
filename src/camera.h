@@ -22,7 +22,6 @@ inline static void camera_update_matrix_wvp(){
 	position Pt=camera.eye;
 	vec4_negate(&Pt);
 	mat4_set_translation(Mt,&Pt);
-	mat4_assign(camera.mxwvp,Mt);
 
 	float Mp[16];
 	mat4_set_identity(Mp);
