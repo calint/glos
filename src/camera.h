@@ -9,7 +9,7 @@ struct{
 	float wi,hi;
 }camera={
 		.eye={0,0,0,0},
-		.mxwvp=mat4_identity,
+		.mxwvp={1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1},
 		.lookat={0,0,0,0},
 		.up={0,1,0,0},
 		.znear=-10000,
@@ -18,8 +18,13 @@ struct{
 //		.hi=5,
 };
 inline static void camera_update_matrix_wvp(){
-	mat4 ident=mat4_identity;
-	mat4_assign(camera.mxwvp,ident);
+	float Mt[16];
+	position Pt={0,0,-1,0};
+	mat4_set_translation(Mt,&Pt);
+	mat4_assign(camera.mxwvp,Mt);
+
+//	float ident[16]=mat4_identity;
+//	mat4_assign(camera.mxwvp);
 //	vec4_increase_with_vec4_over_dt(&camera.eye,&(vec4){-1,0,0,0},
 //			metrics.previous_frame_dt);
 

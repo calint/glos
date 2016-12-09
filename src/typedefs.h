@@ -9,12 +9,13 @@ typedef struct vec4{float x,y,z,q;}vec4;
 //static vec4 vec4_def=(vec4){0,0,0,0};
 #define vec4_def (vec4){0,0,0,0}
 typedef vec4 position;
+typedef position point;
 typedef vec4 velocity;
 typedef vec4 angle;
 typedef vec4 scale;
 typedef vec4 angular_velocity;
 typedef float bounding_radius;
-typedef float*mat4;
+//typedef float*mat4;
 typedef unsigned id;
 typedef float dt;
 typedef float time_in_seconds;

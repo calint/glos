@@ -2,17 +2,15 @@
 #include"lib.h"
 #include<math.h>
 
-typedef float*mat4;
-
 #define mat4_identity (float[]){1,0,0,0,  0,1,0,0,  0,0,1,0,  0,0,0,1}
 
 
-inline static void mat4_assign(mat4 dest,mat4 src){
+inline static void mat4_assign(float*dest,float*src){
 	memcpy(dest,src,16*sizeof(float));
 }
 
-inline static void mat4_set_identity(mat4 this){
-	mat4_assign(this,mat4_identity);
+inline static void mat4_set_identity(float*this){
+	mat4_assign(this,(float[]){1,0,0,0,  0,1,0,0,  0,0,1,0,  0,0,0,1});
 }
 
 
