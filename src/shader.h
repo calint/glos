@@ -30,8 +30,9 @@ in vec3 vnorm;                \n\
 in vec2 vtex;                \n\
 out vec4 rgba;                \n\
 void main(){                  \n\
-	rgba=texture2D(utex,vtex)+vrgba;\n\
+//	rgba=vec4(1,0,0,1);\n\
 //	rgba=vrgba;\n\
+	rgba=texture2D(utex,vtex)+vrgba*.00001;\n\
 }\n";
 #define shader_apos 0
 #define shader_argba 1
@@ -362,8 +363,8 @@ inline static void shader_init() {
 //	glClearDepthf(1);
 
 
-//	glEnable(GL_CULL_FACE);
-//	glFrontFace(GL_CW);
+	glEnable(GL_CULL_FACE);
+//	glFrontFace(GL_CCW);
 
 
 	printf(":-%10s-:-%7s-:\n","----------","-------");

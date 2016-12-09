@@ -28,3 +28,5 @@ typedef unsigned glid;
 //#include"dyni.h"
 //#include"dync.h"
 //typedef dync str;
+typedef float mat;
+typedef float*mat4f;
