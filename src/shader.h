@@ -32,7 +32,7 @@ out vec4 rgba;                \n\
 void main(){                  \n\
 //	rgba=vec4(1,0,0,1);\n\
 //	rgba=vrgba;\n\
-	rgba=texture2D(utex,vtex)+vrgba*.00001;\n\
+	rgba=texture2D(utex,vtex)+vrgba;\n\
 }\n";
 #define shader_apos 0
 #define shader_argba 1
@@ -360,7 +360,7 @@ inline static void shader_init() {
 	// with projection
 	glEnable(GL_DEPTH_TEST);
 //	glDepthFunc(GL_LESS);
-//	glClearDepthf(1);
+//	glClearDepthf(1);aaaaaaaaaaaaaaaaa
 
 
 	glEnable(GL_CULL_FACE);

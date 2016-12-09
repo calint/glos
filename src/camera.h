@@ -9,15 +9,15 @@ struct{
 	float wi,hi;
 	int ortho;
 }camera={
-		.eye={0,0,-.2f,0},
+		.eye={0,0,1,0},
 		.mxwvp={1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1},
 		.lookat={0,0,0,0},
 		.up={0,1,0,0},
-		.znear=-1,
-		.zfar=10,
+		.znear=-10,
+		.zfar=1,
 		.wi=2,
 		.hi=2,
-		.ortho=1,
+		.ortho=0,
 };
 inline static void camera_update_matrix_wvp(){
 	float Ml[16];
@@ -41,12 +41,11 @@ inline static void camera_update_matrix_wvp(){
 		mat4_set_ortho_projection(Mp,
 					-camera.wi,camera.wi,
 					-camera.hi,camera.hi,
-					camera.znear,camera.zfar);
+					1,-2);
 	}else{
 		mat4_set_perpective_projection(Mp,
-					-camera.wi,camera.wi,
-					-camera.hi,camera.hi,
-					camera.znear,camera.zfar);
+					camera.znear,camera.zfar,
+					PI/4,1,1);
 	}
 
 	float Mptl[16];

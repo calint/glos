@@ -51,9 +51,11 @@ inline static void main_init_programs(){
 }
 
 inline static void main_init_scene(){
+	glos_load_scene_from_file("obj/skydome.obj");
+	glos_load_scene_from_file("obj/blip.obj");
+
 //	glos_load_scene_from_file("obj/color-cube.obj");
 //	glos_load_scene_from_file("obj/board.obj");
-	glos_load_scene_from_file("obj/skydome.obj");
 //
 //	object*o=object_alloc(&ninja_def);
 //	o->glo=glo_at(0);
@@ -220,6 +222,12 @@ int main(int argc,char*argv[]){
 					}
 					case SDLK_4:
 						camera.ortho=!camera.ortho;
+						break;
+
+					case SDLK_TAB:
+						printf("   camera: %f  %f  %f",
+								camera.eye.x,camera.eye.y,camera.eye.z);
+//						camera.ortho=!camera.ortho;
 						break;
 				}
 				break;
