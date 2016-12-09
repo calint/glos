@@ -99,6 +99,57 @@ inline static void mat4_set_look_at(float*this,
 //	mat4_set_identity(this);
 }
 
+inline static void mat4_set_perpective_projection(float*c,
+		const float left,const float right,
+		const float bottom,const float top,
+		const float nearz,const float farz
+){
+
+		const float aspect_ratio=1;
+		const float fov_deg=90;
+		const float d=1.0f/tanf(PI/180*fov_deg/2);
+
+		c[ 0]=d/aspect_ratio;
+		c[ 1]=0;
+		c[ 2]=0;
+		c[ 3]=0;
+
+//		c[0]=1;c[1]=0;c[2]=0;c[3]=0;
+
+		c[ 4]=0;
+		c[ 5]=d;
+		c[ 6]=0;
+		c[ 7]=0;
+
+//		c[4]=0;c[5]=1;c[6]=0;c[7]=0;
+
+		c[ 8]=0;
+		c[ 9]=0;
+		c[10]=(nearz+farz)/(nearz-farz);
+		c[11]=2.0f*farz*nearz/(nearz-farz);
+
+//		c[ 8]=0;c[ 9]=0;c[10]=1;c[11]=0;
+
+		c[12]=0;
+		c[13]=0;
+		c[14]=-1;
+		c[15]=0;
+
+//		c[12]=0;c[13]=0;c[14]=0;c[15]=1;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

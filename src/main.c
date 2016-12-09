@@ -199,6 +199,9 @@ int main(int argc,char*argv[]){
 						}
 						break;
 					}
+					case SDLK_4:
+						camera.ortho=!camera.ortho;
+						break;
 				}
 				break;
 

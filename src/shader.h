@@ -353,8 +353,8 @@ inline static void shader_init() {
 
 //	without projection -z if farther
 	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_GREATER);
-	glClearDepthf(-1);
+//	glDepthFunc(GL_GREATER);
+//	glClearDepthf(-1);
 
 	// with projection
 //	glEnable(GL_DEPTH_TEST);
@@ -362,8 +362,10 @@ inline static void shader_init() {
 //	glClearDepthf(1);
 
 
-//	glEnable(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);
 //	glFrontFace(GL_CCW);
+
+
 	printf(":-%10s-:-%7s-:\n","----------","-------");
 	printf(": %10s : %-7s :\n","feature","y/n");
 	printf(":-%10s-:-%7s-:\n","----------","-------");
