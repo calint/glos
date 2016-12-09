@@ -24,7 +24,6 @@ inline static void camera_update_matrix_wvp(){
 	mat4_set_translation(Mt,&Pt);
 
 	float Mp[16];
-	mat4_set_identity(Mp);
 	mat4_set_ortho_projection(Mp,-camera.wi,camera.wi,
 			-camera.hi,camera.hi, camera.znear,camera.zfar);
 
