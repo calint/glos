@@ -9,15 +9,15 @@ struct{
 	float wi,hi;
 	int ortho;
 }camera={
-		.eye={0,0,1,0},
+		.eye={0,.1f,.2f,0},
 		.mxwvp={1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1},
 		.lookat={0,0,0,0},
 		.up={0,1,0,0},
-		.znear=.1f,
+		.znear=-.1f,
 		.zfar=-10,
-		.wi=1,
-		.hi=1,
-		.ortho=0,
+		.wi=2,
+		.hi=2,
+		.ortho=1,
 };
 inline static void camera_update_matrix_wvp(){
 	float Ml[16];

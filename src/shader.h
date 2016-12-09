@@ -1,5 +1,5 @@
 #pragma once
-//#include"sdl.h"
+#include"sdl.h"
 #include"metrics.h"
 #include"dyni.h"
 #include"mat4.h"
@@ -29,9 +29,9 @@ in vec4 vrgba;                \n\
 in vec3 vnorm;                \n\
 in vec2 vtex;                \n\
 out vec4 rgba;                \n\
-void main(){                               \n\
-//	rgba=texture2D(utex,vtex)+vrgba;\n\
-	rgba=vrgba;\n\
+void main(){                  \n\
+	rgba=texture2D(utex,vtex)+vrgba;\n\
+//	rgba=vrgba;\n\
 }\n";
 #define shader_apos 0
 #define shader_argba 1
@@ -253,7 +253,7 @@ inline static void shader_load(){
 	glGenTextures(1,&shader_def_texbuf_id);
 	glBindTexture(GL_TEXTURE_2D,shader_def_texbuf_id);
 
-//----------------------------------------------
+//	//----------------------------------------------
 //	SDL_Surface*surface=IMG_Load("logo.jpg");
 //	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,
 //			surface->w,surface->h,
@@ -351,19 +351,19 @@ inline static void shader_init() {
 	puts("");
 
 
-//	without projection -z if farther
-	glEnable(GL_DEPTH_TEST);
+//	farther in negative z axis
+//	glEnable(GL_DEPTH_TEST);
 //	glDepthFunc(GL_GREATER);
 //	glClearDepthf(-1);
 
 	// with projection
-//	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_DEPTH_TEST);
 //	glDepthFunc(GL_LESS);
 //	glClearDepthf(1);
 
 
 //	glEnable(GL_CULL_FACE);
-//	glFrontFace(GL_CCW);
+//	glFrontFace(GL_CW);
 
 
 	printf(":-%10s-:-%7s-:\n","----------","-------");

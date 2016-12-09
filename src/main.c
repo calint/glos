@@ -51,8 +51,9 @@ inline static void main_init_programs(){
 }
 
 inline static void main_init_scene(){
-	glos_load_scene_from_file("obj/color-cube.obj");
-	glos_load_scene_from_file("obj/board.obj");
+//	glos_load_scene_from_file("obj/color-cube.obj");
+//	glos_load_scene_from_file("obj/board.obj");
+	glos_load_scene_from_file("obj/skydome.obj");
 //
 //	object*o=object_alloc(&ninja_def);
 //	o->glo=glo_at(0);
@@ -65,6 +66,38 @@ inline static void main_init(){
 }
 
 
+
+static int draw_default=0,
+		draw_objects=0,
+		draw_glos=1;
+
+static struct{
+	GLclampf red;
+	GLclampf green;
+	GLclampf blue;
+}c={.1f,.1f,.4f};
+
+inline static void main_render(){
+	camera_update_matrix_wvp();
+
+	glUniformMatrix4fv(shader_umtx_wvp,1,0,camera.mxwvp);
+
+	glClearColor(c.red,c.green,c.blue,1.0);
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	objects_update(metrics.previous_frame_dt);
+
+	if(draw_objects)objects_render();
+
+	if(draw_glos)glos_render();
+
+	if(draw_default)shader_render();
+
+	SDL_GL_SwapWindow(window.ref);
+
+	metrics__at__update_frame_end();
+}
 //------------------------------------------------------------------------ main
 int main(int argc,char*argv[]){
 	indx gloid=0,mingloid=0,maxgloid=10;
@@ -87,13 +120,7 @@ int main(int argc,char*argv[]){
 	indx program_id_min=0;
 	indx program_id_max=2;
 
-	struct{
-		GLclampf red;
-		GLclampf green;
-		GLclampf blue;
-	}c={.5f,.5f,.5f};
 
-	int draw_default=0,draw_objects=1;
 	puts("");
 	metrics_print_headers();
 	{
@@ -228,24 +255,7 @@ int main(int argc,char*argv[]){
 			previous_active_program_ix=shader.active_program_ix;
 		}
 
-		camera_update_matrix_wvp();
-
-		glUniformMatrix4fv(shader_umtx_wvp,1,0,camera.mxwvp);
-
-		glClearColor(c.red,c.green,c.blue,1.0);
-
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-//
-//		objects_update(metrics.previous_frame_dt);
-//		if(draw_objects)objects_render();
-
-		glos_render();
-
-		if(draw_default)shader_render();
-
-		SDL_GL_SwapWindow(window.ref);
-
-		metrics__at__update_frame_end();
+		main_render();
 	}
 	//---------------------------------------------------------------------free
 	//? early-hangup
