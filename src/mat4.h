@@ -2,36 +2,72 @@
 #include"lib.h"
 #include<math.h>
 
-static const float mat4_ident[]={1,0,0,0,  0,1,0,0,  0,0,1,0,  0,0,0,1};
+typedef float*mat4;
 
+#define mat4_identity (float[]){1,0,0,0,  0,1,0,0,  0,0,1,0,  0,0,0,1}
+
+
+inline static void mat4_assign(mat4 dest,mat4 src){
+	memcpy(dest,src,16*sizeof(float));
+}
+
+inline static void mat4_set_identity(mat4 this){
+	mat4_assign(this,mat4_identity);
+}
+
+
+
+
+
+
+
+
+
+
+inline static float vec4_dot(const vec4*lh,const vec4*rh){
+	return lh->x*rh->x+lh->y*rh->y+lh->z*rh->z;
+
+}
 
 inline static void mat4_set_look_at(float*c,
 		const position*eye,
 		const position*lookat,
 		const vec4*up){
 
-	// [ 0 4  8 12 ]
-	// [ 1 5  9 13 ]
-	// [ 2 6 10 14 ]
-	// [ 3 7 11 15 ]
-	vec4 zaxis=vec4_def;
+//	x.x x.y x.z 0
+//	y.x y.y y.z 0
+//	z.x z.y z.z 0
+//	p.x p.y p.z 1
+	// [ 0  4   8 12 ]
+	// [ 1  5   9 13 ]
+	// [ 2  6  10 14 ]
+	// [ 3  7  11 15 ]
+	vec4 zaxis;
 	vec4_minus(&zaxis,lookat,eye);
 	vec4_normalize(&zaxis);// zaxis
 
-	vec4 xaxis=vec4_def;
+	vec4 xaxis;
 	vec4_cross(&xaxis,up,&zaxis); // xaxis
 	vec4_normalize(&xaxis);
 
-	vec4 yaxis=vec4_def;
+	vec4 yaxis;
 	vec4_cross(&yaxis,&zaxis,&xaxis);
 
-	c[0]=xaxis.x;c[4]=xaxis.y;c[ 8]=xaxis.z; c[12]=0;
-	c[1]=yaxis.x;c[5]=yaxis.y;c[ 9]=yaxis.z; c[13]=0;
-	c[2]=zaxis.x;c[6]=zaxis.y;c[10]=zaxis.z; c[14]=0;
-	c[3]=0;      c[7]=0;      c[11]=0;       c[15]=1;
+	c[0]=xaxis.x;c[4]=yaxis.x;c[ 8]=zaxis.x; c[12]=0,
+	c[1]=xaxis.y;c[5]=yaxis.y;c[ 9]=zaxis.y; c[13]=0,
+	c[2]=xaxis.z;c[6]=yaxis.z;c[10]=zaxis.z; c[14]=0,
+	c[3]=-vec4_dot(&xaxis,eye);
+	c[7]=-vec4_dot(&yaxis,eye);
+	c[11]=-vec4_dot(&zaxis,eye);
+	c[15]=1;
+
+//	c[0]=xaxis.x;c[4]=xaxis.y;c[ 8]=xaxis.z; c[12]=-vec4_dot(&xaxis,eye),
+//	c[1]=yaxis.x;c[5]=yaxis.y;c[ 9]=yaxis.z; c[13]=-vec4_dot(&yaxis,eye),
+//	c[2]=zaxis.x;c[6]=zaxis.y;c[10]=zaxis.z; c[14]=-vec4_dot(&zaxis,eye),
+//	c[3]=0;      c[7]=0;      c[11]=0;        c[15]=1;
 }
 
-inline static void mat4_set_translate(float*c,const position*p){
+inline static void mat4_set_translation(float*c,const position*p){
 	// [ 0 4  8  x ]
 	// [ 1 5  9  y ]
 	// [ 2 6 10  z ]

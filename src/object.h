@@ -82,7 +82,7 @@ inline static void _object_update_model_to_world_matrix(object*this){
 	if(this->model_to_world_matrix_is_updated)
 		return;
 
-	mat4_set_translate(this->model_to_world_matrix,&this->position);
+	mat4_set_translation(this->model_to_world_matrix,&this->position);
 
 	mat4_append_rotation_about_z_axis(
 			this->model_to_world_matrix,this->angle.z);

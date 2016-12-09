@@ -348,7 +348,7 @@ inline static void shader_init() {
 	puts("");
 	glEnable(GL_DEPTH_TEST);
 //	glDepthFunc(GL_LESS);
-	glEnable(GL_CULL_FACE);
+//	glEnable(GL_CULL_FACE);
 //	glFrontFace(GL_CCW);
 	printf(":-%10s-:-%7s-:\n","----------","-------");
 	printf(": %10s : %-7s :\n","feature","y/n");

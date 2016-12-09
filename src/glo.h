@@ -638,7 +638,7 @@ inline static void glo_upload_to_opengl(glo*this){
 
 //----------------------------------------------------------------------- calls
 
-inline static void glo_render(glo*this,const float*mtxmw){
+inline static void glo_render(glo*this,const mat4 mtxmw){
 
 	glUniformMatrix4fv(shader_umtx_mw,1,0,mtxmw);
 
@@ -713,7 +713,7 @@ inline static void glos_render(){
 	for(unsigned i=0;i<glos.count;i++){
 		glo*g=dynp_get(&glos,i);
 		if(g->ranges.count)
-			glo_render(g++,mat4_ident);
+			glo_render(g++,mat4_identity );
 	}
 }
 

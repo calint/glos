@@ -19,8 +19,8 @@ REMARKS=
 #PROFILE=-pg
 PROFILE=
 
-VALGRIND='valgrind --leak-check=full --track-origins=yes'
-#VALGRIND=
+#VALGRIND='valgrind --leak-check=full --track-origins=yes'
+VALGRIND=
 
 $CC $PROFILE $SRC -o $BIN $OPTIMIZATION $CFLAGS $LIBS $WARNINGS &&
 

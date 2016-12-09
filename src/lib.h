@@ -67,9 +67,10 @@ inline static void vec4_minus(vec4*ret,const vec4*lh,const vec4*rh){
 
 inline static void vec4_normalize(vec4*this){
 	float len=sqrtf(this->x*this->x + this->y*this->y + this->z*this->z);
-	this->x/=len;
-	this->y/=len;
-	this->z/=len;
+	float olen=1/len;
+	this->x*=olen;
+	this->y*=olen;
+	this->z*=olen;
 }
 
 inline static void vec4_cross(vec4*ret,const vec4*lh,const vec4*rh){
