@@ -155,7 +155,7 @@ inline static void mat4_set_perpective_projection(float*c,
 	const float rangez=farz-nearz;
 	c[ 8]=0;
 	c[ 9]=0;
-	c[10]=(farz-nearz)/rangez;
+	c[10]=-(farz-nearz)/rangez;
 	c[11]=-2.0f*farz*nearz/rangez;
 
 //		c[ 8]=0;c[ 9]=0;c[10]=1;c[11]=0;

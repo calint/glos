@@ -353,14 +353,14 @@ inline static void shader_init() {
 
 
 //	farther in negative z axis
-//	glEnable(GL_DEPTH_TEST);
-//	glDepthFunc(GL_GREATER);
-//	glClearDepthf(-1);
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_GREATER);
+	glClearDepthf(-1);
 
 	// with projection
-	glEnable(GL_DEPTH_TEST);
+//	glEnable(GL_DEPTH_TEST);
 //	glDepthFunc(GL_LESS);
-//	glClearDepthf(1);aaaaaaaaaaaaaaaaa
+//	glClearDepthf(1);
 
 
 	glEnable(GL_CULL_FACE);

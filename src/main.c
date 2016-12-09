@@ -118,10 +118,10 @@ int main(int argc,char*argv[]){
 	objects_init();
 	glos_init();
 	main_init();
-
-	indx program_id_min=0;
-	indx program_id_max=2;
-
+//
+//	indx program_id_min=0;
+//	indx program_id_max=2;
+//
 
 	puts("");
 	metrics_print_headers();
@@ -138,79 +138,58 @@ int main(int argc,char*argv[]){
 		}
 	}
 	gid previous_active_program_ix=shader.active_program_ix;
-
-//	camera.eye=(vec4){10,10,10,0};
-//	float agl=0;
-	uint64_t keymap=0;
+	const float rad_over_degree=2.0f*PI/360.0f;
+	float rad_over_mouse_pixels=rad_over_degree*.02f;
+	float look_angle_z_axis=0,look_angle_x_axis=0;
+	int64_t keymap=0;
+	float sensitivity=1;
+	float speed=1;
+	int mouse_mode=1;
+	SDL_SetRelativeMouseMode(mouse_mode);
 	for(int running=1;running;){
-//		agl+=31.14f/10.f*metrics.previous_frame_dt;
 		metrics__at__frame_begin();
-//		vec4_increase_with_vec4_over_dt(
-//				&camera.eye,
-//				&(vec4){cosf(agl)*10.f,10,sinf(agl)*10.f,0},1);
-//				vec4_increase_with_vec4_over_dt(
-//						&camera.eye,
-//						&(vec4){10,10,10,0},metrics.previous_frame_dt);
-
-
 		SDL_Event event;
 		while(SDL_PollEvent(&event)){
 			switch (event.type) {
-			case SDL_QUIT:
-				running = 0;
-				break;
+			case SDL_QUIT:running = 0;break;
+			case SDL_MOUSEMOTION:{
+				printf(" relx,rely=%d,%d    look angle:%f\n",
+						event.motion.xrel,event.motion.yrel,
+						look_angle_z_axis*180/PI);
+				if(event.motion.xrel!=0){
+					look_angle_z_axis+=(float)event.motion.xrel*rad_over_mouse_pixels*sensitivity;
+				}
+				if(event.motion.xrel!=0){
+					look_angle_x_axis+=(float)event.motion.xrel*rad_over_mouse_pixels*sensitivity;
+				}
+				break;}
 			case SDL_KEYDOWN:
 				switch (event.key.keysym.sym){
-					case SDLK_ESCAPE:
-						running=0;
-						break;
-					case SDLK_w:
-						keymap|=1;
-						break;
-					case SDLK_a:
-						keymap|=2;
-						break;
-					case SDLK_s:
-						keymap|=4;
-						break;
-					case SDLK_d:
-						keymap|=8;
-						break;
-					case SDLK_q:
-						keymap|=16;
-						break;
-					case SDLK_e:
-						keymap|=32;
-						break;
-					case SDLK_1:
-						draw_default=1;
-						break;
+					case SDLK_ESCAPE:running=0;break;
+					case SDLK_w:keymap|=1;break;
+					case SDLK_a:keymap|=2;break;
+					case SDLK_s:keymap|=4;break;
+					case SDLK_d:keymap|=8;break;
+					case SDLK_q:keymap|=16;break;
+					case SDLK_e:keymap|=32;break;
+					case SDLK_o:keymap|=64;break;
+					case SDLK_1:draw_default=1;	break;
 				}
 				break;
-
 			case SDL_KEYUP:
 				switch (event.key.keysym.sym){
-					case SDLK_w:
-						keymap&=~1;
+					case SDLK_w:keymap&=~1;break;
+					case SDLK_a:keymap&=~2;break;
+					case SDLK_s:keymap&=~4;break;
+					case SDLK_d:keymap&=~8;break;
+					case SDLK_q:keymap&=~16;break;
+					case SDLK_e:keymap&=~32;break;
+					case SDLK_o:keymap&=~64;break;
+					case SDLK_SPACE:
+						mouse_mode=!mouse_mode;
+						SDL_SetRelativeMouseMode(mouse_mode);
 						break;
-					case SDLK_a:
-						keymap&=~2;
-						break;
-					case SDLK_s:
-						keymap&=~4;
-						break;
-					case SDLK_d:
-						keymap&=~8;
-						break;
-					case SDLK_q:
-						keymap&=~16;
-						break;
-					case SDLK_e:
-						keymap&=~32;
-						break;
-					case SDLK_1:
-						draw_default=0;
-						break;
+					case SDLK_1:draw_default=0;break;
 					case SDLK_2:{
 						gloid++;
 						if(gloid>maxgloid){
@@ -221,15 +200,12 @@ int main(int argc,char*argv[]){
 					}
 					case SDLK_3:{
 						shader.active_program_ix++;
-						if(shader.active_program_ix>program_id_max){
-							shader.active_program_ix=program_id_min;
+						if(shader.active_program_ix>programs.count){
+							shader.active_program_ix=0;
 						}
 						break;
 					}
-					case SDLK_4:
-						camera.ortho=!camera.ortho;
-						break;
-
+					case SDLK_4:camera.ortho=!camera.ortho;break;
 					case SDLK_TAB:
 						printf("   camera: %f  %f  %f",
 								camera.eye.x,camera.eye.y,camera.eye.z);
@@ -240,15 +216,17 @@ int main(int argc,char*argv[]){
 			}
 		}
 
-		float speed=10;
 		if(keymap&1)camera.eye.z-=speed*(metrics.previous_frame_dt);
 		if(keymap&2)camera.eye.x-=speed*(metrics.previous_frame_dt);
 		if(keymap&4)camera.eye.z+=speed*(metrics.previous_frame_dt);
 		if(keymap&8)camera.eye.x+=speed*(metrics.previous_frame_dt);
 		if(keymap&16)camera.eye.y+=speed*(metrics.previous_frame_dt);
 		if(keymap&32)camera.eye.y-=speed*(metrics.previous_frame_dt);
+//		if(keymap&64)look_angle_z_axis-=speed*(metrics.previous_frame_dt);
 
-
+//		vec4 look_vector=vec4_def;
+//		look_vector.z=cosf(look_angle_z_axis*PI/180.0f);
+//
 		if(previous_active_program_ix!=shader.active_program_ix){
 			printf(" * switching to program at index %u\n",
 					shader.active_program_ix);

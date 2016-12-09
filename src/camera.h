@@ -13,8 +13,8 @@ struct{
 		.mxwvp={1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1},
 		.lookat={0,0,0,0},
 		.up={0,1,0,0},
-		.znear=-.6,
-		.zfar=-2,
+		.znear=1,// -.6
+		.zfar=5,//-2
 		.wi=2,
 		.hi=2,
 		.ortho=0,
@@ -24,8 +24,8 @@ inline static void camera_update_matrix_wvp(){
 	if(camera.ortho){
 		mat4_set_look_at(Ml,&camera.eye,&(vec4){0,0,0,0},&(vec4){0,1,0,0});
 	}else{
-		mat4_set_look_at(Ml,&camera.eye,&(vec4){0,0,0,0},&(vec4){0,1,0,0});
-//		mat4_set_identity(Ml);
+//		mat4_set_look_at(Ml,&camera.eye,&(vec4){0,0,0,0},&(vec4){0,1,0,0});
+		mat4_set_identity(Ml);
 	}
 
 	float Mt[16];
@@ -41,11 +41,11 @@ inline static void camera_update_matrix_wvp(){
 		mat4_set_ortho_projection(Mp,
 					-camera.wi,camera.wi,
 					-camera.hi,camera.hi,
-					1,-2);
+					1,-2);// 1,-2
 	}else{
 		mat4_set_perpective_projection(Mp,
 					camera.znear,camera.zfar,
-					PI/4,1);
+					PI/4,camera.hi/camera.wi);
 	}
 
 	float Mptl[16];
