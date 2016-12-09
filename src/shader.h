@@ -352,14 +352,14 @@ inline static void shader_init() {
 
 
 //	without projection -z if farther
-//	glEnable(GL_DEPTH_TEST);
-//	glDepthFunc(GL_GREATER);
-//	glClearDepthf(-1);
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_GREATER);
+	glClearDepthf(-1);
 
 	// with projection
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LESS);
-	glClearDepthf(1);
+//	glEnable(GL_DEPTH_TEST);
+//	glDepthFunc(GL_LESS);
+//	glClearDepthf(1);
 
 
 //	glEnable(GL_CULL_FACE);

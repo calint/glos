@@ -89,6 +89,11 @@ inline static void mat4_set_look_at(float*this,
 	this[13]=0;
 	this[14]=0;
 	this[15]=1;
+//
+//	this[12]=-eye->x;
+//	this[13]=-eye->y;
+//	this[14]=-eye->z;
+//	this[15]=1;
 
 //	mat4_set_identity(this);
 }
