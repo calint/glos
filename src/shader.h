@@ -362,7 +362,7 @@ inline static void shader_init() {
 //	glClearDepthf(1);
 
 
-	glEnable(GL_CULL_FACE);
+//	glEnable(GL_CULL_FACE);
 //	glFrontFace(GL_CCW);
 
 

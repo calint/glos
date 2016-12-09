@@ -91,7 +91,7 @@ int main(int argc,char*argv[]){
 		GLclampf red;
 		GLclampf green;
 		GLclampf blue;
-	}c={.11f,.37f,1};
+	}c={.5f,.5f,.5f};
 
 	int draw_default=0,draw_objects=1;
 	puts("");
@@ -135,31 +135,31 @@ int main(int argc,char*argv[]){
 						running = 0;
 						break;
 					case SDLK_w:
-						camera.eye.y+=10*(metrics.previous_frame_dt);
+						camera.eye.z+=20*(metrics.previous_frame_dt);
 //						objects[0].velocity.y=.5f;
-						c.red = 1;
-						c.green = 0;
-						c.blue = 0;
+//						c.red = 1;
+//						c.green = 0;
+//						c.blue = 0;
 						break;
 					case SDLK_a:
-						camera.eye.x-=10*(metrics.previous_frame_dt);
+						camera.eye.x-=20*(metrics.previous_frame_dt);
 //						objects[0].angular_velocity.z=90;
-						c.red = 0;
-						c.green = 1;
-						c.blue = 0;
+//						c.red = 0;
+//						c.green = 1;
+//						c.blue = 0;
 						break;
 					case SDLK_s:
-						camera.eye.y-=10*(metrics.previous_frame_dt);
+						camera.eye.z-=20*(metrics.previous_frame_dt);
 //						objects[0].velocity.y=-.5f;
-						c.red = 0;
-						c.green = 0;
-						c.blue = 1;
+//						c.red = 0;
+//						c.green = 0;
+//						c.blue = 1;
 						break;
 					case SDLK_d:
-						camera.eye.x+=10*(metrics.previous_frame_dt);
+						camera.eye.x+=20*(metrics.previous_frame_dt);
 //						objects[0].angular_velocity.z=-90;
-						c.red = 1;
-						c.green = 1;
+//						c.red = 1;
+//						c.green = 1;
 						break;
 					case SDLK_1:
 						draw_default=1;

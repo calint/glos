@@ -37,6 +37,7 @@ inline static void mat4_set_ortho_projection(float*c,
 	c[12]=-(right+left)/(right-left);
 	c[13]=-(top+bottom)/(top-bottom);
 	c[14]=-(farz+nearz)/(farz-nearz);
+	c[14]=(farz+nearz)/(farz-nearz);//? negates z?
 	c[15]=1;
 }
 
@@ -106,7 +107,7 @@ inline static void mat4_set_perpective_projection(float*c,
 ){
 
 		const float aspect_ratio=1;
-		const float fov_deg=90;
+		const float fov_deg=45;
 		const float d=1.0f/tanf(PI/180*fov_deg/2);
 
 		c[ 0]=d/aspect_ratio;
