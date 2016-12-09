@@ -102,72 +102,70 @@ inline static void mat4_set_look_at(float*this,
 
 inline static void mat4_set_perpective_projection(float*c,
 		const float nearz,const float farz,
-		const float fov_rad,const float aspect,
-		bool left_handed
+		const float fov_rad,const float aspect
 ){
 
-	const float frustrum_depth=farz-nearz;
-	const float one_over_frustrum_depth=1/frustrum_depth;
-	const float a=1/tanf(0.5f*fov_rad);
-
-	// X
-	c[0]=(left_handed?1:-1)*a/aspect;
-	c[1]=0;
-	c[2]=0;
-	c[3]=0;
-
-	// Y
-	c[4]=0;
-	c[5]=a;
-	c[6]=0;
-	c[7]=0;
-
-	// Z
-	c[8]=0;
-	c[9]=0;
-	c[10]=farz*one_over_frustrum_depth;
-	c[11]=-farz*nearz*one_over_frustrum_depth;
-
-	// T
-	c[12]=0;
-	c[13]=0;
-	c[14]=1;
-	c[15]=0;
-
-
-
-//	const float aspect_ratio=1;
-//	const float d=1.0f/tanf(fov_rad);
 //
-//	c[ 0]=d*aspect_ratio;
-//	c[ 1]=0;
-//	c[ 2]=0;
-//	c[ 3]=0;
+//	const float frustrum_depth=farz-nearz;
+//	const float one_over_frustrum_depth=1/frustrum_depth;
+//	const float a=1/tanf(0.5f*fov_rad);
 //
-////		c[0]=1;c[1]=0;c[2]=0;c[3]=0;
+//	// X
+//	c[0]=a/aspect;
+//	c[1]=0;
+//	c[2]=0;
+//	c[3]=0;
 //
-//	c[ 4]=0;
-//	c[ 5]=d;
-//	c[ 6]=0;
-//	c[ 7]=0;
+//	// Y
+//	c[4]=0;
+//	c[5]=a;
+//	c[6]=0;
+//	c[7]=0;
 //
-////		c[4]=0;c[5]=1;c[6]=0;c[7]=0;
+//	// Z
+//	c[8]=0;
+//	c[9]=0;
+//	c[10]=farz*one_over_frustrum_depth;
+//	c[11]=-farz*nearz*one_over_frustrum_depth;
 //
-//
-//	const float rangez=farz-nearz;
-//	c[ 8]=0;
-//	c[ 9]=0;
-//	c[10]=-(nearz+farz)/rangez;
-//	c[11]=-2.0f*farz*nearz/rangez;
-//
-////		c[ 8]=0;c[ 9]=0;c[10]=1;c[11]=0;
-//
+//	// T
 //	c[12]=0;
 //	c[13]=0;
 //	c[14]=1;
 //	c[15]=0;
 //
-////	c[12]=0;c[13]=0;c[14]=0;c[15]=1;
+
+	const float d=1.0f/tanf(0.5f*fov_rad);
+
+	c[ 0]=d*aspect;
+	c[ 1]=0;
+	c[ 2]=0;
+	c[ 3]=0;
+
+//		c[0]=1;c[1]=0;c[2]=0;c[3]=0;
+
+	c[ 4]=0;
+	c[ 5]=d;
+	c[ 6]=0;
+	c[ 7]=0;
+
+//		c[4]=0;c[5]=1;c[6]=0;c[7]=0;
+
+
+	const float rangez=farz-nearz;
+	c[ 8]=0;
+	c[ 9]=0;
+	c[10]=(farz-nearz)/rangez;
+	c[11]=-2.0f*farz*nearz/rangez;
+
+//		c[ 8]=0;c[ 9]=0;c[10]=1;c[11]=0;
+
+	c[12]=0;
+	c[13]=0;
+	c[14]=1;
+	c[15]=0;
+
+//	c[12]=0;c[13]=0;c[14]=0;c[15]=1;
 }
 
 

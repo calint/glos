@@ -13,8 +13,8 @@ struct{
 		.mxwvp={1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1},
 		.lookat={0,0,0,0},
 		.up={0,1,0,0},
-		.znear=-10,//?
-		.zfar=1,//?
+		.znear=-1,
+		.zfar=-2,
 		.wi=2,
 		.hi=2,
 		.ortho=0,
@@ -45,7 +45,7 @@ inline static void camera_update_matrix_wvp(){
 	}else{
 		mat4_set_perpective_projection(Mp,
 					camera.znear,camera.zfar,
-					PI/4,1,1);
+					PI/4,1);
 	}
 
 	float Mptl[16];
