@@ -107,7 +107,7 @@ inline static void mat4_set_perpective_projection(float*c,
 ){
 
 		const float aspect_ratio=1;
-		const float fov_deg=45;
+		const float fov_deg=90;
 		const float d=1.0f/tanf(PI/180*fov_deg/2);
 
 		c[ 0]=d/aspect_ratio;
@@ -133,8 +133,8 @@ inline static void mat4_set_perpective_projection(float*c,
 
 		c[12]=0;
 		c[13]=0;
-		c[14]=-1;
-		c[15]=0;
+		c[14]=1;
+		c[15]=1;
 
 //		c[12]=0;c[13]=0;c[14]=0;c[15]=1;
 }

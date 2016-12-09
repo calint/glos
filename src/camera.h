@@ -20,47 +20,50 @@ struct{
 		.ortho=0,
 };
 inline static void camera_update_matrix_wvp(){
-	if(camera.ortho){
-		float Ml[16];
-		mat4_set_look_at(Ml,&camera.eye,&(vec4){0,0,0,0},&(vec4){0,1,0,0});
-
-		float Mt[16];
-		position Pt=camera.eye;
-		vec4_negate(&Pt);
-
-		mat4_set_translation(Mt,&Pt);
-	//	mat4_set_identity(Mt);
-
-		float Mtl[16];
-		mat4_multiply(Mtl,Mt,Ml);
-
-		float Mp[16];
-		mat4_set_ortho_projection(Mp,
-					-camera.wi,camera.wi,
-					-camera.hi,camera.hi,
-					camera.znear,camera.zfar);
-
-		float Mptl[16];
-		mat4_multiply(Mptl,Mp,Mtl);
-
-		mat4_assign(camera.mxwvp,Mptl);
-		return;
-	}
+	float Ml[16];
+	mat4_set_look_at(Ml,&camera.eye,&(vec4){0,0,0,0},&(vec4){0,1,0,0});
 
 	float Mt[16];
 	position Pt=camera.eye;
 	vec4_negate(&Pt);
+
 	mat4_set_translation(Mt,&Pt);
+//	mat4_set_identity(Mt);
+
+	float Mtl[16];
+	mat4_multiply(Mtl,Mt,Ml);
 
 	float Mp[16];
-	mat4_set_perpective_projection(Mp,
+	if(camera.ortho){
+	mat4_set_ortho_projection(Mp,
 				-camera.wi,camera.wi,
 				-camera.hi,camera.hi,
 				camera.znear,camera.zfar);
+	}else{
+		mat4_set_perpective_projection(Mp,
+					-camera.wi,camera.wi,
+					-camera.hi,camera.hi,
+					camera.znear,camera.zfar);
+	}
+	float Mptl[16];
+	mat4_multiply(Mptl,Mp,Mtl);
 
-	float Mpt[16];
-	mat4_multiply(Mpt,Mp,Mt);
-
-	mat4_assign(camera.mxwvp,Mpt);
+	mat4_assign(camera.mxwvp,Mptl);
 	return;
+
+//	float Mt[16];
+//	position Pt=camera.eye;
+//	vec4_negate(&Pt);
+//	mat4_set_translation(Mt,&Pt);
+
+//	float Mp[16];
+//	mat4_set_perpective_projection(Mp,
+//				-camera.wi,camera.wi,
+//				-camera.hi,camera.hi,
+//				camera.znear,camera.zfar);
+//
+//	float Mpt[16];
+//	mat4_multiply(Mpt,Mp,Mt);
+//
+//	mat4_assign(camera.mxwvp,Mpt);
 }
