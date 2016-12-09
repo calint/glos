@@ -12,11 +12,6 @@
 #include"camera.h"
 //----------------------------------------------------------------------- init
 inline static void main_init_programs(){
-	glos_load_scene_from_file("obj/color-cube.obj");
-	object*o=object_alloc(&ninja_def);
-	o->glo=glo_at(0);
-
-
 	const char*vtx="#version 130\n"
 			"uniform mat4 umtx_mw;\n"
 			"in vec3 apos;\n"
@@ -57,12 +52,13 @@ inline static void main_init_programs(){
 
 inline static void main_init_scene(){
 	glos_load_scene_from_file("obj/color-cube.obj");
-	object*o=object_alloc(&ninja_def);
-	o->glo=glo_at(0);
+	glos_load_scene_from_file("obj/board.obj");
+//
+//	object*o=object_alloc(&ninja_def);
+//	o->glo=glo_at(0);
 }
 
 inline static void main_init(){
-
 	main_init_programs();
 	main_init_scene();
 	shader.active_program_ix=0;

@@ -13,9 +13,9 @@ struct{
 		.lookat={0,0,0,0},
 		.up={0,1,0,0},
 		.znear=-10000,
-		.zfar=-100000,
-//		.wi=5,
-//		.hi=5,
+		.zfar=100000,
+		.wi=5,
+		.hi=5,
 };
 inline static void camera_update_matrix_wvp(){
 	float Mt[16];
@@ -23,7 +23,19 @@ inline static void camera_update_matrix_wvp(){
 	mat4_set_translation(Mt,&Pt);
 	mat4_assign(camera.mxwvp,Mt);
 
-//	float ident[16]=mat4_identity;
+	float Mp[16];
+	mat4_set_identity(Mp);
+//	mat4_set_ortho_projection(Mp,-camera.wi,camera.wi,
+//			-camera.hi,camera.hi, camera.znear,camera.zfar);
+
+
+	float Mtp[16];
+	mat4_multiply(Mtp,Mp,Mt);
+
+
+	mat4_assign(camera.mxwvp,Mtp);
+
+
 //	mat4_assign(camera.mxwvp);
 //	vec4_increase_with_vec4_over_dt(&camera.eye,&(vec4){-1,0,0,0},
 //			metrics.previous_frame_dt);

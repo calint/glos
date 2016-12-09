@@ -5,8 +5,46 @@
 #include"mat4.h"
 #include"dynp.h"
 
-#define programs_cap 8
+static char*shader_vertex_source =
+"#version 130                                              \n\
+uniform mat4 umtx_mw; // model-to-world-matrix              \n\
+uniform mat4 umtx_wvp;// world-to-view-to-projection         \n\
+in vec3 apos;                                                 \n\
+in vec4 argba;                                                 \n\
+in vec3 anorm;                                                  \n\
+in vec2 atex;                                                    \n\
+out vec4 vrgba;                                                   \n\
+out vec3 vnorm;                                                    \n\
+out vec2 vtex;                                                      \n\
+void main(){                                                         \n\
+	gl_Position=umtx_wvp*umtx_mw*vec4(apos,1);                        \n\
+	vrgba=argba;                                            \n\
+	vnorm=anorm;                                            \n\
+	vtex=atex;                                              \n\
+}\n";
+static char*shader_fragment_source =
+		"#version 130                              \n\
+uniform sampler2D utex;                    \n\
+in vec4 vrgba;                \n\
+in vec3 vnorm;                \n\
+in vec2 vtex;                \n\
+out vec4 rgba;                \n\
+void main(){                               \n\
+//	rgba=texture2D(utex,vtex)+vrgba;\n\
+	rgba=vrgba;\n\
+}\n";
+#define shader_apos 0
+#define shader_argba 1
+#define shader_anorm 2
+#define shader_atex 3
+#define shader_umtx_mw 0
+#define shader_umtx_wvp 1
+#define shader_utex 2
 
+
+
+
+#define programs_cap 8
 typedef struct program{
 	GLuint gid;
 	dyni attributes;
@@ -187,41 +225,6 @@ static unsigned shader_def_texbuf_nbytes=sizeof(shader_def_texbuf);
 static unsigned shader_def_texbuf_id;
 
 //----------------------------------------------------------------------------
-static char*shader_vertex_source =
-"#version 130                                              \n\
-uniform mat4 umtx_mw; // model-to-world-matrix              \n\
-uniform mat4 umtx_wvp;// world-to-view-to-projection         \n\
-in vec3 apos;                                                 \n\
-in vec4 argba;                                                 \n\
-in vec3 anorm;                                                  \n\
-in vec2 atex;                                                    \n\
-out vec4 vrgba;                                                   \n\
-out vec3 vnorm;                                                    \n\
-out vec2 vtex;                                                      \n\
-void main(){                                                         \n\
-	gl_Position=umtx_wvp*umtx_mw*vec4(apos,1);                        \n\
-	vrgba=argba;                                            \n\
-	vnorm=anorm;                                            \n\
-	vtex=atex;                                              \n\
-}\n";
-static char*shader_fragment_source =
-		"#version 130                              \n\
-uniform sampler2D utex;                    \n\
-in vec4 vrgba;                \n\
-in vec3 vnorm;                \n\
-in vec2 vtex;                \n\
-out vec4 rgba;                \n\
-void main(){                               \n\
-	rgba=texture2D(utex,vtex)+vrgba;\n\
-}\n";
-#define shader_apos 0
-#define shader_argba 1
-#define shader_anorm 2
-#define shader_atex 3
-#define shader_umtx_mw 0
-#define shader_umtx_wvp 1
-#define shader_utex 2
-
 struct shader{
 	gid active_program_ix;
 }shader={0};
@@ -346,8 +349,9 @@ inline static void shader_init() {
 	gl_print_string("GL_RENDERER", GL_RENDERER);
 	gl_print_string("GL_SHADING_LANGUAGE_VERSION",GL_SHADING_LANGUAGE_VERSION);
 	puts("");
-//	glEnable(GL_DEPTH_TEST);
-//	glDepthFunc(GL_LESS);
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_GREATER);
+	glClearDepthf(-1);
 //	glEnable(GL_CULL_FACE);
 //	glFrontFace(GL_CCW);
 	printf(":-%10s-:-%7s-:\n","----------","-------");

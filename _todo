@@ -4,6 +4,7 @@
  [x]   colors
  [x]   texture coords
  [x]   materials
+ [ ]     global
  [x]   textures
  [x]   render
  [x]   scene
