@@ -8,12 +8,12 @@ struct{
 	float znear,zfar;
 	float wi,hi;
 }camera={
-		.eye={0,0,-1,0},
+		.eye={0,0,1,0},
 		.mxwvp={1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1},
 		.lookat={0,0,0,0},
 		.up={0,1,0,0},
-		.znear=-10000,
-		.zfar=100000,
+		.znear=0,
+		.zfar=10,
 		.wi=2,
 		.hi=2,
 };
@@ -24,8 +24,10 @@ inline static void camera_update_matrix_wvp(){
 	mat4_set_translation(Mt,&Pt);
 
 	float Mp[16];
-	mat4_set_ortho_projection(Mp,-camera.wi,camera.wi,
-			-camera.hi,camera.hi, camera.znear,camera.zfar);
+	mat4_set_ortho_projection(Mp,
+			-camera.wi,camera.wi,
+			-camera.hi,camera.hi,
+			camera.znear,camera.zfar);
 
 
 	float Mtp[16];
