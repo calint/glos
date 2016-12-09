@@ -135,32 +135,24 @@ int main(int argc,char*argv[]){
 						running = 0;
 						break;
 					case SDLK_w:
-						camera.eye.z+=20*(metrics.previous_frame_dt);
-//						objects[0].velocity.y=.5f;
-//						c.red = 1;
-//						c.green = 0;
-//						c.blue = 0;
+						camera.eye.z-=20*(metrics.previous_frame_dt);
 						break;
 					case SDLK_a:
 						camera.eye.x-=20*(metrics.previous_frame_dt);
-//						objects[0].angular_velocity.z=90;
-//						c.red = 0;
-//						c.green = 1;
-//						c.blue = 0;
 						break;
 					case SDLK_s:
-						camera.eye.z-=20*(metrics.previous_frame_dt);
-//						objects[0].velocity.y=-.5f;
-//						c.red = 0;
-//						c.green = 0;
-//						c.blue = 1;
+						camera.eye.z+=20*(metrics.previous_frame_dt);
 						break;
 					case SDLK_d:
 						camera.eye.x+=20*(metrics.previous_frame_dt);
-//						objects[0].angular_velocity.z=-90;
-//						c.red = 1;
-//						c.green = 1;
 						break;
+					case SDLK_q:
+						camera.eye.y+=20*(metrics.previous_frame_dt);
+						break;
+					case SDLK_e:
+						camera.eye.y-=20*(metrics.previous_frame_dt);
+						break;
+
 					case SDLK_1:
 						draw_default=1;
 						break;
