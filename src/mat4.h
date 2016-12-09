@@ -45,6 +45,7 @@ inline static void mat4_set_look_at(float*this,
 		const position*eye,
 		const position*lookat,
 		const vec4*up){
+
 	vec4 zaxis;
 	vec4_minus(&zaxis,lookat,eye);
 	vec4_normalize(&zaxis);// zaxis
@@ -78,22 +79,22 @@ inline static void mat4_set_look_at(float*this,
 	this[9]=-zaxis.y;
 	this[10]=-zaxis.z;
 	this[11]=0;
-//
+
 //	this[8]=0;
 //	this[9]=0;
 //	this[10]=1;
 //	this[11]=0;
 
 	// T
-	this[12]=0;
-	this[13]=0;
-	this[14]=0;
-	this[15]=1;
-//
-//	this[12]=-eye->x;
-//	this[13]=-eye->y;
-//	this[14]=-eye->z;
+//	this[12]=0;
+//	this[13]=0;
+//	this[14]=0;
 //	this[15]=1;
+//
+	this[12]=eye->x;
+	this[13]=eye->y;
+	this[14]=eye->z;
+	this[15]=1;
 
 //	mat4_set_identity(this);
 }
