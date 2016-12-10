@@ -1,9 +1,7 @@
 #pragma once
+#include"lib.h"
 #include"sdl.h"
 #include"metrics.h"
-#include"dyni.h"
-#include"mat4.h"
-#include"dynp.h"
 
 static char*shader_vertex_source =
 "#version 130                                              \n\

@@ -1,15 +1,13 @@
-#include"sdl.h"
 #include"lib.h"
+#include"sdl.h"
 #include"window.h"
 #include"shader.h"
 #include"objects.h"
 #include"object_alloc.h"
-#include"metrics.h"
-#include"dyni.h"
-#include"app/ninja.h"
 #include"glo.h"
-#include"mat4.h"
 #include"camera.h"
+#include"metrics.h"
+#include"app/ninja.h"
 //----------------------------------------------------------------------- init
 inline static void main_init_programs(){
 	const char*vtx="#version 130\n"

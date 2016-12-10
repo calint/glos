@@ -1,4 +1,5 @@
 #pragma once
+#include<stdint.h>
 //------------------------------------------------------------------- typedefs
 typedef uint8_t bool;
 typedef uint8_t bits;
