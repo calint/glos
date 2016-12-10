@@ -167,6 +167,20 @@ inline static void mat4_set_look_at(float*this,
 ////	c[12]=0;c[13]=0;c[14]=0;c[15]=1;
 //}
 
+inline static void mat4_get_xaxis(float*this,vec4*result){
+	result->x=this[0];
+	result->y=this[1];
+	result->z=this[2];
+	result->w=0;
+}
+
+inline static void mat4_get_yaxis(float*this,vec4*result){
+	result->x=this[4];
+	result->y=this[5];
+	result->z=this[6];
+	result->w=0;
+}
+
 inline static void mat4_get_zaxis(float*this,vec4*result){
 	result->x=this[8];
 	result->y=this[9];
