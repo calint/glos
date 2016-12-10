@@ -82,7 +82,7 @@ static inline void window_init() {
 			SDL_WINDOWPOS_CENTERED,
 			window_width,
 			window_height,
-			SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN_DESKTOP);
+			SDL_WINDOW_OPENGL);// | SDL_WINDOW_FULLSCREEN_DESKTOP
 	if (!window.ref){
 		printf("%s %d: %s",__FILE__,__LINE__,SDL_GetError());
 		exit(2);

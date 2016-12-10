@@ -5,7 +5,7 @@
 #include<math.h>
 #include<unistd.h>
 #include"typedefs.h"
-#include"dync.h"
+#include"str.h"
 #include"dynf.h"
 #include"dyni.h"
 #include"dynp.h"

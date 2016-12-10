@@ -3,21 +3,22 @@
 #include<stdio.h>
 //----------------------------------------------------------------------config
 
-#define dync_initial_capacity 8
-#define dync_bounds_check 1
+#define str_initial_capacity 8
+#define str_bounds_check 1
 
 //------------------------------------------------------------------------ def
 
-typedef struct dync{
+typedef struct str{
 	char *data;
 	unsigned count;
 	unsigned cap;
-}dync;
-#define dync_def (dync){0,0,0}
+}str;
+
+#define str_def {0,0,0}
 
 //--------------------------------------------------------------------- private
 
-inline static void _dync_insure_free_capcity(dync*this,indx n){
+inline static void _str_insure_free_capcity(str*this,indx n){
 	const unsigned rem=this->cap-this->count;
 	if(rem>=n)
 		return;
@@ -35,7 +36,7 @@ inline static void _dync_insure_free_capcity(dync*this,indx n){
 		this->cap=new_cap;
 		return;
 	}
-	this->cap=dync_initial_capacity;
+	this->cap=str_initial_capacity;
 	this->data=malloc(sizeof(char)*this->cap);
 	if(!this->data){
 		fprintf(stderr,"\nout-of-memory");
@@ -46,16 +47,16 @@ inline static void _dync_insure_free_capcity(dync*this,indx n){
 
 //---------------------------------------------------------------------- public
 
-inline static void dync_add(dync*this,char o){
-	_dync_insure_free_capcity(this,1);
+inline static void str_add(str*this,char o){
+	_str_insure_free_capcity(this,1);
 	*(this->data+this->count++)=o;
 }
 
 //-----------------------------------------------------------------------------
 
-inline static char dync_get(dync*this,indx index){
-#ifdef dync_bounds_check
-	if(index>=this->cap){
+inline static char str_get(str*this,indx index){
+#ifdef str_bounds_check
+	if(index>=this->count){
 		fprintf(stderr,"\nindex-out-of-bounds");
 		fprintf(stderr,"\t%s\n\n%d  index: %u    capacity: %u\n",
 				__FILE__,__LINE__,index,this->cap);
@@ -68,20 +69,20 @@ inline static char dync_get(dync*this,indx index){
 
 //-----------------------------------------------------------------------------
 
-inline static char dync_get_last(dync*this){
+inline static char str_get_last(str*this){
 	char p=*(this->data+this->count-1);
 	return p;
 }
 
 //-----------------------------------------------------------------------------
 
-inline static size_t dync_size_in_bytes(dync*this){
+inline static size_t str_size_in_bytes(str*this){
 	return this->count*sizeof(char);
 }
 
 //-----------------------------------------------------------------------------
 
-inline static void dync_free(dync*this){
+inline static void str_free(str*this){
 	if(!this->data)
 		return;
 	free(this->data);
@@ -89,29 +90,29 @@ inline static void dync_free(dync*this){
 
 //-----------------------------------------------------------------------------
 
-inline static void dync_add_list(dync*this,/*copies*/const char*str,size_t n){
+inline static void str_add_list(str*this,/*copies*/const char*str,size_t n){
 	//? optimize memcpy
 	const char*p=str;
 	while(n--){
-		_dync_insure_free_capcity(this,1);
+		_str_insure_free_capcity(this,1);
 		*(this->data+this->count++)=*p++;
 	}
 }
 
 //-----------------------------------------------------------------------------
 
-inline static void dync_add_string(dync*this,/*copies*/const char*str){
+inline static void str_add_string(str*this,/*copies*/const char*str){
 	//? optimize
 	const char*p=str;
 	while(*p){
-		_dync_insure_free_capcity(this,1);
+		_str_insure_free_capcity(this,1);
 		*(this->data+this->count++)=*p++;
 	}
 }
 
 //-----------------------------------------------------------------------------
 
-inline static void dync_write_to_fd(dync*this,int fd){
+inline static void str_write_to_fd(str*this,int fd){
 	if(!this->data)
 		return;
 	write(fd,this->data,this->count);
@@ -119,7 +120,7 @@ inline static void dync_write_to_fd(dync*this,int fd){
 
 //-----------------------------------------------------------------------------
 
-inline static dync dync_from_file(const char*path){
+inline static str str_from_file(const char*path){
 	FILE*f=fopen(path,"rb");
 	if(!f){
 		perror("\ncannot open");
@@ -154,7 +155,7 @@ inline static dync dync_from_file(const char*path){
 	fclose(f);
 	filedata[length]=0;
 
-	return (dync){
+	return (str){
 		.data=filedata,
 		.count=((unsigned)length+1)/sizeof(char),
 		.cap=(unsigned)length+1

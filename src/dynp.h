@@ -23,7 +23,6 @@ inline static void _dynp_insure_free_capcity(dynp*this,indx n){
 		return;
 	if(this->data){
 		unsigned new_cap=this->cap*2;
-		 printf("realloc dynp  %d   %d\n",this->cap,new_cap);
 		void* *new_data=realloc(this->data,sizeof(void*)*new_cap);
 		if(!new_data){
 			fprintf(stderr,"\nout-of-memory");
@@ -57,9 +56,9 @@ inline static void dynp_add(dynp*this,void* o){
 inline static void* dynp_get(dynp*this,indx index){
 #ifdef dynp_bounds_check
 	if(index>=this->count){
-		fprintf(stderr,"\nindex-out-of-bounds\n");
-		fprintf(stderr,"   '%s' %d\n\n",__FILE__,__LINE__);
-		stacktrace_print();
+		fprintf(stderr,"\nindex-out-of-bounds");
+		fprintf(stderr,"\t%s\n\n%d  index: %u    capacity: %u\n",
+				__FILE__,__LINE__,index,this->cap);
 		exit(-1);
 	}
 #endif
@@ -120,7 +119,7 @@ inline static void dynp_write_to_fd(dynp*this,int fd){
 
 //-----------------------------------------------------------------------------
 
-inline static dynp dynp_from_file(const char*path){
+inline static dynp dynp_from_file(const void**path){
 	FILE*f=fopen(path,"rb");
 	if(!f){
 		perror("\ncannot open");

@@ -15,22 +15,22 @@ out vec4 vrgba;                                                   \n\
 out vec3 vnorm;                                                    \n\
 out vec2 vtex;                                                      \n\
 void main(){                                                         \n\
-	gl_Position=umtx_wvp*umtx_mw*vec4(apos,1);                        \n\
-	vrgba=argba;                                            \n\
+	gl_Position=umtx_wvp*umtx_mw*vec4(apos,1);            \n\
+	vrgba=argba;                                           \n\
 	vnorm=anorm;                                            \n\
-	vtex=atex;                                              \n\
+	vtex=atex;                                               \n\
 }\n";
 static char*shader_fragment_source =
-		"#version 130                              \n\
+		"#version 130             \n\
 uniform sampler2D utex;                    \n\
-in vec4 vrgba;                \n\
-in vec3 vnorm;                \n\
-in vec2 vtex;                \n\
-out vec4 rgba;                \n\
-void main(){                  \n\
-//	rgba=vec4(1,0,0,1);\n\
-//	rgba=vrgba;\n\
-	rgba=texture2D(utex,vtex)+vrgba;\n\
+in vec4 vrgba;                              \n\
+in vec3 vnorm;                          \n\
+in vec2 vtex;                            \n\
+out vec4 rgba;                            \n\
+void main(){                          \n\
+//	rgba=vec4(1,0,0,1);            \n\
+//	rgba=vrgba;                     \n\
+	rgba=texture2D(utex,vtex)+vrgba; \n\
 }\n";
 #define shader_apos 0
 #define shader_argba 1
@@ -228,6 +228,7 @@ struct shader{
 	gid active_program_ix;
 }shader={0};
 
+static void shader_render();
 inline static void shader_load(){
 	gl_check_error("enter shader_load");
 	glGenBuffers(1, &shader_def_vtxbuf_id);
@@ -277,6 +278,45 @@ inline static void shader_load(){
 //	glGenerateMipmap(GL_TEXTURE_2D);
 //	glPixelStorei(GL_UNPACK_ALIGNMENT,4);
 	gl_check_error("exit shader_load");
+
+//
+//	GLuint frameBuffer;
+//	glGenFramebuffers(1, &frameBuffer);
+//	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+//	GLuint texColorBuffer;
+//	glGenTextures(1, &texColorBuffer);
+//	glBindTexture(GL_TEXTURE_2D, texColorBuffer);
+//
+//	glTexImage2D(
+//	    GL_TEXTURE_2D, 0, GL_RGB, 800, 600, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL
+//	);
+//
+//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+//	glFramebufferTexture2D(
+//	    GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texColorBuffer, 0
+//	);
+//	gl_check_error("exit shader_load  render to frame buffer 1");
+//	GLuint rboDepthStencil;
+//	glGenRenderbuffers(1, &rboDepthStencil);
+//	gl_check_error("exit shader_load  render to frame buffer 4");
+//
+//	glBindRenderbuffer(GL_RENDERBUFFER, rboDepthStencil);
+//	gl_check_error("exit shader_load  render to frame buffer 3");
+//
+//	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 800, 600);
+//	gl_check_error("exit shader_load  render to frame buffer 2");
+//
+//	glFramebufferRenderbuffer(
+//	    GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rboDepthStencil
+//	);
+//	gl_check_error("exit shader_load  render to frame buffer 5");
+//	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+//	gl_check_error("exit shader_load  render to frame buffer 6");
+//	shader_render();
+//	glBindFramebuffer(GL_FRAMEBUFFER,0);
+//	gl_check_error("exit shader_load  render to frame buffer");
+
 }
 
 inline static void shader_render_triangle_elements(

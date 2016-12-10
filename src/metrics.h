@@ -1,5 +1,15 @@
 #pragma once
-
+//------------------------------------------------------------------------ fps
+struct{
+	uint32_t average_during_last_intervall;
+	uint32_t frame_count;
+	uint32_t calculation_intervall_in_ms;
+	uint32_t _time_at_start_of_intervall_in_ms;
+	dt dt;
+	uint64_t _timer_frequency;
+	uint64_t _timer_tick_at_start_of_frame;
+}fps;
+//--------------------------------------------------------------------- metrics
 struct{
 	size_t buffered_vertex_data;
 	size_t buffered_texture_data;
@@ -13,6 +23,12 @@ struct{
 	dt previous_frame_dt;
 }metrics;
 
+inline static void metrics_reset(){
+	fps.calculation_intervall_in_ms=1000;
+	fps._time_at_start_of_intervall_in_ms=SDL_GetTicks();
+	fps._timer_tick_at_start_of_frame=SDL_GetPerformanceCounter();
+	fps._timer_frequency=SDL_GetPerformanceFrequency();
+}
 inline static void metrics_print_headers(){
 	printf(" %4s   %6s   %8s  %8s  %6s  %6s  %6s  %6s  %6s\n",
 			"fps","dt","bufs","buftex","nobjs","obup","obre","ptup","ptre"
@@ -33,27 +49,11 @@ inline static void metrics_print(){
 		);
 }
 
-//------------------------------------------------------------------------ fps
-
-struct{
-	uint32_t average_during_last_intervall;
-	uint32_t frame_count;
-	uint32_t calculation_intervall_in_ms;
-	uint32_t _time_at_start_of_intervall_in_ms;
-	dt dt;
-	uint64_t _timer_frequency;
-	uint64_t _timer_tick_at_start_of_frame;
-}fps;
-
 //----------------------------------------------------------------------------
 
 inline static void metrics__at__frame_begin(){
-	if(!fps.frame_count){
-		fps.calculation_intervall_in_ms=1000;
-		fps._time_at_start_of_intervall_in_ms=SDL_GetTicks();
-		fps._timer_tick_at_start_of_frame=SDL_GetPerformanceCounter();
-		fps._timer_frequency=SDL_GetPerformanceFrequency();
-	}
+	if(!fps.frame_count)
+		metrics_reset();
 	fps.frame_count++;
 	metrics.objects_rendered_last_frame=0;
 	metrics.objects_updated_last_frame=0;

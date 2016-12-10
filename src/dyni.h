@@ -55,7 +55,7 @@ inline static void dyni_add(dyni*this,int o){
 
 inline static int dyni_get(dyni*this,indx index){
 #ifdef dyni_bounds_check
-	if(index>=this->cap){
+	if(index>=this->count){
 		fprintf(stderr,"\nindex-out-of-bounds");
 		fprintf(stderr,"\t%s\n\n%d  index: %u    capacity: %u\n",
 				__FILE__,__LINE__,index,this->cap);

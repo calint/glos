@@ -1,10 +1,8 @@
 #pragma once
 #include<stdio.h>
+#include"lib.h"
 #include"shader.h"
 #include"token.h"
-#include"dynp.h"
-#include"dynf.h"
-#include"dync.h"
 
 //newmtl texture
 //Ns 96.078431
@@ -18,15 +16,15 @@
 //map_Kd /home/c/w/glos/logo.jpeg
 
 typedef struct objmtl{
-	dync name;
+	str name;
 	float Ns;
 	vec4 Ka,Kd,Ks,Ke;
 	float Ni,d;
-	dync map_Kd;
+	str map_Kd;
 
 	id texture_id;
 }objmtl;
-#define objmtl_def (objmtl){dync_def,0,vec4_def,vec4_def,vec4_def,vec4_def,0,0,dync_def,0}
+#define objmtl_def (objmtl){str_def,0,vec4_def,vec4_def,vec4_def,vec4_def,0,0,str_def,0}
 
 inline static void objmtl_free(objmtl*this){
 	dync_free(&this->name);
@@ -49,7 +47,7 @@ inline static objmtl*objmtl_alloc(){
 }
 
 inline static void objmtls_load_from_file(const char*path){
-	dync file=dync_from_file(path);
+	str file=str_from_file(path);
 	objmtl*o=NULL;
 	const char*p=file.data;
 	while(*p){
@@ -68,8 +66,8 @@ inline static void objmtls_load_from_file(const char*path){
 			token t=token_next_from_string(p);
 			p=t.end;
 			size_t n=token_size(&t);
-			dync_add_list(&o->name,t.content,n);
-			dync_add(&o->name,0);
+			str_add_list(&o->name,t.content,n);
+			str_add(&o->name,0);
 			continue;
 		}
 		if(token_equals(&t,"Ns")){
@@ -131,8 +129,8 @@ inline static void objmtls_load_from_file(const char*path){
 			token t=token_next_from_string(p);
 			p=t.end;
 			size_t n=token_size(&t);
-			dync_add_list(&o->map_Kd,t.content,n);
-			dync_add(&o->map_Kd,0);
+			str_add_list(&o->map_Kd,t.content,n);
+			str_add(&o->map_Kd,0);
 			continue;
 		}
 	}
@@ -183,10 +181,10 @@ static/*gives*/glo*glo_load_next_from_string(const char**ptr_p){
 		if(token_equals(&t,"mtllib")){
 			token t=token_next_from_string(p);
 			p=t.end;
-			dync s=dync_def;
-			dync_add_string(&s,basedir);
-			dync_add_list(&s,t.content,token_size(&t));
-			dync_add(&s,0);
+			str s=str_def;
+			str_add_string(&s,basedir);
+			str_add_list(&s,t.content,token_size(&t));
+			str_add(&s,0);
 			objmtls_load_from_file(s.data);
 			continue;
 		}
@@ -201,9 +199,9 @@ static/*gives*/glo*glo_load_next_from_string(const char**ptr_p){
 		}
 		if(token_equals(&t,"usemtl")){
 			token t=token_next_from_string(p);
-			dync name=dync_def;
-			dync_add_list(&name,t.content,token_size(&t));
-			dync_add(&name,0);
+			str name=str_def;
+			str_add_list(&name,t.content,token_size(&t));
+			str_add(&name,0);
 
 			objmtl*m=NULL;
 			for(unsigned i=0;i<name.count;i++){
@@ -354,7 +352,7 @@ static/*gives*/glo*glo_load_next_from_string(const char**ptr_p){
 // returns vertex buffer of array of triangles
 //                      [ x y z   r g b a   nx ny nz   u v]
 static/*gives*/glo*glo_load_first_from_file(const char*path){
-	dync file=dync_from_file(path);
+	str file=str_from_file(path);
 	const char*p=file.data;
 	return glo_load_next_from_string(&p);
 }
@@ -373,7 +371,7 @@ static/*gives*/glo*glo_load_first_from_file(const char*path){
 
 static/*gives*/dynp glo_load_all_from_file(const char*path){
 	printf(" * loading objects from '%s'\n",path);
-	dync file=dync_from_file(path);
+	str file=str_from_file(path);
 	const char*p=file.data;
 
 	dynp vertices=dynp_def;
@@ -393,10 +391,10 @@ static/*gives*/dynp glo_load_all_from_file(const char*path){
 		}else if(token_equals(&t,"mtllib")){
 			token t=token_next_from_string(p);
 			p=t.end;
-			dync s=dync_def;
-			dync_add_string(&s,basedir);
-			dync_add_list(&s,t.content,token_size(&t));
-			dync_add(&s,0);
+			str s=str_def;
+			str_add_string(&s,basedir);
+			str_add_list(&s,t.content,token_size(&t));
+			str_add(&s,0);
 			objmtls_load_from_file(s.data);
 		}else if(token_equals(&t,"v")){
 			token tx=token_next_from_string(p);
@@ -460,9 +458,9 @@ static/*gives*/dynp glo_load_all_from_file(const char*path){
 		if(token_equals(&t,"o")){
 			token t=token_next_from_string(p);
 			p=t.end;
-			dync str=dync_def;
-			dync_add_list(&str,t.content,t.content_end-t.content);
-			dync_add(&str,0);
+			str str=str_def;
+			str_add_list(&str,t.content,t.content_end-t.content);
+			str_add(&str,0);
 			printf("     object '%s'\n",str.data);
 			p=scan_to_including_newline(p);
 			if(first_o){
@@ -495,9 +493,9 @@ static/*gives*/dynp glo_load_all_from_file(const char*path){
 		if(token_equals(&t,"usemtl")){
 			token t=token_next_from_string(p);
 			p=t.end;
-			dync name=dync_def;
-			dync_add_list(&name,t.content,token_size(&t));
-			dync_add(&name,0);
+			str name=str_def;
+			str_add_list(&name,t.content,token_size(&t));
+			str_add(&name,0);
 
 			objmtl*m=NULL;
 			for(unsigned i=0;i<name.count;i++){

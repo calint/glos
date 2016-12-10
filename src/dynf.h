@@ -55,7 +55,7 @@ inline static void dynf_add(dynf*this,float o){
 
 inline static float dynf_get(dynf*this,indx index){
 #ifdef dynf_bounds_check
-	if(index>=this->cap){
+	if(index>=this->count){
 		fprintf(stderr,"\nindex-out-of-bounds");
 		fprintf(stderr,"\t%s\n\n%d  index: %u    capacity: %u\n",
 				__FILE__,__LINE__,index,this->cap);

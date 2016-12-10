@@ -126,9 +126,8 @@ int main(int argc,char*argv[]){
 	glos_init();
 	main_init();
 
-	puts("");
-	metrics_print_headers();
 	{
+		puts("");
 		program*p=dynp_get(&programs,shader.active_program_ix);
 		gid progid=p->gid;
 		glUseProgram(progid);
@@ -136,9 +135,10 @@ int main(int argc,char*argv[]){
 		printf(" * using program at index %u\n",shader.active_program_ix);
 		for(unsigned i=0;i<enable->count;i++){
 			const unsigned ix=(unsigned)dyni_get(enable,i);
-			printf("   * disable vertex attrib array %d\n",ix);
+//			printf("   * disable vertex attrib array %d\n",ix);
 			glEnableVertexAttribArray(ix);
 		}
+		puts("");
 	}
 	gid previous_active_program_ix=shader.active_program_ix;
 	const float rad_over_degree=2.0f*PI/360.0f;
@@ -148,6 +148,8 @@ int main(int argc,char*argv[]){
 	float speed=1;
 	int mouse_mode=1;
 	SDL_SetRelativeMouseMode(mouse_mode);
+	metrics_reset();
+	metrics_print_headers();
 	for(int running=1;running;){
 		metrics__at__frame_begin();
 		SDL_Event event;
