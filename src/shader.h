@@ -79,7 +79,7 @@ inline static GLuint shader_compile(GLenum shaderType,const char *code) {
 	return id;
 }
 
-inline static program*program_load_from_source(
+inline static program*shader_load_program_from_source(
 		const char*vert_src,
 		const char*frag_src,
 		/*takes*/dyni attrs
@@ -383,7 +383,7 @@ inline static void shader_init() {
 	dyni attrs=dyni_def;
 	int e[]={shader_apos,shader_argba,shader_anorm,shader_atex};
 	dyni_add_list(&attrs,e,4);
-	program_load_from_source(
+	shader_load_program_from_source(
 			shader_vertex_source,
 			shader_fragment_source,
 			/*gives*/attrs);

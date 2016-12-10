@@ -29,7 +29,7 @@ inline static void camera_update_matrix_wvp(){
 		mat4_set_look_at(Ml,&camera.eye,&camera.lookat,&(vec4){0,1,0,0});
 
 		position Pt=camera.eye;
-		vec4_negate(&Pt);
+		vec3_negate(&Pt);
 
 		float Mt[16];
 		mat4_set_translation(Mt,&Pt);
@@ -49,7 +49,7 @@ inline static void camera_update_matrix_wvp(){
 //		mat4_set_look_at(Ml,&camera.eye,&camera.lookat,&(vec4){0,1,0,0});
 
 		position Pt=camera.eye;
-		vec4_negate(&Pt);
+		vec3_negate(&Pt);
 
 		float Mt[16];
 		mat4_set_translation(Mt,&Pt);

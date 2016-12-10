@@ -26,7 +26,7 @@ inline static void main_init_programs(){
 
 	dyni attrs=dyni_def;
 	dyni_add(&attrs,shader_apos);
-	program_load_from_source(vtx,frag,/*gives*/attrs);
+	shader_load_program_from_source(vtx,frag,/*gives*/attrs);
 
 	vtx="#version 130\n"
 			"uniform mat4 umtx_mw;\n"
@@ -47,7 +47,7 @@ inline static void main_init_programs(){
 	attrs=dyni_def;
 	dyni_add(&attrs,shader_apos);
 	dyni_add(&attrs,shader_argba);
-	program_load_from_source(vtx,frag,/*gives*/attrs);
+	shader_load_program_from_source(vtx,frag,/*gives*/attrs);
 }
 
 static float ground_base_y=.25f;
@@ -267,15 +267,15 @@ int main(int argc,char*argv[]){
 		camera.lookat=lookvector;
 		vec4 xaxis;
 		vec4 up={0,1,0,0};
-		vec4_cross(&xaxis,&lookvector,&up);
-		vec4_normalize(&xaxis);
-		vec4_scale(&xaxis,move_vector_scale);
+		vec3_cross(&xaxis,&lookvector,&up);
+		vec3_normalize(&xaxis);
+		vec3_scale(&xaxis,move_vector_scale);
 
 		const float dt=metrics.previous_frame_dt;
-		if(keymap&1)vec4_increase_with_vec4_over_dt(&camera.eye,&lookvector,dt);
-		if(keymap&2)vec4_increase_with_vec4_over_dt(&camera.eye,&xaxis,-dt);
-		if(keymap&4)vec4_increase_with_vec4_over_dt(&camera.eye,&lookvector,-dt);
-		if(keymap&8)vec4_increase_with_vec4_over_dt(&camera.eye,&xaxis,dt);
+		if(keymap&1)vec3_inc_with_vec3_over_dt(&camera.eye,&lookvector,dt);
+		if(keymap&2)vec3_inc_with_vec3_over_dt(&camera.eye,&xaxis,-dt);
+		if(keymap&4)vec3_inc_with_vec3_over_dt(&camera.eye,&lookvector,-dt);
+		if(keymap&8)vec3_inc_with_vec3_over_dt(&camera.eye,&xaxis,dt);
 		if(keymap&16)camera.eye.y+=speed*(dt);
 		if(keymap&32)camera.eye.y-=speed*(dt);
 //		printf("  %f  %f  %f  \n",

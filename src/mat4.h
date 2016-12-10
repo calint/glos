@@ -2,6 +2,58 @@
 #include"lib.h"
 #include<math.h>
 
+
+
+
+inline static void vec3_minus(vec4*ret,const vec4*lh,const vec4*rh){
+	ret->x=lh->x-rh->x;
+	ret->y=lh->y-rh->y;
+	ret->z=lh->z-rh->z;
+}
+
+inline static void vec3_normalize(vec4*this){
+	float len=sqrtf(this->x*this->x + this->y*this->y + this->z*this->z);
+	float olen=1/len;
+	this->x*=olen;
+	this->y*=olen;
+	this->z*=olen;
+}
+
+inline static void vec3_cross(vec4*ret,const vec4*lh,const vec4*rh){
+	float u1=lh->x;float u2=lh->y;float u3=lh->z;
+	float v1=rh->x;float v2=rh->y;float v3=rh->z;
+
+	ret->x=u2*v3-u3*v2;
+	ret->y=u3*v1-u1*v3;
+	ret->z=u1*v2-u2*v1;
+}
+
+inline static void vec3_negate(vec4*this){
+	this->x=-this->x;
+	this->y=-this->y;
+	this->z=-this->z;
+}
+
+inline static void vec3_scale(vec4*this,float s){
+	this->x*=s;
+	this->y*=s;
+	this->z*=s;
+}
+
+inline static float vec3_dot(const vec4*lh,const vec4*rh){
+	return lh->x*rh->x+lh->y*rh->y+lh->z*rh->z;
+
+}
+
+inline static void vec3_inc_with_vec3_over_dt(vec4*this,vec4*other,dt dt){
+	this->x+=other->x*dt;
+	this->y+=other->y*dt;
+	this->z+=other->z*dt;
+}
+
+
+
+
 #define mat4_identity (float[]){1,0,0,0,  0,1,0,0,  0,0,1,0,  0,0,0,1}
 
 
@@ -10,7 +62,7 @@ inline static void mat4_assign(float*this,float*src){
 }
 
 inline static void mat4_set_identity(float*this){
-	mat4_assign(this,(float[]){1,0,0,0,  0,1,0,0,  0,0,1,0,  0,0,0,1});
+	mat4_assign(this,mat4_identity);
 }
 
 
@@ -47,15 +99,15 @@ inline static void mat4_set_look_at(float*this,
 		const vec4*up){
 
 	vec4 zaxis;
-	vec4_minus(&zaxis,lookat,eye);
-	vec4_normalize(&zaxis);// zaxis
+	vec3_minus(&zaxis,lookat,eye);
+	vec3_normalize(&zaxis);// zaxis
 
 	vec4 xaxis;
-	vec4_cross(&xaxis,up,&zaxis); // xaxis
-	vec4_normalize(&xaxis);
+	vec3_cross(&xaxis,up,&zaxis); // xaxis
+	vec3_normalize(&xaxis);
 
 	vec4 yaxis;
-	vec4_cross(&yaxis,&zaxis,&xaxis);
+	vec3_cross(&yaxis,&zaxis,&xaxis);
 
 	// X
 	this[0]=xaxis.x;
@@ -333,11 +385,6 @@ inline static void mat4_set_rotation_z(float*this,float angle_rad){
 
 
 
-inline static float vec4_dot(const vec4*lh,const vec4*rh){
-	return lh->x*rh->x+lh->y*rh->y+lh->z*rh->z;
-
-}
-
 
 inline static void mat4_set_translation(float*c,const position*p){
 	// [ 0 4  8  x ]
@@ -564,3 +611,4 @@ inline static/*gives*/float*mat4_multiply(float*ret,const float*lhs,const float*
 	// forked from apple examples
 }
 */
+

@@ -36,8 +36,8 @@ inline static void _object_init_(object*this){
 }
 //---------------------------------------------------------------------- update
 inline static void object_update(object*this,dt dt){
-	vec4_increase_with_vec4_over_dt(&this->position,&this->velocity,dt);
-	vec4_increase_with_vec4_over_dt(&this->angle,&this->angular_velocity,dt);
+	vec3_inc_with_vec3_over_dt(&this->position,&this->velocity,dt);
+	vec3_inc_with_vec3_over_dt(&this->angle,&this->angular_velocity,dt);
 	if(this->model_to_world_matrix_is_updated &&
 		(this->velocity.x||this->velocity.y||this->velocity.z||
 		this->angular_velocity.x||this->angular_velocity.y||
