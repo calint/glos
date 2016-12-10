@@ -5,7 +5,7 @@ typedef uint8_t bits;
 typedef uint32_t gid;
 typedef void*ref;
 typedef struct type{char path[8];}type;
-typedef struct vec4{float x,y,z,q;}vec4;
+typedef struct vec4{float x,y,z,w;}vec4;
 //static vec4 vec4_def=(vec4){0,0,0,0};
 #define vec4_def (vec4){0,0,0,0}
 typedef vec4 position;

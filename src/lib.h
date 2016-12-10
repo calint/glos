@@ -87,3 +87,9 @@ inline static void vec4_negate(vec4*this){
 	this->y=-this->y;
 	this->z=-this->z;
 }
+
+inline static void vec4_scale(vec4*this,float s){
+	this->x*=s;
+	this->y*=s;
+	this->z*=s;
+}

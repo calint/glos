@@ -289,8 +289,9 @@ inline static void shader_render_triangle_elements(
 	glUniformMatrix4fv(shader_umtx_mw,1,0,mtx_mw);
 
 	glUniform1i(shader_utex,0);
-	glActiveTexture(GL_TEXTURE0);
+//	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D,texid);
+	glEnableVertexAttribArray(shader_atex);
 
 	glBindBuffer(GL_ARRAY_BUFFER,vbufid);
 	glVertexAttribPointer(shader_apos,  3,GL_FLOAT,GL_FALSE,
@@ -306,6 +307,7 @@ inline static void shader_render_triangle_elements(
 	glDrawElements(GL_TRIANGLES,(signed)ixbufn,GL_UNSIGNED_BYTE,0);
 
 	glBindTexture(GL_TEXTURE_2D,0);
+	glDisableVertexAttribArray(shader_atex);
 }
 
 inline static void shader_render(){
@@ -315,6 +317,7 @@ inline static void shader_render(){
 			0,0,1,0,
 			0,0,0,1,
 	};
+	glDisable(GL_DEPTH_TEST);
 	shader_render_triangle_elements(
 			shader_def_vtxbuf_id,
 			shader_def_vtxbuf_nelems,
@@ -322,6 +325,7 @@ inline static void shader_render(){
 			shader_def_ixbuf_nelems,
 			shader_def_texbuf_id,
 			mtx_wvp);
+	glEnable(GL_DEPTH_TEST);
 }
 //
 //inline static void shader_render_triangle_array(
@@ -354,8 +358,8 @@ inline static void shader_init() {
 
 //	farther in negative z axis
 	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_GREATER);
-	glClearDepthf(-1);
+//	glDepthFunc(GL_GREATER);
+//	glClearDepthf(-1);
 
 	// with projection
 //	glEnable(GL_DEPTH_TEST);

@@ -97,7 +97,7 @@ inline static void objmtls_load_from_file(const char*path){
 			p=z.end;
 			v.z=token_get_float(&z);
 
-			v.q=0;
+			v.w=0;
 
 			if(token_equals(&t,"Ka")){
 				o->Ka=v;

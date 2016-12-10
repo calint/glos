@@ -55,7 +55,7 @@ inline static void main_init_scene(){
 	glos_load_scene_from_file("obj/blip.obj");
 
 //	glos_load_scene_from_file("obj/color-cube.obj");
-	glos_load_scene_from_file("obj/board.obj");
+//	glos_load_scene_from_file("obj/board.obj");
 //
 //	object*o=object_alloc(&ninja_def);
 //	o->glo=glo_at(0);
@@ -145,13 +145,31 @@ int main(int argc,char*argv[]){
 	int64_t keymap=0;
 	float sensitivity=1.3f;
 	float speed=1;
-	int mouse_mode=1;
+	int mouse_mode=0;
 	SDL_SetRelativeMouseMode(mouse_mode);
 	for(int running=1;running;){
 		metrics__at__frame_begin();
 		SDL_Event event;
 		while(SDL_PollEvent(&event)){
-			switch (event.type) {
+			switch(event.type) {
+			case SDL_WINDOWEVENT:{
+				switch(event.window.event){
+				case SDL_WINDOWEVENT_SIZE_CHANGED:{
+					SDL_Log("Window %d size changed to %dx%d",
+							event.window.windowID, event.window.data1,
+							event.window.data2);
+					int w,h;
+					SDL_GetWindowSize(window.ref,&w,&h);// ? glGet
+					camera.wi=(float)w;
+					camera.hi=(float)h;
+					printf(" * resize to  %u x %u\n",w,h);
+					glViewport(0,0,w,h);
+//					SDL_Rect r={0,0,w,h};
+//					SDL_RenderSetViewport(window.renderer,&r);
+					break;}
+				}
+				break;
+			}
 			case SDL_QUIT:running = 0;break;
 			case SDL_MOUSEMOTION:{
 //				printf(" relx,rely=%d,%d    look angle:%f\n",
@@ -203,7 +221,7 @@ int main(int argc,char*argv[]){
 					}
 					case SDLK_3:{
 						shader.active_program_ix++;
-						if(shader.active_program_ix>programs.count){
+						if(shader.active_program_ix>=programs.count){
 							shader.active_program_ix=0;
 						}
 						break;
@@ -219,26 +237,35 @@ int main(int argc,char*argv[]){
 			}
 		}
 
-		printf("   camera: %f  %f  %f   angle: %f\n",
-				camera.eye.x,camera.eye.y,camera.eye.z,look_angle_z_axis*180/PI);
+//		printf("   camera: %f  %f  %f   angle: %f\n",
+//				camera.eye.x,camera.eye.y,camera.eye.z,look_angle_z_axis*180/PI);
 
-		vec4 look_vector=vec4_def;
+		vec4 lookvector=vec4_def;
 		const float a=look_angle_z_axis;
-		const float s=10.f;
-		look_vector.x=s*sinf(-a);
-		look_vector.y=.1f;
-		look_vector.z=-s*cosf(-a);
-		camera.lookat=look_vector;
+//		printf(" look angle z=%f\n",a);
+		const float s=1.0f;
+		lookvector.x=s*sinf(a);
+		lookvector.y=0;
+		lookvector.z=-s*cosf(a);
+
+//		vec4 lookvector;
+//		mat4_get_zaxis(camera.mxwvp,&lookvector);
+//		vec4_negate(&lookvector);
+//		vec4_normalize(&lookvector);//? 3x3 orthonorm?
+//		vec4_scale(&lookvector,10);
+//
+		camera.lookat=lookvector;
 		const float dt=metrics.previous_frame_dt;
-		if(keymap&1)vec4_increase_with_vec4_over_dt(&camera.eye,&camera.lookat,dt*.5f);
+		if(keymap&1)vec4_increase_with_vec4_over_dt(&camera.eye,&lookvector,dt*.5f);
 		if(keymap&2)camera.eye.x-=speed*(dt);
-		if(keymap&4)vec4_increase_with_vec4_over_dt(&camera.eye,&camera.lookat,-dt*.5f);
+		if(keymap&4)vec4_increase_with_vec4_over_dt(&camera.eye,&lookvector,-dt*.5f);
 		if(keymap&8)camera.eye.x+=speed*(dt);
 		if(keymap&16)camera.eye.y+=speed*(dt);
 		if(keymap&32)camera.eye.y-=speed*(dt);
-//		if(keymap&64)look_angle_z_axis-=speed*(metrics.previous_frame_dt);
 //		printf("  %f  %f  %f  \n",
 //				camera.lookat.x,camera.lookat.y,camera.lookat.z);
+//		printf("  %f  %f  %f  \n",
+//					camera.eye.x,camera.eye.y,camera.eye.z);
 
 		if(previous_active_program_ix!=shader.active_program_ix){
 			printf(" * switching to program at index %u\n",
