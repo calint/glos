@@ -54,7 +54,7 @@ inline static void main_init_scene(){
 	glos_load_scene_from_file("obj/skydome.obj");
 	glos_load_scene_from_file("obj/blip.obj");
 
-//	glos_load_scene_from_file("obj/color-cube.obj");
+	glos_load_scene_from_file("obj/color-cube.obj");
 //	glos_load_scene_from_file("obj/board.obj");
 //
 //	object*o=object_alloc(&ninja_def);
@@ -78,6 +78,7 @@ static struct{
 	GLclampf green;
 	GLclampf blue;
 }c={.1f,.1f,.4f};
+
 
 inline static void main_render(){
 	camera_update_matrix_wvp();
@@ -140,10 +141,8 @@ int main(int argc,char*argv[]){
 	gid previous_active_program_ix=shader.active_program_ix;
 	const float rad_over_degree=2.0f*PI/360.0f;
 	float rad_over_mouse_pixels=rad_over_degree*.02f;
-	float look_angle_z_axis=0;
-	float look_angle_x_axis=0;
 	int64_t keymap=0;
-	float sensitivity=1.3f;
+	float sensitivity=1;
 	float speed=1;
 	int mouse_mode=0;
 	SDL_SetRelativeMouseMode(mouse_mode);
@@ -176,11 +175,11 @@ int main(int argc,char*argv[]){
 //						event.motion.xrel,event.motion.yrel,
 //						look_angle_z_axis*180/PI);
 				if(event.motion.xrel!=0){
-					look_angle_z_axis+=(float)event.motion.xrel
+					look_angle_y+=(float)event.motion.xrel
 							*rad_over_mouse_pixels*sensitivity;
 				}
-				if(event.motion.xrel!=0){
-					look_angle_x_axis+=(float)event.motion.xrel
+				if(event.motion.yrel!=0){
+					look_angle_x+=(float)event.motion.yrel
 							*rad_over_mouse_pixels*sensitivity;
 				}
 				break;}
@@ -241,9 +240,9 @@ int main(int argc,char*argv[]){
 //				camera.eye.x,camera.eye.y,camera.eye.z,look_angle_z_axis*180/PI);
 
 		vec4 lookvector=vec4_def;
-		const float a=look_angle_z_axis;
+		const float a=look_angle_y;
 //		printf(" look angle z=%f\n",a);
-		const float s=100.0f;
+		const float s=1;
 		lookvector.x=s*sinf(a);
 		lookvector.y=0;
 		lookvector.z=-s*cosf(a);

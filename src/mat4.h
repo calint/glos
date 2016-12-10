@@ -99,121 +99,73 @@ inline static void mat4_set_look_at(float*this,
 //	mat4_set_identity(this);
 }
 
-inline static void mat4_set_perpective_projection(float*c,
-		const float nearz,const float farz,
-		const float fov_rad,const float aspect
-){
-
+//inline static void mat4_set_perpective_projection(float*c,
+//		const float nearz,const float farz,
+//		const float fov_rad,const float aspect
+//){
 //
-//	const float frustrum_depth=farz-nearz;
-//	const float one_over_frustrum_depth=1/frustrum_depth;
-//	const float a=1/tanf(0.5f*fov_rad);
+////
+////	const float frustrum_depth=farz-nearz;
+////	const float one_over_frustrum_depth=1/frustrum_depth;
+////	const float a=1/tanf(0.5f*fov_rad);
+////
+////	// X
+////	c[0]=a/aspect;
+////	c[1]=0;
+////	c[2]=0;
+////	c[3]=0;
+////
+////	// Y
+////	c[4]=0;
+////	c[5]=a;
+////	c[6]=0;
+////	c[7]=0;
+////
+////	// Z
+////	c[8]=0;
+////	c[9]=0;
+////	c[10]=farz*one_over_frustrum_depth;
+////	c[11]=-farz*nearz*one_over_frustrum_depth;
+////
+////	// T
+////	c[12]=0;
+////	c[13]=0;
+////	c[14]=1;
+////	c[15]=0;
+////
 //
-//	// X
-//	c[0]=a/aspect;
-//	c[1]=0;
-//	c[2]=0;
-//	c[3]=0;
+//	const float d=1.0f/tanf(0.5f*fov_rad);
 //
-//	// Y
-//	c[4]=0;
-//	c[5]=a;
-//	c[6]=0;
-//	c[7]=0;
+//	c[ 0]=d*aspect;
+//	c[ 1]=0;
+//	c[ 2]=0;
+//	c[ 3]=0;
 //
-//	// Z
-//	c[8]=0;
-//	c[9]=0;
-//	c[10]=farz*one_over_frustrum_depth;
-//	c[11]=-farz*nearz*one_over_frustrum_depth;
+////		c[0]=1;c[1]=0;c[2]=0;c[3]=0;
 //
-//	// T
+//	c[ 4]=0;
+//	c[ 5]=d;
+//	c[ 6]=0;
+//	c[ 7]=0;
+//
+////		c[4]=0;c[5]=1;c[6]=0;c[7]=0;
+//
+//
+//	const float rangez=farz-nearz;
+//	c[ 8]=0;
+//	c[ 9]=0;
+//	c[10]=-(farz-nearz)/rangez;
+//	c[11]=-2.0f*farz*nearz/rangez;
+//
+////		c[ 8]=0;c[ 9]=0;c[10]=1;c[11]=0;
+//
 //	c[12]=0;
 //	c[13]=0;
 //	c[14]=1;
 //	c[15]=0;
 //
-
-	const float d=1.0f/tanf(0.5f*fov_rad);
-
-	c[ 0]=d*aspect;
-	c[ 1]=0;
-	c[ 2]=0;
-	c[ 3]=0;
-
-//		c[0]=1;c[1]=0;c[2]=0;c[3]=0;
-
-	c[ 4]=0;
-	c[ 5]=d;
-	c[ 6]=0;
-	c[ 7]=0;
-
-//		c[4]=0;c[5]=1;c[6]=0;c[7]=0;
-
-
-	const float rangez=farz-nearz;
-	c[ 8]=0;
-	c[ 9]=0;
-	c[10]=-(farz-nearz)/rangez;
-	c[11]=-2.0f*farz*nearz/rangez;
-
-//		c[ 8]=0;c[ 9]=0;c[10]=1;c[11]=0;
-
-	c[12]=0;
-	c[13]=0;
-	c[14]=1;
-	c[15]=0;
-
-//	c[12]=0;c[13]=0;c[14]=0;c[15]=1;
-}
-
-inline static void mat4_set_perpective_projection2(
-		float*m,
-		float width,float height,
-		float nearz,float farz
-		){
-
-// Xoff = width/2
-// Yoff = height/2
-// aspect = height/width
-// Sx = width/2
-// Sy = height/2
-// Xv : x in view   Xs : x on screen   Sx : xscale Xoff
-
-// Xs = Xv/Zv*Sx*aspect+Xoff
-// Ys = Yv/Zv*Sy+Yoff
-// Zs = Zv/(far-near)    : to z buffer, clipping in normalized 0 .. 1 cube
-//
-// opengl does:
-//  | X/Z  Y/Z  Z/Z  W |
-//
-//
-//	| a 0  0 Xo || Xv |   | a*Xv + 1*Xoff |
-//  | 0 b  0 Yo || Yv | = | b*Yv + 1*Yoff |
-//  | 0 0  c 0  || Zv |   | -c*Zv         |
-//  | 0 0 -1 0  || 1  |   | -Zv           |
-//      -1 for left handed system to make z positive
-//
-// d=(farz-nearz)    Z+ forward  farz>nearz   farz!=nearz
-// a = Sx*aspect
-// b = Sy
-// c = 1/d
-
-	const float Xoff=width/2;
-	const float Yoff=height/2;
-	const float Sx=width/2;
-	const float Sy=height/2;
-	const float aspect=width/height;
-	const float a=Sx;
-	const float b=Sy*aspect;
-	const float c=1/(farz-nearz);
-
-	m[ 0]=a; m[ 1]=0; m[ 2]=0;  m[ 3]=Xoff;
-	m[ 4]=0; m[ 5]=b; m[ 6]=0;  m[ 7]=Yoff;
-	m[ 8]=0; m[ 9]=0; m[10]=c;  m[11]=0;
-	m[12]=0; m[13]=0; m[14]=-1; m[15]=0;
-
-}
+////	c[12]=0;c[13]=0;c[14]=0;c[15]=1;
+//}
 
 inline static void mat4_get_zaxis(float*this,vec4*result){
 	result->x=this[8];
@@ -307,7 +259,57 @@ void perspective_vertical(float*m,float fov, float aspect, float front, float ba
 }
 //
 
+inline static void mat4_set_rotation_y(float*this,float angle_rad){
+	// X
+	this[0]=cosf(angle_rad);
+	this[1]=0;
+	this[2]=-sinf(angle_rad);
+	this[3]=0;
 
+	// Y
+	this[4]=0;
+	this[5]=1;
+	this[6]=0;
+	this[7]=0;
+
+	// Z
+	this[8]=sinf(angle_rad);
+	this[9]=0;
+	this[10]=cosf(angle_rad);
+	this[11]=0;
+
+	// T
+	this[12]=0;
+	this[13]=0;
+	this[14]=0;
+	this[15]=1;
+}
+
+inline static void mat4_set_rotation_z(float*this,float angle_rad){
+	// X
+	this[0]=cosf(angle_rad);
+	this[1]=sinf(angle_rad);
+	this[2]=0;
+	this[3]=0;
+
+	// Y
+	this[4]=-sinf(angle_rad);
+	this[5]=cosf(angle_rad);
+	this[6]=0;
+	this[7]=0;
+
+	// Z
+	this[8]=0;
+	this[9]=0;
+	this[10]=1;
+	this[11]=0;
+
+	// T
+	this[12]=0;
+	this[13]=0;
+	this[14]=0;
+	this[15]=1;
+}
 
 
 
