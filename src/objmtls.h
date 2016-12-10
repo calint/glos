@@ -1,5 +1,5 @@
 #pragma once
-#include"typedefs.h"
+#include"lib.h"
 //----------------------------------------------------------------------config
 
 #define objmtls_initial_capacity 128

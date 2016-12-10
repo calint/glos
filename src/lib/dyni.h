@@ -1,5 +1,4 @@
 #pragma once
-#include"typedefs.h"
 #include<stdio.h>
 //----------------------------------------------------------------------config
 
