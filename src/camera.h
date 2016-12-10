@@ -70,24 +70,4 @@ inline static void camera_update_matrix_wvp(){
 		mat4_assign(camera.mxwvp,Mpyt);
 
 	}
-//	float Mp[16];
-//	if(camera.ortho){
-//	}else{
-////		mat4_set_identity(Mp);
-////		mat4_set_perpective_projection(Mp,
-////					camera.znear,camera.zfar,
-////					PI/4,camera.wi/camera.hi);
-////		mat4_set_perpective_projection2(Mp,
-////				1024,1024,.1f,5);
-////		gluPerspective(Mp,PI/4, camera.wi/camera.hi,.01f,5);
-//
-////		glFrustum(Mp,-2,2, -2,2, 1,10);
-////		perspective(Mp, -2,2, -2,2, 1, 10);
-//		perspective_vertical(Mp,40,camera.wi/camera.hi,1,10);
-//	}
-//
-//	float Mptl[16];
-//	mat4_multiply(Mptl,Mp,Mtl);
-//
-//	mat4_assign(camera.mxwvp,Mptl);
 }

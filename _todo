@@ -45,10 +45,9 @@
  [ ]   client
  [ ]   server
  [ ] camera
- [o]   projection
+ [x]   projection
  [x]     orthonormal
- [ ]     iso
- [o]     perspective
+ [x]     perspective
  [x]   look-at
  [ ]   click select
  [ ]   follow
@@ -60,10 +59,10 @@
  [ ] hud
  [ ]   console
  [ ] draw text
- [ ] mouse
- [ ]   fps controls
+ [x] mouse
+ [x]   fps controls
  [ ]   alternative controls
- [o] shadow map
+ [ ] shadow map
  [ ]   render to texture
  [x]   use several programs
  [ ] light sources
@@ -71,7 +70,7 @@
  [ ]   ortho
  [ ]   persp
  [ ] zoom zbuf on viewable 
- [o] hierarchial objects
+ [ ] hierarchial objects
  [ ]   cached matrices
  [ ]     model-to-local
  [ ]     local-to-world
@@ -79,7 +78,7 @@
  [ ]     root object bounding volume, recursive
  [ ]     objects individually of hierarchy
  [ ] draw grid
- [ ]   sky dome
+ [x]   sky dome
  [ ]   ground plane
  
  
