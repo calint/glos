@@ -8,7 +8,7 @@
  [x]   textures
  [x]   render
  [x]   scene
- [ ]     to objects
+ [x]     to objects
  [ ]     center/scale/position
  [ ] draw bounding volume
  [ ]   sphere
@@ -44,7 +44,8 @@
  [ ] keyshub
  [ ]   client
  [ ]   server
- [ ] camera
+ [ ]   multiplayer
+ [o] camera
  [x]   projection
  [x]     orthonormal
  [x]     perspective
@@ -68,8 +69,8 @@
  [ ] light sources
  [ ]   ambient
  [ ]   ortho
+ [ ]     zoom zbuf to encompase view frustum
  [ ]   persp
- [ ] zoom zbuf on viewable 
  [ ] hierarchial objects
  [ ]   cached matrices
  [ ]     model-to-local
@@ -79,7 +80,7 @@
  [ ]     objects individually of hierarchy
  [ ] draw grid
  [x]   sky dome
- [ ]   ground plane
+ [x]   ground plane
  
  
  
