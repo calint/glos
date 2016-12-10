@@ -54,9 +54,9 @@ inline static void camera_update_matrix_wvp(){
 //				1024,1024,.1f,5);
 //		gluPerspective(Mp,PI/4, camera.wi/camera.hi,.01f,5);
 
-		glFrustum(Mp,-2,2, -2,2, 1,10);
-//		perspective(Mp, -2,2, -2,2, .2f, 10);
-//		perspective_vertical(Mp,DEG_TO_RAD(90),camera.wi/camera.hi,1,10);
+//		glFrustum(Mp,-2,2, -2,2, 1,10);
+//		perspective(Mp, -2,2, -2,2, 1, 10);
+		perspective_vertical(Mp,DEG_TO_RAD(40),camera.wi/camera.hi,1,10);
 	}
 
 	float Mptl[16];

@@ -243,7 +243,7 @@ int main(int argc,char*argv[]){
 		vec4 lookvector=vec4_def;
 		const float a=look_angle_z_axis;
 //		printf(" look angle z=%f\n",a);
-		const float s=1.0f;
+		const float s=100.0f;
 		lookvector.x=s*sinf(a);
 		lookvector.y=0;
 		lookvector.z=-s*cosf(a);
