@@ -9,7 +9,7 @@ struct{
 	float wi,hi;
 	int ortho;
 }camera={
-		.eye={0,0,2,0},
+		.eye={0,.5f,20,0},
 		.mxwvp={1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1},
 		.lookat={0,0,0,0},
 		.up={0,1,0,0},

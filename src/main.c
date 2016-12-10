@@ -52,9 +52,10 @@ inline static void main_init_programs(){
 
 inline static void main_init_scene(){
 	glos_load_scene_from_file("obj/skydome.obj");
+	glos_load_scene_from_file("obj/board.obj");
 	glos_load_scene_from_file("obj/blip.obj");
 
-	glos_load_scene_from_file("obj/color-cube.obj");
+//	glos_load_scene_from_file("obj/color-cube.obj");
 //	glos_load_scene_from_file("obj/board.obj");
 //
 //	object*o=object_alloc(&ninja_def);
@@ -77,7 +78,7 @@ static struct{
 	GLclampf red;
 	GLclampf green;
 	GLclampf blue;
-}c={.1f,.1f,.4f};
+}c={.1f,.1f, 0};
 
 
 inline static void main_render(){
