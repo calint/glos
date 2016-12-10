@@ -1,7 +1,5 @@
 #pragma once
-#include"lib.h"
-#include"sdl.h"
-#include"metrics.h"
+#include"../metrics.h"
 
 static char*shader_vertex_source =
 "#version 130                                              \n\

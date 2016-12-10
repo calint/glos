@@ -1,8 +1,8 @@
 #pragma once
 #include<stdio.h>
-#include"lib.h"
+#include"../lib.h"
 #include"shader.h"
-#include"token.h"
+#include"../token.h"
 
 //newmtl texture
 //Ns 96.078431
@@ -458,10 +458,10 @@ static/*gives*/dynp glo_load_all_from_file(const char*path){
 		if(token_equals(&t,"o")){
 			token t=token_next_from_string(p);
 			p=t.end;
-			str str=str_def;
-			str_add_list(&str,t.content,t.content_end-t.content);
-			str_add(&str,0);
-			printf("     object '%s'\n",str.data);
+			str s=str_def;
+			str_add_list(&s,t.content,t.content_end-t.content);
+			str_add(&s,0);
+			printf("     object '%s'\n",s.data);
 			p=scan_to_including_newline(p);
 			if(first_o){
 				first_o=0;

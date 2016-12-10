@@ -12,8 +12,7 @@ typedef struct str{
 	unsigned count;
 	unsigned cap;
 }str;
-
-#define str_def {0,0,0}
+#define str_def (str){0,0,0}
 
 //--------------------------------------------------------------------- private
 
