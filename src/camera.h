@@ -24,8 +24,8 @@ struct{
 static float look_angle_y=DEG_TO_RAD(0);
 static float look_angle_x=0;
 inline static void camera_update_matrix_wvp(){
-	float Ml[16];
 	if(camera.ortho){
+		float Ml[16];
 		mat4_set_look_at(Ml,&camera.eye,&camera.lookat,&(vec4){0,1,0,0});
 
 		position Pt=camera.eye;
@@ -38,22 +38,18 @@ inline static void camera_update_matrix_wvp(){
 		mat4_multiply(Mtl,Mt,Ml);
 
 		float Mp[16];
-		mat4_set_ortho_projection(Mp,-2,2, -2,2, -2,2); // cube
+		mat4_set_ortho_projection(Mp,-10,10, -10,10, -10,10); // cube
 
 		float Mptl[16];
 		mat4_multiply(Mptl,Mp,Mtl);
 
 		mat4_assign(camera.mxwvp,Mptl);
 	}else{
-//		mat4_set_identity(Ml);
-//		mat4_set_look_at(Ml,&camera.eye,&camera.lookat,&(vec4){0,1,0,0});
-
 		position Pt=camera.eye;
 		vec3_negate(&Pt);
 
 		float Mt[16];
 		mat4_set_translation(Mt,&Pt);
-
 
 		float My[16];
 		mat4_set_rotation_y(My,look_angle_y);
@@ -68,6 +64,5 @@ inline static void camera_update_matrix_wvp(){
 		mat4_multiply(Mpyt,Mp,Myt);
 
 		mat4_assign(camera.mxwvp,Mpyt);
-
 	}
 }

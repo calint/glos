@@ -56,9 +56,8 @@ inline static void main_init_scene(){
 	glos_load_scene_from_file("obj/blip.obj");
 
 //	glos_load_scene_from_file("obj/color-cube.obj");
-//	glos_load_scene_from_file("obj/board.obj");
 //
-	for(float y=0;y<10;y++){
+	for(float y=0;y<5;y++){
 		for(float z=-10;z<=10;z++){
 			for(float x=-10;x<=10;x+=1){
 				object*o=object_alloc(&ninja_def);
@@ -75,8 +74,6 @@ inline static void main_init(){
 	main_init_scene();
 	shader.active_program_ix=0;
 }
-
-
 
 static int draw_default=0,
 		draw_objects=1,
@@ -128,10 +125,6 @@ int main(int argc,char*argv[]){
 	objects_init();
 	glos_init();
 	main_init();
-//
-//	indx program_id_min=0;
-//	indx program_id_max=2;
-//
 
 	puts("");
 	metrics_print_headers();
@@ -151,9 +144,9 @@ int main(int argc,char*argv[]){
 	const float rad_over_degree=2.0f*PI/360.0f;
 	float rad_over_mouse_pixels=rad_over_degree*.02f;
 	int64_t keymap=0;
-	float sensitivity=1;
+	float mouse_sensitivity=1.5f;
 	float speed=1;
-	int mouse_mode=0;
+	int mouse_mode=1;
 	SDL_SetRelativeMouseMode(mouse_mode);
 	for(int running=1;running;){
 		metrics__at__frame_begin();
@@ -178,23 +171,27 @@ int main(int argc,char*argv[]){
 				}
 				break;
 			}
-			case SDL_QUIT:running = 0;break;
+			case SDL_QUIT:running=0;break;
 			case SDL_MOUSEMOTION:{
 //				printf(" relx,rely=%d,%d    look angle:%f\n",
 //						event.motion.xrel,event.motion.yrel,
 //						look_angle_z_axis*180/PI);
 				if(event.motion.xrel!=0){
 					look_angle_y+=(float)event.motion.xrel
-							*rad_over_mouse_pixels*sensitivity;
+							*rad_over_mouse_pixels*mouse_sensitivity;
 				}
 				if(event.motion.yrel!=0){
 					look_angle_x+=(float)event.motion.yrel
-							*rad_over_mouse_pixels*sensitivity;
+							*rad_over_mouse_pixels*mouse_sensitivity;
 				}
 				break;}
 			case SDL_KEYDOWN:
 				switch (event.key.keysym.sym){
-					case SDLK_ESCAPE:running=0;break;
+					case SDLK_ESCAPE:
+						mouse_mode=!mouse_mode;
+						SDL_SetRelativeMouseMode(mouse_mode);
+//						running=0;
+						break;
 					case SDLK_w:keymap|=1;break;
 					case SDLK_a:keymap|=2;break;
 					case SDLK_s:keymap|=4;break;
