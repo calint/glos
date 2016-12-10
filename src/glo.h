@@ -463,7 +463,7 @@ static/*gives*/dynp glo_load_all_from_file(const char*path){
 			dync str=dync_def;
 			dync_add_list(&str,t.content,t.content_end-t.content);
 			dync_add(&str,0);
-			printf("    * loading object '%s'\n",str.data);
+			printf("     object '%s'\n",str.data);
 			p=scan_to_including_newline(p);
 			if(first_o){
 				first_o=0;
@@ -480,9 +480,9 @@ static/*gives*/dynp glo_load_all_from_file(const char*path){
 			*g=(glo){/*gives*/vertex_buffer,/*gives*/mtlrngs,0};
 			dynp_add(&reuslt,g);
 
-			printf("      %u range\%c   %lu vertices   %lu B\n",
+			printf("       %u range\%c   %lu vertices   %lu B\n",
 					mtlrngs.count,mtlrngs.count==1?' ':'s',
-					vertex_buffer.count,
+					vertex_buffer.count/sizeof(vertex),
 					dynf_size_in_bytes(&vertex_buffer));
 
 
@@ -584,9 +584,9 @@ static/*gives*/dynp glo_load_all_from_file(const char*path){
 	*g=(glo){/*gives*/vertex_buffer,/*gives*/mtlrngs,0};
 	dynp_add(&reuslt,g);
 
-	printf("      %u range%c   %lu vertices   %lu B\n",
+	printf("       %u range\%c   %lu vertices   %lu B\n",
 			mtlrngs.count,mtlrngs.count==1?' ':'s',
-			vertex_buffer.count,
+			vertex_buffer.count/sizeof(vertex),
 			dynf_size_in_bytes(&vertex_buffer));
 
 	return/*gives*/reuslt;

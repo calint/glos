@@ -50,6 +50,8 @@ inline static void main_init_programs(){
 	program_load_from_source(vtx,frag,/*gives*/attrs);
 }
 
+static float ground_base_y=.25f;
+
 inline static void main_init_scene(){
 	glos_load_scene_from_file("obj/skydome.obj");
 	glos_load_scene_from_file("obj/board.obj");
@@ -58,8 +60,16 @@ inline static void main_init_scene(){
 //	glos_load_scene_from_file("obj/color-cube.obj");
 //	glos_load_scene_from_file("obj/board.obj");
 //
-//	object*o=object_alloc(&ninja_def);
-//	o->glo=glo_at(0);
+	for(float y=0;y<10;y++){
+		for(float z=-10;z<=10;z++){
+			for(float x=-10;x<=10;x+=1){
+				object*o=object_alloc(&ninja_def);
+				o->glo=glo_at(2);
+				o->position=(position){x,y+.25f,z,0};
+				object_update_bounding_radius_using_scale(o);
+			}
+		}
+	}
 }
 
 inline static void main_init(){
@@ -71,7 +81,7 @@ inline static void main_init(){
 
 
 static int draw_default=0,
-		draw_objects=0,
+		draw_objects=1,
 		draw_glos=1;
 
 static struct{
@@ -243,10 +253,10 @@ int main(int argc,char*argv[]){
 		vec4 lookvector=vec4_def;
 		const float a=look_angle_y;
 //		printf(" look angle z=%f\n",a);
-		const float s=1;
-		lookvector.x=s*sinf(a);
+		const float move_vector_scale=10;
+		lookvector.x=move_vector_scale*sinf(a);
 		lookvector.y=0;
-		lookvector.z=-s*cosf(a);
+		lookvector.z=-move_vector_scale*cosf(a);
 
 //		vec4 lookvector;
 //		mat4_get_zaxis(camera.mxwvp,&lookvector);
@@ -259,6 +269,7 @@ int main(int argc,char*argv[]){
 		vec4 up={0,1,0,0};
 		vec4_cross(&xaxis,&lookvector,&up);
 		vec4_normalize(&xaxis);
+		vec4_scale(&xaxis,move_vector_scale);
 
 		const float dt=metrics.previous_frame_dt;
 		if(keymap&1)vec4_increase_with_vec4_over_dt(&camera.eye,&lookvector,dt);

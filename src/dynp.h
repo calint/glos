@@ -23,6 +23,7 @@ inline static void _dynp_insure_free_capcity(dynp*this,indx n){
 		return;
 	if(this->data){
 		unsigned new_cap=this->cap*2;
+		 printf("realloc dynp  %d   %d\n",this->cap,new_cap);
 		void* *new_data=realloc(this->data,sizeof(void*)*new_cap);
 		if(!new_data){
 			fprintf(stderr,"\nout-of-memory");

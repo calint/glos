@@ -9,7 +9,7 @@ struct{
 	float wi,hi;
 	int ortho;
 }camera={
-		.eye={0,.5f,20,0},
+		.eye={0,.5f,30,0},
 		.mxwvp={1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1},
 		.lookat={0,0,0,0},
 		.up={0,1,0,0},
@@ -62,7 +62,7 @@ inline static void camera_update_matrix_wvp(){
 		mat4_multiply(Myt,My,Mt);
 
 		float Mp[16];
-		perspective_vertical(Mp,40,camera.wi/camera.hi,1,10);
+		perspective_vertical(Mp,20,camera.wi/camera.hi,1,10);
 
 		float Mpyt[16];
 		mat4_multiply(Mpyt,Mp,Myt);
