@@ -254,11 +254,16 @@ int main(int argc,char*argv[]){
 //		vec4_scale(&lookvector,10);
 //
 		camera.lookat=lookvector;
+		vec4 xaxis;
+		vec4 up={0,1,0,0};
+		vec4_cross(&xaxis,&lookvector,&up);
+		vec4_normalize(&xaxis);
+
 		const float dt=metrics.previous_frame_dt;
 		if(keymap&1)vec4_increase_with_vec4_over_dt(&camera.eye,&lookvector,dt*.5f);
-		if(keymap&2)camera.eye.x-=speed*(dt);
+		if(keymap&2)vec4_increase_with_vec4_over_dt(&camera.eye,&xaxis,-dt*.5f);
 		if(keymap&4)vec4_increase_with_vec4_over_dt(&camera.eye,&lookvector,-dt*.5f);
-		if(keymap&8)camera.eye.x+=speed*(dt);
+		if(keymap&8)vec4_increase_with_vec4_over_dt(&camera.eye,&xaxis,dt*.5f);
 		if(keymap&16)camera.eye.y+=speed*(dt);
 		if(keymap&32)camera.eye.y-=speed*(dt);
 //		printf("  %f  %f  %f  \n",
