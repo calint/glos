@@ -1,4 +1,6 @@
 #pragma once
+#include<string.h>
+#include<ctype.h>
 
 typedef struct token{
 	const char*begin;
@@ -21,8 +23,8 @@ inline static void token_print(token*t){
 	printf("%.*s",(int)token_size_including_whitespace(t),t->begin);
 }
 
-inline static size_t token_size(token*t){
-	return (size_t)(t->content_end-t->content);
+inline static unsigned token_size(token*t){
+	return (unsigned)(t->content_end-t->content);
 }
 
 inline static int token_starts_with(token*t,const char*str){

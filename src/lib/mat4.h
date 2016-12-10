@@ -1,5 +1,5 @@
 #pragma once
-
+#include<string.h>
 
 #define mat4_identity (float[]){1,0,0,0,  0,1,0,0,  0,0,1,0,  0,0,0,1}
 

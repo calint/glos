@@ -1,6 +1,6 @@
 #pragma once
 //---------------------------------------------------------------------- ninja
-#include"../object.h"
+#include"../obj.h"
 #include"ninja_part.h"
 //------------------------------------------------------------------ overrides
 inline static void _ninja_init_(object*this);

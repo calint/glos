@@ -1,8 +1,6 @@
 #pragma once
 #include<stdio.h>
 #include"../lib.h"
-#include"shader.h"
-#include"../token.h"
 
 //newmtl texture
 //Ns 96.078431
@@ -27,8 +25,8 @@ typedef struct objmtl{
 #define objmtl_def (objmtl){str_def,0,vec4_def,vec4_def,vec4_def,vec4_def,0,0,str_def,0}
 
 inline static void objmtl_free(objmtl*this){
-	dync_free(&this->name);
-	dync_free(&this->map_Kd);
+	str_free(&this->name);
+	str_free(&this->map_Kd);
 }
 
 #include"objmtls.h"
@@ -337,7 +335,7 @@ static/*gives*/glo*glo_load_next_from_string(const char**ptr_p){
 	mr->material=current_objmtl;
 	dynp_add(&material_ranges,mr);
 
-	printf(" ranges %u   %lu vertices   %lu B\n",
+	printf(" ranges %u   %u vertices   %lu B\n",
 			material_ranges.count,
 			vertex_buffer.count,
 			dynf_size_in_bytes(&vertex_buffer));
@@ -459,7 +457,7 @@ static/*gives*/dynp glo_load_all_from_file(const char*path){
 			token t=token_next_from_string(p);
 			p=t.end;
 			str s=str_def;
-			str_add_list(&s,t.content,t.content_end-t.content);
+			str_add_list(&s,t.content,(unsigned)(t.content_end-t.content));
 			str_add(&s,0);
 			printf("     object '%s'\n",s.data);
 			p=scan_to_including_newline(p);
@@ -478,7 +476,7 @@ static/*gives*/dynp glo_load_all_from_file(const char*path){
 			*g=(glo){/*gives*/vertex_buffer,/*gives*/mtlrngs,0};
 			dynp_add(&reuslt,g);
 
-			printf("       %u range\%c   %lu vertices   %lu B\n",
+			printf("       %u range%cs   %lu vertices   %zu B\n",
 					mtlrngs.count,mtlrngs.count==1?' ':'s',
 					vertex_buffer.count/sizeof(vertex),
 					dynf_size_in_bytes(&vertex_buffer));
@@ -582,7 +580,7 @@ static/*gives*/dynp glo_load_all_from_file(const char*path){
 	*g=(glo){/*gives*/vertex_buffer,/*gives*/mtlrngs,0};
 	dynp_add(&reuslt,g);
 
-	printf("       %u range\%c   %lu vertices   %lu B\n",
+	printf("       %u range%c   %lu vertices   %lu B\n",
 			mtlrngs.count,mtlrngs.count==1?' ':'s',
 			vertex_buffer.count/sizeof(vertex),
 			dynf_size_in_bytes(&vertex_buffer));

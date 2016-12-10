@@ -118,7 +118,7 @@ inline static void dyni_write_to_fd(dyni*this,int fd){
 
 //-----------------------------------------------------------------------------
 
-inline static dyni dyni_from_file(const int*path){
+inline static dyni dyni_from_file(const char*path){
 	FILE*f=fopen(path,"rb");
 	if(!f){
 		perror("\ncannot open");

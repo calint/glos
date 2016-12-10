@@ -41,6 +41,7 @@ typedef float*mat4f;
 #include"lib/dynp.h"
 #include"lib/vec3.h"
 #include"lib/mat4.h"
+#include"lib/token.h"
 
 
 inline static int bits_is_bit_set(bits*b,int bit_number_starting_at_zero){

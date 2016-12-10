@@ -118,7 +118,7 @@ inline static void dynf_write_to_fd(dynf*this,int fd){
 
 //-----------------------------------------------------------------------------
 
-inline static dynf dynf_from_file(const float*path){
+inline static dynf dynf_from_file(const char*path){
 	FILE*f=fopen(path,"rb");
 	if(!f){
 		perror("\ncannot open");
