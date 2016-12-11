@@ -1,6 +1,5 @@
 #pragma once
 #include"object_alloc.h"
-#include"part.h"
 //------------------------------------------------------------------------ init
 inline static void objects_init(){}
 //--------------------------------------------------------------------- update
