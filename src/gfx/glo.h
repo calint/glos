@@ -17,6 +17,26 @@ typedef struct glo{
 
 #define glo_def (glo){dynf_def,dynp_def}
 
+
+inline static/*gives*/glo*glo_alloc(){
+	metrics.glos_allocated++;
+	return malloc(sizeof(glo));
+}
+
+
+inline static/*gives*/glo*glo_alloc_zeroed(){
+	metrics.glos_allocated++;
+	return calloc(1,sizeof(glo));
+}
+
+inline static/*gives*/glo*glo_alloc_from(const glo* g){
+	metrics.glos_allocated++;
+	glo*o=malloc(sizeof(glo));
+	*o=*g;
+	return o;
+}
+
+
 static/*gives*/glo*glo_load_next_from_string(const char**ptr_p){
 	const char*p=*ptr_p;
 
@@ -207,7 +227,7 @@ static/*gives*/glo*glo_load_next_from_string(const char**ptr_p){
 			vertex_buffer.count,
 			dynf_size_in_bytes(&vertex_buffer));
 
-	glo*g=calloc(1,sizeof(glo));
+	glo*g=glo_alloc_zeroed();
 	*g=(glo){vertex_buffer,material_ranges,0};
 	*ptr_p=p;
 	return g;
@@ -339,7 +359,7 @@ static/*gives*/dynp glo_load_all_from_file(const char*path){
 			mr->material=current_objmtl;
 			dynp_add(&mtlrngs,mr);
 
-			glo*g=calloc(1,sizeof(glo));
+			glo*g=glo_alloc_zeroed();
 			*g=(glo){/*gives*/vertex_buffer,/*gives*/mtlrngs,0};
 			dynp_add(&reuslt,g);
 
@@ -443,7 +463,8 @@ static/*gives*/dynp glo_load_all_from_file(const char*path){
 	dynp_add(&mtlrngs,mr);
 
 
-	glo*g=calloc(1,sizeof(glo));
+
+	glo*g=glo_alloc_zeroed();
 	*g=(glo){/*gives*/vertex_buffer,/*gives*/mtlrngs,0};
 	dynp_add(&reuslt,g);
 

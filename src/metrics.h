@@ -15,9 +15,10 @@ struct{
 	}fps;
 
 	unsigned tick;
-	unsigned buffered_vertex_data;
+	size_t buffered_vertex_data;
 	unsigned buffered_texture_data;
 	unsigned objects_allocated;
+	unsigned glos_allocated;
 	unsigned objects_updated_prv_frame;
 	unsigned parts_updated_prv_frame;
 	unsigned objects_rendered_prv_frame;
@@ -26,7 +27,7 @@ struct{
 	unsigned triangles_rendered_prv_frame;
 }metrics;
 
-inline static void metrics_reset(){
+inline static void metrics_reset_timer(){
 	metrics.fps.calculation_intervall_in_ms=1000;
 	metrics.fps._time_at_start_of_intervall_in_ms=SDL_GetTicks();
 	metrics.fps._timer_tick_at_start_of_frame=SDL_GetPerformanceCounter();
@@ -34,15 +35,15 @@ inline static void metrics_reset(){
 }
 
 inline static void metrics_print_headers(FILE*f){
-	fprintf(f," %6s  %6s  %4s  %6s  %6s  %6s  %6s  %6s  %8s  %8s  %8s\n",
+	fprintf(f," %6s  %6s  %4s  %6s  %6s  %6s  %6s  %6s  %8s  %5s  %8s  %8s\n",
 			"ms","dt","fps","nobj","upd","rend","pupd","prend","gtri",
-			"bufsarr","bufstex"
+			"nglos","bufsarr","bufstex"
 		);
 }
 
 inline static void metrics_print(FILE*f){
 	fprintf(f," %06u  %0.4f  %04d  %06u  %06u  %06u  %06u  %06u  %08u"
-			  "  %08u  %08u\n",
+			  "  %05u  %08lu  %08u\n",
 			metrics.tick,
 			metrics.fps.dt,
 			metrics.average_fps,
@@ -52,6 +53,7 @@ inline static void metrics_print(FILE*f){
 			metrics.parts_updated_prv_frame,
 			metrics.parts_rendered_prv_frame,
 			metrics.triangles_rendered_prv_frame,
+			metrics.glos_allocated,
 			metrics.buffered_vertex_data,
 			metrics.buffered_texture_data
 		);
@@ -61,7 +63,7 @@ inline static void metrics_print(FILE*f){
 
 inline static void metrics__at__frame_begin(){
 	if(!metrics.fps.frame_count)
-		metrics_reset();
+		metrics_reset_timer();
 	metrics.fps.frame_count++;
 	metrics.objects_rendered_prv_frame=0;
 	metrics.objects_updated_prv_frame=0;

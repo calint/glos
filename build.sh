@@ -4,7 +4,7 @@ CC='clang -std=c11'
 SRC=src/main.c
 BIN=glos
 
-CFLAGS=$(sdl2-config --cflags)
+CFLAGS="$(sdl2-config --cflags)"
 
 WARNINGS='-Wall -Wextra -pedantic -Wfatal-errors -Wno-unused-function -Wno-unused-parameter -Wno-incompatible-pointer-types-discards-qualifiers'
 

@@ -148,7 +148,7 @@ inline static ${name} ${name}_from_file(const char*path){
 		fprintf(stderr,"\t\n%s %d\n",__FILE__,__LINE__);
 		exit(-1);
 	}
-	unsigned n=fread(filedata,1,(unsigned)length+1,f);
+	const size_t n=fread(filedata,1,(unsigned)length+1,f);
 	if(n!=(unsigned)length){
 		fprintf(stderr,"\nnot-a-full-read\n");
 		fprintf(stderr,"\t\n%s %d\n",__FILE__,__LINE__);

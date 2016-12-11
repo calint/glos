@@ -100,6 +100,7 @@ inline static void main_render(){
 
 	metrics__at__update_frame_end();
 }
+
 //------------------------------------------------------------------------ main
 int main(int argc,char*argv[]){
 	while(argc--)printf("%s ",*argv++);
@@ -107,12 +108,6 @@ int main(int argc,char*argv[]){
 	printf("\n   g l o s                                   -- - -- --- - -");
 	printf("\n- - - -- - --- - --  -- - - - - - -- - - - --  -- -- - - -- ");
 	puts("");
-
-
-
-
-	unsigned gloid=0,mingloid=0,maxgloid=10;
-
 	printf(":-%15s-:-%-9s-:\n","---------------","---------");
 	printf(": %15s : %-9s :\n","type",           "bytes");
 	printf(":-%15s-:-%-9s-:\n","---------------","---------");
@@ -121,6 +116,8 @@ int main(int argc,char*argv[]){
 	printf(": %15s : %-9ld :\n","glo",sizeof(glo));
 	printf(":-%15s-:-%-9s-:\n","---------------","--------");
 	puts("");
+
+	unsigned gloid=0,mingloid=0,maxgloid=10;
 	sdl_init();
 	window_init();
 	shader_init();
@@ -150,7 +147,7 @@ int main(int argc,char*argv[]){
 	float speed=1;
 	int mouse_mode=0;
 	SDL_SetRelativeMouseMode(mouse_mode);
-	metrics_reset();
+	metrics_reset_timer();
 	metrics_print_headers(stdout);
 	for(int running=1;running;){
 		metrics__at__frame_begin();
