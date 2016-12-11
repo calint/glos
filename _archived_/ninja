@@ -1,7 +1,7 @@
 #pragma once
-//---------------------------------------------------------------------- santa
+//--------------------------------------------------------------- ${name}
 //------------------------------------------------------------------------ def
-static object santa_def={
+static object ${name}_def={
 	.n=node_def,
 	.b={	.r=1.4f,
 			.s={1,1,1,0}},
@@ -20,39 +20,39 @@ static object santa_def={
 	.ptr_to_bits=NULL,
 };
 //------------------------------------------------------------------ extension
-typedef struct santa{
+typedef struct ${name}{
 	part part;
 	unsigned stars;
-}santa_ext;
+}${name}_ext;
 //------------------------------------------------------------------ overrides
-//static void _santa_part_init(object*,part*);
-static void _santa_update(object*,part*,dt);
-//static void _santa_part_render(object*,part*);
-//static void _santa_free(object*,part*);
+//static void _${name}_part_init(object*,part*);
+static void _${name}_update(object*,part*,dt);
+//static void _${name}_part_render(object*,part*);
+//static void _${name}_free(object*,part*);
 //----------------------------------------------------------------------- init
-static santa_ext santa_part_def={
+static ${name}_ext ${name}_part_def={
 	.part=(part){
 		.init=NULL,
-		.update=_santa_update,
+		.update=_${name}_update,
 		.render=NULL,
 		.free=NULL,
 	},
 	.stars=7,
 };
 //----------------------------------------------------------------------- impl
-static void _santa_part_init(object*po,part*o){}
-static void _santa_update(object*po,part*o,dt dt){}
-static void _santa_part_render(object*po,part*o){}
-static void _santa_part_free(object*po,part*o){}
+static void _${name}_part_init(object*po,part*o){}
+static void _${name}_update(object*po,part*o,dt dt){}
+static void _${name}_part_render(object*po,part*o){}
+static void _${name}_part_free(object*po,part*o){}
 //printf("%s:%u  [ %p %p ]\n",__FILE__,__LINE__,(void*)po,(void*)o);
 //----------------------------------------------------------------------------
 
 
 //----------------------------------------------------------------- alloc/free
-inline static/*gives*/object*santa_alloc_def(){
-	object*o=object_alloc(&santa_def);
-	santa_ext*p=malloc(sizeof(santa_ext));
-	*p=santa_part_def;
+inline static/*gives*/object*${name}_alloc_def(){
+	object*o=object_alloc(&${name}_def);
+	${name}_ext*p=malloc(sizeof(${name}_ext));
+	*p=${name}_part_def;
 	o->part[0]=(part*)p;
 	return o;
 }
