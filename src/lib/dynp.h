@@ -1,5 +1,6 @@
 #pragma once
 #include<stdio.h>
+#include<unistd.h>
 //----------------------------------------------------------------------config
 
 #define dynp_initial_capacity 8

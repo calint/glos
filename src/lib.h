@@ -1,10 +1,7 @@
 #pragma once
-#include<execinfo.h>
-#include<stdio.h>
-#include<stdlib.h>
-#include<math.h>
-#include<unistd.h>
+
 #include<inttypes.h>
+
 #include"lib/consts.h"
 
 typedef uint8_t bool;

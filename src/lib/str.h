@@ -1,5 +1,6 @@
 #pragma once
 #include<stdio.h>
+#include<unistd.h>
 //----------------------------------------------------------------------config
 
 #define str_initial_capacity 8
