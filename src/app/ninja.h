@@ -5,12 +5,12 @@
 //----------------------------------------------------------------------- init
 static object ninja_def={
 	.node=node_def,
-	.bvol={	.bounding_radius=1.4f,
-			.scale={1,1,1,0}},
-	.phy={	.position={0,0,0,0},
-			.velocity={0,0,0,0},
-			.angle={0,0,0,0},
-			.angular_velocity={0,0,0,0},},
+	.bvol={	.r=1.4f,
+			.s={1,1,1,0}},
+	.phy={	.p={0,0,0,0},
+			.v={0,0,0,0},
+			.a={0,0,0,0},
+			.av={0,0,0,0},},
 	.vtbl={	.init=NULL,
 			.update=NULL,
 			.collision=NULL,

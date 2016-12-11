@@ -16,7 +16,7 @@ typedef struct _vtbl{
 	void(*render)(struct object*);
 	void(*free)(struct object*);
 }vtbl;
-#define vtbl_def {NULL,NULL,NULL,NULL,NULL}
+#define vtbl_def {0,0,0,0,0}
 
 typedef struct object{
 	node node;
@@ -51,12 +51,12 @@ static object object_def={
 	.bvol=bvol_def,
 	.phy=phy_def,
 	.vtbl=vtbl_def,
-	.vtbl={object_init,
-			object_update,
-			object_collision,
-			object_render,
-			object_at_free
-	},
+//	.vtbl={object_init,
+//			object_update,
+//			object_collision,
+//			object_render,
+//			object_at_free
+//	},
 	.type={{0,0,0,0,0,0,0,0}},
 	.ptr_to_bits=0,
 	.part={0,0,0,0},
