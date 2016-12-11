@@ -35,25 +35,25 @@ static object object_def={
 	.part={0,0,0,0},
 };
 //---------------------------------------------------------------------- init
-inline static void object_init(object*this){}
+inline static void object_init(object*o){}
 //--------------------------------------------------------------------- update
-inline static void object_update(object*this,dt dt){
-	vec3_inc_with_vec3_over_dt(&this->phy.p,&this->phy.v,dt);
-	vec3_inc_with_vec3_over_dt(&this->phy.a,&this->phy.av,dt);
-	if(this->node.Mmw_valid &&
-		(this->phy.v.x||this->phy.v.y||this->phy.v.z||
-		this->phy.av.x||this->phy.av.y||
-		this->phy.av.z))
+inline static void object_update(object*o,dt dt){
+	vec3_inc_with_vec3_over_dt(&o->phy.p,&o->phy.v,dt);
+	vec3_inc_with_vec3_over_dt(&o->phy.a,&o->phy.av,dt);
+	if(o->node.Mmw_valid &&
+		(o->phy.v.x||o->phy.v.y||o->phy.v.z||
+		o->phy.av.x||o->phy.av.y||
+		o->phy.av.z))
 	{
-		this->node.Mmw_valid=0;
+		o->node.Mmw_valid=0;
 	}
 }
 //------------------------------------------------------------------ collision
-inline static void object_collision(object*this,object*other,dt dt){}
+inline static void object_collision(object*o,object*other,dt dt){}
 //--------------------------------------------------------------------- render
-inline static void object_render(object*this){}
+inline static void object_render(object*o){}
 //----------------------------------------------------------------------- free
-inline static void object_at_free(object*this){}
+inline static void object_at_free(object*o){}
 //----------------------------------------------------------- ------------ lib
 
 inline static const float*object_get_updated_Mmw(object*o){
