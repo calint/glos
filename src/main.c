@@ -242,7 +242,7 @@ int main(int argc,char*argv[]){
 						}
 						break;
 					}
-					case SDLK_4:camera.ortho=!camera.ortho;break;
+					case SDLK_4:camera.type=!camera.type;break;
 					case SDLK_TAB:
 						printf("   camera: %f  %f  %f",
 								camera.eye.x,camera.eye.y,camera.eye.z);
@@ -273,20 +273,20 @@ int main(int argc,char*argv[]){
 //		vec4_normalize(&lookvector);//? 3x3 orthonorm?
 //		vec4_scale(&lookvector,10);
 //
-		camera.lookat=lookvector;
-		vec4 xaxis;
-		vec4 up={0,1,0,0};
-		vec3_cross(&xaxis,&lookvector,&up);
-		vec3_normalize(&xaxis);
-		vec3_scale(&xaxis,move_vector_scale);
-
-		const float dt=metrics.fps.dt;
-		if(keybits&1)vec3_inc_with_vec3_over_dt(&camera.eye,&lookvector,dt);
-		if(keybits&2)vec3_inc_with_vec3_over_dt(&camera.eye,&xaxis,-dt);
-		if(keybits&4)vec3_inc_with_vec3_over_dt(&camera.eye,&lookvector,-dt);
-		if(keybits&8)vec3_inc_with_vec3_over_dt(&camera.eye,&xaxis,dt);
-		if(keybits&16)camera.eye.y+=speed*(dt);
-		if(keybits&32)camera.eye.y-=speed*(dt);
+//		camera.lookat=lookvector;
+//		vec4 xaxis;
+//		vec4 up={0,1,0,0};
+//		vec3_cross(&xaxis,&lookvector,&up);
+//		vec3_normalize(&xaxis);
+//		vec3_scale(&xaxis,move_vector_scale);
+//
+//		const float dt=metrics.fps.dt;
+//		if(keybits&1)vec3_inc_with_vec3_over_dt(&camera.eye,&lookvector,dt);
+//		if(keybits&2)vec3_inc_with_vec3_over_dt(&camera.eye,&xaxis,-dt);
+//		if(keybits&4)vec3_inc_with_vec3_over_dt(&camera.eye,&lookvector,-dt);
+//		if(keybits&8)vec3_inc_with_vec3_over_dt(&camera.eye,&xaxis,dt);
+//		if(keybits&16)camera.eye.y+=speed*(dt);
+//		if(keybits&32)camera.eye.y-=speed*(dt);
 //		printf("  %f  %f  %f  \n",
 //				camera.lookat.x,camera.lookat.y,camera.lookat.z);
 //		printf("  %f  %f  %f  \n",

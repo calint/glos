@@ -25,6 +25,9 @@ inline static void main_init_scene(){
 	o->p.p=(position){1,ground_base_y+0.5f,0,0};
 	bvol_update_radius_using_scale(&o->b);
 
-	santa_ext*p=o->part[0];
+	santa*p=o->part[0];
 	game.keybits_ptr=&p->keybits;
+
+	camera.eye=(position){3,3,5,0};
+	camera.lookat=(position){0,0,0,0};
 }

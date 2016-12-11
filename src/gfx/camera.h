@@ -7,7 +7,7 @@ struct{
 	vec4 up;
 	float znear,zfar;
 	float wi,hi;
-	int ortho;
+	int type;
 }camera={
 		.eye={0,.5f,30,0},
 		.mxwvp={1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1},
@@ -17,14 +17,15 @@ struct{
 		.zfar=-2,//-2        2
 		.wi=1024,
 		.hi=1024,
-		.ortho=0,
+		.type=2,
 };
 
 
 static float look_angle_y=DEG_TO_RAD(0);
 static float look_angle_x=0;
 inline static void camera_update_matrix_wvp(){
-	if(camera.ortho){
+	const float oc=15;
+	if(camera.type==1){
 		float Ml[16];
 		mat4_set_look_at(Ml,&camera.eye,&camera.lookat,&(vec4){0,1,0,0});
 
@@ -38,7 +39,47 @@ inline static void camera_update_matrix_wvp(){
 		mat4_multiply(Mtl,Mt,Ml);
 
 		float Mp[16];
-		mat4_set_ortho_projection(Mp,-10,10, -10,10, -10,10); // cube
+		mat4_set_ortho_projection(Mp,-oc,oc, -oc,oc, -oc,oc); // cube
+
+		float Mptl[16];
+		mat4_multiply(Mptl,Mp,Mtl);
+
+		mat4_assign(camera.mxwvp,Mptl);
+	}else if(camera.type==2){
+		float Ml[16];
+		mat4_set_look_at(Ml,&camera.eye,&camera.lookat,&(vec4){0,1,0,0});
+
+		position Pt=camera.eye;
+		vec3_negate(&Pt);
+
+		float Mt[16];
+		mat4_set_translation(Mt,&Pt);
+
+		float Mtl[16];
+		mat4_multiply(Mtl,Mt,Ml);
+
+		float Mp[16];
+		mat4_set_ortho_projection(Mp,-oc,oc, -oc,oc, -oc,oc); // cube
+
+		float Mptl[16];
+		mat4_multiply(Mptl,Mp,Mtl);
+
+		mat4_assign(camera.mxwvp,Mptl);
+	}else if(camera.type==3){
+		float Ml[16];
+		mat4_set_look_at(Ml,&camera.eye,&camera.lookat,&(vec4){0,1,0,0});
+
+		position Pt=camera.eye;
+		vec3_negate(&Pt);
+
+		float Mt[16];
+		mat4_set_translation(Mt,&Pt);
+
+		float Mtl[16];
+		mat4_multiply(Mtl,Mt,Ml);
+
+		float Mp[16];
+		perspective_vertical(Mp,20,camera.wi/camera.hi,1,10);
 
 		float Mptl[16];
 		mat4_multiply(Mptl,Mp,Mtl);

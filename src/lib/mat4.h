@@ -41,7 +41,8 @@ inline static void mat4_set_ortho_projection(mat4 o,
 
 	o[ 8]=0;
 	o[ 9]=0;
-	o[10]=-2.f/(farz-nearz);
+//	o[10]=-2.f/(farz-nearz);
+	o[10]=2.f/(farz-nearz);
 	o[11]=0;
 
 	o[12]=-(right+left)/(right-left);
