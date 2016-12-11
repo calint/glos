@@ -32,14 +32,14 @@ typedef struct object{
 inline static void object_init(object*this){}
 //---------------------------------------------------------------------- update
 inline static void object_update(object*this,dt dt){
-	vec3_inc_with_vec3_over_dt(&this->phy.position,&this->phy.velocity,dt);
-	vec3_inc_with_vec3_over_dt(&this->phy.angle,&this->phy.angular_velocity,dt);
-	if(this->node.matrix_vertices_model_to_world_valid &&
-		(this->phy.velocity.x||this->phy.velocity.y||this->phy.velocity.z||
-		this->phy.angular_velocity.x||this->phy.angular_velocity.y||
-		this->phy.angular_velocity.z))
+	vec3_inc_with_vec3_over_dt(&this->phy.p,&this->phy.v,dt);
+	vec3_inc_with_vec3_over_dt(&this->phy.a,&this->phy.av,dt);
+	if(this->node.Mmw_valid &&
+		(this->phy.v.x||this->phy.v.y||this->phy.v.z||
+		this->phy.av.x||this->phy.av.y||
+		this->phy.av.z))
 	{
-		this->node.matrix_vertices_model_to_world_valid=0;
+		this->node.Mmw_valid=0;
 	}
 }
 inline static void object_collision(object*this,object*other,dt dt){}
@@ -64,27 +64,27 @@ static object object_def={
 //----------------------------------------------------------- ------ functions
 
 inline static void object_update_bounding_radius_using_scale(object*o) {
-	o->bvol.bounding_radius=(bounding_radius)
-		sqrtf(o->bvol.scale.x*o->bvol.scale.x+o->bvol.scale.y*o->bvol.scale.y);
+	o->bvol.r=(bounding_radius)
+		sqrtf(o->bvol.s.x*o->bvol.s.x+o->bvol.s.y*o->bvol.s.y);
 }
 
 //----------------------------------------------------------------------------
 
 inline static const float*object_get_updated_matrix_model_to_world(object*o){
-	if(o->node.matrix_vertices_model_to_world_valid)
-		return o->node.matrix_vertices_model_to_world;
+	if(o->node.Mmw_valid)
+		return o->node.Mmw;
 
-	mat4_set_translation(o->node.matrix_vertices_model_to_world,
-			&o->phy.position);
+	mat4_set_translation(o->node.Mmw,
+			&o->phy.p);
 
 	mat4_append_rotation_about_z_axis(
-			o->node.matrix_vertices_model_to_world,o->phy.angle.z);
+			o->node.Mmw,o->phy.a.z);
 
-	mat4_scale(o->node.matrix_vertices_model_to_world,&o->bvol.scale);
+	mat4_scale(o->node.Mmw,&o->bvol.s);
 
-	o->node.matrix_vertices_model_to_world_valid=1;
+	o->node.Mmw_valid=1;
 
-	return o->node.matrix_vertices_model_to_world;
+	return o->node.Mmw;
 }
 
 //----------------------------------------------------------------------------

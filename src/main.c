@@ -57,7 +57,7 @@ inline static void main_init_scene(){
 			for(float x=-10;x<=10;x+=1){
 				object*o=object_alloc(&ninja_def);
 				o->node.glo=glo_at(2);
-				o->phy.position=(position){x,y+ground_base_y,z,0};
+				o->phy.p=(position){x,y+ground_base_y,z,0};
 				object_update_bounding_radius_using_scale(o);
 			}
 		}

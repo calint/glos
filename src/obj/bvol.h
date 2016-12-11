@@ -3,8 +3,8 @@
 
 //------------------------------------------------------------- bounding volume
 typedef struct _bvol{
-	bounding_radius bounding_radius;
-	scale scale;
+	bounding_radius r;
+	scale s;
 }bvol;
 #define bvol_def {0,vec4_def}
 
