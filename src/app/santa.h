@@ -22,8 +22,8 @@ static object santa_def={
 };
 //------------------------------------------------------------------------ init
 inline static void _santa_init_(object*this){
-	this->bvol.s=(scale){.5,.5,.5,0};
-	this->phy.av.z=90;
-	this->phy.p.x=.5f;
-	bvol_update_radius_using_scale(&this->bvol);
+	this->b.s=(scale){.5,.5,.5,0};
+	this->p.av.z=90;
+	this->p.p.x=.5f;
+	bvol_update_radius_using_scale(&this->b);
 }

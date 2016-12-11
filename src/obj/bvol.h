@@ -2,7 +2,7 @@
 #include"../lib.h"
 
 //------------------------------------------------------------- bounding volume
-typedef struct _bvol{
+typedef struct bvol{
 	bounding_radius r;
 	scale s;
 }bvol;

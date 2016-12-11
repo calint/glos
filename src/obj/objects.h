@@ -12,8 +12,8 @@ inline static void objects_update(dt dt){
 			continue;
 		}
 
-		if(o->vtbl.update){
-			o->vtbl.update(o,dt);
+		if(o->v.update){
+			o->v.update(o,dt);
 			metrics.objects_updated_prv_frame++;
 		}else{
 			object_update(o,metrics.dt_prv_frame);
@@ -40,8 +40,8 @@ inline static void objects_render() {
 			continue;
 		}
 
-		if(o->vtbl.render){
-			o->vtbl.render(o);
+		if(o->v.render){
+			o->v.render(o);
 			metrics.objects_rendered_prv_frame++;
 		}
 

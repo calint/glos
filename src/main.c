@@ -54,9 +54,9 @@ inline static void main_init_scene(){
 		for(float z=-10;z<=10;z++){
 			for(float x=-10;x<=10;x+=1){
 				object*o=object_alloc(&ninja_def);
-				o->node.glo=glo_at(2);
-				o->phy.p=(position){x,y+ground_base_y,z,0};
-				bvol_update_radius_using_scale(&o->bvol);
+				o->n.glo=glo_at(2);
+				o->p.p=(position){x,y+ground_base_y,z,0};
+				bvol_update_radius_using_scale(&o->b);
 			}
 		}
 	}
@@ -217,7 +217,7 @@ int main(int argc,char*argv[]){
 						if(gloid>maxgloid){
 							gloid=mingloid;
 						}
-						object_at(0)->node.glo=glo_at(gloid);
+						object_at(0)->n.glo=glo_at(gloid);
 						break;
 					}
 					case SDLK_3:{

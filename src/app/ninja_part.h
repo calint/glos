@@ -31,23 +31,23 @@ static ninja_part ninja_part_def={
 //-------------------------------------------------------------- implementation
 static void ninja_part_update(object*o,part*this,dt dt){
 //	printf(" %s %u : [ %p %p ]\n",__FILE__,__LINE__,(void*)o,(void*)this);
-	if(o->phy.p.x>1){
-		o->phy.p.x=1;
-		o->phy.v.x=-o->phy.v.x;
-		o->phy.av.z=-o->phy.av.z;
-	}else if(o->phy.p.x<-1){
-		o->phy.p.x=-1;
-		o->phy.v.x=-o->phy.v.x;
-		o->phy.av.z=-o->phy.av.z;
+	if(o->p.p.x>1){
+		o->p.p.x=1;
+		o->p.v.x=-o->p.v.x;
+		o->p.av.z=-o->p.av.z;
+	}else if(o->p.p.x<-1){
+		o->p.p.x=-1;
+		o->p.v.x=-o->p.v.x;
+		o->p.av.z=-o->p.av.z;
 	}
-	if(o->phy.p.y>1){
-		o->phy.p.y=1;
-		o->phy.v.y=-o->phy.v.y;
-		o->phy.av.z=-o->phy.av.z;
-	}else if(o->phy.p.y<-1){
-		o->phy.p.y=-1;
-		o->phy.v.y=-o->phy.v.y;
-		o->phy.av.z=-o->phy.av.z;
+	if(o->p.p.y>1){
+		o->p.p.y=1;
+		o->p.v.y=-o->p.v.y;
+		o->p.av.z=-o->p.av.z;
+	}else if(o->p.p.y<-1){
+		o->p.p.y=-1;
+		o->p.v.y=-o->p.v.y;
+		o->p.av.z=-o->p.av.z;
 	}
 }
 //-------------------------------------------------------------- implementation
