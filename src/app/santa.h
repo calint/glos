@@ -11,7 +11,7 @@ static object santa_def={
 			.v={0,0,0,0},
 			.a={0,0,0,0},
 			.av={0,0,0,0},},
-	.v={	.init=NULL,
+	.v={	.init=_santa_init_,
 			.update=NULL,
 			.collision=NULL,
 			.render=object_render_glob,
@@ -21,8 +21,6 @@ static object santa_def={
 	.part={NULL,NULL,NULL,NULL},
 	.ptr_to_bits=NULL,
 };
-//----------------------------------------------------------------------------
-
 //----------------------------------------------------------------------- init
 inline static void _santa_init_(object*this){
 	this->b.s=(scale){.5,.5,.5,0};
