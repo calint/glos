@@ -9,7 +9,6 @@
 #define object_part_cap 5
 
 //------------------------------------------------------------------------ def
-
 typedef struct object{
 	node node;
 	bvol bvol;
@@ -19,24 +18,6 @@ typedef struct object{
 	bits*ptr_to_bits;
 	void*part[object_part_cap];
 }object;
-//
-//----------------------------------------------------------------------- init
-inline static void object_init(object*this){}
-//---------------------------------------------------------------------- update
-inline static void object_update(object*this,dt dt){
-	vec3_inc_with_vec3_over_dt(&this->phy.p,&this->phy.v,dt);
-	vec3_inc_with_vec3_over_dt(&this->phy.a,&this->phy.av,dt);
-	if(this->node.Mmw_valid &&
-		(this->phy.v.x||this->phy.v.y||this->phy.v.z||
-		this->phy.av.x||this->phy.av.y||
-		this->phy.av.z))
-	{
-		this->node.Mmw_valid=0;
-	}
-}
-inline static void object_collision(object*this,object*other,dt dt){}
-inline static void object_render(object*this){}
-inline static void object_at_free(object*this){}
 //----------------------------------------------------------------------------
 static object object_def={
 	.node=node_def,
@@ -53,13 +34,27 @@ static object object_def={
 	.ptr_to_bits=0,
 	.part={0,0,0,0},
 };
-//----------------------------------------------------------- ------ functions
-
-inline static void bvol_update_radius_using_scale(bvol*o) {
-	o->r=(bounding_radius)sqrtf(o->s.x*o->s.x+o->s.y*o->s.y);
+//---------------------------------------------------------------------- init
+inline static void object_init(object*this){}
+//--------------------------------------------------------------------- update
+inline static void object_update(object*this,dt dt){
+	vec3_inc_with_vec3_over_dt(&this->phy.p,&this->phy.v,dt);
+	vec3_inc_with_vec3_over_dt(&this->phy.a,&this->phy.av,dt);
+	if(this->node.Mmw_valid &&
+		(this->phy.v.x||this->phy.v.y||this->phy.v.z||
+		this->phy.av.x||this->phy.av.y||
+		this->phy.av.z))
+	{
+		this->node.Mmw_valid=0;
+	}
 }
-
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------ collision
+inline static void object_collision(object*this,object*other,dt dt){}
+//--------------------------------------------------------------------- render
+inline static void object_render(object*this){}
+//----------------------------------------------------------------------- free
+inline static void object_at_free(object*this){}
+//----------------------------------------------------------- ------------ lib
 
 inline static const float*object_get_updated_Mmw(object*o){
 	if(o->node.Mmw_valid)

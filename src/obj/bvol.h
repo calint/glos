@@ -8,6 +8,12 @@ typedef struct _bvol{
 }bvol;
 #define bvol_def {0,vec4_def}
 
+
+inline static void bvol_update_radius_using_scale(bvol*o) {
+	o->r=(bounding_radius)sqrtf(o->s.x*o->s.x+o->s.y*o->s.y);
+}
+
+
 //
 //typedef vec3 vector;
 //
