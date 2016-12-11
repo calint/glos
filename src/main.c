@@ -143,7 +143,7 @@ int main(int argc,char*argv[]){
 	int mouse_mode=1;
 	SDL_SetRelativeMouseMode(mouse_mode);
 	metrics_reset();
-	metrics_print_headers();
+	metrics_print_headers(stdout);
 	for(int running=1;running;){
 		metrics__at__frame_begin();
 		SDL_Event event;
