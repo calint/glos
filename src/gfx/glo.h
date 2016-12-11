@@ -29,9 +29,9 @@ inline static void objmtl_free(objmtl*this){
 	str_free(&this->map_Kd);
 }
 
-#include"objmtls.h"
-
 static objmtls materials;
+
+#include"objmtls.h"
 
 inline static objmtl*objmtl_alloc(){
 	objmtl*o=malloc(sizeof(objmtl));

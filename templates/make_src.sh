@@ -6,3 +6,4 @@ sh template.sh dyn dyni int &&
 mv -f *.h ../src/lib/ &&
 ls -la --color ../src/lib/*.h
 
+
