@@ -46,14 +46,14 @@ inline static void camera_update_matrix_wvp(){
 
 		mat4_assign(camera.mxwvp,Mptl);
 	}else if(camera.type==2){
-		float Ml[16];
-		mat4_set_look_at(Ml,&camera.eye,&camera.lookat,&(vec4){0,1,0,0});
-
 		position Pt=camera.eye;
 		vec3_negate(&Pt);
 
 		float Mt[16];
 		mat4_set_translation(Mt,&Pt);
+
+		float Ml[16];
+		mat4_set_look_at(Ml,&camera.eye,&camera.lookat,&(vec4){0,1,0,0});
 
 		float Mlt[16];
 		mat4_multiply(Mlt,Ml,Mt);
