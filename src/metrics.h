@@ -14,9 +14,9 @@ struct{
 		uint64_t _timer_tick_at_start_of_frame;
 	}fps;
 
-	Uint32 tick;
-	size_t buffered_vertex_data;
-	size_t buffered_texture_data;
+	unsigned tick;
+	unsigned buffered_vertex_data;
+	unsigned buffered_texture_data;
 	unsigned objects_allocated;
 	unsigned objects_updated_prv_frame;
 	unsigned parts_updated_prv_frame;
@@ -34,26 +34,26 @@ inline static void metrics_reset(){
 }
 
 inline static void metrics_print_headers(FILE*f){
-	fprintf(f," %6s  %6s  %4s  %8s  %8s  %6s  %6s  %6s  %6s  %6s  %6s\n",
-			"ms","dt","fps","bufsarr","bufstex","nobj","upd","rend",
-			"pupd","prend","gtri"
+	fprintf(f," %6s  %6s  %4s  %6s  %6s  %6s  %6s  %6s  %8s  %8s  %8s\n",
+			"ms","dt","fps","nobj","upd","rend","pupd","prend","gtri",
+			"bufsarr","bufstex"
 		);
 }
 
 inline static void metrics_print(FILE*f){
-	fprintf(f," %06u  %0.4f  %04d  %08lu  %08lu  %06u  %06u  %06u  %06u  %06u"
-			  "  %06u\n",
+	fprintf(f," %06u  %0.4f  %04d  %06u  %06u  %06u  %06u  %06u  %08u"
+			  "  %08u  %08u\n",
 			metrics.tick,
 			metrics.fps.dt,
 			metrics.average_fps,
-			metrics.buffered_vertex_data,
-			metrics.buffered_texture_data,
 			metrics.objects_allocated,
 			metrics.objects_updated_prv_frame,
 			metrics.objects_rendered_prv_frame,
 			metrics.parts_updated_prv_frame,
 			metrics.parts_rendered_prv_frame,
-			metrics.triangles_rendered_prv_frame
+			metrics.triangles_rendered_prv_frame,
+			metrics.buffered_vertex_data,
+			metrics.buffered_texture_data
 		);
 }
 
@@ -76,9 +76,9 @@ inline static void metrics__at__frame_begin(){
 static inline void metrics__at__update_frame_end() {
 	{
 		Uint64 t1 = SDL_GetPerformanceCounter();
-		Uint64 dt = t1 - metrics.fps._timer_tick_at_start_of_frame;
+		Uint64 dt_ticks = t1 - metrics.fps._timer_tick_at_start_of_frame;
 		metrics.fps._timer_tick_at_start_of_frame = t1;
-		metrics.fps.dt=(float)dt/(float)metrics.fps._timer_frequency;
+		metrics.fps.dt=(float)dt_ticks/(float)metrics.fps._timer_frequency;
 
 		if(metrics.fps.dt>.1)
 			metrics.fps.dt=.1f;
