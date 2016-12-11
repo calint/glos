@@ -50,7 +50,7 @@ inline static object*object_alloc(object*initializer){
 	exit(-1);
 }
 //------------------------------------------------------------------------ free
-inline static void object_free(object*o){
+inline static void object_dealloc(object*o){
 #ifdef object_assert_free
 	if(*o->ptr_to_bits&2){
 		fprintf(stderr,"\n    object %p already freed\n",(void*)o);

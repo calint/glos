@@ -1,6 +1,6 @@
 #pragma once
 //---------------------------------------------------------------------- santa
-#include"../object.h"
+#include"../lib.h"
 //------------------------------------------------------------------------ def
 static object santa_def={
 	.position={0,0,0,0},
@@ -30,7 +30,7 @@ inline static void _santa_init_(object*this){
 //---------------------------------------------------------------------- update
 inline static void _santa_update_(object*this){
 //	printf(" * new %-12s [ %4s %p ]\n","santa",this->type.path,this);
-	_object_init_(this);
+	object_init(this);
 
 	this->scale=(scale){.5,.5,.5,0};
 	this->angular_velocity.z=90;

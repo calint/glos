@@ -30,10 +30,7 @@ typedef struct object{
 }object;
 //
 //----------------------------------------------------------------------- init
-inline static void _object_init_(object*this){
-//	printf(" object init: [ %4s %p ]\n",this->type.path,this);
-//	printf(" * new %-12s [ %4s %p ]\n","object",this->type.path,this);
-}
+inline static void object_init(object*this){}
 //---------------------------------------------------------------------- update
 inline static void object_update(object*this,dt dt){
 	vec3_inc_with_vec3_over_dt(&this->position,&this->velocity,dt);
@@ -46,11 +43,9 @@ inline static void object_update(object*this,dt dt){
 		this->model_to_world_matrix_is_updated=0;
 	}
 }
-inline static void _object_collision_(object*this,object*other,dt dt){}
-inline static void _object_render_(object*this){}
-inline static void _object_free_(object*this){
-//	printf(" * del %-12s [ %4s %p ]\n","object",this->type.path,this);
-}
+inline static void object_collision(object*this,object*other,dt dt){}
+inline static void object_render(object*this){}
+inline static void object_at_free(object*this){}
 //----------------------------------------------------------------------------
 static object object_def={
 	.position={0,0,0,0},
@@ -62,11 +57,11 @@ static object object_def={
 	.type={{0,0,0,0,0,0,0,0}},
 	.ptr_to_bits=0,
 	.model_to_world_matrix={1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1},
-	.init=_object_init_,
+	.init=object_init,
 	.update=object_update,
-	.collision=_object_collision_,
-	.render=_object_render_,
-	.free=_object_free_,
+	.collision=object_collision,
+	.render=object_render,
+	.free=object_at_free,
 	.part={0,0,0,0}
 };
 //----------------------------------------------------------- ------ functions
@@ -78,7 +73,7 @@ inline static void object_update_bounding_radius_using_scale(object*this) {
 
 //----------------------------------------------------------------------------
 
-inline static void _object_update_model_to_world_matrix(object*this){
+inline static void object_update_matrix_model_to_world(object*this){
 	if(this->model_to_world_matrix_is_updated)
 		return;
 
@@ -97,7 +92,7 @@ inline static void _object_update_model_to_world_matrix(object*this){
 inline static void object_render_glob(object*this) {
 	if(!this->glo)
 		return;
-	_object_update_model_to_world_matrix(this);
+	object_update_matrix_model_to_world(this);
 	glo_render(this->glo,this->model_to_world_matrix);
 }
 
