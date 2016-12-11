@@ -5,6 +5,7 @@
 
 struct{
 	int*keybits_ptr;
+	const object*follow_ptr;
 }game;
 
 #include"app/init.h"
@@ -255,6 +256,10 @@ int main(int argc,char*argv[]){
 
 		if(game.keybits_ptr)
 			*game.keybits_ptr=keybits;
+		if(game.follow_ptr){
+			camera.lookat=game.follow_ptr->p.p;
+		}
+
 
 //		printf("   camera: %f  %f  %f   angle: %f\n",
 //				camera.eye.x,camera.eye.y,camera.eye.z,look_angle_z_axis*180/PI);
