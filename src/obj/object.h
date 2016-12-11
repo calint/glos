@@ -9,16 +9,6 @@
 
 //------------------------------------------------------------------------ def
 
-//struct object;
-//typedef struct _vtbl{
-//	void(*init)(struct object*);
-//	void(*update)(struct object*,dt);
-//	void(*collision)(struct object*,struct object*,dt);
-//	void(*render)(struct object*);
-//	void(*free)(struct object*);
-//}vtbl;
-//#define vtbl_def {0,0,0,0,0}
-
 typedef struct object{
 	node node;
 	bvol bvol;
