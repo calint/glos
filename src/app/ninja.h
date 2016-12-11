@@ -13,7 +13,6 @@ static object ninja_def={
 	.type={{'a',0,0,0,0,0,0,0}},
 	.ptr_to_bits=NULL,
 	.glo=NULL,
-	.matrix_vertices_model_to_world={1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1},
 	.init=NULL,
 	.update=NULL,
 	.collision=NULL,
