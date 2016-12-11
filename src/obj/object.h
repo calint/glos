@@ -24,13 +24,18 @@ typedef struct _bvol{
 }bvol;
 #define bvol_def {0,vec4_def}
 
+typedef struct _phy{
+	position position;
+	velocity velocity;
+	angle angle;
+	angular_velocity angular_velocity;
+}phy;
+#define phy_def {vec4_def,vec4_def,vec4_def,vec4_def}
+
 typedef struct object{
-	node _node;
+	node node;
 	bvol bvol;
-	position position;                                                 // 16 B
-	velocity velocity;                                                 // 16 B
-	angle angle;                                                       // 16 B
-	angular_velocity angular_velocity;                                 // 16 B
+	phy phy;
 	void(*init)(struct object*);
 	void(*update)(struct object*,dt);
 	void(*collision)(struct object*,struct object*,dt);
@@ -46,14 +51,14 @@ typedef struct object{
 inline static void object_init(object*this){}
 //---------------------------------------------------------------------- update
 inline static void object_update(object*this,dt dt){
-	vec3_inc_with_vec3_over_dt(&this->position,&this->velocity,dt);
-	vec3_inc_with_vec3_over_dt(&this->angle,&this->angular_velocity,dt);
-	if(this->_node.matrix_vertices_model_to_world_valid &&
-		(this->velocity.x||this->velocity.y||this->velocity.z||
-		this->angular_velocity.x||this->angular_velocity.y||
-		this->angular_velocity.z))
+	vec3_inc_with_vec3_over_dt(&this->phy.position,&this->phy.velocity,dt);
+	vec3_inc_with_vec3_over_dt(&this->phy.angle,&this->phy.angular_velocity,dt);
+	if(this->node.matrix_vertices_model_to_world_valid &&
+		(this->phy.velocity.x||this->phy.velocity.y||this->phy.velocity.z||
+		this->phy.angular_velocity.x||this->phy.angular_velocity.y||
+		this->phy.angular_velocity.z))
 	{
-		this->_node.matrix_vertices_model_to_world_valid=0;
+		this->node.matrix_vertices_model_to_world_valid=0;
 	}
 }
 inline static void object_collision(object*this,object*other,dt dt){}
@@ -61,12 +66,9 @@ inline static void object_render(object*this){}
 inline static void object_at_free(object*this){}
 //----------------------------------------------------------------------------
 static object object_def={
-	._node=node_def,
+	.node=node_def,
 	.bvol=bvol_def,
-	.position={0,0,0,0},
-	.velocity={0,0,0,0},
-	.angle={0,0,0,0},
-	.angular_velocity={0,0,0,0},
+	.phy=phy_def,
 	.type={{0,0,0,0,0,0,0,0}},
 	.ptr_to_bits=0,
 	.init=object_init,
@@ -86,28 +88,29 @@ inline static void object_update_bounding_radius_using_scale(object*o) {
 //----------------------------------------------------------------------------
 
 inline static const float*object_get_updated_matrix_model_to_world(object*o){
-	if(o->_node.matrix_vertices_model_to_world_valid)
-		return o->_node.matrix_vertices_model_to_world;
+	if(o->node.matrix_vertices_model_to_world_valid)
+		return o->node.matrix_vertices_model_to_world;
 
-	mat4_set_translation(o->_node.matrix_vertices_model_to_world,&o->position);
+	mat4_set_translation(o->node.matrix_vertices_model_to_world,
+			&o->phy.position);
 
 	mat4_append_rotation_about_z_axis(
-			o->_node.matrix_vertices_model_to_world,o->angle.z);
+			o->node.matrix_vertices_model_to_world,o->phy.angle.z);
 
-	mat4_scale(o->_node.matrix_vertices_model_to_world,&o->bvol.scale);
+	mat4_scale(o->node.matrix_vertices_model_to_world,&o->bvol.scale);
 
-	o->_node.matrix_vertices_model_to_world_valid=1;
+	o->node.matrix_vertices_model_to_world_valid=1;
 
-	return o->_node.matrix_vertices_model_to_world;
+	return o->node.matrix_vertices_model_to_world;
 }
 
 //----------------------------------------------------------------------------
 
 inline static void object_render_glob(object*o) {
-	if(!o->_node.glo)
+	if(!o->node.glo)
 		return;
 	const float*f=object_get_updated_matrix_model_to_world(o);
-	glo_render(o->_node.glo,f);
+	glo_render(o->node.glo,f);
 }
 
 //----------------------------------------------------------------------------

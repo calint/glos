@@ -31,23 +31,23 @@ static ninja_part ninja_part_def={
 //-------------------------------------------------------------- implementation
 static void ninja_part_update(object*o,part*this,dt dt){
 //	printf(" %s %u : [ %p %p ]\n",__FILE__,__LINE__,(void*)o,(void*)this);
-	if(o->position.x>1){
-		o->position.x=1;
-		o->velocity.x=-o->velocity.x;
-		o->angular_velocity.z=-o->angular_velocity.z;
-	}else if(o->position.x<-1){
-		o->position.x=-1;
-		o->velocity.x=-o->velocity.x;
-		o->angular_velocity.z=-o->angular_velocity.z;
+	if(o->phy.position.x>1){
+		o->phy.position.x=1;
+		o->phy.velocity.x=-o->phy.velocity.x;
+		o->phy.angular_velocity.z=-o->phy.angular_velocity.z;
+	}else if(o->phy.position.x<-1){
+		o->phy.position.x=-1;
+		o->phy.velocity.x=-o->phy.velocity.x;
+		o->phy.angular_velocity.z=-o->phy.angular_velocity.z;
 	}
-	if(o->position.y>1){
-		o->position.y=1;
-		o->velocity.y=-o->velocity.y;
-		o->angular_velocity.z=-o->angular_velocity.z;
-	}else if(o->position.y<-1){
-		o->position.y=-1;
-		o->velocity.y=-o->velocity.y;
-		o->angular_velocity.z=-o->angular_velocity.z;
+	if(o->phy.position.y>1){
+		o->phy.position.y=1;
+		o->phy.velocity.y=-o->phy.velocity.y;
+		o->phy.angular_velocity.z=-o->phy.angular_velocity.z;
+	}else if(o->phy.position.y<-1){
+		o->phy.position.y=-1;
+		o->phy.velocity.y=-o->phy.velocity.y;
+		o->phy.angular_velocity.z=-o->phy.angular_velocity.z;
 	}
 }
 //-------------------------------------------------------------- implementation
