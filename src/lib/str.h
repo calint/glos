@@ -16,7 +16,7 @@ typedef struct str{
 
 //--------------------------------------------------------------------- private
 
-inline static void _str_insure_free_capcity(str*this,indx n){
+inline static void _str_insure_free_capcity(str*this,unsigned n){
 	const unsigned rem=this->cap-this->count;
 	if(rem>=n)
 		return;
@@ -52,7 +52,7 @@ inline static void str_add(str*this,char o){
 
 //-----------------------------------------------------------------------------
 
-inline static char str_get(str*this,indx index){
+inline static char str_get(str*this,unsigned index){
 #ifdef str_bounds_check
 	if(index>=this->count){
 		fprintf(stderr,"\nindex-out-of-bounds");

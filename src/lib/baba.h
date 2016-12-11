@@ -1,6 +1,4 @@
 #pragma once
-#include"typedefs.h"
-
 typedef int8_t byte;
 typedef int16_t word;
 typedef int32_t dword;

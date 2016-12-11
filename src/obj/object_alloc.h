@@ -62,7 +62,7 @@ inline static void object_dealloc(object*o){
 	metrics.objects_allocated--;
 }
 //------------------------------------------------------------------- accessors
-inline static void _object_assert_bounds(indx i){
+inline static void _object_assert_bounds(unsigned i){
 	if(i<object_cap)
 		return;
 	fprintf(stderr,"\n    object index %u out of bounds %u\n",
@@ -78,14 +78,14 @@ inline static const object*object_ptr_const(const void*p){
 //-----------------------------------------------------------------------------
 inline static object*object_ptr(void*p){return(object*)p;}
 //-----------------------------------------------------------------------------
-inline static object*object_at(indx i){
+inline static object*object_at(unsigned i){
 #ifdef object_assert_bounds
 	_object_assert_bounds(i);
 #endif
 	return&objects[i];
 }
 //-----------------------------------------------------------------------------
-inline static const object*object_at_const(indx i){
+inline static const object*object_at_const(unsigned i){
 #ifdef object_assert_bounds
 	_object_assert_bounds(i);
 #endif

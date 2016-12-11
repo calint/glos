@@ -16,7 +16,7 @@ typedef struct dynf{
 
 //--------------------------------------------------------------------- private
 
-inline static void _dynf_insure_free_capcity(dynf*this,indx n){
+inline static void _dynf_insure_free_capcity(dynf*this,unsigned n){
 	const unsigned rem=this->cap-this->count;
 	if(rem>=n)
 		return;
@@ -52,7 +52,7 @@ inline static void dynf_add(dynf*this,float o){
 
 //-----------------------------------------------------------------------------
 
-inline static float dynf_get(dynf*this,indx index){
+inline static float dynf_get(dynf*this,unsigned index){
 #ifdef dynf_bounds_check
 	if(index>=this->count){
 		fprintf(stderr,"\nindex-out-of-bounds");

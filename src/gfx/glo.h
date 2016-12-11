@@ -136,7 +136,7 @@ inline static void objmtls_load_from_file(const char*path){
 }
 
 typedef struct mtlrng{
-	indx begin,count;
+	unsigned begin,count;
 	objmtl*material;
 }mtlrng;
 #define mtlrng_def (mtlrng){0,0,NULL}
@@ -166,8 +166,8 @@ static/*gives*/glo*glo_load_next_from_string(const char**ptr_p){
 
 	objmtl*current_objmtl=NULL;
 	const char*basedir="obj/";
-	indx vtxbufix=0;
-	indx prev_vtxbufix=0;
+	unsigned vtxbufix=0;
+	unsigned prev_vtxbufix=0;
 	int first_o=1;
 	while(*p){
 		token t=token_next_from_string(p);
@@ -287,13 +287,13 @@ static/*gives*/glo*glo_load_next_from_string(const char**ptr_p){
 				// position
 				token vert1=token_from_string_additional_delim(p,'/');
 				p=vert1.end;
-				indx ix1=token_get_uint(&vert1);
+				unsigned ix1=token_get_uint(&vert1);
 				vec4*vtx=(vec4*)dynp_get(&vertices,ix1-1);
 
 				// texture index
 				token vert2=token_from_string_additional_delim(p,'/');
 				p=vert2.end;
-				indx ix2=token_get_uint(&vert2);
+				unsigned ix2=token_get_uint(&vert2);
 				vec4 tx,*tex;tex=&tx;
 				if(ix2){
 					tex=(vec4*)dynp_get(&texuv,ix2-1);
@@ -303,7 +303,7 @@ static/*gives*/glo*glo_load_next_from_string(const char**ptr_p){
 				// normal
 				token vert3=token_from_string_additional_delim(p,'/');
 				p=vert3.end;
-				indx ix3=token_get_uint(&vert3);
+				unsigned ix3=token_get_uint(&vert3);
 				vec4*norm=(vec4*)dynp_get(&normals,ix3-1);
 
 				// buffer
@@ -445,8 +445,8 @@ static/*gives*/dynp glo_load_all_from_file(const char*path){
 		}
 	}
 	objmtl*current_objmtl=NULL;
-	indx vtxbufix=0;
-	indx prev_vtxbufix=0;
+	unsigned vtxbufix=0;
+	unsigned prev_vtxbufix=0;
 	int first_o=1;
 	p=file.data;
 	unsigned vtxbufix_base=0;
@@ -525,13 +525,13 @@ static/*gives*/dynp glo_load_all_from_file(const char*path){
 				// position
 				token vert1=token_from_string_additional_delim(p,'/');
 				p=vert1.end;
-				indx ix1=token_get_uint(&vert1);
+				unsigned ix1=token_get_uint(&vert1);
 				vec4*vtx=(vec4*)dynp_get(&vertices,ix1-1);
 
 				// texture index
 				token vert2=token_from_string_additional_delim(p,'/');
 				p=vert2.end;
-				indx ix2=token_get_uint(&vert2);
+				unsigned ix2=token_get_uint(&vert2);
 				vec4 tx,*tex;tex=&tx;
 				if(ix2){
 					tex=(vec4*)dynp_get(&texuv,ix2-1);
@@ -541,7 +541,7 @@ static/*gives*/dynp glo_load_all_from_file(const char*path){
 				// normal
 				token vert3=token_from_string_additional_delim(p,'/');
 				p=vert3.end;
-				indx ix3=token_get_uint(&vert3);
+				unsigned ix3=token_get_uint(&vert3);
 				vec4*norm=(vec4*)dynp_get(&normals,ix3-1);
 
 				// buffer
@@ -600,7 +600,7 @@ inline static void glo_upload_to_opengl(glo*this){
 			GL_STATIC_DRAW);
 
 	// upload materials
-	for(indx i=0;i<this->ranges.count;i++){
+	for(unsigned i=0;i<this->ranges.count;i++){
 		mtlrng*mr=(mtlrng*)this->ranges.data[i];
 		objmtl*m=(objmtl*)mr->material;
 		if(m->map_Kd.count){// load texture
@@ -649,7 +649,7 @@ inline static void glo_render(glo*this,const float*mtxmw){
 	glVertexAttribPointer(shader_atex,  2,GL_FLOAT, GL_FALSE,
 			sizeof(vertex),(GLvoid*)((3+4+3)*sizeof(float)));
 
-	for(indx i=0;i<this->ranges.count;i++){
+	for(unsigned i=0;i<this->ranges.count;i++){
 		mtlrng*mr=(mtlrng*)this->ranges.data[i];
 		objmtl*m=mr->material;
 
@@ -695,11 +695,11 @@ static dynp glos=dynp_def;
 
 //---------------------------------------------------------------------
 
-inline static glo*glo_at(indx i){
+inline static glo*glo_at(unsigned i){
 	return dynp_get(&glos,i);
 }
 
-inline static const glo*glo_at_const(indx i){
+inline static const glo*glo_at_const(unsigned i){
 	return dynp_get(&glos,i);
 }
 
@@ -723,7 +723,7 @@ inline static void glos_load_obj_file(const char*path){
 
 inline static void glos_load_scene_from_file(const char*path){
 	dynp ls=glo_load_all_from_file(path);
-	for(indx i=0;i<ls.count;i++){
+	for(unsigned i=0;i<ls.count;i++){
 		glo*g=ls.data[i];
 		glo_upload_to_opengl(g);
 		dynp_add(&glos,g);

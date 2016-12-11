@@ -16,7 +16,7 @@ typedef struct dynp{
 
 //--------------------------------------------------------------------- private
 
-inline static void _dynp_insure_free_capcity(dynp*this,indx n){
+inline static void _dynp_insure_free_capcity(dynp*this,unsigned n){
 	const unsigned rem=this->cap-this->count;
 	if(rem>=n)
 		return;
@@ -52,7 +52,7 @@ inline static void dynp_add(dynp*this,void* o){
 
 //-----------------------------------------------------------------------------
 
-inline static void* dynp_get(dynp*this,indx index){
+inline static void* dynp_get(dynp*this,unsigned index){
 #ifdef dynp_bounds_check
 	if(index>=this->count){
 		fprintf(stderr,"\nindex-out-of-bounds");

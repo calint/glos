@@ -103,7 +103,7 @@ inline static void main_render(){
 }
 //------------------------------------------------------------------------ main
 int main(int argc,char*argv[]){
-	indx gloid=0,mingloid=0,maxgloid=10;
+	unsigned gloid=0,mingloid=0,maxgloid=10;
 
 	printf(":-%15s-:-%-9s-:\n","---------------","---------");
 	printf(": %15s : %-9s :\n","type",           "bytes");

@@ -16,7 +16,7 @@ typedef struct objmtls{
 
 //--------------------------------------------------------------------- private
 
-inline static void _objmtls_insure_free_capcity(objmtls*this,indx n){
+inline static void _objmtls_insure_free_capcity(objmtls*this,unsigned n){
 	const unsigned rem=this->cap-this->count;
 	if(rem>=n)
 		return;
@@ -52,7 +52,7 @@ inline static void objmtls_add(objmtls*this,objmtl* o){
 
 //-----------------------------------------------------------------------------
 
-inline static objmtl* objmtls_get(objmtls*this,indx index){
+inline static objmtl* objmtls_get(objmtls*this,unsigned index){
 #ifdef objmtls_bounds_check
 	if(index>=this->cap){
 		fprintf(stderr,"\nindex-out-of-bounds");
