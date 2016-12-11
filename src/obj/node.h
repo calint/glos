@@ -1,6 +1,6 @@
 #pragma once
 #include"../lib.h"
-typedef struct _node{
+typedef struct node{
 	float Mmw[16];
 	float Mnmw[9];
 	unsigned Mmw_valid;

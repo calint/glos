@@ -1,5 +1,5 @@
 #pragma once
-typedef struct _phy{
+typedef struct phy{
 	position p;
 	velocity v;
 	angle a;

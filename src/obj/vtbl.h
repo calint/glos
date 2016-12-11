@@ -1,7 +1,6 @@
 #pragma once
-
 struct object;
-typedef struct _vtbl{
+typedef struct vtbl{
 	void(*init)(struct object*);
 	void(*update)(struct object*,dt);
 	void(*collision)(struct object*,struct object*,dt);
