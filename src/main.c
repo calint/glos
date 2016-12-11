@@ -113,7 +113,7 @@ int main(int argc,char*argv[]){
 	printf(": %15s : %-9ld :\n","object",sizeof(object));
 	printf(": %15s : %-9ld :\n","glo",sizeof(glo));
 	printf(":-%15s-:-%-9s-:\n","---------------","--------");
-
+	puts("");
 	sdl_init();
 	window_init();
 	shader_init();
