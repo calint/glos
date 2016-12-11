@@ -19,7 +19,9 @@ typedef struct vec3{float x,y,z;}vec3;
 typedef struct vec4{float x,y,z,w;}vec4;
 #define vec4_def (vec4){0,0,0,0}
 
+//typedef float vec4[4];
 typedef float mat4[16];
+//struct mat4{float c[4*4];}
 
 typedef vec4 position;
 typedef position point;
