@@ -37,6 +37,24 @@ inline static/*gives*/glo*glo_alloc_from(const glo* g){
 }
 
 
+inline static void glo_free(glo*o){
+	glDeleteBuffers(1,&o->vtxbuf_id);
+	metrics.buffered_vertex_data-=dynf_size_in_bytes(&o->vtxbuf);
+	dynf_free(&o->vtxbuf);
+
+	for(unsigned i=0;i<o->ranges.count;i++){
+		mtlrng*mr=(mtlrng*)o->ranges.data[i];
+		objmtl*m=(objmtl*)mr->material;
+		if(m->texture_id){
+			glDeleteTextures(1,&m->texture_id);
+			metrics.buffered_texture_data-=m->texture_size_bytes;
+		}
+	}
+	dynp_free(&o->ranges);
+	metrics.glos_allocated--;
+//	memset(o,0,sizeof(glo));
+}
+
 static/*gives*/glo*glo_load_next_from_string(const char**ptr_p){
 	const char*p=*ptr_p;
 
@@ -561,23 +579,6 @@ inline static void glo_render(glo*this,const float*mtxmw){
 			glBindTexture(GL_TEXTURE_2D,0);
 		}
 	}
-}
-
-inline static void glo_free(glo*o){
-	glDeleteBuffers(1,&o->vtxbuf_id);
-	metrics.buffered_vertex_data-=dynf_size_in_bytes(&o->vtxbuf);
-	dynf_free(&o->vtxbuf);
-
-	for(unsigned i=0;i<o->ranges.count;i++){
-		mtlrng*mr=(mtlrng*)o->ranges.data[i];
-		objmtl*m=(objmtl*)mr->material;
-		if(m->texture_id){
-			glDeleteTextures(1,&m->texture_id);
-			metrics.buffered_texture_data-=m->texture_size_bytes;
-		}
-	}
-	dynp_free(&o->ranges);
-//	memset(o,0,sizeof(glo));
 }
 
 //--------------------------------------------------------------------- storage
