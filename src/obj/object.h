@@ -1,5 +1,6 @@
 #pragma once
 #include"../gfx.h"
+#include"bvol.h"
 //---------------------------------------------------------------------- config
 
 #define object_part_cap 5
@@ -18,11 +19,11 @@ typedef struct _node{
 }node;
 #define node_def {mat4_identity,mat3_identity,0,0,NULL}
 
-typedef struct _bvol{
-	bounding_radius bounding_radius;
-	scale scale;
-}bvol;
-#define bvol_def {0,vec4_def}
+//typedef struct _bvol{
+//	bounding_radius bounding_radius;
+//	scale scale;
+//}bvol;
+//#define bvol_def {0,vec4_def}
 
 typedef struct _phy{
 	position position;
@@ -34,6 +35,8 @@ typedef struct _phy{
 
 typedef struct object{
 	node node;
+	type type;
+	bits*ptr_to_bits;
 	bvol bvol;
 	phy phy;
 	void(*init)(struct object*);
@@ -42,9 +45,6 @@ typedef struct object{
 	void(*render)(struct object*);
 	void(*free)(struct object*);
 	void*part[object_part_cap];
-	type type;
-	bits*ptr_to_bits;
-	struct object*parent;
 }object;
 //
 //----------------------------------------------------------------------- init
