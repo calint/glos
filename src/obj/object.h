@@ -7,6 +7,7 @@
 #include"vtbl.h"
 //------------------------------------------------------------------------ def
 #define object_part_cap 5
+#define parts_def {0,0,0,0,0}
 typedef struct part part;
 typedef struct object{
 	node node;
@@ -30,8 +31,8 @@ static object object_def={
 //			.free=0,
 //	},
 	.type=type_def,
+	.part=parts_def,
 	.ptr_to_bits=0,
-	.part={0,0,0,0},
 };
 //---------------------------------------------------------------------- init
 inline static void object_init(object*o){}
