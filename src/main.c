@@ -2,7 +2,7 @@
 #include"gfx.h"
 #include"obj.h"
 #include"metrics.h"
-#include"app/ninja.h"
+#include"app/_init.h"
 //----------------------------------------------------------------------- init
 inline static void main_init_programs(){
 	const char*vtx="#version 130\n"
@@ -43,24 +43,24 @@ inline static void main_init_programs(){
 	shader_load_program_from_source(vtx,frag,/*gives*/attrs);
 }
 
-static float ground_base_y=.25f;
-
-inline static void main_init_scene(){
-	glos_load_scene_from_file("obj/skydome.obj");
-	glos_load_scene_from_file("obj/board.obj");
-	glos_load_scene_from_file("obj/blip.obj");
-
-	for(float y=0;y<5;y++){
-		for(float z=-10;z<=10;z++){
-			for(float x=-10;x<=10;x+=1){
-				object*o=object_alloc(&ninja_def);
-				o->n.glo=glo_at(2);
-				o->p.p=(position){x,y+ground_base_y,z,0};
-				bvol_update_radius_using_scale(&o->b);
-			}
-		}
-	}
-}
+//static float ground_base_y=.25f;
+//
+//inline static void main_init_scene(){
+//	glos_load_scene_from_file("obj/skydome.obj");
+//	glos_load_scene_from_file("obj/board.obj");
+//	glos_load_scene_from_file("obj/blip.obj");
+//
+//	for(float y=0;y<5;y++){
+//		for(float z=-10;z<=10;z++){
+//			for(float x=-10;x<=10;x+=1){
+//				object*o=object_alloc(&ninja_def);
+//				o->n.glo=glo_at(2);
+//				o->p.p=(position){x,y+ground_base_y,z,0};
+//				bvol_update_radius_using_scale(&o->b);
+//			}
+//		}
+//	}
+//}
 
 inline static void main_init(){
 	main_init_programs();
