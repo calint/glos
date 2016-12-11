@@ -56,7 +56,7 @@ inline static void main_init_scene(){
 				object*o=object_alloc(&ninja_def);
 				o->node.glo=glo_at(2);
 				o->phy.p=(position){x,y+ground_base_y,z,0};
-				bvol_update_radius_using_scale(o);
+				bvol_update_radius_using_scale(&o->bvol);
 			}
 		}
 	}

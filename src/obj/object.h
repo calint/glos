@@ -1,14 +1,12 @@
 #pragma once
+//--------------------------------------------------------------------- object
 #include"../lib.h"
 #include"node.h"
 #include"bvol.h"
 #include"phy.h"
 #include"vtbl.h"
-//---------------------------------------------------------------------- config
-
-#define object_part_cap 5
-
 //------------------------------------------------------------------------ def
+#define object_part_cap 5
 typedef struct part part;
 typedef struct object{
 	node node;
@@ -19,18 +17,18 @@ typedef struct object{
 	bits*ptr_to_bits;
 	part*part[object_part_cap];
 }object;
-//----------------------------------------------------------------------------
+//---------------------------------------------------------------------- -----
 static object object_def={
 	.node=node_def,
 	.bvol=bvol_def,
 	.phy=phy_def,
-//	.vtbl=vtbl_def,
-	.vtbl={	.init=0,
-			.update=0,
-			.collision=0,
-			.render=0,
-			.free=0,
-	},
+	.vtbl=vtbl_def,
+//	.vtbl={	.init=0,
+//			.update=0,
+//			.collision=0,
+//			.render=0,
+//			.free=0,
+//	},
 	.type={{0,0,0,0,0,0,0,0}},
 	.ptr_to_bits=0,
 	.part={0,0,0,0},
