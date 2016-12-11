@@ -41,13 +41,12 @@ inline static void mat4_set_ortho_projection(mat4 o,
 
 	o[ 8]=0;
 	o[ 9]=0;
-//	o[10]=-2.f/(farz-nearz);
-	o[10]=2.f/(farz-nearz);
+	o[10]=-2.f/(farz-nearz);
 	o[11]=0;
 
 	o[12]=-(right+left)/(right-left);
 	o[13]=-(top+bottom)/(top-bottom);
-	o[14]=(farz+nearz)/(farz-nearz);
+	o[14]=-(farz+nearz)/(farz-nearz);
 	o[15]=1;
 }
 
@@ -68,46 +67,69 @@ inline static void mat4_set_look_at(mat4 o,
 	vec4 yaxis;
 	vec3_cross(&yaxis,&zaxis,&xaxis);
 
-	// X
+//	// X
+//	o[0]=xaxis.x;
+//	o[1]=xaxis.y;
+//	o[2]=xaxis.z;
+//	o[3]=0;
+//	// Y
+//	o[4]=yaxis.x;
+//	o[5]=yaxis.y;
+//	o[6]=yaxis.z;
+//	o[7]=0;
+//	// Z
+//	o[8]=-zaxis.x;
+//	o[9]=-zaxis.y;
+//	o[10]=-zaxis.z;
+//	o[11]=0;
+//	// T
+//	o[12]=eye->x;
+//	o[13]=eye->y;
+//	o[14]=eye->z;
+//	o[15]=1;
+
+	// invert by transposing orthonorm mat3
+	//	 X
 	o[0]=xaxis.x;
-	o[1]=xaxis.y;
-	o[2]=xaxis.z;
+	o[1]=yaxis.x;
+	o[2]=zaxis.x;
 	o[3]=0;
-
 	// Y
-	o[4]=yaxis.x;
+	o[4]=xaxis.y;
 	o[5]=yaxis.y;
-	o[6]=yaxis.z;
+	o[6]=-zaxis.y;
 	o[7]=0;
-
-//	this[4]=0;
-//	this[5]=1;
-//	this[6]=0;
-//	this[7]=0;
-
 	// Z
-	o[8]=-zaxis.x;
-	o[9]=-zaxis.y;
+	o[8]=xaxis.z;
+	o[9]=yaxis.z;
 	o[10]=-zaxis.z;
 	o[11]=0;
-
-//	this[8]=0;
-//	this[9]=0;
-//	this[10]=1;
-//	this[11]=0;
-
 	// T
-//	this[12]=0;
-//	this[13]=0;
-//	this[14]=0;
-//	this[15]=1;
-//
-	o[12]=eye->x;
-	o[13]=eye->y;
-	o[14]=eye->z;
+	o[12]=0;
+	o[13]=0;
+	o[14]=0;
 	o[15]=1;
 
-//	mat4_set_identity(this);
+//	o[0]=xaxis.x;
+//	o[1]=yaxis.x;
+//	o[2]=zaxis.x;
+//	o[3]=0;
+//	// Y
+//	o[4]=xaxis.y;
+//	o[5]=yaxis.y;
+//	o[6]=-zaxis.y;
+//	o[7]=0;
+//	// Z
+//	o[8]=xaxis.z;
+//	o[9]=yaxis.z;
+//	o[10]=-zaxis.z;
+//	o[11]=0;
+//	// T
+//	o[12]=0;
+//	o[13]=0;
+//	o[14]=0;
+//	o[15]=1;
+
 }
 
 //inline static void mat4_set_perpective_projection(float*c,

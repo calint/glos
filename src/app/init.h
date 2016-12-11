@@ -28,6 +28,9 @@ inline static void main_init_scene(){
 	santa*p=o->part[0];
 	game.keybits_ptr=&p->keybits;
 
-	camera.eye=(position){3,3,5,0};
+//	camera.eye=(position){3,3,3,0};
+//	camera.lookat=(position){0,0,0,0};
+
+	camera.eye=(position){10,30,30,0};
 	camera.lookat=(position){0,0,0,0};
 }
