@@ -9,6 +9,7 @@
 #define object_part_cap 5
 
 //------------------------------------------------------------------------ def
+typedef struct part part;
 typedef struct object{
 	node node;
 	bvol bvol;
@@ -16,20 +17,20 @@ typedef struct object{
 	vtbl vtbl;
 	type type;
 	bits*ptr_to_bits;
-	void*part[object_part_cap];
+	part*part[object_part_cap];
 }object;
 //----------------------------------------------------------------------------
 static object object_def={
 	.node=node_def,
 	.bvol=bvol_def,
 	.phy=phy_def,
-	.vtbl=vtbl_def,
-//	.vtbl={object_init,
-//			object_update,
-//			object_collision,
-//			object_render,
-//			object_at_free
-//	},
+//	.vtbl=vtbl_def,
+	.vtbl={	.init=0,
+			.update=0,
+			.collision=0,
+			.render=0,
+			.free=0,
+	},
 	.type={{0,0,0,0,0,0,0,0}},
 	.ptr_to_bits=0,
 	.part={0,0,0,0},
@@ -53,9 +54,8 @@ inline static void object_collision(object*o,object*other,dt dt){}
 //--------------------------------------------------------------------- render
 inline static void object_render(object*o){}
 //----------------------------------------------------------------------- free
-inline static void object_at_free(object*o){}
+inline static void object_free(object*o){}
 //----------------------------------------------------------- ------------ lib
-
 inline static const float*object_get_updated_Mmw(object*o){
 	if(o->node.Mmw_valid)
 		return o->node.Mmw;
@@ -72,9 +72,7 @@ inline static const float*object_get_updated_Mmw(object*o){
 
 	return o->node.Mmw;
 }
-
 //----------------------------------------------------------------------------
-
 inline static void object_render_glob(object*o) {
 	if(!o->node.glo)
 		return;
@@ -82,5 +80,4 @@ inline static void object_render_glob(object*o) {
 	const float*f=object_get_updated_Mmw(o);
 	glo_render(o->node.glo,f);
 }
-
 //----------------------------------------------------------------------------

@@ -50,8 +50,6 @@ inline static void main_init_scene(){
 	glos_load_scene_from_file("obj/board.obj");
 	glos_load_scene_from_file("obj/blip.obj");
 
-//	glos_load_scene_from_file("obj/color-cube.obj");
-//
 	for(float y=0;y<5;y++){
 		for(float z=-10;z<=10;z++){
 			for(float x=-10;x<=10;x+=1){
@@ -62,6 +60,7 @@ inline static void main_init_scene(){
 			}
 		}
 	}
+
 }
 
 inline static void main_init(){
@@ -90,7 +89,7 @@ inline static void main_render(){
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	objects_update(metrics.previous_frame_dt);
+	objects_update(metrics.dt_prv_frame);
 
 	if(draw_objects)objects_render();
 
@@ -263,7 +262,7 @@ int main(int argc,char*argv[]){
 		vec3_normalize(&xaxis);
 		vec3_scale(&xaxis,move_vector_scale);
 
-		const float dt=metrics.previous_frame_dt;
+		const float dt=metrics.dt_prv_frame;
 		if(keymap&1)vec3_inc_with_vec3_over_dt(&camera.eye,&lookvector,dt);
 		if(keymap&2)vec3_inc_with_vec3_over_dt(&camera.eye,&xaxis,-dt);
 		if(keymap&4)vec3_inc_with_vec3_over_dt(&camera.eye,&lookvector,-dt);

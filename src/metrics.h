@@ -15,13 +15,13 @@ struct{
 	size_t buffered_vertex_data;
 	size_t buffered_texture_data;
 	unsigned objects_allocated;
-	unsigned objects_updated_last_frame;
-	unsigned parts_updated_last_frame;
+	unsigned objects_updated_prv_frame;
+	unsigned parts_updated_prv_frame;
 	unsigned objects_rendered_last_frame;
 	unsigned parts_rendered_last_frame;
 	unsigned average_fps;
 	unsigned vertices_rendered;
-	dt previous_frame_dt;
+	dt dt_prv_frame;
 }metrics;
 
 inline static void metrics_reset(){
@@ -39,13 +39,13 @@ inline static void metrics_print_headers(){
 inline static void metrics_print(){
 	printf(" %04d   %0.4f   %08lu  %08lu  %06u  %06u  %06u  %06u  %06u\n",
 			metrics.average_fps,
-			metrics.previous_frame_dt,
+			metrics.dt_prv_frame,
 			metrics.buffered_vertex_data,
 			metrics.buffered_texture_data,
 			metrics.objects_allocated,
-			metrics.objects_updated_last_frame,
+			metrics.objects_updated_prv_frame,
 			metrics.objects_rendered_last_frame,
-			metrics.parts_updated_last_frame,
+			metrics.parts_updated_prv_frame,
 			metrics.parts_rendered_last_frame
 		);
 }
@@ -57,9 +57,9 @@ inline static void metrics__at__frame_begin(){
 		metrics_reset();
 	fps.frame_count++;
 	metrics.objects_rendered_last_frame=0;
-	metrics.objects_updated_last_frame=0;
+	metrics.objects_updated_prv_frame=0;
 	metrics.parts_rendered_last_frame=0;
-	metrics.parts_updated_last_frame=0;
+	metrics.parts_updated_prv_frame=0;
 	metrics.vertices_rendered=0;
 }
 
@@ -71,7 +71,7 @@ static inline void metrics__at__update_frame_end() {
 		Uint64 dt = t1 - fps._timer_tick_at_start_of_frame;
 		fps._timer_tick_at_start_of_frame = t1;
 		fps.dt=(float)dt/(float)fps._timer_frequency;
-		metrics.previous_frame_dt=fps.dt;
+		metrics.dt_prv_frame=fps.dt;
 
 		if(fps.dt>.1)
 			fps.dt=.1f;

@@ -12,9 +12,11 @@ inline static void objects_update(dt dt){
 			continue;
 		}
 
+		object_update(o,metrics.dt_prv_frame);
+
 		if(o->vtbl.update){
 			o->vtbl.update(o,dt);
-			metrics.objects_updated_last_frame++;
+			metrics.objects_updated_prv_frame++;
 		}
 
 		for(int i=0;i<object_part_cap;i++){
@@ -23,7 +25,7 @@ inline static void objects_update(dt dt){
 			part*p=(part*)o->part[i];
 			if(p->update){
 				p->update(o,p,dt);
-				metrics.parts_updated_last_frame++;
+				metrics.parts_updated_prv_frame++;
 			}
 		}
 		o++;
