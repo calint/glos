@@ -37,8 +37,8 @@ inline static object*object_alloc(object*initializer){
 			*o=initializer?*initializer:object_def;
 			o->ptr_to_bits=objects_bits_seek_ptr++;
 
-			if (o->init)
-				o->init(o);
+			if (o->vtbl.init)
+				o->vtbl.init(o);
 
 			return o;
 		}
@@ -109,8 +109,8 @@ inline static void objects_free() {
 		}
 		/*** critical done ****/}
 
-		if(o->free)
-			o->free(o);
+		if(o->vtbl.free)
+			o->vtbl.free(o);
 
 		for(int i=0;i<object_part_cap;i++){
 			if(!o->part[i])

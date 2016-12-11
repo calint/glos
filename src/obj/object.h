@@ -8,17 +8,23 @@
 
 //------------------------------------------------------------------------ def
 
-typedef struct object{
-	node node;
-	type type;
-	bits*ptr_to_bits;
-	bvol bvol;
-	phy phy;
+struct object;
+typedef struct _vtbl{
 	void(*init)(struct object*);
 	void(*update)(struct object*,dt);
 	void(*collision)(struct object*,struct object*,dt);
 	void(*render)(struct object*);
 	void(*free)(struct object*);
+}vtbl;
+#define vtbl_def {NULL,NULL,NULL,NULL,NULL}
+
+typedef struct object{
+	node node;
+	bvol bvol;
+	phy phy;
+	vtbl vtbl;
+	type type;
+	bits*ptr_to_bits;
 	void*part[object_part_cap];
 }object;
 //
@@ -44,14 +50,16 @@ static object object_def={
 	.node=node_def,
 	.bvol=bvol_def,
 	.phy=phy_def,
+	.vtbl=vtbl_def,
+	.vtbl={object_init,
+			object_update,
+			object_collision,
+			object_render,
+			object_at_free
+	},
 	.type={{0,0,0,0,0,0,0,0}},
 	.ptr_to_bits=0,
-	.init=object_init,
-	.update=object_update,
-	.collision=object_collision,
-	.render=object_render,
-	.free=object_at_free,
-	.part={0,0,0,0}
+	.part={0,0,0,0},
 };
 //----------------------------------------------------------- ------ functions
 

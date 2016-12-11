@@ -9,11 +9,13 @@ static object ninja_def={
 	.phy=phy_def,
 	.type={{'a',0,0,0,0,0,0,0}},
 	.ptr_to_bits=NULL,
-	.init=NULL,
-	.update=NULL,
-	.collision=NULL,
-	.render=object_render_glob,
-	.free=NULL,
+	.vtbl={
+		.init=NULL,
+		.update=NULL,
+		.collision=NULL,
+		.render=object_render_glob,
+		.free=NULL,
+	},
 	.part={NULL,NULL,NULL,NULL}
 };
 //----------------------------------------------------------------------------
