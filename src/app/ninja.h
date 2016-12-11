@@ -1,6 +1,7 @@
 #pragma once
 //---------------------------------------------------------------------- ninja
 #include"../obj.h"
+//#include"classes.h"
 //------------------------------------------------------------------------ def
 static object ninja_def={
 	.n=node_def,
@@ -16,7 +17,7 @@ static object ninja_def={
 			.render=object_render_glob,
 			.free=NULL,
 	},
-	.t={{'a',0,0,0,0,0,0,0}},
+	.t={{'a','a',0,0,0,0,0,0}},
 	.part={NULL,NULL,NULL,NULL},
 	.ptr_to_bits=NULL,
 };

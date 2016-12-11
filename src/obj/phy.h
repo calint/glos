@@ -1,7 +1,4 @@
 #pragma once
-
-#pragma once
-
 typedef struct _phy{
 	position p;
 	velocity v;
