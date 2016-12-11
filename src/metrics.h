@@ -7,7 +7,7 @@ struct{
 	struct{
 		uint32_t average_during_last_intervall;
 		uint32_t frame_count;
-		uint32_t calculation_intervall_in_ms;
+		uint32_t calculation_intervall_ms;
 		uint32_t _time_at_start_of_intervall_in_ms;
 		dt dt;
 		uint64_t _timer_frequency;
@@ -28,7 +28,6 @@ struct{
 }metrics;
 
 inline static void metrics_reset_timer(){
-	metrics.fps.calculation_intervall_in_ms=1000;
 	metrics.fps._time_at_start_of_intervall_in_ms=SDL_GetTicks();
 	metrics.fps._timer_tick_at_start_of_frame=SDL_GetPerformanceCounter();
 	metrics.fps._timer_frequency=SDL_GetPerformanceFrequency();
@@ -75,36 +74,39 @@ inline static void metrics__at__frame_begin(){
 
 //----------------------------------------------------------------------------
 
-static inline void metrics__at__update_frame_end() {
+static inline void metrics__at__update_frame_end(FILE*f) {
 	{
-		Uint64 t1 = SDL_GetPerformanceCounter();
-		Uint64 dt_ticks = t1 - metrics.fps._timer_tick_at_start_of_frame;
-		metrics.fps._timer_tick_at_start_of_frame = t1;
+		Uint64 t1=SDL_GetPerformanceCounter();
+		Uint64 dt_ticks=t1-metrics.fps._timer_tick_at_start_of_frame;
+		metrics.fps._timer_tick_at_start_of_frame=t1;
 		metrics.fps.dt=(float)dt_ticks/(float)metrics.fps._timer_frequency;
 
 		if(metrics.fps.dt>.1)
-			metrics.fps.dt=.1f;
+			metrics.fps.dt=.1f;//? magicnumber
 
 		if(metrics.fps.dt==0)
-			metrics.fps.dt=.00001f;
+			metrics.fps.dt=.00001f;//? magicnumber
 
 	}
 
 	Uint32 t1=SDL_GetTicks();
 	Uint32 dt=t1-metrics.fps._time_at_start_of_intervall_in_ms;
-	if(dt<metrics.fps.calculation_intervall_in_ms)
+
+	if(dt<metrics.fps.calculation_intervall_ms)
 		return;
+
 	if(dt!=0){
 		metrics.fps.average_during_last_intervall=
 				metrics.fps.frame_count*1000/dt;
 	}else{
 		metrics.fps.average_during_last_intervall=0;
 	}
-	metrics.average_fps=metrics.fps.average_during_last_intervall;
-	metrics.fps._time_at_start_of_intervall_in_ms = t1;
-	metrics.fps.frame_count = 0;
 
-	metrics_print(stdout);
+	metrics.average_fps=metrics.fps.average_during_last_intervall;
+	metrics.fps._time_at_start_of_intervall_in_ms=t1;
+	metrics.fps.frame_count=0;
+
+	metrics_print(f);
 }
 
 //----------------------------------------------------------------------------

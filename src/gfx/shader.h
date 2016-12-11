@@ -93,10 +93,12 @@ void main(){                          \n\
 
 #define programs_cap 8
 typedef struct program{
-	GLuint gid;
+	GLuint id;
+	unsigned attached_vtxshdr_id;
+	unsigned attached_frgshdr_id;
 	dyni attributes;
 }program;
-#define program_def (program){0,dyni_def}
+#define program_def (program){0,0,0,dyni_def}
 
 static dynp programs=dynp_def;
 //static program programs[programs_cap];
@@ -138,16 +140,17 @@ inline static program*shader_load_program_from_source(
 	program*p=malloc(sizeof(program));
 	*p=program_def;
 
-	p->gid=gid;
+	p->id=gid;
 
 	p->attributes=/*gives*/attrs;
 
-	GLuint vertex=shader_compile(GL_VERTEX_SHADER,vert_src);
+	p->attached_vtxshdr_id=shader_compile(GL_VERTEX_SHADER,vert_src);
 
-	GLuint fragment=shader_compile(GL_FRAGMENT_SHADER,frag_src);
+	p->attached_frgshdr_id=shader_compile(GL_FRAGMENT_SHADER,frag_src);
 
-	glAttachShader(gid,vertex);
-	glAttachShader(gid,fragment);
+
+	glAttachShader(gid,p->attached_vtxshdr_id);
+	glAttachShader(gid,p->attached_frgshdr_id);
 	glLinkProgram(gid);
 
 	GLint ok;glGetProgramiv(gid,GL_LINK_STATUS,&ok);
@@ -392,7 +395,13 @@ inline static void shader_free(){
 	glDeleteBuffers(1,&shader_def_texbuf_id);
 	metrics.buffered_texture_data-=shader_def_texbuf_nbytes;
 
-	glDeleteProgram(shader_def_program_id);
+	for(unsigned i=0;i<programs.count;i++){
+		program*p=programs.data[i];
+//		program_free(&programs.data[i]);
+		glDeleteShader(p->attached_vtxshdr_id);
+		glDeleteShader(p->attached_frgshdr_id);
+		glDeleteProgram(p->id);
+	}
 }
 
 inline static void shader_init() {

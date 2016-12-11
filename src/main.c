@@ -98,7 +98,7 @@ inline static void main_render(){
 
 	SDL_GL_SwapWindow(window.ref);
 
-	metrics__at__update_frame_end();
+	metrics__at__update_frame_end(stderr);
 }
 
 //------------------------------------------------------------------------ main
@@ -128,7 +128,7 @@ int main(int argc,char*argv[]){
 	{
 		puts("");
 		program*p=dynp_get(&programs,shader.active_program_ix);
-		gid progid=p->gid;
+		gid progid=p->id;
 		glUseProgram(progid);
 		dyni*enable=&p->attributes;
 		printf(" * using program at index %u\n",shader.active_program_ix);
@@ -147,8 +147,10 @@ int main(int argc,char*argv[]){
 	float speed=1;
 	int mouse_mode=0;
 	SDL_SetRelativeMouseMode(mouse_mode);
+
+	metrics.fps.calculation_intervall_ms=100;
 	metrics_reset_timer();
-	metrics_print_headers(stdout);
+	metrics_print_headers(stderr);
 	for(int running=1;running;){
 		metrics__at__frame_begin();
 		SDL_Event event;
@@ -295,7 +297,7 @@ int main(int argc,char*argv[]){
 			program*ap=dynp_get(&programs,shader.active_program_ix);
 //			const unsigned progid=ap->gid;
 
-			glUseProgram(ap->gid);
+			glUseProgram(ap->id);
 
 			dyni*enable=&ap->attributes;
 			for(unsigned i=0;i<enable->count;i++){
@@ -316,7 +318,7 @@ int main(int argc,char*argv[]){
 	shader_free();
 	window_free();
 	sdl_free();
-	metrics_print(stdout);
+	metrics_print(stderr);
 	puts(" * clean exit");
 	return 0;
 }

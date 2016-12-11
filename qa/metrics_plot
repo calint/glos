@@ -1,0 +1,2 @@
+#!/bin/sh
+gnuplot < metrics.plot && feh metrics.png
