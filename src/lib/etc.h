@@ -1,6 +1,7 @@
 #pragma once
-#include<execinfo.h>
+
 #include<stdlib.h>
+#include<math.h>
 //----------------------------------------------------------------------------
 
 inline static int bits_is_bit_set(bits*b,int bit_number_starting_at_zero){
@@ -33,20 +34,6 @@ inline static float random_range(float low,float high){
 
 inline static float bounding_radius_for_scale(scale*s){
 	return sqrtf(s->x*s->x+s->y*s->y+s->z*s->z);//?
-}
-
-//----------------------------------------------------------------------------
-
-void stacktrace_print(){
-	void*array[10];
-	int size=backtrace(array,10);
-	char**strings=backtrace_symbols(array,size);
-	fprintf(stderr,"stacktrace %d frames:\n",size);
-
-	for(int i=0;i<size;i++)
-		fprintf(stderr,"%s\n",strings[i]);
-
-	free (strings);
 }
 
 //----------------------------------------------------------------------------

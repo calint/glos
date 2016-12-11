@@ -1,7 +1,7 @@
 #pragma once
 #include<stdio.h>
 #include<unistd.h>
-#include"../lib/etc.h"
+#include"../lib/stacktrace.h"
 //----------------------------------------------------------------------config
 
 #define dynf_initial_capacity 8
