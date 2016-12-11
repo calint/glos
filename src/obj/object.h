@@ -1,4 +1,5 @@
 #pragma once
+#include"../lib.h"
 #include"node.h"
 #include"bvol.h"
 #include"phy.h"
@@ -54,14 +55,13 @@ static object object_def={
 };
 //----------------------------------------------------------- ------ functions
 
-inline static void object_update_bounding_radius_using_scale(object*o) {
-	o->bvol.r=(bounding_radius)
-		sqrtf(o->bvol.s.x*o->bvol.s.x+o->bvol.s.y*o->bvol.s.y);
+inline static void bvol_update_radius_using_scale(bvol*o) {
+	o->r=(bounding_radius)sqrtf(o->s.x*o->s.x+o->s.y*o->s.y);
 }
 
 //----------------------------------------------------------------------------
 
-inline static const float*object_get_updated_matrix_model_to_world(object*o){
+inline static const float*object_get_updated_Mmw(object*o){
 	if(o->node.Mmw_valid)
 		return o->node.Mmw;
 
@@ -83,7 +83,8 @@ inline static const float*object_get_updated_matrix_model_to_world(object*o){
 inline static void object_render_glob(object*o) {
 	if(!o->node.glo)
 		return;
-	const float*f=object_get_updated_matrix_model_to_world(o);
+
+	const float*f=object_get_updated_Mmw(o);
 	glo_render(o->node.glo,f);
 }
 
