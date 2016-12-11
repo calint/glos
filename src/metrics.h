@@ -37,7 +37,7 @@ inline static void metrics_reset_timer(){
 inline static void metrics_print_headers(FILE*f){
 	fprintf(f," %6s  %6s  %4s  %6s  %6s  %6s  %6s  %6s  %8s  %5s  %8s  %8s\n",
 			"ms","dt","fps","nobj","upd","rend","pupd","prend","gtri",
-			"nglos","bufsarr","bufstex"
+			"nglo","arrbufs","texbufs"
 		);
 }
 

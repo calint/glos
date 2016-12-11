@@ -1,5 +1,5 @@
 #/bin/sh -x
-echo "source generated from templates:"
+echo "generated source:"
 ./template dyn dynp void* &&
 ./template dyn dynf float &&
 ./template dyn str char &&
