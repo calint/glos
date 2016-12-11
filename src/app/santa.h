@@ -30,7 +30,7 @@ static void _santa_update(object*,part*,dt);
 //static void _santa_part_render(object*,part*);
 //static void _santa_free(object*,part*);
 //----------------------------------------------------------------------- init
-static santa_ext santa_part_def={
+static santa_ext santa_ext_def={
 	.part=(part){
 		.init=NULL,
 		.update=_santa_update,
@@ -52,7 +52,7 @@ static void _santa_part_free(object*po,part*o){}
 inline static/*gives*/object*santa_alloc_def(){
 	object*o=object_alloc(&santa_def);
 	santa_ext*p=malloc(sizeof(santa_ext));
-	*p=santa_part_def;
+	*p=santa_ext_def;
 	o->part[0]=(part*)p;
 	return o;
 }

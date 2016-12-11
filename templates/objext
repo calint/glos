@@ -30,7 +30,7 @@ static void _${name}_update(object*,part*,dt);
 //static void _${name}_part_render(object*,part*);
 //static void _${name}_free(object*,part*);
 //----------------------------------------------------------------------- init
-static ${name}_ext ${name}_part_def={
+static ${name}_ext ${name}_ext_def={
 	.part=(part){
 		.init=NULL,
 		.update=_${name}_update,

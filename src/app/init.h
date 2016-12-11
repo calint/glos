@@ -22,5 +22,6 @@ inline static void main_init_scene(){
 	}
 	object*o=santa_alloc_def();
 	o->n.glo=glo_at(3);
+	o->p.p=(position){1,ground_base_y+0.5f,0,0};
 	bvol_update_radius_using_scale(&o->b);
 }
