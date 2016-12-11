@@ -5,6 +5,7 @@
 #include<math.h>
 #include<unistd.h>
 #include<inttypes.h>
+#include"lib/consts.h"
 
 typedef uint8_t bool;
 typedef uint8_t bits;
@@ -17,6 +18,8 @@ typedef struct vec2{float x,y;}vec2;
 typedef struct vec3{float x,y,z;}vec3;
 typedef struct vec4{float x,y,z,w;}vec4;
 #define vec4_def (vec4){0,0,0,0}
+
+typedef float mat4[16];
 
 typedef vec4 position;
 typedef position point;
@@ -34,8 +37,6 @@ typedef uint32_t indx;
 typedef unsigned glid;
 typedef float mat;
 typedef float*mat4f;
-
-#define PI 3.1415926535897932384626433832795f
 
 #include"lib/str.h"
 #include"lib/dynf.h"
