@@ -2,6 +2,7 @@
 #include<string.h>
 
 #define mat4_identity (float[]){1,0,0,0,  0,1,0,0,  0,0,1,0,  0,0,0,1}
+#define mat3_identity (float[]){1,0,0, 0,1,0, 0,0,1}
 
 
 inline static void mat4_assign(float*this,float*src){

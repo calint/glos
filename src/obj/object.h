@@ -1,37 +1,13 @@
 #pragma once
 #include"../gfx.h"
 #include"bvol.h"
+#include"node.h"
+#include"phy.h"
 //---------------------------------------------------------------------- config
 
 #define object_part_cap 5
 
-
-#define mat3_identity {1,0,0, 0,1,0, 0,0,1}
-#define mat4_identity {1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1}
-
 //------------------------------------------------------------------------ def
-typedef struct _node{
-	float matrix_vertices_model_to_world[16];
-	float matrix_normals_model_to_world[9];
-	unsigned matrix_vertices_model_to_world_valid;
-	unsigned ts_parent_upd_mtx_mw;
-	glo*glo;
-}node;
-#define node_def {mat4_identity,mat3_identity,0,0,NULL}
-
-//typedef struct _bvol{
-//	bounding_radius bounding_radius;
-//	scale scale;
-//}bvol;
-//#define bvol_def {0,vec4_def}
-
-typedef struct _phy{
-	position position;
-	velocity velocity;
-	angle angle;
-	angular_velocity angular_velocity;
-}phy;
-#define phy_def {vec4_def,vec4_def,vec4_def,vec4_def}
 
 typedef struct object{
 	node node;
