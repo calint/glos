@@ -92,7 +92,7 @@ inline static void str_free(str*o){
 
 //-----------------------------------------------------------------------------
 
-inline static void str_add_list(str*o,/*copies*/const char*str,size_t n){
+inline static void str_add_list(str*o,/*copies*/const char*str,unsigned n){
 	//? optimize memcpy
 	const char*p=str;
 	while(n--){
@@ -142,14 +142,14 @@ inline static str str_from_file(const char*path){
 		exit(-1);
 	}
 	rewind(f);
-	char*filedata=(char*)malloc((size_t)length+1);
+	char*filedata=(char*)malloc((unsigned)length+1);
 	if(!filedata){
 		fprintf(stderr,"\nout-of-memory\n");
 		fprintf(stderr,"\t\n%s %d\n",__FILE__,__LINE__);
 		exit(-1);
 	}
-	size_t n=fread(filedata,1,(size_t)length+1,f);
-	if(n!=(size_t)length){
+	unsigned n=fread(filedata,1,(unsigned)length+1,f);
+	if(n!=(unsigned)length){
 		fprintf(stderr,"\nnot-a-full-read\n");
 		fprintf(stderr,"\t\n%s %d\n",__FILE__,__LINE__);
 		exit(-1);

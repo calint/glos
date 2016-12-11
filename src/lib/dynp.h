@@ -92,7 +92,7 @@ inline static void dynp_free(dynp*o){
 
 //-----------------------------------------------------------------------------
 
-inline static void dynp_add_list(dynp*o,/*copies*/const void**str,size_t n){
+inline static void dynp_add_list(dynp*o,/*copies*/const void**str,unsigned n){
 	//? optimize memcpy
 	const void**p=str;
 	while(n--){
@@ -142,14 +142,14 @@ inline static dynp dynp_from_file(const char*path){
 		exit(-1);
 	}
 	rewind(f);
-	void**filedata=(void**)malloc((size_t)length+1);
+	void**filedata=(void**)malloc((unsigned)length+1);
 	if(!filedata){
 		fprintf(stderr,"\nout-of-memory\n");
 		fprintf(stderr,"\t\n%s %d\n",__FILE__,__LINE__);
 		exit(-1);
 	}
-	size_t n=fread(filedata,1,(size_t)length+1,f);
-	if(n!=(size_t)length){
+	unsigned n=fread(filedata,1,(unsigned)length+1,f);
+	if(n!=(unsigned)length){
 		fprintf(stderr,"\nnot-a-full-read\n");
 		fprintf(stderr,"\t\n%s %d\n",__FILE__,__LINE__);
 		exit(-1);

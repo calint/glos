@@ -92,7 +92,7 @@ inline static void objmtls_free(objmtls*o){
 
 //-----------------------------------------------------------------------------
 
-inline static void objmtls_add_list(objmtls*o,/*copies*/const objmtl**str,size_t n){
+inline static void objmtls_add_list(objmtls*o,/*copies*/const objmtl**str,unsigned n){
 	//? optimize memcpy
 	const objmtl**p=str;
 	while(n--){
@@ -142,14 +142,14 @@ inline static objmtls objmtls_from_file(const char*path){
 		exit(-1);
 	}
 	rewind(f);
-	objmtl**filedata=(objmtl**)malloc((size_t)length+1);
+	objmtl**filedata=(objmtl**)malloc((unsigned)length+1);
 	if(!filedata){
 		fprintf(stderr,"\nout-of-memory\n");
 		fprintf(stderr,"\t\n%s %d\n",__FILE__,__LINE__);
 		exit(-1);
 	}
-	size_t n=fread(filedata,1,(size_t)length+1,f);
-	if(n!=(size_t)length){
+	unsigned n=fread(filedata,1,(unsigned)length+1,f);
+	if(n!=(unsigned)length){
 		fprintf(stderr,"\nnot-a-full-read\n");
 		fprintf(stderr,"\t\n%s %d\n",__FILE__,__LINE__);
 		exit(-1);

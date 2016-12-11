@@ -63,7 +63,7 @@ inline static void objmtls_load_from_file(const char*path){
 			o=objmtl_alloc();
 			token t=token_next_from_string(p);
 			p=t.end;
-			size_t n=token_size(&t);
+			unsigned n=token_size(&t);
 			str_add_list(&o->name,t.content,n);
 			str_add(&o->name,0);
 			continue;
@@ -126,7 +126,7 @@ inline static void objmtls_load_from_file(const char*path){
 		if(token_equals(&t,"map_Kd")){
 			token t=token_next_from_string(p);
 			p=t.end;
-			size_t n=token_size(&t);
+			unsigned n=token_size(&t);
 			str_add_list(&o->map_Kd,t.content,n);
 			str_add(&o->map_Kd,0);
 			continue;
