@@ -2,6 +2,11 @@
 #include"gfx.h"
 #include"obj.h"
 #include"metrics.h"
+
+struct{
+	unsigned*keybits_ptr;
+}game;
+
 #include"app/init.h"
 //----------------------------------------------------------------------- init
 inline static void main_init_programs(){
@@ -142,7 +147,7 @@ int main(int argc,char*argv[]){
 	gid previous_active_program_ix=shader.active_program_ix;
 	const float rad_over_degree=2.0f*PI/360.0f;
 	float rad_over_mouse_pixels=rad_over_degree*.02f;
-	int64_t keymap=0;
+	int64_t keybits=0;
 	float mouse_sensitivity=1.5f;
 	float speed=1;
 	int mouse_mode=0;
@@ -195,25 +200,25 @@ int main(int argc,char*argv[]){
 						SDL_SetRelativeMouseMode(mouse_mode);
 //						running=0;
 						break;
-					case SDLK_w:keymap|=1;break;
-					case SDLK_a:keymap|=2;break;
-					case SDLK_s:keymap|=4;break;
-					case SDLK_d:keymap|=8;break;
-					case SDLK_q:keymap|=16;break;
-					case SDLK_e:keymap|=32;break;
-					case SDLK_o:keymap|=64;break;
+					case SDLK_w:keybits|=1;break;
+					case SDLK_a:keybits|=2;break;
+					case SDLK_s:keybits|=4;break;
+					case SDLK_d:keybits|=8;break;
+					case SDLK_q:keybits|=16;break;
+					case SDLK_e:keybits|=32;break;
+					case SDLK_o:keybits|=64;break;
 					case SDLK_1:draw_default=1;	break;
 				}
 				break;
 			case SDL_KEYUP:
 				switch (event.key.keysym.sym){
-					case SDLK_w:keymap&=~1;break;
-					case SDLK_a:keymap&=~2;break;
-					case SDLK_s:keymap&=~4;break;
-					case SDLK_d:keymap&=~8;break;
-					case SDLK_q:keymap&=~16;break;
-					case SDLK_e:keymap&=~32;break;
-					case SDLK_o:keymap&=~64;break;
+					case SDLK_w:keybits&=~1;break;
+					case SDLK_a:keybits&=~2;break;
+					case SDLK_s:keybits&=~4;break;
+					case SDLK_d:keybits&=~8;break;
+					case SDLK_q:keybits&=~16;break;
+					case SDLK_e:keybits&=~32;break;
+					case SDLK_o:keybits&=~64;break;
 					case SDLK_SPACE:
 						mouse_mode=!mouse_mode;
 						SDL_SetRelativeMouseMode(mouse_mode);
@@ -224,7 +229,7 @@ int main(int argc,char*argv[]){
 						if(gloid>maxgloid){
 							gloid=mingloid;
 						}
-						object_at(0)->n.glo=glo_at(gloid);
+						object_at(0)->n.glo_ptr=glo_at(gloid);
 						break;
 					}
 					case SDLK_3:{
@@ -244,6 +249,9 @@ int main(int argc,char*argv[]){
 				break;
 			}
 		}
+
+		if(game.keybits_ptr)
+			*game.keybits_ptr=keybits;
 
 //		printf("   camera: %f  %f  %f   angle: %f\n",
 //				camera.eye.x,camera.eye.y,camera.eye.z,look_angle_z_axis*180/PI);
@@ -270,12 +278,12 @@ int main(int argc,char*argv[]){
 		vec3_scale(&xaxis,move_vector_scale);
 
 		const float dt=metrics.fps.dt;
-		if(keymap&1)vec3_inc_with_vec3_over_dt(&camera.eye,&lookvector,dt);
-		if(keymap&2)vec3_inc_with_vec3_over_dt(&camera.eye,&xaxis,-dt);
-		if(keymap&4)vec3_inc_with_vec3_over_dt(&camera.eye,&lookvector,-dt);
-		if(keymap&8)vec3_inc_with_vec3_over_dt(&camera.eye,&xaxis,dt);
-		if(keymap&16)camera.eye.y+=speed*(dt);
-		if(keymap&32)camera.eye.y-=speed*(dt);
+		if(keybits&1)vec3_inc_with_vec3_over_dt(&camera.eye,&lookvector,dt);
+		if(keybits&2)vec3_inc_with_vec3_over_dt(&camera.eye,&xaxis,-dt);
+		if(keybits&4)vec3_inc_with_vec3_over_dt(&camera.eye,&lookvector,-dt);
+		if(keybits&8)vec3_inc_with_vec3_over_dt(&camera.eye,&xaxis,dt);
+		if(keybits&16)camera.eye.y+=speed*(dt);
+		if(keybits&32)camera.eye.y-=speed*(dt);
 //		printf("  %f  %f  %f  \n",
 //				camera.lookat.x,camera.lookat.y,camera.lookat.z);
 //		printf("  %f  %f  %f  \n",

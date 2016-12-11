@@ -6,7 +6,7 @@ inline static void objects_init(){}
 inline static void objects_update(dt dt){
 	object*o=objects;
 	while(o<objects_end_ptr){
-		if(!o->ptr_to_bits||!(*o->ptr_to_bits&1)){
+		if(!o->alloc_bits_ptr||!(*o->alloc_bits_ptr&1)){
 			o++;
 			continue;
 		}
@@ -34,7 +34,7 @@ inline static void objects_update(dt dt){
 inline static void objects_render() {
 	object*o=objects;
 	while(o<objects_end_ptr){
-		if(!o->ptr_to_bits||!(*o->ptr_to_bits&1)){
+		if(!o->alloc_bits_ptr||!(*o->alloc_bits_ptr&1)){
 			o++;
 			continue;
 		}

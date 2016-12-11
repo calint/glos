@@ -17,7 +17,7 @@ static object ${name}_def={
 	},
 	.t={{'a','a',0,0,0,0,0,0}},
 	.part={NULL,NULL,NULL,NULL},
-	.ptr_to_bits=NULL,
+	.alloc_bits_ptr=NULL,
 };
 //------------------------------------------------------------------ extension
 typedef struct ${name}{
@@ -25,10 +25,10 @@ typedef struct ${name}{
 	unsigned stars;
 }${name}_ext;
 //------------------------------------------------------------------ overrides
-//static void _${name}_part_init(object*,part*);
+static void _${name}_part_init(object*,part*);
 static void _${name}_update(object*,part*,dt);
-//static void _${name}_part_render(object*,part*);
-//static void _${name}_free(object*,part*);
+static void _${name}_part_render(object*,part*);
+static void _${name}_free(object*,part*);
 //----------------------------------------------------------------------- init
 static ${name}_ext ${name}_ext_def={
 	.part=(part){

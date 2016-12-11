@@ -15,8 +15,8 @@ typedef struct object{
 	phy p;
 	vtbl v;
 	type t;
-	bits*ptr_to_bits;
-	part*part[object_part_cap];
+	bits*alloc_bits_ptr;
+	void*part[object_part_cap];
 }object;
 //---------------------------------------------------------------------- -----
 static object object_def={
@@ -26,7 +26,7 @@ static object object_def={
 	.v=vtbl_def,
 	.t=type_def,
 	.part=parts_def,
-	.ptr_to_bits=0,
+	.alloc_bits_ptr=0,
 };
 //----------------------------------------------------------------------- init
 inline static void object_init(object*o){}
@@ -76,11 +76,11 @@ inline static const float*object_get_updated_Mmw(object*o){
 }
 //----------------------------------------------------------------------------
 inline static void object_render_glob(object*o) {
-	if(!o->n.glo)
+	if(!o->n.glo_ptr)
 		return;
 
 	const float*f=object_get_updated_Mmw(o);
-	glo_render(o->n.glo,f);
+	glo_render(o->n.glo_ptr,f);
 }
 //----------------------------------------------------------------------------
 

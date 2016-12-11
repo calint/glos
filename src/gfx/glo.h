@@ -4,7 +4,7 @@
 
 typedef struct mtlrng{
 	unsigned begin,count;
-	objmtl*material;
+	objmtl*material_ptr;
 }mtlrng;
 
 #define mtlrng_def (mtlrng){0,0,NULL}
@@ -44,7 +44,7 @@ inline static void glo_free(glo*o){
 
 	for(unsigned i=0;i<o->ranges.count;i++){
 		mtlrng*mr=(mtlrng*)o->ranges.data[i];
-		objmtl*m=(objmtl*)mr->material;
+		objmtl*m=(objmtl*)mr->material_ptr;
 		if(m->texture_id){
 			glDeleteTextures(1,&m->texture_id);
 			metrics.buffered_texture_data-=m->texture_size_bytes;
@@ -119,7 +119,7 @@ static/*gives*/glo*glo_load_next_from_string(const char**ptr_p){
 //					*mr=material_range_def;
 					mr->begin=prev_vtxbufix;
 					mr->count=vtxbufix;
-					mr->material=current_objmtl;
+					mr->material_ptr=current_objmtl;
 					dynp_add(&material_ranges,mr);
 					prev_vtxbufix=vtxbufix;
 				}
@@ -237,7 +237,7 @@ static/*gives*/glo*glo_load_next_from_string(const char**ptr_p){
 //					*mr=material_range_def;
 	mr->begin=prev_vtxbufix;
 	mr->count=vtxbufix;
-	mr->material=current_objmtl;
+	mr->material_ptr=current_objmtl;
 	dynp_add(&material_ranges,mr);
 
 	printf(" ranges %u   %u vertices   %lu B\n",
@@ -374,7 +374,7 @@ static/*gives*/dynp glo_load_all_from_file(const char*path){
 		//					*mr=material_range_def;
 			mr->begin=prev_vtxbufix-vtxbufix_base;
 			mr->count=vtxbufix-prev_vtxbufix;
-			mr->material=current_objmtl;
+			mr->material_ptr=current_objmtl;
 			dynp_add(&mtlrngs,mr);
 
 			glo*g=glo_alloc_zeroed();
@@ -413,7 +413,7 @@ static/*gives*/dynp glo_load_all_from_file(const char*path){
 	//					*mr=material_range_def;
 					mr->begin=prev_vtxbufix-vtxbufix_base;
 					mr->count=vtxbufix-prev_vtxbufix;
-					mr->material=current_objmtl;
+					mr->material_ptr=current_objmtl;
 					dynp_add(&mtlrngs,mr);
 					prev_vtxbufix=vtxbufix;
 				}
@@ -477,7 +477,7 @@ static/*gives*/dynp glo_load_all_from_file(const char*path){
 //					*mr=material_range_def;
 	mr->begin=prev_vtxbufix-vtxbufix_base;
 	mr->count=vtxbufix-prev_vtxbufix;
-	mr->material=current_objmtl;
+	mr->material_ptr=current_objmtl;
 	dynp_add(&mtlrngs,mr);
 
 
@@ -508,7 +508,7 @@ inline static void glo_upload_to_opengl(glo*this){
 	// upload materials
 	for(unsigned i=0;i<this->ranges.count;i++){
 		mtlrng*mr=(mtlrng*)this->ranges.data[i];
-		objmtl*m=(objmtl*)mr->material;
+		objmtl*m=(objmtl*)mr->material_ptr;
 		if(m->map_Kd.count){// load texture
 			glGenTextures(1,&m->texture_id);
 
@@ -559,7 +559,7 @@ inline static void glo_render(glo*this,const float*mtxmw){
 
 	for(unsigned i=0;i<this->ranges.count;i++){
 		mtlrng*mr=(mtlrng*)this->ranges.data[i];
-		objmtl*m=mr->material;
+		objmtl*m=mr->material_ptr;
 
 		if(m->texture_id){
 			glUniform1i(shader_utex,0);

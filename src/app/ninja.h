@@ -18,23 +18,23 @@ static object ninja_def={
 	},
 	.t={type_ninja},
 	.part={NULL,NULL,NULL,NULL},
-	.ptr_to_bits=NULL,
+	.alloc_bits_ptr=NULL,
 };
 //------------------------------------------------------------------ extension
-typedef struct ninja{
+typedef struct ninja_ext{
 	part part;
 	unsigned stars;
 }ninja_ext;
 //------------------------------------------------------------------ overrides
-//static void _ninja_part_init(object*,part*);
+static void _ninja_part_init(object*,part*);
 static void _ninja_update(object*,part*,dt);
-//static void _ninja_part_render(object*,part*);
-//static void _ninja_free(object*,part*);
+static void _ninja_part_render(object*,part*);
+static void _ninja_free(object*,part*);
 //----------------------------------------------------------------------- init
 static ninja_ext ninja_part_def={
 	.part=(part){
 		.init=NULL,
-		.update=_ninja_update,
+		.update=NULL,
 		.render=NULL,
 		.free=NULL,
 	},

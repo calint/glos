@@ -35,7 +35,7 @@ inline static object*object_alloc(object*initializer){
 			metrics.objects_allocated++;
 			object*o=objects_seek_ptr++;
 			*o=initializer?*initializer:object_def;
-			o->ptr_to_bits=objects_bits_seek_ptr++;
+			o->alloc_bits_ptr=objects_bits_seek_ptr++;
 
 			if (o->v.init)
 				o->v.init(o);
@@ -52,13 +52,13 @@ inline static object*object_alloc(object*initializer){
 //------------------------------------------------------------------------ free
 inline static void object_dealloc(object*o){
 #ifdef object_assert_free
-	if(*o->ptr_to_bits&2){ //? reallocated?
+	if(*o->alloc_bits_ptr&2){ //? reallocated?
 		fprintf(stderr,"\n    object %p already freed\n",(void*)o);
 		fprintf(stderr,"           in %s at line %d\n\n",__FILE__,__LINE__);
 		exit(-1);
 	}
 #endif
-	*o->ptr_to_bits=2;// flag not allocated and deleted
+	*o->alloc_bits_ptr=2;// flag not allocated and deleted
 	metrics.objects_allocated--;
 }
 //------------------------------------------------------------------- accessors
@@ -95,14 +95,14 @@ inline static const object*object_at_const(unsigned i){
 inline static void objects_free() {
 	object*o=objects;
 	while(o<objects_end_ptr){
-		if(!o->ptr_to_bits){
+		if(!o->alloc_bits_ptr){
 			o++;
 			continue;
 		}
 
 		{/*** critical ****/
-		if(*o->ptr_to_bits&1){
-			*o->ptr_to_bits&=(unsigned char)~(1|2);
+		if(*o->alloc_bits_ptr&1){
+			*o->alloc_bits_ptr&=(unsigned char)~(1|2);
 		}else{
 			o++;
 			continue;
