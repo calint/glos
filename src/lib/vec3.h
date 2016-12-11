@@ -6,12 +6,12 @@ inline static void vec3_minus(vec4*ret,const vec4*lh,const vec4*rh){
 	ret->z=lh->z-rh->z;
 }
 
-inline static void vec3_normalize(vec4*this){
-	float len=sqrtf(this->x*this->x + this->y*this->y + this->z*this->z);
+inline static void vec3_normalize(vec4*o){
+	float len=sqrtf(o->x*o->x + o->y*o->y + o->z*o->z);
 	float olen=1/len;
-	this->x*=olen;
-	this->y*=olen;
-	this->z*=olen;
+	o->x*=olen;
+	o->y*=olen;
+	o->z*=olen;
 }
 
 inline static void vec3_cross(vec4*ret,const vec4*lh,const vec4*rh){
@@ -23,16 +23,16 @@ inline static void vec3_cross(vec4*ret,const vec4*lh,const vec4*rh){
 	ret->z=u1*v2-u2*v1;
 }
 
-inline static void vec3_negate(vec4*this){
-	this->x=-this->x;
-	this->y=-this->y;
-	this->z=-this->z;
+inline static void vec3_negate(vec4*o){
+	o->x=-o->x;
+	o->y=-o->y;
+	o->z=-o->z;
 }
 
-inline static void vec3_scale(vec4*this,float s){
-	this->x*=s;
-	this->y*=s;
-	this->z*=s;
+inline static void vec3_scale(vec4*o,float s){
+	o->x*=s;
+	o->y*=s;
+	o->z*=s;
 }
 
 inline static float vec3_dot(const vec4*lh,const vec4*rh){
@@ -40,8 +40,8 @@ inline static float vec3_dot(const vec4*lh,const vec4*rh){
 
 }
 
-inline static void vec3_inc_with_vec3_over_dt(vec4*this,vec4*other,dt dt){
-	this->x+=other->x*dt;
-	this->y+=other->y*dt;
-	this->z+=other->z*dt;
+inline static void vec3_inc_with_vec3_over_dt(vec4*o,vec4*other,dt dt){
+	o->x+=other->x*dt;
+	o->y+=other->y*dt;
+	o->z+=other->z*dt;
 }
