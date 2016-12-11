@@ -5,8 +5,8 @@
 #define object_part_cap 5
 
 
-#define mat3_identity (float[]){1,0,0, 0,1,0, 0,0,1}
-#define mat4_identity (float[]){1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1}
+#define mat3_identity {1,0,0, 0,1,0, 0,0,1}
+#define mat4_identity {1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1}
 
 //------------------------------------------------------------------------ def
 typedef struct _node{
@@ -16,17 +16,21 @@ typedef struct _node{
 	unsigned ts_parent_upd_mtx_mw;
 	glo*glo;
 }node;
+#define node_def {mat4_identity,mat3_identity,0,0,NULL}
 
-#define node_def {mat4_identity,mat3_identity,0,0,0}
+typedef struct _bvol{
+	bounding_radius bounding_radius;
+	scale scale;
+}bvol;
+#define bvol_def {0,vec4_def}
 
 typedef struct object{
 	node _node;
+	bvol bvol;
 	position position;                                                 // 16 B
 	velocity velocity;                                                 // 16 B
 	angle angle;                                                       // 16 B
 	angular_velocity angular_velocity;                                 // 16 B
-	bounding_radius bounding_radius;                                   //  4 B
-	scale scale;                                                       // 16 B
 	void(*init)(struct object*);
 	void(*update)(struct object*,dt);
 	void(*collision)(struct object*,struct object*,dt);
@@ -58,12 +62,11 @@ inline static void object_at_free(object*this){}
 //----------------------------------------------------------------------------
 static object object_def={
 	._node=node_def,
+	.bvol=bvol_def,
 	.position={0,0,0,0},
 	.velocity={0,0,0,0},
 	.angle={0,0,0,0},
 	.angular_velocity={0,0,0,0},
-	.bounding_radius=0,
-	.scale={0,0,0,0},
 	.type={{0,0,0,0,0,0,0,0}},
 	.ptr_to_bits=0,
 	.init=object_init,
@@ -76,8 +79,8 @@ static object object_def={
 //----------------------------------------------------------- ------ functions
 
 inline static void object_update_bounding_radius_using_scale(object*o) {
-	o->bounding_radius=(bounding_radius)
-		sqrtf(o->scale.x*o->scale.x+o->scale.y*o->scale.y);
+	o->bvol.bounding_radius=(bounding_radius)
+		sqrtf(o->bvol.scale.x*o->bvol.scale.x+o->bvol.scale.y*o->bvol.scale.y);
 }
 
 //----------------------------------------------------------------------------
@@ -91,7 +94,7 @@ inline static const float*object_get_updated_matrix_model_to_world(object*o){
 	mat4_append_rotation_about_z_axis(
 			o->_node.matrix_vertices_model_to_world,o->angle.z);
 
-	mat4_scale(o->_node.matrix_vertices_model_to_world,&o->scale);
+	mat4_scale(o->_node.matrix_vertices_model_to_world,&o->bvol.scale);
 
 	o->_node.matrix_vertices_model_to_world_valid=1;
 
