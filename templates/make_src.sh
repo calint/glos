@@ -1,11 +1,11 @@
 #/bin/sh -x
 echo "generated source:"
-./template dyn dynp void* &&
-./template dyn dynf float &&
-./template dyn str char &&
-./template dyn dyni int &&
+./dyn.apply dynp void* &&
+./dyn.apply dynf float &&
+./dyn.apply str char &&
+./dyn.apply dyni int &&
 mv -f *.h ../src/lib/ &&
 
-./template dyn objmtls objmtl* &&
+./dyn.apply objmtls objmtl* &&
 mv -f *.h ../src/gfx/ &&
 echo
