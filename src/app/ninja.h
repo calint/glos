@@ -4,6 +4,7 @@
 #include"ninja_part.h"
 //----------------------------------------------------------------------- init
 static object ninja_def={
+	._node=node_def,
 	.position={0,0,0,0},
 	.velocity={0,0,0,0},
 	.angle={0,0,0,0},
@@ -12,7 +13,6 @@ static object ninja_def={
 	.bounding_radius=1.4f,
 	.type={{'a',0,0,0,0,0,0,0}},
 	.ptr_to_bits=NULL,
-	.glo=NULL,
 	.init=NULL,
 	.update=NULL,
 	.collision=NULL,

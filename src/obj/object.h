@@ -14,8 +14,10 @@ typedef struct _node{
 	float matrix_normals_model_to_world[9];
 	unsigned matrix_vertices_model_to_world_valid;
 	unsigned ts_parent_upd_mtx_mw;
+	glo*glo;
 }node;
-#define node_def {mat4_identity,mat3_identity,0,0}
+
+#define node_def {mat4_identity,mat3_identity,0,0,0}
 
 typedef struct object{
 	node _node;
@@ -25,7 +27,6 @@ typedef struct object{
 	angular_velocity angular_velocity;                                 // 16 B
 	bounding_radius bounding_radius;                                   //  4 B
 	scale scale;                                                       // 16 B
-	glo*glo;                                                           //  8 B
 	void(*init)(struct object*);
 	void(*update)(struct object*,dt);
 	void(*collision)(struct object*,struct object*,dt);
@@ -100,10 +101,10 @@ inline static const float*object_get_updated_matrix_model_to_world(object*o){
 //----------------------------------------------------------------------------
 
 inline static void object_render_glob(object*o) {
-	if(!o->glo)
+	if(!o->_node.glo)
 		return;
 	const float*f=object_get_updated_matrix_model_to_world(o);
-	glo_render(o->glo,f);
+	glo_render(o->_node.glo,f);
 }
 
 //----------------------------------------------------------------------------

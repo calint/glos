@@ -56,7 +56,7 @@ inline static void main_init_scene(){
 		for(float z=-10;z<=10;z++){
 			for(float x=-10;x<=10;x+=1){
 				object*o=object_alloc(&ninja_def);
-				o->glo=glo_at(2);
+				o->_node.glo=glo_at(2);
 				o->position=(position){x,y+ground_base_y,z,0};
 				object_update_bounding_radius_using_scale(o);
 			}
@@ -218,7 +218,7 @@ int main(int argc,char*argv[]){
 						if(gloid>maxgloid){
 							gloid=mingloid;
 						}
-						object_at(0)->glo=glo_at(gloid);
+						object_at(0)->_node.glo=glo_at(gloid);
 						break;
 					}
 					case SDLK_3:{
