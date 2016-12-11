@@ -1,7 +1,6 @@
 #pragma once
-#include"../gfx.h"
-#include"bvol.h"
 #include"node.h"
+#include"bvol.h"
 #include"phy.h"
 //---------------------------------------------------------------------- config
 
