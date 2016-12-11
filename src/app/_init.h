@@ -1,5 +1,7 @@
 #pragma once
 #include"ninja.h"
+#include"santa.h"
+
 static float ground_base_y=.25f;
 
 inline static void main_init_scene(){
