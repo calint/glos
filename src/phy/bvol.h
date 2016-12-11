@@ -1,13 +1,9 @@
 #pragma once
+#include"../lib.h"
+
 //------------------------------------------------------------- bounding volume
 
-typedef char bool;
-
-typedef struct point{
-	float x,y,z,w;
-}point;
-
-typedef point vector;
+typedef vec3 vector;
 
 typedef struct line{
 	point p0;
