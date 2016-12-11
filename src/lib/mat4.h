@@ -340,7 +340,7 @@ inline static void mat4_set_rotation_z(float*this,float angle_rad){
 
 
 
-inline static void mat4_set_translation(float*c,const position*p){
+inline static void mat4_set_translation(float c[16],const position*p){
 	// [ 0 4  8  x ]
 	// [ 1 5  9  y ]
 	// [ 2 6 10  z ]
@@ -354,7 +354,7 @@ inline static void mat4_set_translation(float*c,const position*p){
 	c[14]=p->z;
 }
 
-inline static void mat4_append_rotation_about_z_axis(float*c,float degrees){
+inline static void mat4_append_rotation_about_z_axis(float c[16],float degrees){
 	// [ 0 4  8 12 ]   [ cos -sin 0  0 ]
 	// [ 1 5  9 13 ] x [ sin cos  0  0 ]
 	// [ 2 6 10 14 ]   [ 0   0    1  0 ]

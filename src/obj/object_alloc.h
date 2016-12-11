@@ -52,7 +52,7 @@ inline static object*object_alloc(object*initializer){
 //------------------------------------------------------------------------ free
 inline static void object_dealloc(object*o){
 #ifdef object_assert_free
-	if(*o->ptr_to_bits&2){
+	if(*o->ptr_to_bits&2){ //? reallocated?
 		fprintf(stderr,"\n    object %p already freed\n",(void*)o);
 		fprintf(stderr,"           in %s at line %d\n\n",__FILE__,__LINE__);
 		exit(-1);

@@ -51,13 +51,7 @@ static void ninja_part_update(object*o,part*this,dt dt){
 	}
 }
 //-------------------------------------------------------------- implementation
-static void ninja_part_render(object*o,part*this){
-//	printf(" %s %u : [ %p %p ]\n",__FILE__,__LINE__,(void*)o,(void*)this);
-}
-static void ninja_part_init(object*o,part*this){
-//	printf(" %s %u : [ %p %p ]\n",__FILE__,__LINE__,(void*)o,(void*)this);
-}
-static void ninja_part_free(object*o,part*this){
-//	printf(" %s %u : [ %p %p ]\n",__FILE__,__LINE__,(void*)o,(void*)this);
-}
+static void ninja_part_render(object*o,part*this){}
+static void ninja_part_init(object*o,part*this){}
+static void ninja_part_free(object*o,part*this){}
 //-----------------------------------------------------------------------------

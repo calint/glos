@@ -12,12 +12,13 @@ typedef struct object{
 	angle angle;                                                       // 16 B
 	angular_velocity angular_velocity;                                 // 16 B
 
-	float model_to_world_matrix[4*4];                                  // 64 B
+	float matrix_vertices_model_to_world[16];                        // 64 B
+	float matrix_normals_model_to_world[9];                         // 36 B
 
 	bounding_radius bounding_radius;                                   //  4 B
 	scale scale;                                                       // 16 B
 	glo*glo;                                                           //  8 B
-	bool model_to_world_matrix_is_updated;                             //  4 B
+	bool matrix_vertices_model_to_world_valid;                         //  4 B
 	void(*init)(struct object*);
 	void(*update)(struct object*,dt);
 	void(*collision)(struct object*,struct object*,dt);
@@ -35,12 +36,12 @@ inline static void object_init(object*this){}
 inline static void object_update(object*this,dt dt){
 	vec3_inc_with_vec3_over_dt(&this->position,&this->velocity,dt);
 	vec3_inc_with_vec3_over_dt(&this->angle,&this->angular_velocity,dt);
-	if(this->model_to_world_matrix_is_updated &&
+	if(this->matrix_vertices_model_to_world_valid &&
 		(this->velocity.x||this->velocity.y||this->velocity.z||
 		this->angular_velocity.x||this->angular_velocity.y||
 		this->angular_velocity.z))
 	{
-		this->model_to_world_matrix_is_updated=0;
+		this->matrix_vertices_model_to_world_valid=0;
 	}
 }
 inline static void object_collision(object*this,object*other,dt dt){}
@@ -56,7 +57,7 @@ static object object_def={
 	.scale={0,0,0,0},
 	.type={{0,0,0,0,0,0,0,0}},
 	.ptr_to_bits=0,
-	.model_to_world_matrix={1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1},
+	.matrix_vertices_model_to_world={1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1},
 	.init=object_init,
 	.update=object_update,
 	.collision=object_collision,
@@ -66,34 +67,36 @@ static object object_def={
 };
 //----------------------------------------------------------- ------ functions
 
-inline static void object_update_bounding_radius_using_scale(object*this) {
-	this->bounding_radius=(bounding_radius)
-		sqrtf(this->scale.x*this->scale.x+this->scale.y*this->scale.y);
+inline static void object_update_bounding_radius_using_scale(object*o) {
+	o->bounding_radius=(bounding_radius)
+		sqrtf(o->scale.x*o->scale.x+o->scale.y*o->scale.y);
 }
 
 //----------------------------------------------------------------------------
 
-inline static void object_update_matrix_model_to_world(object*this){
-	if(this->model_to_world_matrix_is_updated)
-		return;
+inline static const float*object_get_updated_matrix_model_to_world(object*o){
+	if(o->matrix_vertices_model_to_world_valid)
+		return o->matrix_vertices_model_to_world;
 
-	mat4_set_translation(this->model_to_world_matrix,&this->position);
+	mat4_set_translation(o->matrix_vertices_model_to_world,&o->position);
 
 	mat4_append_rotation_about_z_axis(
-			this->model_to_world_matrix,this->angle.z);
+			o->matrix_vertices_model_to_world,o->angle.z);
 
-	mat4_scale(this->model_to_world_matrix,&this->scale);
+	mat4_scale(o->matrix_vertices_model_to_world,&o->scale);
 
-	this->model_to_world_matrix_is_updated=1;
+	o->matrix_vertices_model_to_world_valid=1;
+
+	return o->matrix_vertices_model_to_world;
 }
 
 //----------------------------------------------------------------------------
 
-inline static void object_render_glob(object*this) {
-	if(!this->glo)
+inline static void object_render_glob(object*o) {
+	if(!o->glo)
 		return;
-	object_update_matrix_model_to_world(this);
-	glo_render(this->glo,this->model_to_world_matrix);
+	const float*f=object_get_updated_matrix_model_to_world(o);
+	glo_render(o->glo,f);
 }
 
 //----------------------------------------------------------------------------
