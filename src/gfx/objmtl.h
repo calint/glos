@@ -19,8 +19,9 @@ typedef struct objmtl{
 	str map_Kd;
 
 	id texture_id;
+	unsigned texture_size_bytes;
 }objmtl;
-#define objmtl_def (objmtl){str_def,0,vec4_def,vec4_def,vec4_def,vec4_def,0,0,str_def,0}
+#define objmtl_def (objmtl){str_def,0,vec4_def,vec4_def,vec4_def,vec4_def,0,0,str_def,0,0}
 
 inline static void objmtl_free(objmtl*this){
 	str_free(&this->name);

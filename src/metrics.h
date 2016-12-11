@@ -23,7 +23,7 @@ struct{
 	unsigned objects_rendered_prv_frame;
 	unsigned parts_rendered_prv_frame;
 	unsigned average_fps;
-	unsigned vertices_rendered_prv_frame;
+	unsigned triangles_rendered_prv_frame;
 }metrics;
 
 inline static void metrics_reset(){
@@ -34,13 +34,15 @@ inline static void metrics_reset(){
 }
 
 inline static void metrics_print_headers(FILE*f){
-	fprintf(f," %6s  %6s  %4s  %8s  %8s  %6s  %6s  %6s  %6s  %6s\n",
-			"tick","dt","fps","bufsarr","bufstex","nobj","upd","rend","pupd","prend"
+	fprintf(f," %6s  %6s  %4s  %8s  %8s  %6s  %6s  %6s  %6s  %6s  %6s\n",
+			"ms","dt","fps","bufsarr","bufstex","nobj","upd","rend",
+			"pupd","prend","gtri"
 		);
 }
 
 inline static void metrics_print(FILE*f){
-	fprintf(f," %06u  %0.4f  %04d  %08lu  %08lu  %06u  %06u  %06u  %06u  %06u\n",
+	fprintf(f," %06u  %0.4f  %04d  %08lu  %08lu  %06u  %06u  %06u  %06u  %06u"
+			  "  %06u\n",
 			metrics.tick,
 			metrics.fps.dt,
 			metrics.average_fps,
@@ -50,7 +52,8 @@ inline static void metrics_print(FILE*f){
 			metrics.objects_updated_prv_frame,
 			metrics.objects_rendered_prv_frame,
 			metrics.parts_updated_prv_frame,
-			metrics.parts_rendered_prv_frame
+			metrics.parts_rendered_prv_frame,
+			metrics.triangles_rendered_prv_frame
 		);
 }
 
@@ -64,7 +67,7 @@ inline static void metrics__at__frame_begin(){
 	metrics.objects_updated_prv_frame=0;
 	metrics.parts_rendered_prv_frame=0;
 	metrics.parts_updated_prv_frame=0;
-	metrics.vertices_rendered_prv_frame=0;
+	metrics.triangles_rendered_prv_frame=0;
 	metrics.tick=SDL_GetTicks();
 }
 

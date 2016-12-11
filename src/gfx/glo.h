@@ -6,6 +6,7 @@ typedef struct mtlrng{
 	unsigned begin,count;
 	objmtl*material;
 }mtlrng;
+
 #define mtlrng_def (mtlrng){0,0,NULL}
 
 typedef struct glo{
@@ -13,9 +14,8 @@ typedef struct glo{
 	dynp ranges;
 	id vtxbuf_id;
 }glo;
-//#define glo_def (glo){dynf_def,dynp_def}
-#define glo_def (glo){dynf_def,dynp_def}
 
+#define glo_def (glo){dynf_def,dynp_def}
 
 static/*gives*/glo*glo_load_next_from_string(const char**ptr_p){
 	const char*p=*ptr_p;
@@ -486,8 +486,10 @@ inline static void glo_upload_to_opengl(glo*this){
 					surface->pixels);
 			SDL_FreeSurface(surface);
 
-			metrics.buffered_texture_data+=
-					(unsigned)surface->w*(unsigned)surface->h*sizeof(uint32_t);
+			m->texture_size_bytes=
+					(unsigned)(surface->w*surface->h*(signed)sizeof(uint32_t));
+
+			metrics.buffered_texture_data+=m->texture_size_bytes;
 
 			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
 			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
@@ -532,6 +534,7 @@ inline static void glo_render(glo*this,const float*mtxmw){
 		}
 
 		glDrawArrays(GL_TRIANGLES,(signed)mr->begin,(signed)mr->count);
+		metrics.triangles_rendered_prv_frame+=mr->count/3;
 
 		if(m->texture_id){
 			glBindTexture(GL_TEXTURE_2D,0);
@@ -539,39 +542,39 @@ inline static void glo_render(glo*this,const float*mtxmw){
 	}
 }
 
+inline static void glo_free(glo*o){
+	glDeleteBuffers(1,&o->vtxbuf_id);
+	metrics.buffered_vertex_data-=dynf_size_in_bytes(&o->vtxbuf);
+	dynf_free(&o->vtxbuf);
 
-
-
-
-
-
-
-
-
-
-
-
-
+	for(unsigned i=0;i<o->ranges.count;i++){
+		mtlrng*mr=(mtlrng*)o->ranges.data[i];
+		objmtl*m=(objmtl*)mr->material;
+		if(m->texture_id){
+			glDeleteTextures(1,&m->texture_id);
+			metrics.buffered_texture_data-=m->texture_size_bytes;
+		}
+	}
+	dynp_free(&o->ranges);
+//	memset(o,0,sizeof(glo));
+}
 
 //--------------------------------------------------------------------- storage
-//#define glos_cap 16
-//#define glos_assert_bounds
-//static glo __glo[glos_cap];
 
 static dynp glos=dynp_def;
 
-//---------------------------------------------------------------------
-
-inline static glo*glo_at(unsigned i){
-	return dynp_get(&glos,i);
-}
-
-inline static const glo*glo_at_const(unsigned i){
-	return dynp_get(&glos,i);
-}
+inline static glo*glo_at(unsigned i){return dynp_get(&glos,i);}
+inline static const glo*glo_at_const(unsigned i){return dynp_get(&glos,i);}
+inline static unsigned glos_count(){return glos.count;}
 
 inline static void glos_init(){}
-inline static void glos_free(){}
+
+inline static void glos_free(){
+	for(unsigned i=0;i<glos.count;i++){
+		glo_free(glos.data[i]);
+	}
+}
+
 inline static void glos_render(){
 	for(unsigned i=0;i<glos.count;i++){
 		glo*g=dynp_get(&glos,i);
@@ -581,7 +584,7 @@ inline static void glos_render(){
 }
 
 
-inline static void glos_load_obj_file(const char*path){
+inline static void glos_load_from_file(const char*path){
 	glo*g=/*takes*/glo_load_first_from_file(path);
 	glo_upload_to_opengl(g);
 	dynp_add(&glos,g);
@@ -596,21 +599,4 @@ inline static void glos_load_scene_from_file(const char*path){
 		dynp_add(&glos,g);
 	}
 }
-
-inline static size_t glos_count(){
-	return glos.count;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
 

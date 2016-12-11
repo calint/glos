@@ -1,5 +1,54 @@
 #pragma once
 #include"../metrics.h"
+#include"../lib.h"
+
+//----------------------------------------------------------------------------
+typedef struct vertex{
+	float position[3];
+	float color[4];
+	float normal[3];
+	float texture[2];
+}vertex;
+
+static vertex shader_def_vtxbuf[]={
+	{{ .5,-.5, 0},{ 1, 0, 0,1},{0,0,1},{ 1,-1}},
+	{{ .5, .5, 0},{ 0, 1, 0,1},{0,0,1},{ 1, 1}},
+	{{-.5, .5, 0},{ 0, 0, 1,1},{0,0,1},{-1, 1}},
+	{{-.5,-.5, 0},{ 0, 0, 0,1},{0,0,1},{-1,-1}},
+};
+
+static unsigned shader_def_vtxbuf_nbytes=sizeof(shader_def_vtxbuf);
+
+static unsigned shader_def_vtxbuf_nelems=
+		sizeof(shader_def_vtxbuf)/sizeof(vertex);
+
+static unsigned shader_def_vtxbuf_id;
+
+static GLubyte shader_def_ixbuf[]={0,1,2,2,3,0};
+
+static unsigned shader_def_ixbuf_nbytes=sizeof(shader_def_ixbuf);
+
+static unsigned shader_def_ixbuf_nelems=
+		sizeof(shader_def_ixbuf)/sizeof(GLubyte);
+
+static unsigned shader_def_ixbuf_id;
+
+static unsigned shader_def_texbuf_wi=2;
+
+static unsigned shader_def_texbuf_hi=2;
+
+static GLfloat shader_def_texbuf[]={
+		1,1,1,  0,1,1,
+		1,1,0,  1,1,1,
+};
+
+static unsigned shader_def_texbuf_nbytes=sizeof(shader_def_texbuf);
+
+static unsigned shader_def_texbuf_id;
+
+static unsigned shader_def_program_id;
+
+//----------------------------------------------------------------------------
 
 static char*shader_vertex_source =
 "#version 130                                              \n\
@@ -37,6 +86,7 @@ void main(){                          \n\
 #define shader_umtx_mw 0
 #define shader_umtx_wvp 1
 #define shader_utex 2
+//----------------------------------------------------------------------------
 
 
 
@@ -82,7 +132,8 @@ inline static program*shader_load_program_from_source(
 ){
 	gl_check_error("enter shader_program_load");
 
-	GLuint gid=glCreateProgram();
+	shader_def_program_id=glCreateProgram();
+	unsigned gid=shader_def_program_id;
 
 	program*p=malloc(sizeof(program));
 	*p=program_def;
@@ -181,47 +232,6 @@ inline static const char*shader_name_for_type(GLenum shader_type) {
 }
 
 //--------------------------------------------------------------------- shader
-typedef struct vertex{
-	float position[3];
-	float color[4];
-	float normal[3];
-	float texture[2];
-}vertex;
-
-static vertex shader_def_vtxbuf[]={
-	{{ .5,-.5, 0},{ 1, 0, 0,1},{0,0,1},{ 1,-1}},
-	{{ .5, .5, 0},{ 0, 1, 0,1},{0,0,1},{ 1, 1}},
-	{{-.5, .5, 0},{ 0, 0, 1,1},{0,0,1},{-1, 1}},
-	{{-.5,-.5, 0},{ 0, 0, 0,1},{0,0,1},{-1,-1}},
-};
-
-static unsigned shader_def_vtxbuf_nbytes=sizeof(shader_def_vtxbuf);
-
-static unsigned shader_def_vtxbuf_nelems=
-		sizeof(shader_def_vtxbuf)/sizeof(vertex);
-
-static unsigned shader_def_vtxbuf_id;
-
-static GLubyte shader_def_ixbuf[]={0,1,2,2,3,0};
-
-static unsigned shader_def_ixbuf_nbytes=sizeof(shader_def_ixbuf);
-
-static unsigned shader_def_ixbuf_nelems=
-		sizeof(shader_def_ixbuf)/sizeof(GLubyte);
-
-static unsigned shader_def_ixbuf_id;
-
-static unsigned shader_def_texbuf_wi=2;
-static unsigned shader_def_texbuf_hi=2;
-static GLfloat shader_def_texbuf[]={
-		1,1,1,  0,1,1,
-		1,1,0,  1,1,1,
-};
-static unsigned shader_def_texbuf_nbytes=sizeof(shader_def_texbuf);
-
-static unsigned shader_def_texbuf_id;
-
-//----------------------------------------------------------------------------
 struct shader{
 	gid active_program_ix;
 }shader={0};
@@ -372,10 +382,17 @@ inline static void shader_render(){
 //	glBindTexture(GL_TEXTURE_2D,0);
 //}
 //
-inline static void shader_free() {
-	//? free programs?
-//	if(shader.program_id)
-//		glDeleteProgram(shader.program_id);
+inline static void shader_free(){
+	glDeleteBuffers(1,&shader_def_ixbuf_id);
+	metrics.buffered_vertex_data-=shader_def_ixbuf_nbytes;
+
+	glDeleteBuffers(1,&shader_def_vtxbuf_id);
+	metrics.buffered_vertex_data-=shader_def_vtxbuf_nbytes;
+
+	glDeleteBuffers(1,&shader_def_texbuf_id);
+	metrics.buffered_texture_data-=shader_def_texbuf_nbytes;
+
+	glDeleteProgram(shader_def_program_id);
 }
 
 inline static void shader_init() {

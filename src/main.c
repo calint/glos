@@ -60,7 +60,6 @@ inline static void main_init_scene(){
 			}
 		}
 	}
-
 }
 
 inline static void main_init(){
