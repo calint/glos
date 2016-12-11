@@ -29,7 +29,7 @@ inline static void main_init_scene(){
 	game.keybits_ptr=&p->keybits;
 	game.follow_ptr=o;
 
-	camera.eye=(position){0,1,1,0};
+	camera.eye=(position){-1,1,1,0};
 	camera.lookat=(position){0,0,0,0};
 
 //	camera.eye=(position){20,10,40,0};
