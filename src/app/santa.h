@@ -55,14 +55,11 @@ static void _santa_update(object*po,part*o,dt dt){
 		if(n&8)v->y+=1;
 		po->n.Mmw_valid=0;
 
-		while(n){
-			if(n&1)printf("1");
-			else printf("0");
-			n>>=1;
-		}
-		printf("\n");
-
-		printf(" %f %f %f\n",po->p.p.x,po->p.p.y,po->p.p.z);
+//		while(n){
+//			printf(n&1?"1":"0");
+//			n>>=1;
+//		}
+//		printf(" %f %f %f\n",po->p.p.x,po->p.p.y,po->p.p.z);
 	}
 }
 static void _santa_part_render(object*po,part*o){}
