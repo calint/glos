@@ -2,21 +2,22 @@
 #include"node.h"
 #include"bvol.h"
 #include"phy.h"
+#include"vtbl.h"
 //---------------------------------------------------------------------- config
 
 #define object_part_cap 5
 
 //------------------------------------------------------------------------ def
 
-struct object;
-typedef struct _vtbl{
-	void(*init)(struct object*);
-	void(*update)(struct object*,dt);
-	void(*collision)(struct object*,struct object*,dt);
-	void(*render)(struct object*);
-	void(*free)(struct object*);
-}vtbl;
-#define vtbl_def {0,0,0,0,0}
+//struct object;
+//typedef struct _vtbl{
+//	void(*init)(struct object*);
+//	void(*update)(struct object*,dt);
+//	void(*collision)(struct object*,struct object*,dt);
+//	void(*render)(struct object*);
+//	void(*free)(struct object*);
+//}vtbl;
+//#define vtbl_def {0,0,0,0,0}
 
 typedef struct object{
 	node node;
