@@ -30,15 +30,9 @@ typedef vec4 angle;
 typedef vec4 scale;
 typedef vec4 angular_velocity;
 typedef float bounding_radius;
-//typedef float*mat4;
 typedef unsigned id;
 typedef float dt;
-typedef float time_in_seconds;
 typedef const char*path;
-typedef uint32_t indx;
-typedef unsigned glid;
-typedef float mat;
-typedef float*mat4f;
 
 #include"lib/str.h"
 #include"lib/dynf.h"
