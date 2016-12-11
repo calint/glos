@@ -1,5 +1,7 @@
 #pragma once
 #include<stdlib.h>
+#include<string.h>
+#include<ctype.h>
 
 typedef struct token{
 	const char*begin;

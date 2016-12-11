@@ -37,8 +37,8 @@ inline static void metrics_print_headers(){
 		);
 }
 
-inline static void metrics_print(){
-	printf(" %04d   %0.4f   %08lu  %08lu  %06u  %06u  %06u  %06u  %06u\n",
+inline static void metrics_print(FILE*f){
+	fprintf(f," %04d   %0.4f   %08lu  %08lu  %06u  %06u  %06u  %06u  %06u\n",
 			metrics.average_fps,
 			metrics.dt_prv_frame,
 			metrics.buffered_vertex_data,

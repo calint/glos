@@ -1,12 +1,21 @@
 #pragma once
 #include<string.h>
+#include<math.h>
 #include"../lib.h"
 
-#define mat4_identity (float[]){1,0,0,0,  0,1,0,0,  0,0,1,0,  0,0,0,1}
-#define mat3_identity (float[]){1,0,0, 0,1,0, 0,0,1}
+//#define mat4_identity (float[4*4]){1,0,0,0,  0,1,0,0,  0,0,1,0,  0,0,0,1}
+//#define mat3_identity (float[3*3]){1,0,0, 0,1,0, 0,0,1}
+
+//#define mat4_identity (float[16]){1,0,0,0,  0,1,0,0,  0,0,1,0,  0,0,0,1}
+//#define mat3_identity (float[9]){1,0,0, 0,1,0, 0,0,1}
+
+#define mat4_identity (mat4){1,0,0,0,  0,1,0,0,  0,0,1,0,  0,0,0,1}
+#define mat4_identity_ {1,0,0,0,  0,1,0,0,  0,0,1,0,  0,0,0,1}
+#define mat3_identity (mat3){1,0,0, 0,1,0, 0,0,1}
+#define mat3_identity_ {1,0,0, 0,1,0, 0,0,1}
 
 
-inline static void mat4_assign(mat4 o,float*src){
+inline static void mat4_assign(mat4 o,mat4 src){
 	memcpy(o,src,16*sizeof(float));
 }
 

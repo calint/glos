@@ -6,5 +6,5 @@ typedef struct node{
 	unsigned Mmw_valid;
 	glo*glo;
 }node;
-#define node_def {mat4_identity,mat3_identity,0,0}
+#define node_def {mat4_identity_,mat3_identity_,0,0}
 
