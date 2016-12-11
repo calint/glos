@@ -24,12 +24,6 @@ static object object_def={
 	.bvol=bvol_def,
 	.phy=phy_def,
 	.vtbl=vtbl_def,
-//	.vtbl={	.init=0,
-//			.update=0,
-//			.collision=0,
-//			.render=0,
-//			.free=0,
-//	},
 	.type=type_def,
 	.part=parts_def,
 	.ptr_to_bits=0,
@@ -80,3 +74,12 @@ inline static void object_render_glob(object*o) {
 	glo_render(o->node.glo,f);
 }
 //----------------------------------------------------------------------------
+
+
+
+//	.vtbl={	.init=0,
+//			.update=0,
+//			.collision=0,
+//			.render=0,
+//			.free=0,
+//	},
