@@ -22,7 +22,7 @@ inline static void objects_update(dt dt){
 		for(int i=0;i<object_part_cap;i++){
 			if(!o->part[i])
 				continue;
-			part*p=(part*)o->part[i];
+			part*p=o->part[i];
 			if(p->update){
 				p->update(o,p,dt);
 				metrics.parts_updated_prv_frame++;
