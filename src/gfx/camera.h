@@ -17,7 +17,7 @@ struct{
 		.zfar=-2,//-2        2
 		.wi=1024,
 		.hi=1024,
-		.type=2,
+		.type=1,
 };
 
 
@@ -30,7 +30,6 @@ inline static void camera_update_matrix_wvp(){
 		mat4_set_look_at(Ml,&camera.eye,&camera.lookat,&(vec4){0,1,0,0});
 
 		mat4 Mt;
-//		mat4_set_identity(Mt);
 		position Pt=camera.eye;
 		vec3_negate(&Pt);
 		mat4_set_translation(Mt,&Pt);
@@ -45,26 +44,28 @@ inline static void camera_update_matrix_wvp(){
 		mat4_multiply(Mptl,Mp,Mtl);
 
 		mat4_assign(camera.mxwvp,Mptl);
+
 	}else if(camera.type==2){
 		position Pt=camera.eye;
 		vec3_negate(&Pt);
 
-		float Mt[16];
+		mat4 Mt;
 		mat4_set_translation(Mt,&Pt);
 
-		float Ml[16];
+		mat4 Ml;
 		mat4_set_look_at(Ml,&camera.eye,&camera.lookat,&(vec4){0,1,0,0});
 
-		float Mlt[16];
+		mat4 Mlt;
 		mat4_multiply(Mlt,Ml,Mt);
 
 		mat4 Mp;
 		perspective_vertical(Mp,20,camera.wi/camera.hi,1,10);
 
-		float Mptl[16];
+		mat4 Mptl;
 		mat4_multiply(Mptl,Mp,Mlt);
 
 		mat4_assign(camera.mxwvp,Mptl);
+
 	}else if(camera.type==3){
 		mat4 Ml;
 		mat4_set_look_at(Ml,&camera.eye,&camera.lookat,&(vec4){0,1,0,0});
