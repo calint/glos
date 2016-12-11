@@ -4,7 +4,7 @@
 #include"metrics.h"
 
 struct{
-	unsigned*keybits_ptr;
+	int*keybits_ptr;
 }game;
 
 #include"app/init.h"
@@ -147,7 +147,7 @@ int main(int argc,char*argv[]){
 	gid previous_active_program_ix=shader.active_program_ix;
 	const float rad_over_degree=2.0f*PI/360.0f;
 	float rad_over_mouse_pixels=rad_over_degree*.02f;
-	int64_t keybits=0;
+	int32_t keybits=0;
 	float mouse_sensitivity=1.5f;
 	float speed=1;
 	int mouse_mode=0;

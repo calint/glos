@@ -22,7 +22,7 @@ static object santa_def={
 //------------------------------------------------------------------ extension
 typedef struct santa{
 	part part;
-	unsigned keybits;
+	int keybits;
 }santa_ext;
 //------------------------------------------------------------------ overrides
 static void _santa_part_init(object*,part*);
@@ -44,7 +44,7 @@ static void _santa_part_init(object*po,part*o){}
 static void _santa_update(object*po,part*o,dt dt){
 //	printf("%s:%u  [ %p %p ]\n",__FILE__,__LINE__,(void*)po,(void*)o);
 	santa_ext*p=(santa_ext*)o;
-	unsigned n=p->keybits;
+	int n=p->keybits;
 	velocity*v=&po->p.v;
 	*v=vec4_def;
 	if(n!=0){
