@@ -1,47 +1,48 @@
 #pragma once
 #include<string.h>
+#include"../lib.h"
 
 #define mat4_identity (float[]){1,0,0,0,  0,1,0,0,  0,0,1,0,  0,0,0,1}
 #define mat3_identity (float[]){1,0,0, 0,1,0, 0,0,1}
 
 
-inline static void mat4_assign(float*this,float*src){
-	memcpy(this,src,16*sizeof(float));
+inline static void mat4_assign(float o[16],float*src){
+	memcpy(o,src,16*sizeof(float));
 }
 
-inline static void mat4_set_identity(float*this){
-	mat4_assign(this,mat4_identity);
+inline static void mat4_set_identity(float o[16]){
+	mat4_assign(o,mat4_identity);
 }
 
 
-inline static void mat4_set_ortho_projection(float*c,
+inline static void mat4_set_ortho_projection(float o[16],
 		const float left,const float right,
 		const float bottom,const float top,
 		const float nearz,const float farz
 ){
-	c[ 0]=2.f/(right-left);
-	c[ 1]=0;
-	c[ 2]=0;
-	c[ 3]=0;
+	o[ 0]=2.f/(right-left);
+	o[ 1]=0;
+	o[ 2]=0;
+	o[ 3]=0;
 
-	c[ 4]=0;
-	c[ 5]=2.f/(top-bottom);
-	c[ 6]=0;
-	c[ 7]=0;
+	o[ 4]=0;
+	o[ 5]=2.f/(top-bottom);
+	o[ 6]=0;
+	o[ 7]=0;
 
-	c[ 8]=0;
-	c[ 9]=0;
-	c[10]=-2.f/(farz-nearz);
-	c[11]=0;
+	o[ 8]=0;
+	o[ 9]=0;
+	o[10]=-2.f/(farz-nearz);
+	o[11]=0;
 
-	c[12]=-(right+left)/(right-left);
-	c[13]=-(top+bottom)/(top-bottom);
-	c[14]=(farz+nearz)/(farz-nearz);
-	c[15]=1;
+	o[12]=-(right+left)/(right-left);
+	o[13]=-(top+bottom)/(top-bottom);
+	o[14]=(farz+nearz)/(farz-nearz);
+	o[15]=1;
 }
 
 
-inline static void mat4_set_look_at(float*this,
+inline static void mat4_set_look_at(float o[16],
 		const position*eye,
 		const position*lookat,
 		const vec4*up){
@@ -58,16 +59,16 @@ inline static void mat4_set_look_at(float*this,
 	vec3_cross(&yaxis,&zaxis,&xaxis);
 
 	// X
-	this[0]=xaxis.x;
-	this[1]=xaxis.y;
-	this[2]=xaxis.z;
-	this[3]=0;
+	o[0]=xaxis.x;
+	o[1]=xaxis.y;
+	o[2]=xaxis.z;
+	o[3]=0;
 
 	// Y
-	this[4]=yaxis.x;
-	this[5]=yaxis.y;
-	this[6]=yaxis.z;
-	this[7]=0;
+	o[4]=yaxis.x;
+	o[5]=yaxis.y;
+	o[6]=yaxis.z;
+	o[7]=0;
 
 //	this[4]=0;
 //	this[5]=1;
@@ -75,10 +76,10 @@ inline static void mat4_set_look_at(float*this,
 //	this[7]=0;
 
 	// Z
-	this[8]=-zaxis.x;
-	this[9]=-zaxis.y;
-	this[10]=-zaxis.z;
-	this[11]=0;
+	o[8]=-zaxis.x;
+	o[9]=-zaxis.y;
+	o[10]=-zaxis.z;
+	o[11]=0;
 
 //	this[8]=0;
 //	this[9]=0;
@@ -91,10 +92,10 @@ inline static void mat4_set_look_at(float*this,
 //	this[14]=0;
 //	this[15]=1;
 //
-	this[12]=eye->x;
-	this[13]=eye->y;
-	this[14]=eye->z;
-	this[15]=1;
+	o[12]=eye->x;
+	o[13]=eye->y;
+	o[14]=eye->z;
+	o[15]=1;
 
 //	mat4_set_identity(this);
 }
@@ -167,24 +168,24 @@ inline static void mat4_set_look_at(float*this,
 ////	c[12]=0;c[13]=0;c[14]=0;c[15]=1;
 //}
 
-inline static void mat4_get_axis_x(float*this,vec4*result){
-	result->x=this[0];
-	result->y=this[1];
-	result->z=this[2];
+inline static void mat4_get_axis_x(float o[16],vec4*result){
+	result->x=o[0];
+	result->y=o[1];
+	result->z=o[2];
 	result->w=0;
 }
 
-inline static void mat4_get_axis_y(float*this,vec4*result){
-	result->x=this[4];
-	result->y=this[5];
-	result->z=this[6];
+inline static void mat4_get_axis_y(float o[16],vec4*result){
+	result->x=o[4];
+	result->y=o[5];
+	result->z=o[6];
 	result->w=0;
 }
 
-inline static void mat4_get_axis_z(float*this,vec4*result){
-	result->x=this[8];
-	result->y=this[9];
-	result->z=this[10];
+inline static void mat4_get_axis_z(float o[16],vec4*result){
+	result->x=o[8];
+	result->y=o[9];
+	result->z=o[10];
 	result->w=0;
 }
 //
@@ -197,7 +198,7 @@ inline static void mat4_get_axis_z(float*this,vec4*result){
 //
 
 // from mesa
-void glFrustum(float*m,float left,float right,float bottom,float top,
+void glFrustum(float o[16],float left,float right,float bottom,float top,
 		float near,float far){
 	float RsubL=right-left;
 	float TsubB=top-bottom;
@@ -207,35 +208,35 @@ void glFrustum(float*m,float left,float right,float bottom,float top,
 //	float m[16];
 //	memcpy(mat4_identity,m,16);
 
-	m[0]= Nmul2 / RsubL;
-	m[1]=0;
-	m[2]=(right+left)/RsubL;
-	m[3]=0;
+	o[0]= Nmul2 / RsubL;
+	o[1]=0;
+	o[2]=(right+left)/RsubL;
+	o[3]=0;
 
-	m[4]=0;
-	m[5]= Nmul2/TsubB;
-	m[6]=(top+bottom)/TsubB;
-	m[7]=0;
+	o[4]=0;
+	o[5]= Nmul2/TsubB;
+	o[6]=(top+bottom)/TsubB;
+	o[7]=0;
 
-	m[8]=0;
-	m[9]=0;
-	m[10]=-(far + near) / FsubN;
-	m[11] = (-far * Nmul2) / FsubN;
+	o[8]=0;
+	o[9]=0;
+	o[10]=-(far + near) / FsubN;
+	o[11] = (-far * Nmul2) / FsubN;
 
-	m[12]=0;
-	m[13]=0;
-	m[14] = -1.0f;
-	m[15]=0;
+	o[12]=0;
+	o[13]=0;
+	o[14] = -1.0f;
+	o[15]=0;
 
 }
 
-void gluPerspective(float*m,float fov, float aspect, float near, float far) {
+void gluPerspective(float o[16],float fov, float aspect, float near, float far) {
 	float ymax = near * tanf(0.5f * fov);
 	float ymin = -ymax;
 	float xmin = ymin * aspect;
 	float xmax = ymax * aspect;
 
-	glFrustum(m,xmin, xmax, ymin, ymax, near, far);
+	glFrustum(o,xmin, xmax, ymin, ymax, near, far);
 }
 
 
@@ -251,24 +252,24 @@ void gluPerspective(float*m,float fov, float aspect, float near, float far) {
 // set a perspective frustum (right hand)
 // (left, right, bottom, top, near, far)
 //--------------------------------------------------------------------------------
-void perspective(float*m,float l, float r, float b, float t, float n, float f)
+void perspective(float o[16],float l, float r, float b, float t, float n, float f)
 {
-	mat4_set_identity(m);
-	m[0]  =  2.0f * n / (r - l);
-    m[2]  =  (r + l) / (r - l);
-    m[5]  =  2.0f * n / (t - b);
-    m[6]  =  (t + b) / (t - b);
-    m[10] = -(f + n) / (f - n);
-    m[11] = -(2.0f * f * n) / (f - n);
-    m[14] = -1.0f;
-    m[15] =  0.0f;
+	mat4_set_identity(o);
+	o[0]  =  2.0f * n / (r - l);
+    o[2]  =  (r + l) / (r - l);
+    o[5]  =  2.0f * n / (t - b);
+    o[6]  =  (t + b) / (t - b);
+    o[10] = -(f + n) / (f - n);
+    o[11] = -(2.0f * f * n) / (f - n);
+    o[14] = -1.0f;
+    o[15] =  0.0f;
 }
 
 //--------------------------------------------------------------------------------
 // set a symmetric perspective frustum
 // ((vertical, degrees) field of view, (width/height) aspect ratio, near, far)
 //--------------------------------------------------------------------------------
-void perspective_vertical(float*m,float fov, float aspect, float front, float back)
+void perspective_vertical(float o[16],float fov, float aspect, float front, float back)
 {
     fov = DEG_TO_RAD(fov);                      // transform fov from degrees to radians
 
@@ -276,60 +277,60 @@ void perspective_vertical(float*m,float fov, float aspect, float front, float ba
     float height = front * tangent;                 // half height of near plane
     float width = height * aspect;                  // half width of near plane
 
-    perspective(m,-width, width, -height, height, front, back);
+    perspective(o,-width, width, -height, height, front, back);
 }
 //
 
-inline static void mat4_set_rotation_y(float*this,float angle_rad){
+inline static void mat4_set_rotation_y(float o[16],float angle_rad){
 	// X
-	this[0]=cosf(angle_rad);
-	this[1]=0;
-	this[2]=-sinf(angle_rad);
-	this[3]=0;
+	o[0]=cosf(angle_rad);
+	o[1]=0;
+	o[2]=-sinf(angle_rad);
+	o[3]=0;
 
 	// Y
-	this[4]=0;
-	this[5]=1;
-	this[6]=0;
-	this[7]=0;
+	o[4]=0;
+	o[5]=1;
+	o[6]=0;
+	o[7]=0;
 
 	// Z
-	this[8]=sinf(angle_rad);
-	this[9]=0;
-	this[10]=cosf(angle_rad);
-	this[11]=0;
+	o[8]=sinf(angle_rad);
+	o[9]=0;
+	o[10]=cosf(angle_rad);
+	o[11]=0;
 
 	// T
-	this[12]=0;
-	this[13]=0;
-	this[14]=0;
-	this[15]=1;
+	o[12]=0;
+	o[13]=0;
+	o[14]=0;
+	o[15]=1;
 }
 
-inline static void mat4_set_rotation_z(float*this,float angle_rad){
+inline static void mat4_set_rotation_z(float o[16],float angle_rad){
 	// X
-	this[0]=cosf(angle_rad);
-	this[1]=sinf(angle_rad);
-	this[2]=0;
-	this[3]=0;
+	o[0]=cosf(angle_rad);
+	o[1]=sinf(angle_rad);
+	o[2]=0;
+	o[3]=0;
 
 	// Y
-	this[4]=-sinf(angle_rad);
-	this[5]=cosf(angle_rad);
-	this[6]=0;
-	this[7]=0;
+	o[4]=-sinf(angle_rad);
+	o[5]=cosf(angle_rad);
+	o[6]=0;
+	o[7]=0;
 
 	// Z
-	this[8]=0;
-	this[9]=0;
-	this[10]=1;
-	this[11]=0;
+	o[8]=0;
+	o[9]=0;
+	o[10]=1;
+	o[11]=0;
 
 	// T
-	this[12]=0;
-	this[13]=0;
-	this[14]=0;
-	this[15]=1;
+	o[12]=0;
+	o[13]=0;
+	o[14]=0;
+	o[15]=1;
 }
 
 
@@ -341,21 +342,21 @@ inline static void mat4_set_rotation_z(float*this,float angle_rad){
 
 
 
-inline static void mat4_set_translation(float c[16],const position*p){
+inline static void mat4_set_translation(float o[16],const position*p){
 	// [ 0 4  8  x ]
 	// [ 1 5  9  y ]
 	// [ 2 6 10  z ]
 	// [ 3 7 11 15 ]
-	c[ 1]=c[ 2]=c[ 3]=c[ 4]=
-	c[ 6]=c[ 7]=c[ 8]=c[ 9]=
-	c[11]=0;
-	c[ 0]=c[ 5]=c[10]=c[15]=1;
-	c[12]=p->x;
-	c[13]=p->y;
-	c[14]=p->z;
+	o[ 1]=o[ 2]=o[ 3]=o[ 4]=
+	o[ 6]=o[ 7]=o[ 8]=o[ 9]=
+	o[11]=0;
+	o[ 0]=o[ 5]=o[10]=o[15]=1;
+	o[12]=p->x;
+	o[13]=p->y;
+	o[14]=p->z;
 }
 
-inline static void mat4_append_rotation_about_z_axis(float c[16],float degrees){
+inline static void mat4_append_rotation_about_z_axis(float o[16],float degrees){
 	// [ 0 4  8 12 ]   [ cos -sin 0  0 ]
 	// [ 1 5  9 13 ] x [ sin cos  0  0 ]
 	// [ 2 6 10 14 ]   [ 0   0    1  0 ]
@@ -364,70 +365,70 @@ inline static void mat4_append_rotation_about_z_axis(float c[16],float degrees){
 	const float cosrad = cosf(rad);
 	const float sinrad = sinf(rad);
 
-	const float mtx00=c[0];
-	const float mtx01=c[1];
-	const float mtx02=c[2];
-	const float mtx03=c[3];
+	const float mtx00=o[0];
+	const float mtx01=o[1];
+	const float mtx02=o[2];
+	const float mtx03=o[3];
 
-	c[ 0]=c[ 4]*sinrad+mtx00*cosrad;
-	c[ 4]=c[ 4]*cosrad-mtx00*sinrad;
+	o[ 0]=o[ 4]*sinrad+mtx00*cosrad;
+	o[ 4]=o[ 4]*cosrad-mtx00*sinrad;
 
-	c[ 1]=c[ 5]*sinrad+mtx01*cosrad;
-	c[ 5]=c[ 5]*cosrad-mtx01*sinrad;
+	o[ 1]=o[ 5]*sinrad+mtx01*cosrad;
+	o[ 5]=o[ 5]*cosrad-mtx01*sinrad;
 
-	c[ 2]=c[ 6]*sinrad+mtx02*cosrad;
-	c[ 6]=c[ 6]*cosrad-mtx02*sinrad;
+	o[ 2]=o[ 6]*sinrad+mtx02*cosrad;
+	o[ 6]=o[ 6]*cosrad-mtx02*sinrad;
 
-	c[ 3]=c[ 7]*sinrad+mtx03*cosrad;
-	c[ 7]=c[ 7]*cosrad-mtx03*sinrad;
+	o[ 3]=o[ 7]*sinrad+mtx03*cosrad;
+	o[ 7]=o[ 7]*cosrad-mtx03*sinrad;
 }
 
-inline static void mat4_set_scale(float*c,scale*s){
+inline static void mat4_set_scale(float o[16],scale*s){
 	// [ 0 4  8 12 ]   [ x 0 0 0 ]
 	// [ 1 5  9 13 ] x [ 0 y 0 0 ]
 	// [ 2 6 10 14 ]   [ 0 0 z 0 ]
 	// [ 3 7 11 15 ]   [ 0 0 0 1 ]
 
-	memset(c,0,16);
+	memset(o,0,16);
 
-	c[ 0]=s->x;
-	c[ 4]=s->y;
-	c[ 8]=s->z;
+	o[ 0]=s->x;
+	o[ 4]=s->y;
+	o[ 8]=s->z;
 
-	c[ 1]=s->x;
-	c[ 5]=s->y;
-	c[ 9]=s->z;
+	o[ 1]=s->x;
+	o[ 5]=s->y;
+	o[ 9]=s->z;
 
-	c[ 2]=s->x;
-	c[ 6]=s->y;
-	c[10]=s->z;
+	o[ 2]=s->x;
+	o[ 6]=s->y;
+	o[10]=s->z;
 
-	c[ 3]=s->x;
-	c[ 7]=s->y;
-	c[11]=s->z;
+	o[ 3]=s->x;
+	o[ 7]=s->y;
+	o[11]=s->z;
 }
 
 
-inline static void mat4_scale(float*c,scale*s){
+inline static void mat4_scale(float o[16],scale*s){
 	// [ 0 4  8 12 ]   [ x 0 0 0 ]
 	// [ 1 5  9 13 ] x [ 0 y 0 0 ]
 	// [ 2 6 10 14 ]   [ 0 0 z 0 ]
 	// [ 3 7 11 15 ]   [ 0 0 0 1 ]
-	c[ 0]*=s->x;
-	c[ 4]*=s->y;
-	c[ 8]*=s->z;
+	o[ 0]*=s->x;
+	o[ 4]*=s->y;
+	o[ 8]*=s->z;
 
-	c[ 1]*=s->x;
-	c[ 5]*=s->y;
-	c[ 9]*=s->z;
+	o[ 1]*=s->x;
+	o[ 5]*=s->y;
+	o[ 9]*=s->z;
 
-	c[ 2]*=s->x;
-	c[ 6]*=s->y;
-	c[10]*=s->z;
+	o[ 2]*=s->x;
+	o[ 6]*=s->y;
+	o[10]*=s->z;
 
-	c[ 3]*=s->x;
-	c[ 7]*=s->y;
-	c[11]*=s->z;
+	o[ 3]*=s->x;
+	o[ 7]*=s->y;
+	o[11]*=s->z;
 }
 
 inline static/*gives*/float*mat4_multiply(float*ret,const float*lhs,const float*rhs){
@@ -469,17 +470,6 @@ inline static/*gives*/float*mat4_multiply(float*ret,const float*lhs,const float*
 			c[14]=p.z;
 			return*this;
 		}
-		m4&load_identity(){
-			// [ 0 4  8 12 ]
-			// [ 1 5  9 13 ]
-			// [ 2 6 10 14 ]
-			// [ 3 7 11 15 ]
-			c[ 1]=c[ 2]=c[ 3]=c[ 4]=
-			c[ 6]=c[ 7]=c[ 8]=c[ 9]=
-			c[11]=0;
-			c[ 0]=c[ 5]=c[10]=c[15]=1;
-			return*this;
-		}
 		m4&append_scaling(const p3&scale){
 			// [ 0 4  8 12 ]   [ x 0 0 0 ]
 			// [ 1 5  9 13 ] x [ 0 y 0 0 ]
@@ -502,35 +492,7 @@ inline static/*gives*/float*mat4_multiply(float*ret,const float*lhs,const float*
 			c[11]*=scale.z;
 			return*this;
 		}
-		m4&load_ortho_projection(const floato left,const floato right,const floato bottom,const floato top,const floato nearz,const floato farz){
-			c[ 0]=2.f/(right-left);
-			c[ 1]=0;
-			c[ 2]=0;
-			c[ 3]=0;
-
-			c[ 4]=0;
-			c[ 5]=2.f/(top-bottom);
-			c[ 6]=0;
-			c[ 7]=0;
-
-			c[ 8]=0;
-			c[ 9]=0;
-			c[10]=-2.f/(farz-nearz);
-			c[11]=0;
-
-			c[12]=-(right+left)/(right-left);
-			c[13]=-(top+bottom)/(top-bottom);
-			c[14]=-(farz+nearz)/(farz-nearz);
-			c[15]=1;
-			return*this;
-		}
-	//	inline p3 x_axis()const{return p3{c[0],c[4],c[8]};}
-
-		//	inline p3 y_axis()const{return p3{c[1],c[5],c[9]};}
-		inline p3 y_axis()const{return p3{c[4],c[5],c[6]};}
-
-	//	inline p3 z_axis()const{return p3{c[2],c[6],c[10]};}
-	//	inline p3 w_axis()const{return p3{c[3],c[7],c[11]};}
+		//	inline p3 w_axis()const{return p3{c[3],c[7],c[11]};}
 	};
 	m4 operator*(const m4&lh,const m4&rh){
 		// [ 0 4  8 12 ]   [ 0 4  8 12 ]
