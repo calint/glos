@@ -6,16 +6,16 @@
 #define mat3_identity (float[]){1,0,0, 0,1,0, 0,0,1}
 
 
-inline static void mat4_assign(float o[16],float*src){
+inline static void mat4_assign(mat4 o,float*src){
 	memcpy(o,src,16*sizeof(float));
 }
 
-inline static void mat4_set_identity(float o[16]){
+inline static void mat4_set_identity(mat4 o){
 	mat4_assign(o,mat4_identity);
 }
 
 
-inline static void mat4_set_ortho_projection(float o[16],
+inline static void mat4_set_ortho_projection(mat4 o,
 		const float left,const float right,
 		const float bottom,const float top,
 		const float nearz,const float farz
@@ -42,7 +42,7 @@ inline static void mat4_set_ortho_projection(float o[16],
 }
 
 
-inline static void mat4_set_look_at(float o[16],
+inline static void mat4_set_look_at(mat4 o,
 		const position*eye,
 		const position*lookat,
 		const vec4*up){
@@ -168,21 +168,21 @@ inline static void mat4_set_look_at(float o[16],
 ////	c[12]=0;c[13]=0;c[14]=0;c[15]=1;
 //}
 
-inline static void mat4_get_axis_x(float o[16],vec4*result){
+inline static void mat4_get_axis_x(mat4 o,vec4*result){
 	result->x=o[0];
 	result->y=o[1];
 	result->z=o[2];
 	result->w=0;
 }
 
-inline static void mat4_get_axis_y(float o[16],vec4*result){
+inline static void mat4_get_axis_y(mat4 o,vec4*result){
 	result->x=o[4];
 	result->y=o[5];
 	result->z=o[6];
 	result->w=0;
 }
 
-inline static void mat4_get_axis_z(float o[16],vec4*result){
+inline static void mat4_get_axis_z(mat4 o,vec4*result){
 	result->x=o[8];
 	result->y=o[9];
 	result->z=o[10];
@@ -198,7 +198,7 @@ inline static void mat4_get_axis_z(float o[16],vec4*result){
 //
 
 // from mesa
-void glFrustum(float o[16],float left,float right,float bottom,float top,
+void glFrustum(mat4 o,float left,float right,float bottom,float top,
 		float near,float far){
 	float RsubL=right-left;
 	float TsubB=top-bottom;
@@ -230,7 +230,7 @@ void glFrustum(float o[16],float left,float right,float bottom,float top,
 
 }
 
-void gluPerspective(float o[16],float fov, float aspect, float near, float far) {
+void gluPerspective(mat4 o,float fov, float aspect, float near, float far) {
 	float ymax = near * tanf(0.5f * fov);
 	float ymin = -ymax;
 	float xmin = ymin * aspect;
@@ -252,7 +252,7 @@ void gluPerspective(float o[16],float fov, float aspect, float near, float far) 
 // set a perspective frustum (right hand)
 // (left, right, bottom, top, near, far)
 //--------------------------------------------------------------------------------
-void perspective(float o[16],float l, float r, float b, float t, float n, float f)
+void perspective(mat4 o,float l, float r, float b, float t, float n, float f)
 {
 	mat4_set_identity(o);
 	o[0]  =  2.0f * n / (r - l);
@@ -269,7 +269,7 @@ void perspective(float o[16],float l, float r, float b, float t, float n, float 
 // set a symmetric perspective frustum
 // ((vertical, degrees) field of view, (width/height) aspect ratio, near, far)
 //--------------------------------------------------------------------------------
-void perspective_vertical(float o[16],float fov, float aspect, float front, float back)
+void perspective_vertical(mat4 o,float fov, float aspect, float front, float back)
 {
     fov = DEG_TO_RAD(fov);                      // transform fov from degrees to radians
 
@@ -281,7 +281,7 @@ void perspective_vertical(float o[16],float fov, float aspect, float front, floa
 }
 //
 
-inline static void mat4_set_rotation_y(float o[16],float angle_rad){
+inline static void mat4_set_rotation_y(mat4 o,float angle_rad){
 	// X
 	o[0]=cosf(angle_rad);
 	o[1]=0;
@@ -307,7 +307,7 @@ inline static void mat4_set_rotation_y(float o[16],float angle_rad){
 	o[15]=1;
 }
 
-inline static void mat4_set_rotation_z(float o[16],float angle_rad){
+inline static void mat4_set_rotation_z(mat4 o,float angle_rad){
 	// X
 	o[0]=cosf(angle_rad);
 	o[1]=sinf(angle_rad);
@@ -342,7 +342,7 @@ inline static void mat4_set_rotation_z(float o[16],float angle_rad){
 
 
 
-inline static void mat4_set_translation(float o[16],const position*p){
+inline static void mat4_set_translation(mat4 o,const position*p){
 	// [ 0 4  8  x ]
 	// [ 1 5  9  y ]
 	// [ 2 6 10  z ]
@@ -356,7 +356,7 @@ inline static void mat4_set_translation(float o[16],const position*p){
 	o[14]=p->z;
 }
 
-inline static void mat4_append_rotation_about_z_axis(float o[16],float degrees){
+inline static void mat4_append_rotation_about_z_axis(mat4 o,float degrees){
 	// [ 0 4  8 12 ]   [ cos -sin 0  0 ]
 	// [ 1 5  9 13 ] x [ sin cos  0  0 ]
 	// [ 2 6 10 14 ]   [ 0   0    1  0 ]
@@ -383,7 +383,7 @@ inline static void mat4_append_rotation_about_z_axis(float o[16],float degrees){
 	o[ 7]=o[ 7]*cosrad-mtx03*sinrad;
 }
 
-inline static void mat4_set_scale(float o[16],scale*s){
+inline static void mat4_set_scale(mat4 o,scale*s){
 	// [ 0 4  8 12 ]   [ x 0 0 0 ]
 	// [ 1 5  9 13 ] x [ 0 y 0 0 ]
 	// [ 2 6 10 14 ]   [ 0 0 z 0 ]
@@ -409,7 +409,7 @@ inline static void mat4_set_scale(float o[16],scale*s){
 }
 
 
-inline static void mat4_scale(float o[16],scale*s){
+inline static void mat4_scale(mat4 o,scale*s){
 	// [ 0 4  8 12 ]   [ x 0 0 0 ]
 	// [ 1 5  9 13 ] x [ 0 y 0 0 ]
 	// [ 2 6 10 14 ]   [ 0 0 z 0 ]
@@ -431,7 +431,8 @@ inline static void mat4_scale(float o[16],scale*s){
 	o[11]*=s->z;
 }
 
-inline static/*gives*/float*mat4_multiply(float*ret,const float*lhs,const float*rhs){
+inline static/*gives*/float*mat4_multiply(mat4 ret,
+		const mat4 lhs,const mat4 rhs){
 	// [ 0 4  8 12 ]   [ 0 4  8 12 ]
 	// [ 1 5  9 13 ] x [ 1 5  9 13 ]
 	// [ 2 6 10 14 ]   [ 2 6 10 14 ]
