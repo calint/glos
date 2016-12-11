@@ -1,14 +1,22 @@
 #pragma once
 #include<stdlib.h>
+#include<stdio.h>
 #include<execinfo.h>
-void stacktrace_print(){
-	void*array[10];
-	int size=backtrace(array,10);
+#define stacktrace_depth 128
+void stacktrace_print(FILE*f){
+	void*array[stacktrace_depth];
+	int size=backtrace(array,stacktrace_depth);
 	char**strings=backtrace_symbols(array,size);
-	fprintf(stderr,"stacktrace %d frames:\n",size);
+	fprintf(f,"stacktrace %d frames:\n",size);
 
-	for(int i=0;i<size;i++)
+	for(int i=0;i<size;i++){
+//		char s1[256];
+//		char s2[256];
+//		sscanf(strings[i],"%s [%s]",&s1,&s2);
+//		addr2line -fe <executable>
+
 		fprintf(stderr,"%s\n",strings[i]);
+	}
 
 	free (strings);
 }

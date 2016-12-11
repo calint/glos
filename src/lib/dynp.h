@@ -57,10 +57,11 @@ inline static void dynp_add(dynp*o,void* oo){
 inline static void* dynp_get(dynp*o,unsigned index){
 #ifdef dynp_bounds_check
 	if(index>=o->count){
-		fprintf(stderr,"\nindex-out-of-bounds at %s:%u\n",__FILE__,__LINE__);
-		fprintf(stderr,"     index: %d  in dynp: %p  size: %u  capacity: %u\n",
+		fprintf(stderr,"\n   index-out-of-bounds at %s:%u\n",__FILE__,__LINE__);
+		fprintf(stderr,"        index: %d  in dynp: %p  size: %u  capacity: %u\n\n",
 				index,(void*)o,o->count,o->cap);
-		stacktrace_print();
+		stacktrace_print(stderr);
+		fprintf(stderr,"\n\n");
 		exit(-1);
 	}
 #endif

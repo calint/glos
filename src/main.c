@@ -140,7 +140,7 @@ int main(int argc,char*argv[]){
 	int64_t keymap=0;
 	float mouse_sensitivity=1.5f;
 	float speed=1;
-	int mouse_mode=1;
+	int mouse_mode=0;
 	SDL_SetRelativeMouseMode(mouse_mode);
 	metrics_reset();
 	metrics_print_headers(stdout);

@@ -10,8 +10,8 @@ WARNINGS='-Wall -Wextra -pedantic -Wfatal-errors -Wno-unused-function -Wno-unuse
 
 LIBS="$(sdl2-config --libs) -lGL -lm -lSDL2_gfx -lSDL2_image -lSDL2_ttf -lSDL2_mixer"
 
-#OPTIMIZATION=-O3
-OPTIMIZATION=-O0
+OPTIMIZATION=-O3
+#OPTIMIZATION="-O0 -g"
 
 #REMARKS=-Rpass=inline
 REMARKS=
