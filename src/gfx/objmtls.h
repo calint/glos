@@ -1,6 +1,7 @@
 #pragma once
 #include<stdio.h>
 #include<unistd.h>
+#include"../lib/etc.h"
 //----------------------------------------------------------------------config
 
 #define objmtls_initial_capacity 8
@@ -17,27 +18,27 @@ typedef struct objmtls{
 
 //--------------------------------------------------------------------- private
 
-inline static void _objmtls_insure_free_capcity(objmtls*this,unsigned n){
-	const unsigned rem=this->cap-this->count;
+inline static void _objmtls_insure_free_capcity(objmtls*o,unsigned n){
+	const unsigned rem=o->cap-o->count;
 	if(rem>=n)
 		return;
-	if(this->data){
-		unsigned new_cap=this->cap*2;
-		objmtl* *new_data=realloc(this->data,sizeof(objmtl*)*new_cap);
+	if(o->data){
+		unsigned new_cap=o->cap*2;
+		objmtl* *new_data=realloc(o->data,sizeof(objmtl*)*new_cap);
 		if(!new_data){
 			fprintf(stderr,"\nout-of-memory");
 			fprintf(stderr,"\tfile: '%s'  line: %d\n\n",__FILE__,__LINE__);
 			exit(-1);
 		}
-		if(new_data!=this->data){
-			this->data=new_data;
+		if(new_data!=o->data){
+			o->data=new_data;
 		}
-		this->cap=new_cap;
+		o->cap=new_cap;
 		return;
 	}
-	this->cap=objmtls_initial_capacity;
-	this->data=malloc(sizeof(objmtl*)*this->cap);
-	if(!this->data){
+	o->cap=objmtls_initial_capacity;
+	o->data=malloc(sizeof(objmtl*)*o->cap);
+	if(!o->data){
 		fprintf(stderr,"\nout-of-memory");
 		fprintf(stderr,"\tfile: '%s'  line: %d\n\n",__FILE__,__LINE__);
 		exit(-1);
@@ -46,75 +47,76 @@ inline static void _objmtls_insure_free_capcity(objmtls*this,unsigned n){
 
 //---------------------------------------------------------------------- public
 
-inline static void objmtls_add(objmtls*this,objmtl* o){
-	_objmtls_insure_free_capcity(this,1);
-	*(this->data+this->count++)=o;
+inline static void objmtls_add(objmtls*o,objmtl* oo){
+	_objmtls_insure_free_capcity(o,1);
+	*(o->data+o->count++)=oo;
 }
 
 //-----------------------------------------------------------------------------
 
-inline static objmtl* objmtls_get(objmtls*this,unsigned index){
+inline static objmtl* objmtls_get(objmtls*o,unsigned index){
 #ifdef objmtls_bounds_check
-	if(index>=this->count){
-		fprintf(stderr,"\nindex-out-of-bounds");
-		fprintf(stderr,"\t%s\n\n%d  index: %u    capacity: %u\n",
-				__FILE__,__LINE__,index,this->cap);
+	if(index>=o->count){
+		fprintf(stderr,"\nindex-out-of-bounds at %s:%u\n",__FILE__,__LINE__);
+		fprintf(stderr,"     index: %d  in dynp: %p  size: %u  capacity: %u\n",
+				index,(void*)o,o->count,o->cap);
+		stacktrace_print();
 		exit(-1);
 	}
 #endif
-	objmtl* p=*(this->data+index);
+	objmtl* p=*(o->data+index);
 	return p;
 }
 
 //-----------------------------------------------------------------------------
 
-inline static objmtl* objmtls_get_last(objmtls*this){
-	objmtl* p=*(this->data+this->count-1);
+inline static objmtl* objmtls_get_last(objmtls*o){
+	objmtl* p=*(o->data+o->count-1);
 	return p;
 }
 
 //-----------------------------------------------------------------------------
 
-inline static size_t objmtls_size_in_bytes(objmtls*this){
-	return this->count*sizeof(objmtl*);
+inline static size_t objmtls_size_in_bytes(objmtls*o){
+	return o->count*sizeof(objmtl*);
 }
 
 //-----------------------------------------------------------------------------
 
-inline static void objmtls_free(objmtls*this){
-	if(!this->data)
+inline static void objmtls_free(objmtls*o){
+	if(!o->data)
 		return;
-	free(this->data);
+	free(o->data);
 }
 
 //-----------------------------------------------------------------------------
 
-inline static void objmtls_add_list(objmtls*this,/*copies*/const objmtl**str,size_t n){
+inline static void objmtls_add_list(objmtls*o,/*copies*/const objmtl**str,size_t n){
 	//? optimize memcpy
 	const objmtl**p=str;
 	while(n--){
-		_objmtls_insure_free_capcity(this,1);
-		*(this->data+this->count++)=*p++;
+		_objmtls_insure_free_capcity(o,1);
+		*(o->data+o->count++)=*p++;
 	}
 }
 
 //-----------------------------------------------------------------------------
 
-inline static void objmtls_add_string(objmtls*this,/*copies*/const objmtl**str){
+inline static void objmtls_add_string(objmtls*o,/*copies*/const objmtl**str){
 	//? optimize
 	const objmtl**p=str;
 	while(*p){
-		_objmtls_insure_free_capcity(this,1);
-		*(this->data+this->count++)=*p++;
+		_objmtls_insure_free_capcity(o,1);
+		*(o->data+o->count++)=*p++;
 	}
 }
 
 //-----------------------------------------------------------------------------
 
-inline static void objmtls_write_to_fd(objmtls*this,int fd){
-	if(!this->data)
+inline static void objmtls_write_to_fd(objmtls*o,int fd){
+	if(!o->data)
 		return;
-	write(fd,this->data,this->count);
+	write(fd,o->data,o->count);
 }
 
 //-----------------------------------------------------------------------------

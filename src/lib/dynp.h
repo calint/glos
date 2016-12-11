@@ -1,6 +1,7 @@
 #pragma once
 #include<stdio.h>
 #include<unistd.h>
+#include"../lib/etc.h"
 //----------------------------------------------------------------------config
 
 #define dynp_initial_capacity 8
@@ -17,27 +18,27 @@ typedef struct dynp{
 
 //--------------------------------------------------------------------- private
 
-inline static void _dynp_insure_free_capcity(dynp*this,unsigned n){
-	const unsigned rem=this->cap-this->count;
+inline static void _dynp_insure_free_capcity(dynp*o,unsigned n){
+	const unsigned rem=o->cap-o->count;
 	if(rem>=n)
 		return;
-	if(this->data){
-		unsigned new_cap=this->cap*2;
-		void* *new_data=realloc(this->data,sizeof(void*)*new_cap);
+	if(o->data){
+		unsigned new_cap=o->cap*2;
+		void* *new_data=realloc(o->data,sizeof(void*)*new_cap);
 		if(!new_data){
 			fprintf(stderr,"\nout-of-memory");
 			fprintf(stderr,"\tfile: '%s'  line: %d\n\n",__FILE__,__LINE__);
 			exit(-1);
 		}
-		if(new_data!=this->data){
-			this->data=new_data;
+		if(new_data!=o->data){
+			o->data=new_data;
 		}
-		this->cap=new_cap;
+		o->cap=new_cap;
 		return;
 	}
-	this->cap=dynp_initial_capacity;
-	this->data=malloc(sizeof(void*)*this->cap);
-	if(!this->data){
+	o->cap=dynp_initial_capacity;
+	o->data=malloc(sizeof(void*)*o->cap);
+	if(!o->data){
 		fprintf(stderr,"\nout-of-memory");
 		fprintf(stderr,"\tfile: '%s'  line: %d\n\n",__FILE__,__LINE__);
 		exit(-1);
@@ -46,75 +47,76 @@ inline static void _dynp_insure_free_capcity(dynp*this,unsigned n){
 
 //---------------------------------------------------------------------- public
 
-inline static void dynp_add(dynp*this,void* o){
-	_dynp_insure_free_capcity(this,1);
-	*(this->data+this->count++)=o;
+inline static void dynp_add(dynp*o,void* oo){
+	_dynp_insure_free_capcity(o,1);
+	*(o->data+o->count++)=oo;
 }
 
 //-----------------------------------------------------------------------------
 
-inline static void* dynp_get(dynp*this,unsigned index){
+inline static void* dynp_get(dynp*o,unsigned index){
 #ifdef dynp_bounds_check
-	if(index>=this->count){
-		fprintf(stderr,"\nindex-out-of-bounds");
-		fprintf(stderr,"\t%s\n\n%d  index: %u    capacity: %u\n",
-				__FILE__,__LINE__,index,this->cap);
+	if(index>=o->count){
+		fprintf(stderr,"\nindex-out-of-bounds at %s:%u\n",__FILE__,__LINE__);
+		fprintf(stderr,"     index: %d  in dynp: %p  size: %u  capacity: %u\n",
+				index,(void*)o,o->count,o->cap);
+		stacktrace_print();
 		exit(-1);
 	}
 #endif
-	void* p=*(this->data+index);
+	void* p=*(o->data+index);
 	return p;
 }
 
 //-----------------------------------------------------------------------------
 
-inline static void* dynp_get_last(dynp*this){
-	void* p=*(this->data+this->count-1);
+inline static void* dynp_get_last(dynp*o){
+	void* p=*(o->data+o->count-1);
 	return p;
 }
 
 //-----------------------------------------------------------------------------
 
-inline static size_t dynp_size_in_bytes(dynp*this){
-	return this->count*sizeof(void*);
+inline static size_t dynp_size_in_bytes(dynp*o){
+	return o->count*sizeof(void*);
 }
 
 //-----------------------------------------------------------------------------
 
-inline static void dynp_free(dynp*this){
-	if(!this->data)
+inline static void dynp_free(dynp*o){
+	if(!o->data)
 		return;
-	free(this->data);
+	free(o->data);
 }
 
 //-----------------------------------------------------------------------------
 
-inline static void dynp_add_list(dynp*this,/*copies*/const void**str,size_t n){
+inline static void dynp_add_list(dynp*o,/*copies*/const void**str,size_t n){
 	//? optimize memcpy
 	const void**p=str;
 	while(n--){
-		_dynp_insure_free_capcity(this,1);
-		*(this->data+this->count++)=*p++;
+		_dynp_insure_free_capcity(o,1);
+		*(o->data+o->count++)=*p++;
 	}
 }
 
 //-----------------------------------------------------------------------------
 
-inline static void dynp_add_string(dynp*this,/*copies*/const void**str){
+inline static void dynp_add_string(dynp*o,/*copies*/const void**str){
 	//? optimize
 	const void**p=str;
 	while(*p){
-		_dynp_insure_free_capcity(this,1);
-		*(this->data+this->count++)=*p++;
+		_dynp_insure_free_capcity(o,1);
+		*(o->data+o->count++)=*p++;
 	}
 }
 
 //-----------------------------------------------------------------------------
 
-inline static void dynp_write_to_fd(dynp*this,int fd){
-	if(!this->data)
+inline static void dynp_write_to_fd(dynp*o,int fd){
+	if(!o->data)
 		return;
-	write(fd,this->data,this->count);
+	write(fd,o->data,o->count);
 }
 
 //-----------------------------------------------------------------------------

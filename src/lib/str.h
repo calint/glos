@@ -1,7 +1,7 @@
 #pragma once
 #include<stdio.h>
-#include<stdlib.h>
 #include<unistd.h>
+#include"../lib/etc.h"
 //----------------------------------------------------------------------config
 
 #define str_initial_capacity 8
@@ -18,27 +18,27 @@ typedef struct str{
 
 //--------------------------------------------------------------------- private
 
-inline static void _str_insure_free_capcity(str*this,unsigned n){
-	const unsigned rem=this->cap-this->count;
+inline static void _str_insure_free_capcity(str*o,unsigned n){
+	const unsigned rem=o->cap-o->count;
 	if(rem>=n)
 		return;
-	if(this->data){
-		unsigned new_cap=this->cap*2;
-		char *new_data=realloc(this->data,sizeof(char)*new_cap);
+	if(o->data){
+		unsigned new_cap=o->cap*2;
+		char *new_data=realloc(o->data,sizeof(char)*new_cap);
 		if(!new_data){
 			fprintf(stderr,"\nout-of-memory");
 			fprintf(stderr,"\tfile: '%s'  line: %d\n\n",__FILE__,__LINE__);
 			exit(-1);
 		}
-		if(new_data!=this->data){
-			this->data=new_data;
+		if(new_data!=o->data){
+			o->data=new_data;
 		}
-		this->cap=new_cap;
+		o->cap=new_cap;
 		return;
 	}
-	this->cap=str_initial_capacity;
-	this->data=malloc(sizeof(char)*this->cap);
-	if(!this->data){
+	o->cap=str_initial_capacity;
+	o->data=malloc(sizeof(char)*o->cap);
+	if(!o->data){
 		fprintf(stderr,"\nout-of-memory");
 		fprintf(stderr,"\tfile: '%s'  line: %d\n\n",__FILE__,__LINE__);
 		exit(-1);
@@ -47,75 +47,76 @@ inline static void _str_insure_free_capcity(str*this,unsigned n){
 
 //---------------------------------------------------------------------- public
 
-inline static void str_add(str*this,char o){
-	_str_insure_free_capcity(this,1);
-	*(this->data+this->count++)=o;
+inline static void str_add(str*o,char oo){
+	_str_insure_free_capcity(o,1);
+	*(o->data+o->count++)=oo;
 }
 
 //-----------------------------------------------------------------------------
 
-inline static char str_get(str*this,unsigned index){
+inline static char str_get(str*o,unsigned index){
 #ifdef str_bounds_check
-	if(index>=this->count){
-		fprintf(stderr,"\nindex-out-of-bounds");
-		fprintf(stderr,"\t%s\n\n%d  index: %u    capacity: %u\n",
-				__FILE__,__LINE__,index,this->cap);
+	if(index>=o->count){
+		fprintf(stderr,"\nindex-out-of-bounds at %s:%u\n",__FILE__,__LINE__);
+		fprintf(stderr,"     index: %d  in dynp: %p  size: %u  capacity: %u\n",
+				index,(void*)o,o->count,o->cap);
+		stacktrace_print();
 		exit(-1);
 	}
 #endif
-	char p=*(this->data+index);
+	char p=*(o->data+index);
 	return p;
 }
 
 //-----------------------------------------------------------------------------
 
-inline static char str_get_last(str*this){
-	char p=*(this->data+this->count-1);
+inline static char str_get_last(str*o){
+	char p=*(o->data+o->count-1);
 	return p;
 }
 
 //-----------------------------------------------------------------------------
 
-inline static size_t str_size_in_bytes(str*this){
-	return this->count*sizeof(char);
+inline static size_t str_size_in_bytes(str*o){
+	return o->count*sizeof(char);
 }
 
 //-----------------------------------------------------------------------------
 
-inline static void str_free(str*this){
-	if(!this->data)
+inline static void str_free(str*o){
+	if(!o->data)
 		return;
-	free(this->data);
+	free(o->data);
 }
 
 //-----------------------------------------------------------------------------
 
-inline static void str_add_list(str*this,/*copies*/const char*str,size_t n){
+inline static void str_add_list(str*o,/*copies*/const char*str,size_t n){
 	//? optimize memcpy
 	const char*p=str;
 	while(n--){
-		_str_insure_free_capcity(this,1);
-		*(this->data+this->count++)=*p++;
+		_str_insure_free_capcity(o,1);
+		*(o->data+o->count++)=*p++;
 	}
 }
 
 //-----------------------------------------------------------------------------
 
-inline static void str_add_string(str*this,/*copies*/const char*str){
+inline static void str_add_string(str*o,/*copies*/const char*str){
 	//? optimize
 	const char*p=str;
 	while(*p){
-		_str_insure_free_capcity(this,1);
-		*(this->data+this->count++)=*p++;
+		_str_insure_free_capcity(o,1);
+		*(o->data+o->count++)=*p++;
 	}
 }
 
 //-----------------------------------------------------------------------------
 
-inline static void str_write_to_fd(str*this,int fd){
-	if(!this->data)
+inline static void str_write_to_fd(str*o,int fd){
+	if(!o->data)
 		return;
-	write(fd,this->data,this->count);
+	write(fd,o->data,o->count);
 }
 
 //-----------------------------------------------------------------------------

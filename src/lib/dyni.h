@@ -1,6 +1,7 @@
 #pragma once
 #include<stdio.h>
 #include<unistd.h>
+#include"../lib/etc.h"
 //----------------------------------------------------------------------config
 
 #define dyni_initial_capacity 8
@@ -17,27 +18,27 @@ typedef struct dyni{
 
 //--------------------------------------------------------------------- private
 
-inline static void _dyni_insure_free_capcity(dyni*this,unsigned n){
-	const unsigned rem=this->cap-this->count;
+inline static void _dyni_insure_free_capcity(dyni*o,unsigned n){
+	const unsigned rem=o->cap-o->count;
 	if(rem>=n)
 		return;
-	if(this->data){
-		unsigned new_cap=this->cap*2;
-		int *new_data=realloc(this->data,sizeof(int)*new_cap);
+	if(o->data){
+		unsigned new_cap=o->cap*2;
+		int *new_data=realloc(o->data,sizeof(int)*new_cap);
 		if(!new_data){
 			fprintf(stderr,"\nout-of-memory");
 			fprintf(stderr,"\tfile: '%s'  line: %d\n\n",__FILE__,__LINE__);
 			exit(-1);
 		}
-		if(new_data!=this->data){
-			this->data=new_data;
+		if(new_data!=o->data){
+			o->data=new_data;
 		}
-		this->cap=new_cap;
+		o->cap=new_cap;
 		return;
 	}
-	this->cap=dyni_initial_capacity;
-	this->data=malloc(sizeof(int)*this->cap);
-	if(!this->data){
+	o->cap=dyni_initial_capacity;
+	o->data=malloc(sizeof(int)*o->cap);
+	if(!o->data){
 		fprintf(stderr,"\nout-of-memory");
 		fprintf(stderr,"\tfile: '%s'  line: %d\n\n",__FILE__,__LINE__);
 		exit(-1);
@@ -46,75 +47,76 @@ inline static void _dyni_insure_free_capcity(dyni*this,unsigned n){
 
 //---------------------------------------------------------------------- public
 
-inline static void dyni_add(dyni*this,int o){
-	_dyni_insure_free_capcity(this,1);
-	*(this->data+this->count++)=o;
+inline static void dyni_add(dyni*o,int oo){
+	_dyni_insure_free_capcity(o,1);
+	*(o->data+o->count++)=oo;
 }
 
 //-----------------------------------------------------------------------------
 
-inline static int dyni_get(dyni*this,unsigned index){
+inline static int dyni_get(dyni*o,unsigned index){
 #ifdef dyni_bounds_check
-	if(index>=this->count){
-		fprintf(stderr,"\nindex-out-of-bounds");
-		fprintf(stderr,"\t%s\n\n%d  index: %u    capacity: %u\n",
-				__FILE__,__LINE__,index,this->cap);
+	if(index>=o->count){
+		fprintf(stderr,"\nindex-out-of-bounds at %s:%u\n",__FILE__,__LINE__);
+		fprintf(stderr,"     index: %d  in dynp: %p  size: %u  capacity: %u\n",
+				index,(void*)o,o->count,o->cap);
+		stacktrace_print();
 		exit(-1);
 	}
 #endif
-	int p=*(this->data+index);
+	int p=*(o->data+index);
 	return p;
 }
 
 //-----------------------------------------------------------------------------
 
-inline static int dyni_get_last(dyni*this){
-	int p=*(this->data+this->count-1);
+inline static int dyni_get_last(dyni*o){
+	int p=*(o->data+o->count-1);
 	return p;
 }
 
 //-----------------------------------------------------------------------------
 
-inline static size_t dyni_size_in_bytes(dyni*this){
-	return this->count*sizeof(int);
+inline static size_t dyni_size_in_bytes(dyni*o){
+	return o->count*sizeof(int);
 }
 
 //-----------------------------------------------------------------------------
 
-inline static void dyni_free(dyni*this){
-	if(!this->data)
+inline static void dyni_free(dyni*o){
+	if(!o->data)
 		return;
-	free(this->data);
+	free(o->data);
 }
 
 //-----------------------------------------------------------------------------
 
-inline static void dyni_add_list(dyni*this,/*copies*/const int*str,size_t n){
+inline static void dyni_add_list(dyni*o,/*copies*/const int*str,size_t n){
 	//? optimize memcpy
 	const int*p=str;
 	while(n--){
-		_dyni_insure_free_capcity(this,1);
-		*(this->data+this->count++)=*p++;
+		_dyni_insure_free_capcity(o,1);
+		*(o->data+o->count++)=*p++;
 	}
 }
 
 //-----------------------------------------------------------------------------
 
-inline static void dyni_add_string(dyni*this,/*copies*/const int*str){
+inline static void dyni_add_string(dyni*o,/*copies*/const int*str){
 	//? optimize
 	const int*p=str;
 	while(*p){
-		_dyni_insure_free_capcity(this,1);
-		*(this->data+this->count++)=*p++;
+		_dyni_insure_free_capcity(o,1);
+		*(o->data+o->count++)=*p++;
 	}
 }
 
 //-----------------------------------------------------------------------------
 
-inline static void dyni_write_to_fd(dyni*this,int fd){
-	if(!this->data)
+inline static void dyni_write_to_fd(dyni*o,int fd){
+	if(!o->data)
 		return;
-	write(fd,this->data,this->count);
+	write(fd,o->data,o->count);
 }
 
 //-----------------------------------------------------------------------------
