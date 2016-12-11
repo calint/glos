@@ -8,6 +8,7 @@ inline static void main_init_scene(){
 	glos_load_scene_from_file("obj/skydome.obj");
 	glos_load_scene_from_file("obj/board.obj");
 	glos_load_scene_from_file("obj/blip.obj");
+	glos_load_scene_from_file("obj/color-cube.obj");
 
 	for(float y=0;y<5;y++){
 		for(float z=-10;z<=10;z++){
@@ -19,4 +20,7 @@ inline static void main_init_scene(){
 			}
 		}
 	}
+	object*o=santa_alloc_def();
+	o->n.glo=glo_at(3);
+	bvol_update_radius_using_scale(&o->b);
 }

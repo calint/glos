@@ -15,7 +15,7 @@ static object santa_def={
 			.render=object_render_glob,
 			.free=NULL,
 	},
-	.t={{'a','a',0,0,0,0,0,0}},
+	.t={type_santa},
 	.part={NULL,NULL,NULL,NULL},
 	.ptr_to_bits=NULL,
 };
