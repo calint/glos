@@ -2,7 +2,7 @@
 #include"gfx.h"
 #include"obj.h"
 #include"metrics.h"
-#include"app/_init.h"
+#include"app/init.h"
 //----------------------------------------------------------------------- init
 inline static void main_init_programs(){
 	const char*vtx="#version 130\n"
