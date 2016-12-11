@@ -1,4 +1,5 @@
 #pragma once
+#include"sdl.h"
 //------------------------------------------------------------------------ fps
 struct{
 	uint32_t average_during_last_intervall;
