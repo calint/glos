@@ -28,7 +28,7 @@ static object object_def={
 	.part=parts_def,
 	.ptr_to_bits=0,
 };
-//---------------------------------------------------------------------- init
+//----------------------------------------------------------------------- init
 inline static void object_init(object*o){}
 //--------------------------------------------------------------------- update
 inline static void object_update(object*o,dt dt){
