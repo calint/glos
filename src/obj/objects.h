@@ -42,7 +42,7 @@ inline static void objects_render() {
 
 		if(o->vtbl.render){
 			o->vtbl.render(o);
-			metrics.objects_rendered_last_frame++;
+			metrics.objects_rendered_prv_frame++;
 		}
 
 		for(int i=0;i<object_part_cap;i++){
@@ -51,7 +51,7 @@ inline static void objects_render() {
 			part*p=(part*)o->part[i];
 			if(p->render){
 				p->render(o,p);
-				metrics.parts_rendered_last_frame++;
+				metrics.parts_rendered_prv_frame++;
 			}
 		}
 		o++;

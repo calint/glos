@@ -10,41 +10,41 @@
  [x]   scene
  [x]     to objects
  [ ]     center/scale/position
- [ ] draw bounding volume
- [ ]   sphere
- [ ]   box
+ [1] draw bounding volume
+ [1]   sphere
+ [1]   box
  [ ]   planes
  [x] multiple materials in render
  [ ] collision detection 
- [ ]   bounding volume
- [ ]     sphere
- [ ]       vs sphere
+ [1]   bounding volume
+ [1]     sphere
+ [1]       vs sphere
  [ ]       vs plane
  [ ]       vs box
- [ ]     planes
- [ ]       vs box
+ [1]     planes
+ [1]       vs box
  [ ]       vs planes
- [ ]     box
- [ ]       vs box
+ [1]     box
+ [1]       vs box
  [ ]     line
  [ ]       vs sphere
  [ ]       planes 
  [ ]     empty/solids
  [ ]       boolean ops
- [ ] collision physics/animatics
- [ ]   sphere vs sphere
- [ ]   box vs box
- [ ]   sphere vs plane
- [ ]   spherer vs box
- [ ] grid
- [ ]   cull
- [ ]   render
- [ ]   update
- [ ]   multicore
- [ ] keyshub
- [ ]   client
- [ ]   server
- [ ]   multiplayer
+ [1] collision physics/animatics
+ [2]   sphere vs sphere
+ [3]   box vs box
+ [2]   sphere vs plane
+ [3]   spherer vs box
+ [2] grid
+ [2]   cull
+ [2]   render
+ [2]   update
+ [4]   multicore
+ [3] keyshub
+ [3]   client
+ [3]   server
+ [3]   multiplayer
  [o] camera
  [x]   projection
  [x]     orthonormal

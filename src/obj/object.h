@@ -29,7 +29,7 @@ static object object_def={
 //			.render=0,
 //			.free=0,
 //	},
-	.type={{0,0,0,0,0,0,0,0}},
+	.type=type_def,
 	.ptr_to_bits=0,
 	.part={0,0,0,0},
 };

@@ -17,8 +17,8 @@ struct{
 	unsigned objects_allocated;
 	unsigned objects_updated_prv_frame;
 	unsigned parts_updated_prv_frame;
-	unsigned objects_rendered_last_frame;
-	unsigned parts_rendered_last_frame;
+	unsigned objects_rendered_prv_frame;
+	unsigned parts_rendered_prv_frame;
 	unsigned average_fps;
 	unsigned vertices_rendered;
 	dt dt_prv_frame;
@@ -30,6 +30,7 @@ inline static void metrics_reset(){
 	fps._timer_tick_at_start_of_frame=SDL_GetPerformanceCounter();
 	fps._timer_frequency=SDL_GetPerformanceFrequency();
 }
+
 inline static void metrics_print_headers(){
 	printf(" %4s   %6s   %8s  %8s  %6s  %6s  %6s  %6s  %6s\n",
 			"fps","dt","bufs","buftex","nobjs","obup","obre","ptup","ptre"
@@ -44,9 +45,9 @@ inline static void metrics_print(){
 			metrics.buffered_texture_data,
 			metrics.objects_allocated,
 			metrics.objects_updated_prv_frame,
-			metrics.objects_rendered_last_frame,
+			metrics.objects_rendered_prv_frame,
 			metrics.parts_updated_prv_frame,
-			metrics.parts_rendered_last_frame
+			metrics.parts_rendered_prv_frame
 		);
 }
 
@@ -56,9 +57,9 @@ inline static void metrics__at__frame_begin(){
 	if(!fps.frame_count)
 		metrics_reset();
 	fps.frame_count++;
-	metrics.objects_rendered_last_frame=0;
+	metrics.objects_rendered_prv_frame=0;
 	metrics.objects_updated_prv_frame=0;
-	metrics.parts_rendered_last_frame=0;
+	metrics.parts_rendered_prv_frame=0;
 	metrics.parts_updated_prv_frame=0;
 	metrics.vertices_rendered=0;
 }
