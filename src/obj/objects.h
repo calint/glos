@@ -12,11 +12,11 @@ inline static void objects_update(dt dt){
 			continue;
 		}
 
-		object_update(o,metrics.dt_prv_frame);
-
 		if(o->vtbl.update){
 			o->vtbl.update(o,dt);
 			metrics.objects_updated_prv_frame++;
+		}else{
+			object_update(o,metrics.dt_prv_frame);
 		}
 
 		for(int i=0;i<object_part_cap;i++){
