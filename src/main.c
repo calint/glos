@@ -102,6 +102,15 @@ inline static void main_render(){
 }
 //------------------------------------------------------------------------ main
 int main(int argc,char*argv[]){
+	while(argc--)printf("%s ",*argv++);
+	printf("\n--- - - - ---- - - -- - - - - -- - - -- - - - -- - - - - - -");
+	printf("\n   g l o s                                   -- - -- --- - -");
+	printf("\n- - - -- - --- - --  -- - - - - - -- - - - --  -- -- - - -- ");
+	puts("");
+
+
+
+
 	unsigned gloid=0,mingloid=0,maxgloid=10;
 
 	printf(":-%15s-:-%-9s-:\n","---------------","---------");
