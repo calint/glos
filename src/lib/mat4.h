@@ -207,7 +207,7 @@ inline static void mat4_get_axis_z(mat4 o,vec4*result){
 //
 
 // from mesa
-void glFrustum(mat4 o,float left,float right,float bottom,float top,
+static void mat4_glFrustum(mat4 o,float left,float right,float bottom,float top,
 		float near,float far){
 	float RsubL=right-left;
 	float TsubB=top-bottom;
@@ -239,13 +239,13 @@ void glFrustum(mat4 o,float left,float right,float bottom,float top,
 
 }
 
-void gluPerspective(mat4 o,float fov, float aspect, float near, float far) {
+static void mat4_gluPerspective(mat4 o,float fov, float aspect, float near, float far) {
 	float ymax = near * tanf(0.5f * fov);
 	float ymin = -ymax;
 	float xmin = ymin * aspect;
 	float xmax = ymax * aspect;
 
-	glFrustum(o,xmin, xmax, ymin, ymax, near, far);
+	mat4_glFrustum(o,xmin, xmax, ymin, ymax, near, far);
 }
 
 

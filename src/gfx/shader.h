@@ -195,7 +195,7 @@ inline static const char*gl_get_error_string(const GLenum error) {
 #endif
 #if defined __gl_h_
 		case GL_STACK_OVERFLOW:
-		str = "GL_STACK_OVERFLOW";-Wunused-variable
+//		str = "GL_STACK_OVERFLOW";-Wunused-variable
 		break;
 		case GL_STACK_UNDERFLOW:
 		str = "GL_STACK_UNDERFLOW";
@@ -407,38 +407,22 @@ inline static void shader_free(){
 inline static void shader_init() {
 	gl_check_error("shader_init");
 
-//	gl_print_context_profile_and_version();
-
-
 	puts("");
-	gl_print_string("GL_VERSION", GL_VERSION);
 	gl_print_string("GL_VENDOR", GL_VENDOR);
 	gl_print_string("GL_RENDERER", GL_RENDERER);
+	gl_print_string("GL_VERSION", GL_VERSION);
 	gl_print_string("GL_SHADING_LANGUAGE_VERSION",GL_SHADING_LANGUAGE_VERSION);
 	puts("");
 
-
-//	farther in negative z axis
 	glEnable(GL_DEPTH_TEST);
-//	glDepthFunc(GL_GREATER);
-//	glClearDepthf(-1);
-
-	// with projection
-//	glEnable(GL_DEPTH_TEST);
-//	glDepthFunc(GL_LESS);
-//	glClearDepthf(1);
-
-
 	glEnable(GL_CULL_FACE);
-//	glFrontFace(GL_CCW);
-
 
 	printf(":-%10s-:-%7s-:\n","----------","-------");
 	printf(": %10s : %-7s :\n","feature","y/n");
 	printf(":-%10s-:-%7s-:\n","----------","-------");
 	printf(": %10s : %-7s :\n","cull face",glIsEnabled(GL_CULL_FACE)?"yes":"no");
-	printf(": %10s : %-7s :\n","blend",glIsEnabled(GL_BLEND)?"yes":"no");
 	printf(": %10s : %-7s :\n","zbuffer",glIsEnabled(GL_DEPTH_TEST)?"yes":"no");
+	printf(": %10s : %-7s :\n","blend",glIsEnabled(GL_BLEND)?"yes":"no");
 	printf(":-%10s-:-%7s-:\n","----------","-------");
 	puts("");
 
