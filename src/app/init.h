@@ -20,6 +20,7 @@ inline static void main_init_scene(){
 	o->n.glo_ptr=glos_find_by_name("board");
 	o->v.render=object_render_glo;
 	o->p.p.x=-80;
+	o->p.p.y=0;
 	o->p.p.z=-80;
 
 	o=object_alloc(&object_def);
