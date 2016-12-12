@@ -57,15 +57,13 @@ inline static void objmtls_load_from_file(const char*path){
 			continue;
 		}
 		if(token_starts_with(&t,"newmtl")){
-			if(o){
-				objmtls_add(&materials,o);
-			}
 			o=objmtl_alloc();
 			token t=token_next_from_string(p);
 			p=t.end;
 			unsigned n=token_size(&t);
 			str_add_list(&o->name,t.content,n);
 			str_add(&o->name,0);
+			objmtls_add(&materials,o);
 			continue;
 		}
 		if(token_equals(&t,"Ns")){
@@ -132,5 +130,4 @@ inline static void objmtls_load_from_file(const char*path){
 			continue;
 		}
 	}
-	objmtls_add(&materials,o);
 }

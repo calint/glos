@@ -49,10 +49,10 @@ static void _santa_update(object*po,part*o,dt dt){
 	*v=vec4_def;
 	if(n!=0){
 		// wasd keys
-		if(n&1)v->z+=-1;
-		if(n&2)v->x+=1;
-		if(n&4)v->z+=1;
-		if(n&8)v->x+=-1;
+		if(n&1)v->z+=+1;
+		if(n&2)v->x+=-1;
+		if(n&4)v->z+=-1;
+		if(n&8)v->x+=+1;
 		po->n.Mmw_valid=0;
 	}
 }

@@ -62,12 +62,8 @@ static/*gives*/glo*glo_make_next_from_string(const char**ptr_p){
 	dynp normals=dynp_def;
 	dynp texuv=dynp_def;
 
-
 	dynf vertex_buffer=dynf_def;
 	dynp material_ranges=dynp_def;
-
-
-
 
 	objmtl*current_objmtl=NULL;
 	const char*basedir="obj/";
@@ -107,9 +103,11 @@ static/*gives*/glo*glo_make_next_from_string(const char**ptr_p){
 			str_add(&name,0);
 
 			objmtl*m=NULL;
-			for(unsigned i=0;i<name.count;i++){
-				m=objmtls_get(&materials,i);
-				if(!strcmp(m->name.data,name.data)){
+			for(unsigned i=0;i<materials.count;i++){
+				objmtl*mm=objmtls_get(&materials,i);
+				printf("%s\n",mm->name.data);
+				if(!strcmp(mm->name.data,name.data)){
+					m=mm;
 					break;
 				}
 			}
@@ -126,9 +124,10 @@ static/*gives*/glo*glo_make_next_from_string(const char**ptr_p){
 				current_objmtl=m;
 				continue;
 			}
-			fprintf(stderr,"\ncould not find material\n");
-			fprintf(stderr,"   %s\n",name.data);
-			fprintf(stderr,"\n     %s %d\n",__FILE__,__LINE__);
+			fprintf(stderr,"\n%s:%u: could not find material\n",__FILE__,__LINE__);
+			fprintf(stderr,"        name: '%s'\n\n",name.data);
+			stacktrace_print(stderr);
+			fprintf(stderr,"\n\n");
 			exit(-1);
 		}
 		if(token_equals(&t,"s")){
@@ -577,6 +576,7 @@ inline static void glo_render(glo*this,const mat4 mtxmw){
 
 		if(m->texture_id){
 			glBindTexture(GL_TEXTURE_2D,0);
+//			glDisableVertexAttribArray(shader_atex);
 		}
 	}
 }
