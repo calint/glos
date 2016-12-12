@@ -6,8 +6,8 @@ static float ground_base_y=.25f;
 
 inline static void main_init_scene(){
 	object*o;
-	glos_load_first_in_file("obj/skydome.obj");
-	glos_load_first_in_file("obj/board.obj");
+	glos_load_scene_from_file("obj/skydome.obj");
+	glos_load_scene_from_file("obj/board.obj");
 	glos_load_first_in_file("obj/grid.obj");
 	glos_load_first_in_file("obj/santa.obj");
 

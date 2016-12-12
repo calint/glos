@@ -361,16 +361,17 @@ static/*gives*/dynp glo_load_all_from_file(const char*path){
 	int first_o=1;
 	p=file.data;
 	unsigned vtxbufix_base=0;
+	str name=str_def;
 	while(*p){
 		token t=token_next_from_string(p);
 		p=t.end;
 		if(token_equals(&t,"o")){
 			token t=token_next_from_string(p);
 			p=t.end;
-			str s=str_def;
-			str_add_list(&s,t.content,(unsigned)(t.content_end-t.content));
-			str_add(&s,0);
-			printf("     object '%s'\n",s.data);
+			name=str_def;
+			str_add_list(&name,t.content,token_size(&t));
+			str_add(&name,0);
+			puts(name.data);
 			p=scan_to_including_newline(p);
 			if(first_o){
 				first_o=0;
@@ -384,7 +385,7 @@ static/*gives*/dynp glo_load_all_from_file(const char*path){
 			dynp_add(&mtlrngs,mr);
 
 			glo*g=glo_alloc_zeroed();
-			*g=(glo){/*gives*/vertex_buffer,/*gives*/mtlrngs,0};
+			*g=(glo){/*gives*/vertex_buffer,/*gives*/mtlrngs,0,/*gives*/name};
 			dynp_add(&reuslt,g);
 
 			printf("       %u range%cs   %lu vertices   %zu B\n",
@@ -489,7 +490,7 @@ static/*gives*/dynp glo_load_all_from_file(const char*path){
 
 
 	glo*g=glo_alloc_zeroed();
-	*g=(glo){/*gives*/vertex_buffer,/*gives*/mtlrngs,0};
+	*g=(glo){/*gives*/vertex_buffer,/*gives*/mtlrngs,0,/*gives*/name};
 	dynp_add(&reuslt,g);
 
 	printf("       %u range%c   %lu vertices   %lu B\n",
