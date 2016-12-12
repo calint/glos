@@ -48,25 +48,27 @@ inline static void camera_update_matrix_wvp(){
 		mat4_assign(camera.mxwvp,Mptl);
 
 	}else if(camera.type==1){
-		position Pt=camera.eye;
-		vec3_negate(&Pt);
+//		vec3_print(&camera.lookat);puts("");
 
 		mat4 Mt;
+		position Pt=camera.eye;
+		vec3_negate(&Pt);
 		mat4_set_translation(Mt,&Pt);
+//		mat4_set_identity(Mt);
 
 		mat4 Ml;
 		mat4_set_look_at(Ml,&camera.eye,&camera.lookat,&(vec4){0,1,0,0});
 
-		mat4 Mlt;
-		mat4_multiply(Mlt,Ml,Mt);
+		mat4 Mtl;
+		mat4_multiply(Mtl,Ml,Mt);
 
 		mat4 Mp;
 		perspective_vertical(Mp,20,camera.wi/camera.hi,1,10);
 
-		mat4 Mptl;
-		mat4_multiply(Mptl,Mp,Mlt);
+		mat4 Mplt;
+		mat4_multiply(Mplt,Mp,Mtl);
 
-		mat4_assign(camera.mxwvp,Mptl);
+		mat4_assign(camera.mxwvp,Mplt);
 
 	}else if(camera.type==2){
 		position Pt=camera.eye;

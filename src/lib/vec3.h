@@ -46,3 +46,7 @@ inline static void vec3_inc_with_vec3_over_dt(vec4*o,vec4*other,dt dt){
 	o->y+=other->y*dt;
 	o->z+=other->z*dt;
 }
+
+inline static void vec3_print(vec4*o){
+	printf(" | %f  %f  %f |",o->x,o->y,o->z);
+}

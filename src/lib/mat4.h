@@ -92,7 +92,7 @@ inline static void mat4_set_look_at(mat4 o,
 	//	 X
 	o[0]=xaxis.x;
 	o[1]=yaxis.x;
-	o[2]=zaxis.x;
+	o[2]=-zaxis.x;
 	o[3]=0;
 	// Y
 	o[4]=xaxis.y;
