@@ -53,6 +53,7 @@ static void _santa_update(object*po,part*o,dt dt){
 		if(n&2)v->x+=-1;
 		if(n&4)v->z+=-1;
 		if(n&8)v->x+=+1;
+		vec3_scale(v,10);
 		po->n.Mmw_valid=0;
 	}
 }

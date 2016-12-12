@@ -63,7 +63,7 @@ inline static void camera_update_matrix_wvp(){
 		mat4_multiply(Mtl,Ml,Mt);
 
 		mat4 Mp;
-		perspective_vertical(Mp,20,camera.wi/camera.hi,1,10);
+		perspective_vertical(Mp,40,camera.wi/camera.hi,.6f,3);
 
 		mat4 Mplt;
 		mat4_multiply(Mplt,Mp,Mtl);
