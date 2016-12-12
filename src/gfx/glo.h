@@ -55,7 +55,7 @@ inline static void glo_free(glo*o){
 //	memset(o,0,sizeof(glo));
 }
 
-static/*gives*/glo*glo_load_next_from_string(const char**ptr_p){
+static/*gives*/glo*glo_make_next_from_string(const char**ptr_p){
 	const char*p=*ptr_p;
 
 	dynp vertices=dynp_def;
@@ -254,10 +254,10 @@ static/*gives*/glo*glo_load_next_from_string(const char**ptr_p){
 
 // returns vertex buffer of array of triangles
 //                      [ x y z   r g b a   nx ny nz   u v]
-static/*gives*/glo*glo_load_first_from_file(const char*path){
+static/*gives*/glo*glo_make_first_in_file(const char*path){
 	str file=str_from_file(path);
 	const char*p=file.data;
-	return glo_load_next_from_string(&p);
+	return glo_make_next_from_string(&p);
 }
 
 //static/*gives*/dynp glo_load_all_from_file(const char*path){
@@ -542,7 +542,7 @@ inline static void glo_upload_to_opengl(glo*this){
 
 //----------------------------------------------------------------------- calls
 
-inline static void glo_render(glo*this,const float*mtxmw){
+inline static void glo_render(glo*this,const mat4 mtxmw){
 
 	glUniformMatrix4fv(shader_umtx_mw,1,0,mtxmw);
 
@@ -606,10 +606,11 @@ inline static void glos_render(){
 }
 
 
-inline static void glos_load_from_file(const char*path){
-	glo*g=/*takes*/glo_load_first_from_file(path);
+inline static glo*glos_load_first_in_file(const char*path){
+	glo*g=/*takes*/glo_make_first_in_file(path);
 	glo_upload_to_opengl(g);
-	dynp_add(&glos,g);
+	dynp_add(&glos,/*sinks*/g);
+	return g;
 }
 
 
@@ -621,4 +622,7 @@ inline static void glos_load_scene_from_file(const char*path){
 		dynp_add(&glos,g);
 	}
 }
-
+//
+//inline static glo*glos_last_in_array(){
+//	return glo_at(glos.data[glos.count-1]);
+//}

@@ -70,6 +70,7 @@ void main(){                                                         \n\
 static char*shader_fragment_source =
 		"#version 130             \n\
 uniform sampler2D utex;                    \n\
+uniform vec4 solid_color;         \n\
 in vec4 vrgba;                              \n\
 in vec3 vnorm;                          \n\
 in vec2 vtex;                            \n\

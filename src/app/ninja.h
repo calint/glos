@@ -13,7 +13,7 @@ static object ninja_def={
 	.v={	.init=NULL,
 			.update=NULL,
 			.collision=NULL,
-			.render=object_render_glob,
+			.render=object_render_glo,
 			.free=NULL,
 	},
 	.t={type_ninja},

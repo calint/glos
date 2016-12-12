@@ -12,7 +12,7 @@ static object santa_obj_def={
 	.v={	.init=NULL,
 			.update=NULL,
 			.collision=NULL,
-			.render=object_render_glob,
+			.render=object_render_glo,
 			.free=NULL,
 	},
 	.t={type_santa},

@@ -76,7 +76,7 @@ inline static void main_init(){
 
 static int draw_default=0,
 		draw_objects=1,
-		draw_glos=1;
+		draw_glos=0;
 
 static struct{
 	GLclampf red;
