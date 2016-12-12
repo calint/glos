@@ -5,17 +5,19 @@
 typedef struct mtlrng{
 	unsigned begin,count;
 	objmtl*material_ptr;
+	str name;
 }mtlrng;
 
-#define mtlrng_def (mtlrng){0,0,NULL}
+#define mtlrng_def (mtlrng){0,0,NULL,str_def}
 
 typedef struct glo{
 	dynf vtxbuf;
 	dynp ranges;
 	id vtxbuf_id;
+	str name;
 }glo;
 
-#define glo_def (glo){dynf_def,dynp_def}
+#define glo_def (glo){dynf_def,dynp_def,str_def}
 
 
 inline static/*gives*/glo*glo_alloc(){
@@ -70,6 +72,7 @@ static/*gives*/glo*glo_make_next_from_string(const char**ptr_p){
 	unsigned vtxbufix=0;
 	unsigned prev_vtxbufix=0;
 	int first_o=1;
+	str object_name=str_def;
 	while(*p){
 		token t=token_next_from_string(p);
 		p=t.end;//token_size_including_whitespace(&t);
@@ -90,7 +93,12 @@ static/*gives*/glo*glo_make_next_from_string(const char**ptr_p){
 		if(token_equals(&t,"o")){
 			if(first_o){
 				first_o=0;
-				p=scan_to_including_newline(p);
+				token t=token_next_from_string(p);
+				p=t.end;
+				str_add_list(&object_name,t.content,token_size(&t));
+				str_add(&object_name,0);
+				puts(object_name.data);
+//				p=scan_to_including_newline(p);
 				continue;
 			}
 			p=t.begin;
@@ -101,11 +109,10 @@ static/*gives*/glo*glo_make_next_from_string(const char**ptr_p){
 			str name=str_def;
 			str_add_list(&name,t.content,token_size(&t));
 			str_add(&name,0);
-
 			objmtl*m=NULL;
 			for(unsigned i=0;i<materials.count;i++){
 				objmtl*mm=objmtls_get(&materials,i);
-				printf("%s\n",mm->name.data);
+//				printf("%s\n",mm->name.data);
 				if(!strcmp(mm->name.data,name.data)){
 					m=mm;
 					break;
@@ -245,7 +252,7 @@ static/*gives*/glo*glo_make_next_from_string(const char**ptr_p){
 			dynf_size_in_bytes(&vertex_buffer));
 
 	glo*g=glo_alloc_zeroed();
-	*g=(glo){vertex_buffer,material_ranges,0};
+	*g=(glo){vertex_buffer,material_ranges,0,/*gives*/object_name};
 	*ptr_p=p;
 	return g;
 }
@@ -253,7 +260,7 @@ static/*gives*/glo*glo_make_next_from_string(const char**ptr_p){
 
 // returns vertex buffer of array of triangles
 //                      [ x y z   r g b a   nx ny nz   u v]
-static/*gives*/glo*glo_make_first_in_file(const char*path){
+static/*gives*/glo*glo_make_first_from_file(const char*path){
 	str file=str_from_file(path);
 	const char*p=file.data;
 	return glo_make_next_from_string(&p);
@@ -606,11 +613,11 @@ inline static void glos_render(){
 }
 
 
-inline static glo*glos_load_first_in_file(const char*path){
-	glo*g=/*takes*/glo_make_first_in_file(path);
+inline static void glos_load_first_in_file(const char*path){
+	glo*g=/*takes*/glo_make_first_from_file(path);
 	glo_upload_to_opengl(g);
 	dynp_add(&glos,/*sinks*/g);
-	return g;
+//	return g;
 }
 
 
@@ -626,3 +633,17 @@ inline static void glos_load_scene_from_file(const char*path){
 //inline static glo*glos_last_in_array(){
 //	return glo_at(glos.data[glos.count-1]);
 //}
+
+inline static glo*glos_find_by_name(const char*name){
+	for(unsigned i=0;i<glos.count;i++){
+		glo*g=glos.data[i];
+		if(!strcmp(name,g->name.data)){
+			return g;
+		}
+	}
+	fprintf(stderr,"\n%s:%u: could not find glo '%s' \n",__FILE__,__LINE__,name);
+	stacktrace_print(stderr);
+	fprintf(stderr,"\n\n");
+	exit(-1);
+	return NULL;
+}

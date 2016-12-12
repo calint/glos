@@ -1,7 +1,7 @@
 # Blender v2.78 (sub 0) OBJ File: 'skydome.blend'
 # www.blender.org
 mtllib skydome.mtl
-o Sphere
+o skydome
 v 0.380603 9.807853 -1.913417
 v 0.746579 9.238795 -3.753303
 v 1.083864 8.314696 -5.448952

@@ -1,7 +1,7 @@
 # Blender v2.78 (sub 0) OBJ File: 'santa.blend'
 # www.blender.org
 mtllib santa.mtl
-o head
+o santa
 v 0.000000 -0.208123 0.000000
 v 0.150600 -0.093077 0.109416
 v -0.057523 -0.093077 0.177040

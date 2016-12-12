@@ -6,36 +6,49 @@ static float ground_base_y=.25f;
 
 inline static void main_init_scene(){
 	object*o;
+	glos_load_first_in_file("obj/skydome.obj");
+	glos_load_first_in_file("obj/board.obj");
+	glos_load_first_in_file("obj/grid.obj");
+	glos_load_first_in_file("obj/santa.obj");
 
 	o=object_alloc(&object_def);
-	o->n.glo_ptr=glos_load_first_in_file("obj/skydome.obj");
+	o->n.glo_ptr=glos_find_by_name("skydome");
 	o->v.render=object_render_glo;
-	o->b.s=(scale){10,10,10,0};
+	o->b.s=(scale){15,15,15,0};
 
-//	o=object_alloc(&object_def);
-//	o->n.glo_ptr=glos_load_first_in_file("obj/board.obj");
-//	o->v.render=object_render_glo;
+	o=object_alloc(&object_def);
+	o->n.glo_ptr=glos_find_by_name("board");
+	o->v.render=object_render_glo;
+	o->p.p.x=-80;
+	o->p.p.z=-80;
+
+	o=object_alloc(&object_def);
+	o->n.glo_ptr=glos_find_by_name("board");
+	o->v.render=object_render_glo;
+	o->p.p.x=80;
+	o->p.p.z=80;
 //
 	o=object_alloc(&object_def);
-	o->n.glo_ptr=glos_load_first_in_file("obj/grid.obj");
+	o->n.glo_ptr=glos_find_by_name("grid");
 	o->v.render=object_render_glo;
-	o->p.p=(position){0,0,0,0};
 	o->b.s=(scale){10,10,10,0};
+	o->p.p=(position){0,0,0,0};
 
 	o=santa_alloc_def();
-	o->n.glo_ptr=glos_load_first_in_file("obj/santa.obj");
-	o->p.p=(position){0,2,0,0};
+	o->n.glo_ptr=glos_find_by_name("santa");
 	o->b.s=(scale){10,10,10,0};
+	o->p.p=(position){80,2,80,0};
+//	o->p.a=(angle){0,180,0,0};
 	santa*p=o->part[0];
 	game.keybits_ptr=&p->keybits;
-	game.follow_ptr=o;
+//	game.follow_ptr=o;
 
 	o=santa_alloc_def();
-	o->n.glo_ptr=glos_load_first_in_file("obj/santa.obj");
+	o->n.glo_ptr=glos_find_by_name("santa");
 	o->b.s=(scale){10,10,10,0};
-	o->p.p=(position){-5,2,0,0};
+	o->p.p=(position){-80,2,-80,0};
 
-	camera.eye=(position){0,1,80,0};
+	camera.eye=(position){0,170,100,0};
 	camera.lookat=(position){0,0,0,0};
 //
 //	for(float y=0;y<5;y++){
