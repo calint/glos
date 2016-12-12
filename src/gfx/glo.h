@@ -614,7 +614,7 @@ inline static void glos_render(){
 }
 
 
-inline static void glos_load_first_in_file(const char*path){
+inline static void glos_load_first_from_file(const char*path){
 	glo*g=/*takes*/glo_make_first_from_file(path);
 	glo_upload_to_opengl(g);
 	dynp_add(&glos,/*sinks*/g);
@@ -622,7 +622,7 @@ inline static void glos_load_first_in_file(const char*path){
 }
 
 
-inline static void glos_load_scene_from_file(const char*path){
+inline static void glos_load_all_from_file(const char*path){
 	dynp ls=glo_load_all_from_file(path);
 	for(unsigned i=0;i<ls.count;i++){
 		glo*g=ls.data[i];
