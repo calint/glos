@@ -33,7 +33,7 @@ inline static void main_init_scene(){
 	o->n.glo_ptr=glos_load_first_in_file("obj/santa.obj");
 	o->p.p=(position){-5,.2f,0,0};
 
-	camera.eye=(position){-2,2,10,0};
+	camera.eye=(position){10,10,10,0};
 	camera.lookat=(position){0,0,0,0};
 //
 //	for(float y=0;y<5;y++){
