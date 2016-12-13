@@ -165,10 +165,11 @@ int main(int argc,char*argv[]){
 		metrics__at__frame_begin();
 
 		// --
-		net_recv();
 		net_to_send.lookangle_y=camera_lookangle_y;
 		net_to_send.lookangle_x=camera_lookangle_x;
-		net_send();
+
+		net_at_new_frame();
+
 		// --
 
 		SDL_Event event;
@@ -264,7 +265,7 @@ int main(int argc,char*argv[]){
 		}
 
 		if(game.keybits_ptr)
-			*game.keybits_ptr=nets_current_state[net_active_player_index].keybits;
+			*game.keybits_ptr=net_current_state[net_active_player_index].keybits;
 
 
 
