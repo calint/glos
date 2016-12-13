@@ -23,6 +23,9 @@ inline static void cell_render(cell*o){
 	}
 }
 
+inline static void cell_print(cell*o){
+	printf("cell{%u}",o->objrefs.count);
+}
 
 inline static void cell_clear(cell*o){
 	dynp_clear(&o->objrefs);
@@ -36,9 +39,9 @@ inline static void cell_add_object(cell*o,object*oo){
 	dynp_add(&o->objrefs,oo);
 }
 
-#define grid_cell_size 10
-#define grid_ncells_wide 1
-#define grid_ncells_high 1
+#define grid_cell_size 20
+#define grid_ncells_wide 8
+#define grid_ncells_high 8
 #define grid_ncells grid_ncells_wide*grid_ncells_high
 
 static cell cells[grid_ncells_wide][grid_ncells_high];
@@ -71,6 +74,16 @@ inline static void grid_clear(){
 	}
 }
 
+inline static int clamp(int i,int min,int max_plus_one){
+	if(i<min)
+		return min;
+
+	if(i>=max_plus_one)
+		return max_plus_one-1;
+
+	return i;
+}
+
 inline static void grid_add(object*o){
 	const float gw=grid_cell_size*grid_ncells_wide;
 	const float gh=grid_cell_size*grid_ncells_high;
@@ -78,23 +91,41 @@ inline static void grid_add(object*o){
 	const float r=o->b.r;
 
 	const float xl=gw/2-o->p.p.x-r;
-	const float zl=gh/2-o->p.p.z-r;
-
 	const float xr=gw/2-o->p.p.x+r;
+	const float zl=gh/2-o->p.p.z-r;
 	const float zr=gh/2-o->p.p.z+r;
 
-	const unsigned xil=(unsigned)(xl/gw);
-	const unsigned xir=(unsigned)(xr/gw);
+	int xil=(int)(xl/grid_cell_size);
+	xil=clamp(xil,0,grid_ncells_wide);
 
-	const unsigned zil=(unsigned)(zl/gw);
-	const unsigned zir=(unsigned)(zr/gw);
+	int xir=(int)((xr)/grid_cell_size);
+	xir=clamp(xir,0,grid_ncells_wide);
 
-	for(unsigned z=zil;z<=zir;z++){
-		for(unsigned x=xil;x<=xir;x++){
-			cell*c=&cells[x][x];
+	int zil=(int)(zl/grid_cell_size);
+	zil=clamp(zil,0,grid_ncells_high);
+
+	int zir=(int)((zr)/grid_cell_size);
+	zir=clamp(zir,0,grid_ncells_high);
+
+	for(int z=zil;z<=zir;z++){
+		for(int x=xil;x<=xir;x++){
+			cell*c=&cells[z][x];
 			cell_add_object(c,o);
 		}
 	}
+}
+
+inline static void grid_print(){
+	cell*p=&cells[0][0];
+	unsigned i=grid_ncells;
+//	printf("grid{");
+	while(i--){
+//		cell_print(p++);
+		printf(" %d ",p++->objrefs.count);
+		if(!(i%grid_ncells_wide))
+			printf("\n");
+	}
+	printf("\n------------------------\n");
 }
 
 inline static void grid_free(){
@@ -103,5 +134,4 @@ inline static void grid_free(){
 	while(i--){
 		cell_free(p++);
 	}
-
 }

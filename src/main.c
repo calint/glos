@@ -322,7 +322,21 @@ int main(int argc,char*argv[]){
 
 		grid_clear();
 
-//		objects_foreach_allocated(_lambda_1_,NULL);
+//		objects_foreach(_lambda1_filter_,_lambda1_do,_lambda1_ctx_);
+//		objects_foreach_allocated(_lambda_1_,_lambda1_ctx_);
+		{
+			object*o=objects;
+			while(o<objects_end_ptr){
+				if(!o->alloc_bits_ptr||!(*o->alloc_bits_ptr&1)){
+					o++;
+					continue;
+				}
+				grid_add(o);
+				o++;
+			}
+			grid_print();
+		}
+
 
 		objects_update(use_net?net_dt:metrics.fps.dt);
 
