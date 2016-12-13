@@ -42,7 +42,7 @@ inline static void main_init_scene(){
 //	o->p.a=(angle){0,180,0,0};
 	santa*p=o->part[0];
 	game.keybits_ptr=&p->keybits;
-//	game.follow_ptr=o;
+	game.follow_ptr=o;
 
 	o=santa_alloc_def();
 	o->n.glo_ptr=glos_find_by_name("santa");
