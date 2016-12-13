@@ -56,8 +56,8 @@ inline static void net_connect(){
 		fprintf(stderr,"\n\n");
 		exit(-1);
 	}
-	if(recv(net_sockfd,&net_active_player_index,sizeof(net_active_player_index)
-			,0)< 0){
+	if(recv(net_sockfd,
+			&net_active_player_index,sizeof(net_active_player_index),0)< 0){
 		fprintf(stderr,"\n%s:%u: receive failed\n",__FILE__,__LINE__);
 		stacktrace_print(stderr);
 		fprintf(stderr,"\n\n");
@@ -80,6 +80,7 @@ inline static void net__at__frame_begin(){
 }
 
 inline static void net__at__frame_end(){
+	const uint64_t t0=SDL_GetPerformanceCounter();
 	if(recv(net_sockfd,&net_dt,sizeof(net_dt)
 			,0)< 0){
 		fprintf(stderr,"\n%s:%u: receive failed\n",__FILE__,__LINE__);
@@ -95,6 +96,9 @@ inline static void net__at__frame_end(){
 		fprintf(stderr,"\n\n");
 		exit(-1);
 	}
+	const uint64_t t1=SDL_GetPerformanceCounter();
+	const float dt=(float)(t1-t0)/(float)SDL_GetPerformanceFrequency();
+	metrics.net_lag=dt;
 }
 
 inline static void net_disconnect(){
@@ -104,4 +108,7 @@ inline static void net_disconnect(){
 	}
 }
 
-inline static void net_free(){net_disconnect();}
+inline static void net_free(){
+	net_disconnect();
+}
+
