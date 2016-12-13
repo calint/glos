@@ -1,6 +1,7 @@
 #pragma once
 #include"../lib.h"
 #include"../obj/object.h"
+#include"../obj/part.h"
 
 typedef struct cell{
 	dynp objrefs;

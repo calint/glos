@@ -5,6 +5,17 @@
 		exit(-1);
 
 
+			const char*nm="santa1";
+			inline int f1(object*o){
+				if(o->name.count)
+					return strcmp(o->name.data,nm);
+				return -1;
+			}
+			inline int f2(object*o){
+				printf("%f\n",o->p.p.x);
+				return 0;
+			}
+			objects_foreach(f1,f2);
 
 
 

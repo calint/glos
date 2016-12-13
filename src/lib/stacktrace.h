@@ -15,7 +15,7 @@ void stacktrace_print(FILE*f){
 //		sscanf(strings[i],"%s [%s]",&s1,&s2);
 //		addr2line -fe <executable>
 
-		fprintf(stderr,"%s\n",strings[i]);
+		fprintf(f,"%s\n",strings[i]);
 	}
 
 	free (strings);

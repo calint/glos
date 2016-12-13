@@ -1,9 +1,9 @@
 #include"lib.h"
 #include"gfx.h"
-#include"obj.h"
 #include"metrics.h"
 #include"net.h"
 #include"grid.h"
+#include"obj/object_alloc.h"
 
 static struct _game{
 	int*keybits_ptr;
@@ -136,7 +136,7 @@ int main(int argc,char*argv[]){
 	sdl_init();
 	window_init();
 	shader_init();
-	objects_init();
+//	objects_init();
 	glos_init();
 	grid_init();
 	main_init();
@@ -321,20 +321,8 @@ int main(int argc,char*argv[]){
 
 		grid_clear();
 
-//		objects_foreach(_lambda1_filter_,_lambda1_do,_lambda1_ctx_);
-//		objects_foreach_allocated(_lambda_1_,_lambda1_ctx_);
-		{
-			object*o=objects;
-			while(o<objects_end_ptr){
-				if(!o->alloc_bits_ptr||!(*o->alloc_bits_ptr&1)){
-					o++;
-					continue;
-				}
-				grid_add(o);
-				o++;
-			}
-//			grid_print_list();
-		}
+		inline void f(object*o){grid_add(o);}
+		objects_foreach_allocated_all(f);
 
 		framectx fc={
 				.dt=use_net?net_dt:metrics.fps.dt,
@@ -345,12 +333,10 @@ int main(int argc,char*argv[]){
 
 		grid_update(&fc);
 
-		if(do_main_render)
-			main_render(&fc);
+		if(do_main_render)main_render(&fc);
 
-		if(use_net){
-			net__at__frame_end();
-		}
+		if(use_net)net__at__frame_end();
+
 		metrics__at__frame_end(stderr);
 	}
 	//---------------------------------------------------------------------free

@@ -125,5 +125,45 @@ inline static void objects_free() {
 	}
 }
 //-----------------------------------------------------------------------------
-
+inline static void objects_foreach_allocated(int(*f)(object*)){
+	object*o=objects;
+	while(o<objects_end_ptr){
+		if(!o->alloc_bits_ptr||!(*o->alloc_bits_ptr&1)){
+			o++;
+			continue;
+		}
+		if(f(o))
+			break;
+		o++;
+	}
+}
+//-----------------------------------------------------------------------------
+inline static void objects_foreach_allocated_all(void(*f)(object*)){
+	object*o=objects;
+	while(o<objects_end_ptr){
+		if(!o->alloc_bits_ptr||!(*o->alloc_bits_ptr&1)){
+			o++;
+			continue;
+		}
+		f(o);
+		o++;
+	}
+}
+//-----------------------------------------------------------------------------
+inline static void objects_foreach(int(*filter)(object*),int(*f)(object*)){
+	object*o=objects;
+	while(o<objects_end_ptr){
+		if(!o->alloc_bits_ptr||!(*o->alloc_bits_ptr&1)){
+			o++;
+			continue;
+		}
+		if(filter(o)){
+			o++;
+			continue;
+		}
+		if(f(o))
+			break;
+		o++;
+	}
+}
 //-----------------------------------------------------------------------------
