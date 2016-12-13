@@ -1,14 +1,14 @@
 #pragma once
 #include"net.h"
 
-static int netsrv_sockfd;
-static int netsrv_client_sock_fd[net_cap];
+static int       netsrv_fd;
+static int       netsrv_client_fd[net_cap];
 static net_state netsrv_state[net_cap];
 
 inline static void netsrv_init(){
 
-	netsrv_sockfd=socket(AF_INET,SOCK_STREAM,0);
-	if(netsrv_sockfd==-1){
+	netsrv_fd=socket(AF_INET,SOCK_STREAM,0);
+	if(netsrv_fd==-1){
 		fprintf(stderr,"\n%s:%u: create socket failed\n",__FILE__,__LINE__);
 		stacktrace_print(stderr);
 		fprintf(stderr,"\n\n");
@@ -16,7 +16,7 @@ inline static void netsrv_init(){
 	}
 
 	int flag=1;
-	int result=setsockopt(netsrv_sockfd,IPPROTO_TCP,TCP_NODELAY,
+	int result=setsockopt(netsrv_fd,IPPROTO_TCP,TCP_NODELAY,
 			(char*)&flag,sizeof(int));
 	if (result<0){
 			fprintf(stderr,"\n%s:%u: set TCP_NODELAY failed\n",__FILE__,__LINE__);
@@ -31,14 +31,14 @@ inline static void netsrv_init(){
 	server.sin_addr.s_addr=INADDR_ANY;
 	server.sin_port=htons(net_port);
 
-	if(bind(netsrv_sockfd,(struct sockaddr *)&server,sizeof(server))<0){
+	if(bind(netsrv_fd,(struct sockaddr *)&server,sizeof(server))<0){
 		fprintf(stderr,"\n%s:%u: bind failed\n",__FILE__,__LINE__);
 		stacktrace_print(stderr);
 		fprintf(stderr,"\n\n");
 		exit(-1);
 	}
 
-	if(listen(netsrv_sockfd,net_cap)==-1){
+	if(listen(netsrv_fd,net_cap)==-1){
 		fprintf(stderr,"\n%s:%u\n",__FILE__,__LINE__);
 		perror("cause");
 		stacktrace_print(stderr);
@@ -56,10 +56,10 @@ inline static void netsrv_init(){
 //		netsrv_client_sock_fd[i]=
 //				accept(netsrv_sockfd,(struct sockaddr*)&client,&c);
 //
-		netsrv_client_sock_fd[i]=accept(netsrv_sockfd,NULL,NULL);
+		netsrv_client_fd[i]=accept(netsrv_fd,NULL,NULL);
 
 		int flag=1;
-		int result=setsockopt(netsrv_client_sock_fd[i],IPPROTO_TCP,TCP_NODELAY,
+		int result=setsockopt(netsrv_client_fd[i],IPPROTO_TCP,TCP_NODELAY,
 				(char*)&flag,sizeof(int));
 		if (result<0){
 				fprintf(stderr,"\n%s:%u: set TCP_NODELAY failed\n",__FILE__,__LINE__);
@@ -68,7 +68,7 @@ inline static void netsrv_init(){
 				exit(-1);
 		}
 
-		if(netsrv_client_sock_fd[i]<0){
+		if(netsrv_client_fd[i]<0){
 			fprintf(stderr,"\n%s:%u\n",__FILE__,__LINE__);
 			perror("cause");
 			stacktrace_print(stderr);
@@ -81,7 +81,7 @@ inline static void netsrv_init(){
 	printf(" * sending start\n");
 	// send net_active_player_index
 	for(uint32_t i=1;i<net_cap;i++){
-		write(netsrv_client_sock_fd[i],&i,sizeof(uint32_t));
+		write(netsrv_client_fd[i],&i,sizeof(uint32_t));
 	}
 }
 
@@ -91,7 +91,7 @@ inline static void netsrv_loop(){
 	uint64_t t0=SDL_GetPerformanceCounter();
 	while(1){
 		for(unsigned i=1;i<net_cap;i++){
-			const ssize_t n=recv(netsrv_client_sock_fd[i],&netsrv_state[i],
+			const ssize_t n=recv(netsrv_client_fd[i],&netsrv_state[i],
 					fullreadsize,0);
 			if(n==-1){
 				fprintf(stderr,"\n%s:%u:\n",__FILE__,__LINE__);
@@ -119,13 +119,13 @@ inline static void netsrv_loop(){
 		t0=t1;
 		netsrv_state[0].lookangle_x=dt;
 		for(int i=1;i<net_cap;i++){
-			write(netsrv_client_sock_fd[i],netsrv_state,sizeof(netsrv_state));
+			write(netsrv_client_fd[i],netsrv_state,sizeof(netsrv_state));
 		}
 	}
 }
 
 
 inline static void netsrv_free(){
-	close(netsrv_sockfd);
-	netsrv_sockfd=0;
+	close(netsrv_fd);
+	netsrv_fd=0;
 }

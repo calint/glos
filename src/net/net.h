@@ -13,18 +13,18 @@ typedef struct net_state{
 }net_state;
 
 #define            net_cap 2+1
-static net_state    net_state_to_send;
-static net_state    net_state_current[net_cap];
+static net_state   net_state_to_send;
+static net_state   net_state_current[net_cap];
 static uint32_t    net_active_player_index=1;
 static float       net_dt;
-static int         net_sockfd;
+static int         net_fd;
 static const char* net_host="127.0.0.1";
 static uint16_t    net_port=8085;
 
 inline static void net_connect(){
 	struct sockaddr_in server;
-	net_sockfd=socket(AF_INET,SOCK_STREAM,0);
-	if(net_sockfd==-1){
+	net_fd=socket(AF_INET,SOCK_STREAM,0);
+	if(net_fd==-1){
 		fprintf(stderr,"\n%s:%u: create socket failed\n",__FILE__,__LINE__);
 		stacktrace_print(stderr);
 		fprintf(stderr,"\n\n");
@@ -32,7 +32,7 @@ inline static void net_connect(){
 	}
 
 	int flag=1;
-	int result=setsockopt(net_sockfd,IPPROTO_TCP,TCP_NODELAY,
+	int result=setsockopt(net_fd,IPPROTO_TCP,TCP_NODELAY,
 			(char*)&flag,sizeof(int));
 	if (result<0){
 			fprintf(stderr,"\n%s:%u: set TCP_NODELAY failed\n",__FILE__,__LINE__);
@@ -46,14 +46,14 @@ inline static void net_connect(){
 	server.sin_port=htons(net_port);
 
 	printf("[ net ] connecting to %s on port %u\n",net_host,net_port);
-	if(connect(net_sockfd,(struct sockaddr *)&server,sizeof(server))<0){
+	if(connect(net_fd,(struct sockaddr *)&server,sizeof(server))<0){
 		fprintf(stderr,"\n%s:%u: connect failed\n",__FILE__,__LINE__);
 		fprintf(stderr,"    server: %s  port: %d\n\n",net_host,net_port);
 		stacktrace_print(stderr);
 		fprintf(stderr,"\n\n");
 		exit(-1);
 	}
-	if(recv(net_sockfd,
+	if(recv(net_fd,
 			&net_active_player_index,sizeof(net_active_player_index),0)< 0){
 		fprintf(stderr,"\n%s:%u: receive failed\n",__FILE__,__LINE__);
 		stacktrace_print(stderr);
@@ -68,7 +68,7 @@ inline static void net_init(){
 
 inline static void net__at__frame_begin(){
 	// send next key state
-	if(send(net_sockfd,&net_state_to_send,sizeof(net_state_to_send),0)<0){
+	if(send(net_fd,&net_state_to_send,sizeof(net_state_to_send),0)<0){
 		fprintf(stderr,"\n%s:%u: send failed\n",__FILE__,__LINE__);
 		stacktrace_print(stderr);
 		fprintf(stderr,"\n\n");
@@ -79,7 +79,7 @@ inline static void net__at__frame_begin(){
 inline static void net__at__frame_end(){
 	const uint64_t t0=SDL_GetPerformanceCounter();
 	// receive previous key states
-	if(recv(net_sockfd,net_state_current,sizeof(net_state_current),0)< 0){
+	if(recv(net_fd,net_state_current,sizeof(net_state_current),0)< 0){
 		fprintf(stderr,"\n%s:%u: receive failed\n",__FILE__,__LINE__);
 		stacktrace_print(stderr);
 		fprintf(stderr,"\n\n");
@@ -92,9 +92,9 @@ inline static void net__at__frame_end(){
 }
 
 inline static void net_disconnect(){
-	if(net_sockfd){
-		close(net_sockfd);
-		net_sockfd=0;
+	if(net_fd){
+		close(net_fd);
+		net_fd=0;
 	}
 }
 
