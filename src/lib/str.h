@@ -175,6 +175,7 @@ inline static void str_clear(str*o){
 inline static void str_setz(str*o,/*copies*/const char*s){
 	//? optimize
 	const char*p=s;
+	o->count=0;
 	while(*p){
 		_str_insure_free_capcity(o,1);
 		*(o->data+o->count++)=*p++;

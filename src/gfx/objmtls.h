@@ -175,6 +175,7 @@ inline static void objmtls_clear(objmtls*o){
 inline static void objmtls_setz(objmtls*o,/*copies*/const objmtl**s){
 	//? optimize
 	const objmtl**p=s;
+	o->count=0;
 	while(*p){
 		_objmtls_insure_free_capcity(o,1);
 		*(o->data+o->count++)=*p++;

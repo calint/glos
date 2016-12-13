@@ -160,9 +160,9 @@ int main(int argc,char*argv[]){
 	float rad_over_mouse_pixels=rad_over_degree*.02f;
 	float mouse_sensitivity=1.5f;
 	int mouse_mode=0;
-	printf("   * \n");
-	printf("   * press space to grab and ungrab mouse\n");
-	printf("   * \n");
+//	printf("   * \n");
+//	printf("   * press space to grab and ungrab mouse\n");
+//	printf("   * \n");
 	SDL_SetRelativeMouseMode(mouse_mode);
 
 	metrics.fps.calculation_intervall_ms=100;

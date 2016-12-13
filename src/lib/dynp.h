@@ -175,6 +175,7 @@ inline static void dynp_clear(dynp*o){
 inline static void dynp_setz(dynp*o,/*copies*/const void**s){
 	//? optimize
 	const void**p=s;
+	o->count=0;
 	while(*p){
 		_dynp_insure_free_capcity(o,1);
 		*(o->data+o->count++)=*p++;

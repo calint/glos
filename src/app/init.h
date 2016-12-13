@@ -11,17 +11,18 @@ inline static void main_init_scene(){
 	glos_load_first_from_file("obj/grid.obj");
 	glos_load_first_from_file("obj/santa.obj");
 
-//	o=object_alloc(&object_def);
-//	o->n.glo_ptr=glos_find_by_name("skydome");
-//	o->v.render=object_render_glo;
-//	o->b.s=(scale){15,15,15,0};
-//	o->b.r=10*15;
-//
+	o=object_alloc(&object_def);
+	str_setz(&o->name,"skydome");
+	o->n.glo_ptr=glos_find_by_name("skydome");
+	o->v.render=object_render_glo;
+	o->b.s=(scale){15,15,15,0};
+	o->b.r=10*15;
+
 //	o=object_alloc(&object_def);
 //	o->n.glo_ptr=glos_find_by_name("board");
 //	o->v.render=object_render_glo;
 //	o->p.p.x=-80;
-//	o->p.p.y=0;
+//	o->p.p.y=10;
 //	o->p.p.z=-80;
 //	o->b.r=10;
 //
@@ -29,11 +30,9 @@ inline static void main_init_scene(){
 //	o->n.glo_ptr=glos_find_by_name("board");
 //	o->v.render=object_render_glo;
 //	o->p.p.x=80;
+//	o->p.p.y=10;
 //	o->p.p.z=80;
 //	o->b.r=10;
-
-
-
 
 	o=object_alloc(&object_def);
 	str_setz(&o->name,"grid");
@@ -65,7 +64,7 @@ inline static void main_init_scene(){
 	p->keybits_ptr=&net_state_current[1].keybits;
 
 
-	camera.eye=(position){0,170,100,0};
+	camera.eye=(position){30,120,140,0};
 	camera.lookat=(position){0,0,0,0};
 
 //

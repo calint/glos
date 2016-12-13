@@ -175,6 +175,7 @@ inline static void dynf_clear(dynf*o){
 inline static void dynf_setz(dynf*o,/*copies*/const float*s){
 	//? optimize
 	const float*p=s;
+	o->count=0;
 	while(*p){
 		_dynf_insure_free_capcity(o,1);
 		*(o->data+o->count++)=*p++;
