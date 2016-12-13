@@ -171,3 +171,18 @@ inline static void dyni_clear(dyni*o){
 }
 
 //-----------------------------------------------------------------------------
+
+inline static void dyni_setz(dyni*o,/*copies*/const int*s){
+	//? optimize
+	const int*p=s;
+	while(*p){
+		_dyni_insure_free_capcity(o,1);
+		*(o->data+o->count++)=*p++;
+	}
+	_dyni_insure_free_capcity(o,1);
+	*(o->data+o->count++)=0;
+}
+
+//-----------------------------------------------------------------------------
+
+

@@ -40,7 +40,7 @@ inline static void objects_render(framectx*fc) {
 		}
 
 		if(o->v.render){
-			o->v.render(o);
+			o->v.render(o,fc);
 			metrics.objects_rendered_prv_frame++;
 		}
 

@@ -171,3 +171,18 @@ inline static void ${name}_clear(${name}*o){
 }
 
 //-----------------------------------------------------------------------------
+
+inline static void ${name}_setz(${name}*o,/*copies*/const ${type}*s){
+	//? optimize
+	const ${type}*p=s;
+	while(*p){
+		_${name}_insure_free_capcity(o,1);
+		*(o->data+o->count++)=*p++;
+	}
+	_${name}_insure_free_capcity(o,1);
+	*(o->data+o->count++)=0;
+}
+
+//-----------------------------------------------------------------------------
+
+

@@ -19,6 +19,7 @@ typedef struct object{
 	type t;
 	bits*alloc_bits_ptr;
 	void*part[object_part_cap];
+	str name;
 }object;
 //---------------------------------------------------------------------- -----
 static object object_def={
@@ -31,6 +32,7 @@ static object object_def={
 	.t=type_def,
 	.part=parts_def,
 	.alloc_bits_ptr=0,
+	.name=str_def,
 };
 //----------------------------------------------------------------------- init
 inline static void object_init(object*o){}
@@ -79,7 +81,7 @@ inline static const float*object_get_updated_Mmw(object*o){
 	return o->n.Mmw;
 }
 //----------------------------------------------------------------------------
-inline static void object_render_glo(object*o) {
+inline static void object_render_glo(object*o,framectx*fc) {
 	if(!o->n.glo_ptr)
 		return;
 

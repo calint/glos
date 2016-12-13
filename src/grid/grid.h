@@ -10,8 +10,8 @@ typedef struct cell{
 
 
 #define grid_cell_size 20
-#define grid_ncells_wide 1
-#define grid_ncells_high 1
+#define grid_ncells_wide 2
+#define grid_ncells_high 2
 #define grid_ncells grid_ncells_wide*grid_ncells_high
 
 static cell cells[grid_ncells_high][grid_ncells_wide];
@@ -22,8 +22,9 @@ inline static void cell_update(cell*o,framectx*fc){
 	if(i==0)
 		return;
 
-	object*oi=(object*)(*o->objrefs.data);
+//	object*oi=*(object**)(o->objrefs.data);
 	while(i--){
+		object*oi=dynp_get(&o->objrefs,i);
 		if(oi->updtk==fc->tick){
 //			printf("[ grid ] skipped updated %s %p\n",oi->n.glo_ptr->name.data,(void*)oi);
 //			printf("[ grid ] %u  %u\n",oi->updtk,fc->tick);
@@ -59,8 +60,9 @@ inline static void cell_render(cell*o,framectx*fc){
 	if(i==0)
 		return;
 
-	object*oi=(object*)(*o->objrefs.data);
+//	object*oi=*(object**)(o->objrefs.data);
 	while(i--){
+		object*oi=dynp_get(&o->objrefs,i);
 		if(oi->drwtk==fc->tick){
 //			printf("[ grid ] skipped rendered %s\n",oi->n.glo_ptr->name.data);
 //			printf("[ grid ] %u  %u\n",oi->updtk,fc->tick);
@@ -70,7 +72,9 @@ inline static void cell_render(cell*o,framectx*fc){
 //		printf("[ grid ] rendered %s %p\n",oi->n.glo_ptr->name.data,(void*)oi);
 //		printf("[ grid ] %u  %u\n",oi->updtk,fc->tick);
 		oi->drwtk=fc->tick;
-		object_render_glo(oi);
+		if(oi->v.render)
+			oi->v.render(oi,fc);
+//		object_render_glo(oi);
 		metrics.objects_rendered_prv_frame++;
 
 		for(int i=0;i<object_part_cap;i++){
@@ -143,6 +147,11 @@ inline static int clamp(int i,int min,int max_plus_one){
 }
 
 inline static void grid_add(object*o){
+	if(grid_ncells==1){
+		cell_add_object(&cells[0][0],o);
+		return;
+	}
+
 //	printf("[ grid ] add %s %p\n",o->n.glo_ptr->name.data,(void*)o);
 	const float gw=grid_cell_size*grid_ncells_wide;
 	const float gh=grid_cell_size*grid_ncells_high;
@@ -184,6 +193,19 @@ inline static void grid_print(){
 			printf("\n");
 	}
 	printf("\n------------------------\n");
+}
+
+inline static void grid_print_list(){
+	cell*p=&cells[0][0];
+	unsigned i=grid_ncells;
+	while(i--){
+		printf(" cell[%p]:\n",(void*)p);
+		for(unsigned k=0;k<p->objrefs.count;k++){
+			object*o=p->objrefs.data[k];
+			printf("   %s\n",o->name.data);
+		}
+		p++;
+	}
 }
 
 inline static void grid_free(){
