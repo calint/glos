@@ -1,6 +1,6 @@
  [x] dynamic pointer vector
  [x] texturing
- [o] obj format
+ [x] obj format
  [x]   colors
  [x]   texture coords
  [x]   materials
@@ -10,9 +10,9 @@
  [x]   scene
  [x]     to objects
  [ ]     center/scale/position
- [1] draw bounding volume
- [1]   sphere
- [1]   box
+ [ ] draw bounding volume
+ [ ]   sphere
+ [ ]   box
  [ ]   planes
  [x] multiple materials in render
  [ ] collision detection 
@@ -45,7 +45,7 @@
  [x]   client
  [x]   server
  [x]   multiplayer
- [o] camera
+ [x] camera
  [x]   projection
  [x]     orthonormal
  [x]     perspective
