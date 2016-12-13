@@ -396,13 +396,13 @@ inline static void shader_free(){
 	glDeleteBuffers(1,&shader_def_texbuf_id);
 	metrics.buffered_texture_data-=shader_def_texbuf_nbytes;
 
-	for(unsigned i=0;i<programs.count;i++){
-		program*p=programs.data[i];
+	dynp_foa(&programs,{
+		program*p=o;
 //		program_free(&programs.data[i]);
 		glDeleteShader(p->attached_vtxshdr_id);
 		glDeleteShader(p->attached_frgshdr_id);
 		glDeleteProgram(p->id);
-	}
+	});
 }
 
 inline static void shader_init() {

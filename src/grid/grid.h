@@ -201,10 +201,10 @@ inline static void grid_print_list(){
 	unsigned i=grid_ncells;
 	while(i--){
 		printf(" cell[%p]:\n",(void*)p);
-		for(unsigned k=0;k<p->objrefs.count;k++){
-			object*o=p->objrefs.data[k];
-			printf("   %s\n",o->name.data);
-		}
+		dynp_foa(&p->objrefs,{
+			object*oo=o;
+			printf("   %s\n",oo->name.data);
+		});
 		p++;
 	}
 }

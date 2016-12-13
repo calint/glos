@@ -64,7 +64,7 @@ static/*gives*/glo*glo_make_next_from_string(const char**ptr_p){
 	dynp texuv=dynp_def;
 
 	dynf vertex_buffer=dynf_def;
-	dynp material_ranges=dynp_def;
+	dynp mtlrngs=dynp_def;
 
 	objmtl*current_objmtl=NULL;
 	const char*basedir="obj/";
@@ -124,7 +124,7 @@ static/*gives*/glo*glo_make_next_from_string(const char**ptr_p){
 					mr->begin=prev_vtxbufix;
 					mr->count=vtxbufix;
 					mr->material_ptr=current_objmtl;
-					dynp_add(&material_ranges,mr);
+					dynp_add(&mtlrngs,mr);
 					prev_vtxbufix=vtxbufix;
 				}
 				current_objmtl=m;
@@ -243,15 +243,16 @@ static/*gives*/glo*glo_make_next_from_string(const char**ptr_p){
 	mr->begin=prev_vtxbufix;
 	mr->count=vtxbufix;
 	mr->material_ptr=current_objmtl;
-	dynp_add(&material_ranges,mr);
+	dynp_add(&mtlrngs,mr);
 
-	printf(" ranges %u   %u vertices   %lu B\n",
-			material_ranges.count,
-			vertex_buffer.count,
+	printf("    %u range%cs   %lu vertices   %zu B\n",
+			mtlrngs.count,mtlrngs.count==1?' ':'s',
+			vertex_buffer.count/sizeof(vertex),
 			dynf_size_in_bytes(&vertex_buffer));
 
+
 	glo*g=glo_alloc_zeroed();
-	*g=(glo){vertex_buffer,material_ranges,0,/*gives*/object_name};
+	*g=(glo){vertex_buffer,mtlrngs,0,/*gives*/object_name};
 	*ptr_p=p;
 	return g;
 }
@@ -387,11 +388,10 @@ static/*gives*/dynp glo_load_all_from_file(const char*path){
 			*g=(glo){/*gives*/vertex_buffer,/*gives*/mtlrngs,0,/*gives*/name};
 			dynp_add(&reuslt,g);
 
-			printf("       %u range%cs   %lu vertices   %zu B\n",
+			printf("    %u range%cs   %lu vertices   %zu B\n",
 					mtlrngs.count,mtlrngs.count==1?' ':'s',
 					vertex_buffer.count/sizeof(vertex),
 					dynf_size_in_bytes(&vertex_buffer));
-
 
 			vtxbufix_base=prev_vtxbufix=vtxbufix;
 			vertex_buffer=dynf_def;
@@ -492,10 +492,11 @@ static/*gives*/dynp glo_load_all_from_file(const char*path){
 	*g=(glo){/*gives*/vertex_buffer,/*gives*/mtlrngs,0,/*gives*/name};
 	dynp_add(&reuslt,g);
 
-	printf("       %u range%c   %lu vertices   %lu B\n",
+	printf("    %u range%cs   %lu vertices   %zu B\n",
 			mtlrngs.count,mtlrngs.count==1?' ':'s',
 			vertex_buffer.count/sizeof(vertex),
 			dynf_size_in_bytes(&vertex_buffer));
+
 
 	return/*gives*/reuslt;
 
@@ -512,9 +513,9 @@ inline static void glo_upload_to_opengl(glo*this){
 			GL_STATIC_DRAW);
 
 	// upload materials
-	for(unsigned i=0;i<this->ranges.count;i++){
-		mtlrng*mr=(mtlrng*)this->ranges.data[i];
-		objmtl*m=(objmtl*)mr->material_ptr;
+	dynp_foa(&this->ranges,{
+		mtlrng*mr=o;
+		objmtl*m=mr->material_ptr;
 		if(m->map_Kd.count){// load texture
 			glGenTextures(1,&m->texture_id);
 
@@ -541,7 +542,7 @@ inline static void glo_upload_to_opengl(glo*this){
 			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
 			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
 		}
-	}
+	});
 
 	metrics.buffered_vertex_data+=dynf_size_in_bytes(&this->vtxbuf);
 }
@@ -563,8 +564,8 @@ inline static void glo_render(glo*this,const mat4 mtxmw){
 	glVertexAttribPointer(shader_atex,  2,GL_FLOAT, GL_FALSE,
 			sizeof(vertex),(GLvoid*)((3+4+3)*sizeof(float)));
 
-	for(unsigned i=0;i<this->ranges.count;i++){
-		mtlrng*mr=(mtlrng*)this->ranges.data[i];
+	dynp_foa(&this->ranges,{
+		mtlrng*mr=o;
 		objmtl*m=mr->material_ptr;
 
 		if(m->texture_id){
@@ -585,7 +586,7 @@ inline static void glo_render(glo*this,const mat4 mtxmw){
 			glBindTexture(GL_TEXTURE_2D,0);
 //			glDisableVertexAttribArray(shader_atex);
 		}
-	}
+	});
 }
 
 //--------------------------------------------------------------------- storage
@@ -599,17 +600,17 @@ inline static unsigned glos_count(){return glos.count;}
 inline static void glos_init(){}
 
 inline static void glos_free(){
-	for(unsigned i=0;i<glos.count;i++){
-		glo_free(glos.data[i]);
-	}
+	dynp_foa(&glos,{
+		glo_free(o);
+	});
 }
 
 inline static void glos_render(){
-	for(unsigned i=0;i<glos.count;i++){
-		glo*g=dynp_get(&glos,i);
+	dynp_foa(&glos,{
+		glo*g=o;
 		if(g->ranges.count)
 			glo_render(g++,mat4_identity);
-	}
+	});
 }
 
 
@@ -623,11 +624,11 @@ inline static void glos_load_first_from_file(const char*path){
 
 inline static void glos_load_all_from_file(const char*path){
 	dynp ls=glo_load_all_from_file(path);
-	for(unsigned i=0;i<ls.count;i++){
-		glo*g=ls.data[i];
+	dynp_foa(&ls,{
+		glo*g=o;
 		glo_upload_to_opengl(g);
 		dynp_add(&glos,g);
-	}
+	});
 }
 //
 //inline static glo*glos_last_in_array(){
@@ -635,12 +636,17 @@ inline static void glos_load_all_from_file(const char*path){
 //}
 
 inline static glo*glos_find_by_name(const char*name){
-	for(unsigned i=0;i<glos.count;i++){
-		glo*g=glos.data[i];
+	glo*found=NULL;
+	dynp_fou(&glos,{
+		glo*g=o;
 		if(!strcmp(name,g->name.data)){
-			return g;
+			found=g;
+			return 1;
 		}
-	}
+		return 0;
+	});
+	if(found)
+		return found;
 	fprintf(stderr,"\n%s:%u: could not find glo '%s' \n",__FILE__,__LINE__,name);
 	stacktrace_print(stderr);
 	fprintf(stderr,"\n\n");
