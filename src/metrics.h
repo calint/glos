@@ -78,7 +78,7 @@ inline static void metrics__at__frame_begin(){
 
 //----------------------------------------------------------------------------
 
-static inline void metrics__at__update_frame_end(FILE*f) {
+static inline void metrics__at__frame_end(FILE*f) {
 	{
 		Uint64 t1=SDL_GetPerformanceCounter();
 		Uint64 dt_ticks=t1-metrics.fps._timer_tick_at_start_of_frame;

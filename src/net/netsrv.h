@@ -16,6 +16,17 @@ inline static void netsrv_init(){
 		exit(-1);
 	}
 
+	int flag=1;
+	int result=setsockopt(netsrv_sockfd,IPPROTO_TCP,TCP_NODELAY,
+			(char*)&flag,sizeof(int));
+	if (result<0){
+			fprintf(stderr,"\n%s:%u: set TCP_NODELAY failed\n",__FILE__,__LINE__);
+			stacktrace_print(stderr);
+			fprintf(stderr,"\n\n");
+			exit(-1);
+	}
+
+
 	struct sockaddr_in server;
 	server.sin_family=AF_INET;
 	server.sin_addr.s_addr=INADDR_ANY;
@@ -47,6 +58,16 @@ inline static void netsrv_init(){
 //				accept(netsrv_sockfd,(struct sockaddr*)&client,&c);
 //
 		netsrv_client_sock_fd[i]=accept(netsrv_sockfd,NULL,NULL);
+
+		int flag=1;
+		int result=setsockopt(netsrv_client_sock_fd[i],IPPROTO_TCP,TCP_NODELAY,
+				(char*)&flag,sizeof(int));
+		if (result<0){
+				fprintf(stderr,"\n%s:%u: set TCP_NODELAY failed\n",__FILE__,__LINE__);
+				stacktrace_print(stderr);
+				fprintf(stderr,"\n\n");
+				exit(-1);
+		}
 
 		if(netsrv_client_sock_fd[i]<0){
 			fprintf(stderr,"\n%s:%u\n",__FILE__,__LINE__);
@@ -82,7 +103,6 @@ inline static void netsrv_loop(){
 			}
 			if((unsigned)n!=fullreadsize){
 				fprintf(stderr,"\n%s:%u: not full read\n",__FILE__,__LINE__);
-				perror("cause");
 				stacktrace_print(stderr);
 				fprintf(stderr,"\n\n");
 				exit(-1);

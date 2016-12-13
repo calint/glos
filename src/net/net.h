@@ -4,6 +4,7 @@
 #include<sys/types.h>
 #include<netdb.h>
 #include<arpa/inet.h>
+#include<netinet/tcp.h>
 
 #define net_cap 2
 
@@ -32,6 +33,16 @@ inline static void net_connect(){
 		stacktrace_print(stderr);
 		fprintf(stderr,"\n\n");
 		exit(-1);
+	}
+
+	int flag=1;
+	int result=setsockopt(net_sockfd,IPPROTO_TCP,TCP_NODELAY,
+			(char*)&flag,sizeof(int));
+	if (result<0){
+			fprintf(stderr,"\n%s:%u: set TCP_NODELAY failed\n",__FILE__,__LINE__);
+			stacktrace_print(stderr);
+			fprintf(stderr,"\n\n");
+			exit(-1);
 	}
 
 	server.sin_addr.s_addr=inet_addr(net_host);

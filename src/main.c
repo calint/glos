@@ -77,7 +77,7 @@ inline static void main_init(){
 
 static int draw_default=0,
 		draw_objects=1,
-		draw_glos=0;
+		draw_glos=0,do_main_render=1;
 
 static struct color{
 	GLclampf red;
@@ -102,8 +102,6 @@ inline static void main_render(){
 	if(draw_default)shader_render();
 
 	SDL_GL_SwapWindow(window.ref);
-
-	metrics__at__update_frame_end(stderr);
 }
 
 //------------------------------------------------------------------------ main
@@ -171,15 +169,11 @@ int main(int argc,char*argv[]){
 	metrics_print_headers(stderr);
 	for(int running=1;running;){
 		metrics__at__frame_begin();
-
-		// --
 		if(use_net){
 			net_state_to_send.lookangle_y=camera_lookangle_y;
 			net_state_to_send.lookangle_x=camera_lookangle_x;
 			net__at__frame_begin();
 		}
-
-		// --
 
 		SDL_Event event;
 		while(SDL_PollEvent(&event)){
@@ -273,10 +267,12 @@ int main(int argc,char*argv[]){
 			}
 		}
 
+		if(!use_net){
+			net_state_current[net_active_player_index].keybits=
+					net_state_to_send.keybits;
+		}
 		if(game.keybits_ptr)
 			*game.keybits_ptr=net_state_current[net_active_player_index].keybits;
-
-
 
 		if(game.follow_ptr){
 			camera.lookat=game.follow_ptr->p.p;
@@ -324,11 +320,13 @@ int main(int argc,char*argv[]){
 
 		objects_update(use_net?net_dt:metrics.fps.dt);
 
-		main_render();
+		if(do_main_render)
+			main_render();
 
 		if(use_net){
 			net__at__frame_end();
 		}
+		metrics__at__frame_end(stderr);
 	}
 	//---------------------------------------------------------------------free
 	//? early-hangup
