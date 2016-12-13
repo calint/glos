@@ -103,13 +103,6 @@ inline static void main_render(framectx*fc){
 	SDL_GL_SwapWindow(window.ref);
 }
 
-#define lambda(return_type, body_and_args) \
-  ({ \
-    return_type __fn__ body_and_args \
-    __fn__; \
-  })
-
-
 //------------------------------------------------------------------------ main
 int main(int argc,char*argv[]){
 	if(argc>1 && *argv[1]=='s'){
@@ -328,13 +321,13 @@ int main(int argc,char*argv[]){
 
 		grid_clear();
 
-//		inline void f(object*o){grid_add(o);}
+//		const char*name="hello";
+//		inline void f(object*o){grid_add(o);puts(name);}
 //		objects_foreach_allocated_all(f);
-		objects_foreach_allocated_all(lambda(void,(object*o){
-//			stacktrace_print(stdout);
+		objects_foreach_allocated_all(foo(void,(object*o){
+//			puts(name);
 			grid_add(o);
 		}));
-//		stacktrace_print(stdout);
 
 		framectx fc={
 				.dt=use_net?net_dt:metrics.fps.dt,
