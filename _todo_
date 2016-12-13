@@ -10,6 +10,7 @@
  [x]   scene
  [x]     to objects
  [ ]     center/scale/position
+ [ ]   faces to ccw
  [ ] draw bounding volume
  [ ]   sphere
  [ ]   box
