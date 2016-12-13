@@ -321,10 +321,6 @@ int main(int argc,char*argv[]){
 
 		grid_clear();
 
-//		objects_foreach_allocated_all(foo(void,(object*o){
-//			grid_add(o);
-//		}));
-
 		objects_foa({
 			grid_add(o);
 		});

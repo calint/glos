@@ -1,4 +1,7 @@
 #pragma once
+//-----------------------------------------------------------------------------
+// dynf dynamic array generated from template ... do not modify
+//-----------------------------------------------------------------------------
 #include<stdio.h>
 #include<unistd.h>
 #include"../lib/stacktrace.h"
