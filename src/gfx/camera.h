@@ -21,9 +21,8 @@ struct{
 		.type=1,
 };
 
-
-static float look_angle_y=DEG_TO_RAD(0);
-static float look_angle_x=0;
+static float camera_lookangle_y=0;
+static float camera_lookangle_x=0;
 inline static void camera_update_matrix_wvp(){
 	const float oc=15;
 	if(camera.type==0){
@@ -78,7 +77,7 @@ inline static void camera_update_matrix_wvp(){
 		mat4_set_translation(Mt,&Pt);
 
 		float My[16];
-		mat4_set_rotation_y(My,look_angle_y);
+		mat4_set_rotation_y(My,camera_lookangle_y);
 
 		float Myt[16];
 		mat4_multiply(Myt,My,Mt);

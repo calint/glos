@@ -27,6 +27,10 @@ struct{
 	unsigned triangles_rendered_prv_frame;
 }metrics;
 
+inline static void metrics_init(){}
+
+inline static void metrics_free(){}
+
 inline static void metrics_reset_timer(){
 	metrics.fps._time_at_start_of_intervall_in_ms=SDL_GetTicks();
 	metrics.fps._timer_tick_at_start_of_frame=SDL_GetPerformanceCounter();

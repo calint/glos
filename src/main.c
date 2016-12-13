@@ -2,8 +2,9 @@
 #include"gfx.h"
 #include"obj.h"
 #include"metrics.h"
+#include"net.h"
 
-struct{
+static struct _game{
 	int*keybits_ptr;
 	const object*follow_ptr;
 }game;
@@ -78,7 +79,7 @@ static int draw_default=0,
 		draw_objects=1,
 		draw_glos=0;
 
-static struct{
+static struct color{
 	GLclampf red;
 	GLclampf green;
 	GLclampf blue;
@@ -129,6 +130,8 @@ int main(int argc,char*argv[]){
 	shader_init();
 	objects_init();
 	glos_init();
+	net_init();
+	metrics_init();
 	main_init();
 
 	{
@@ -162,6 +165,16 @@ int main(int argc,char*argv[]){
 	metrics_print_headers(stderr);
 	for(int running=1;running;){
 		metrics__at__frame_begin();
+
+		// --
+		net_recv();
+		net_to_use=nets_current_state[net_active_player_index];
+		net_to_send.keybits=keybits;
+		net_to_send.lookangle_y=camera_lookangle_y;
+		net_to_send.lookangle_x=camera_lookangle_x;
+		net_send();
+		// --
+
 		SDL_Event event;
 		while(SDL_PollEvent(&event)){
 			switch(event.type) {
@@ -189,11 +202,11 @@ int main(int argc,char*argv[]){
 //						event.motion.xrel,event.motion.yrel,
 //						look_angle_z_axis*180/PI);
 				if(event.motion.xrel!=0){
-					look_angle_y+=(float)event.motion.xrel
+					camera_lookangle_y+=(float)event.motion.xrel
 							*rad_over_mouse_pixels*mouse_sensitivity;
 				}
 				if(event.motion.yrel!=0){
-					look_angle_x+=(float)event.motion.yrel
+					camera_lookangle_x+=(float)event.motion.yrel
 							*rad_over_mouse_pixels*mouse_sensitivity;
 				}
 				break;}
@@ -204,25 +217,25 @@ int main(int argc,char*argv[]){
 						SDL_SetRelativeMouseMode(mouse_mode);
 //						running=0;
 						break;
-					case SDLK_w:keybits|=1;break;
-					case SDLK_a:keybits|=2;break;
-					case SDLK_s:keybits|=4;break;
-					case SDLK_d:keybits|=8;break;
-					case SDLK_q:keybits|=16;break;
-					case SDLK_e:keybits|=32;break;
-					case SDLK_o:keybits|=64;break;
+					case SDLK_w:net_to_send.keybits|=1;break;
+					case SDLK_a:net_to_send.keybits|=2;break;
+					case SDLK_s:net_to_send.keybits|=4;break;
+					case SDLK_d:net_to_send.keybits|=8;break;
+					case SDLK_q:net_to_send.keybits|=16;break;
+					case SDLK_e:net_to_send.keybits|=32;break;
+					case SDLK_o:net_to_send.keybits|=64;break;
 					case SDLK_1:draw_default=1;	break;
 				}
 				break;
 			case SDL_KEYUP:
 				switch (event.key.keysym.sym){
-					case SDLK_w:keybits&=~1;break;
-					case SDLK_a:keybits&=~2;break;
-					case SDLK_s:keybits&=~4;break;
-					case SDLK_d:keybits&=~8;break;
-					case SDLK_q:keybits&=~16;break;
-					case SDLK_e:keybits&=~32;break;
-					case SDLK_o:keybits&=~64;break;
+					case SDLK_w:net_to_send.keybits&=~1;break;
+					case SDLK_a:net_to_send.keybits&=~2;break;
+					case SDLK_s:net_to_send.keybits&=~4;break;
+					case SDLK_d:net_to_send.keybits&=~8;break;
+					case SDLK_q:net_to_send.keybits&=~16;break;
+					case SDLK_e:net_to_send.keybits&=~32;break;
+					case SDLK_o:net_to_send.keybits&=~64;break;
 					case SDLK_SPACE:
 						mouse_mode=!mouse_mode;
 						SDL_SetRelativeMouseMode(mouse_mode);
@@ -255,7 +268,10 @@ int main(int argc,char*argv[]){
 		}
 
 		if(game.keybits_ptr)
-			*game.keybits_ptr=keybits;
+			*game.keybits_ptr=nets_current_state[net_active_player_index].keybits;
+
+
+
 		if(game.follow_ptr){
 			camera.lookat=game.follow_ptr->p.p;
 		}
@@ -265,37 +281,12 @@ int main(int argc,char*argv[]){
 //				camera.eye.x,camera.eye.y,camera.eye.z,look_angle_z_axis*180/PI);
 
 		vec4 lookvector=vec4_def;
-		const float a=look_angle_y;
+		const float a=camera_lookangle_y;
 //		printf(" look angle z=%f\n",a);
 		const float move_vector_scale=10;
 		lookvector.x=move_vector_scale*sinf(a);
 		lookvector.y=0;
 		lookvector.z=-move_vector_scale*cosf(a);
-
-//		vec4 lookvector;
-//		mat4_get_zaxis(camera.mxwvp,&lookvector);
-//		vec4_negate(&lookvector);
-//		vec4_normalize(&lookvector);//? 3x3 orthonorm?
-//		vec4_scale(&lookvector,10);
-//
-//		camera.lookat=lookvector;
-//		vec4 xaxis;
-//		vec4 up={0,1,0,0};
-//		vec3_cross(&xaxis,&lookvector,&up);
-//		vec3_normalize(&xaxis);
-//		vec3_scale(&xaxis,move_vector_scale);
-//
-//		const float dt=metrics.fps.dt;
-//		if(keybits&1)vec3_inc_with_vec3_over_dt(&camera.eye,&lookvector,dt);
-//		if(keybits&2)vec3_inc_with_vec3_over_dt(&camera.eye,&xaxis,-dt);
-//		if(keybits&4)vec3_inc_with_vec3_over_dt(&camera.eye,&lookvector,-dt);
-//		if(keybits&8)vec3_inc_with_vec3_over_dt(&camera.eye,&xaxis,dt);
-//		if(keybits&16)camera.eye.y+=speed*(dt);
-//		if(keybits&32)camera.eye.y-=speed*(dt);
-//		printf("  %f  %f  %f  \n",
-//				camera.lookat.x,camera.lookat.y,camera.lookat.z);
-//		printf("  %f  %f  %f  \n",
-//					camera.eye.x,camera.eye.y,camera.eye.z);
 
 		if(previous_active_program_ix!=shader.active_program_ix){
 			printf(" * switching to program at index %u\n",
@@ -325,10 +316,12 @@ int main(int argc,char*argv[]){
 		}
 
 		main_render();
+
 	}
 	//---------------------------------------------------------------------free
 	//? early-hangup
-//	fps_free();
+	net_free();
+	metrics_free();
 	glos_free();
 	objects_free();
 	shader_free();

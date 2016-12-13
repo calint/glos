@@ -1,39 +1,39 @@
 #pragma once
 #include"ctype.h"
 
-#define netc_cap 8
+#define net_cap 8
 
 struct{
-	uint32_t keybits;
-	float pointer_angle_about_y;
-	float pointer_angle_about_x;
-}netc,netc_prv;
+	int32_t keybits;
+	float lookangle_y;
+	float lookangle_x;
+}net_to_send,net_to_use,nets_current_state[net_cap];
+//
+//static net nets[net_cap];
 
-static netcs[netc_cap];
+static unsigned net_active_player_index;
 
-static unsigned netc_active_player_index;
-
-inline static void netc_init(){
+inline static void net_init(){
 }
 
-inline static void netc_connect(){
+inline static void net_connect(){
 
 }
 
-inline static void netc_send(){
-	netc_prv=netc;
+inline static void net_send(){
 	// send
 }
 
-inline static void netc_recv(){
+inline static void net_recv(){
+	nets_current_state[0].keybits=4+2;
+	nets_current_state[1].keybits=1+8;
+}
+
+inline static void net_disconnect(){
 
 }
 
-inline static void netc_disconnect(){
-
-}
-
-inline static void netc_free(){
+inline static void net_free(){
 	// close network if active
 
 }

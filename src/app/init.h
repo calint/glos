@@ -35,22 +35,26 @@ inline static void main_init_scene(){
 	o->b.s=(scale){10,10,10,0};
 	o->p.p=(position){0,0,0,0};
 
+
+	santa*p;
 	o=santa_alloc_def();
 	o->n.glo_ptr=glos_find_by_name("santa");
 	o->b.s=(scale){10,10,10,0};
 	o->p.p=(position){80,2,80,0};
-//	o->p.a=(angle){0,180,0,0};
-	santa*p=o->part[0];
-	game.keybits_ptr=&p->keybits;
+	p=(santa*)o->part[0];
+	p->keybits_ptr=&nets_current_state[0].keybits;
 	game.follow_ptr=o;
 
 	o=santa_alloc_def();
 	o->n.glo_ptr=glos_find_by_name("santa");
 	o->b.s=(scale){10,10,10,0};
 	o->p.p=(position){-80,2,-80,0};
+	p=(santa*)o->part[0];
+	p->keybits_ptr=&nets_current_state[1].keybits;
 
 	camera.eye=(position){0,170,100,0};
 	camera.lookat=(position){0,0,0,0};
+
 //
 //	for(float y=0;y<5;y++){
 //		for(float z=-10;z<=10;z++){
