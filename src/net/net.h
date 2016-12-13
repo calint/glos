@@ -58,7 +58,7 @@ inline static void net_init(){
 	net_connect();
 }
 
-inline static void net_at_new_frame(){
+inline static void net__at__frame_begin(){
 	// send next key state
 	if(send(net_sockfd,&net_state_to_send,sizeof(net_state_to_send),0)<0){
 		fprintf(stderr,"\n%s:%u: send failed\n",__FILE__,__LINE__);
@@ -66,7 +66,9 @@ inline static void net_at_new_frame(){
 		fprintf(stderr,"\n\n");
 		exit(-1);
 	}
+}
 
+inline static void net__at__frame_end(){
 	if(recv(net_sockfd,&net_dt,sizeof(net_dt)
 			,0)< 0){
 		fprintf(stderr,"\n%s:%u: receive failed\n",__FILE__,__LINE__);
@@ -82,9 +84,6 @@ inline static void net_at_new_frame(){
 		fprintf(stderr,"\n\n");
 		exit(-1);
 	}
-//	// receive previous keystate
-//	net_current_state[0].keybits=4+2;
-//	net_current_state[1].keybits=1+8;
 }
 
 inline static void net_disconnect(){

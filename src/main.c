@@ -95,8 +95,6 @@ inline static void main_render(){
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	objects_update(net_dt);
-
 	if(draw_objects)objects_render();
 
 	if(draw_glos)glos_render();
@@ -116,6 +114,12 @@ int main(int argc,char*argv[]){
 		netsrv_free();
 	}
 
+	int use_net=0;
+	if(argc>1 && *argv[1]=='c'){
+		use_net=1;
+	}
+
+
 	printf("\n--- - - - ---- - - -- - - - - -- - - -- - - - -- - - - - - -");
 	printf("\n g l o s");
 	puts("");
@@ -134,7 +138,7 @@ int main(int argc,char*argv[]){
 	shader_init();
 	objects_init();
 	glos_init();
-	net_init();
+	if(use_net)net_init();
 	metrics_init();
 	main_init();
 
@@ -169,10 +173,11 @@ int main(int argc,char*argv[]){
 		metrics__at__frame_begin();
 
 		// --
-		net_state_to_send.lookangle_y=camera_lookangle_y;
-		net_state_to_send.lookangle_x=camera_lookangle_x;
-
-		net_at_new_frame();
+		if(use_net){
+			net_state_to_send.lookangle_y=camera_lookangle_y;
+			net_state_to_send.lookangle_x=camera_lookangle_x;
+			net__at__frame_begin();
+		}
 
 		// --
 
@@ -316,12 +321,18 @@ int main(int argc,char*argv[]){
 			previous_active_program_ix=shader.active_program_ix;
 		}
 
+
+		objects_update(use_net?net_dt:metrics.fps.dt);
+
 		main_render();
 
+		if(use_net){
+			net__at__frame_end();
+		}
 	}
 	//---------------------------------------------------------------------free
 	//? early-hangup
-	net_free();
+	if(use_net)net_free();
 	metrics_free();
 	glos_free();
 	objects_free();
