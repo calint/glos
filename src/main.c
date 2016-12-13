@@ -151,9 +151,7 @@ int main(int argc,char*argv[]){
 	gid previous_active_program_ix=shader.active_program_ix;
 	const float rad_over_degree=2.0f*PI/360.0f;
 	float rad_over_mouse_pixels=rad_over_degree*.02f;
-	int32_t keybits=0;
 	float mouse_sensitivity=1.5f;
-	float speed=1;
 	int mouse_mode=0;
 	printf("   * \n");
 	printf("   * press space to grab and ungrab mouse\n");
@@ -168,7 +166,6 @@ int main(int argc,char*argv[]){
 
 		// --
 		net_recv();
-		net_to_send.keybits=keybits;
 		net_to_send.lookangle_y=camera_lookangle_y;
 		net_to_send.lookangle_x=camera_lookangle_x;
 		net_send();
