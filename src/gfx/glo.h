@@ -43,7 +43,7 @@ inline static void glo_free(glo*o){
 	glDeleteBuffers(1,&o->vtxbuf_id);
 	metrics.buffered_vertex_data-=dynf_size_in_bytes(&o->vtxbuf);
 	dynf_free(&o->vtxbuf);
-	dynp_foo(&o->ranges,{
+	dynp_foa(&o->ranges,{
 		mtlrng*mr=(mtlrng*)o;
 		objmtl*m=(objmtl*)mr->material_ptr;
 		if(m->texture_id){

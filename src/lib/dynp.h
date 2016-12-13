@@ -188,8 +188,8 @@ inline static void dynp_setz(dynp*o,/*copies*/const void**s){
 }
 
 //-----------------------------------------------------------------------------
-#define dynp_foo(ls,body)dynp_foreach_all(ls,({void __fn__ (void* o) body __fn__;}))
-#define dynp_foa(ls,body)dynp_foreach_all(ls,({int __fn__ (void* o) body __fn__;}))
+#define dynp_foa(ls,body)dynp_foreach_all(ls,({void __fn__ (void* o) body __fn__;}))
+#define dynp_fou(ls,body)dynp_foreach(ls,({int __fn__ (void* o) body __fn__;}))
 //-----------------------------------------------------------------------------
 inline static void dynp_foreach(dynp*o,int(*f)(void*)){
 	if(!o->count)

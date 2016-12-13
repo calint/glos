@@ -188,8 +188,8 @@ inline static void objmtls_setz(objmtls*o,/*copies*/const objmtl**s){
 }
 
 //-----------------------------------------------------------------------------
-#define objmtls_foo(ls,body)dynp_foreach_all(ls,({void __fn__ (objmtl* o) body __fn__;}))
-#define objmtls_foa(ls,body)dynp_foreach_all(ls,({int __fn__ (objmtl* o) body __fn__;}))
+#define objmtls_foa(ls,body)dynp_foreach_all(ls,({void __fn__ (objmtl* o) body __fn__;}))
+#define objmtls_fou(ls,body)dynp_foreach(ls,({int __fn__ (objmtl* o) body __fn__;}))
 //-----------------------------------------------------------------------------
 inline static void objmtls_foreach(objmtls*o,int(*f)(objmtl*)){
 	if(!o->count)
