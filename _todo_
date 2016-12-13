@@ -16,35 +16,35 @@
  [ ]   planes
  [x] multiple materials in render
  [ ] collision detection 
- [1]   bounding volume
- [1]     sphere
- [1]       vs sphere
+ [ ]   bounding volume
+ [ ]     sphere
+ [ ]       vs sphere
  [ ]       vs plane
  [ ]       vs box
- [1]     planes
- [1]       vs box
+ [ ]     planes
+ [ ]       vs box
  [ ]       vs planes
- [1]     box
- [1]       vs box
+ [ ]     box
+ [ ]       vs box
  [ ]     line
  [ ]       vs sphere
  [ ]       planes 
  [ ]     empty/solids
  [ ]       boolean ops
- [1] collision physics/animatics
- [2]   sphere vs sphere
- [3]   box vs box
- [2]   sphere vs plane
- [3]   spherer vs box
- [2] grid
- [2]   cull
- [2]   render
- [2]   update
- [4]   multicore
- [3] keyshub
- [3]   client
- [3]   server
- [3]   multiplayer
+ [ ] collision physics/animatics
+ [ ]   sphere vs sphere
+ [ ]   box vs box
+ [ ]   sphere vs plane
+ [ ]   spherer vs box
+ [ ] grid
+ [ ]   cull
+ [ ]   render
+ [ ]   update
+ [ ]   multicore
+ [x] keyshub
+ [x]   client
+ [x]   server
+ [x]   multiplayer
  [o] camera
  [x]   projection
  [x]     orthonormal
