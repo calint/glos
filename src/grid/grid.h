@@ -9,9 +9,28 @@ typedef struct cell{
 
 inline static void cell_update(cell*o,dt dt){
 	unsigned i=o->objrefs.count;
-	object*oi=(object*)o->objrefs.data;
+	if(i==0)
+		return;
+	object*oi=(object*)(*o->objrefs.data);
 	while(i--){
-		object_update(oi++,dt);//? overlapping updates
+		metrics.objects_updated_prv_frame++;
+		if(oi->v.update){
+			oi->v.update(oi,dt);
+		}else{
+			object_update(oi,dt);
+		}
+
+		for(int i=0;i<object_part_cap;i++){
+			if(!oi->part[i])
+				continue;
+			part*p=oi->part[i];
+			if(p->update){
+				p->update(oi,p,dt);
+				metrics.parts_updated_prv_frame++;
+			}
+		}
+
+		oi++;
 	}
 }
 

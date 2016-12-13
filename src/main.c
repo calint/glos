@@ -337,10 +337,12 @@ int main(int argc,char*argv[]){
 //			grid_print();
 		}
 
+		grid_update(use_net?net_dt:metrics.fps.dt);
 
-		objects_update(use_net?net_dt:metrics.fps.dt);
+//		objects_update(use_net?net_dt:metrics.fps.dt);
 
 		if(do_main_render)
+//			grid_render();
 			main_render();
 
 		if(use_net){
