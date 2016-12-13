@@ -7,7 +7,7 @@ struct{
 	int32_t keybits;
 	float lookangle_y;
 	float lookangle_x;
-}net_to_send,net_to_use,nets_current_state[net_cap];
+}net_to_send,nets_current_state[net_cap];
 //
 //static net nets[net_cap];
 

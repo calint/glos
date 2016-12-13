@@ -168,7 +168,6 @@ int main(int argc,char*argv[]){
 
 		// --
 		net_recv();
-		net_to_use=nets_current_state[net_active_player_index];
 		net_to_send.keybits=keybits;
 		net_to_send.lookangle_y=camera_lookangle_y;
 		net_to_send.lookangle_x=camera_lookangle_x;
