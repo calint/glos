@@ -2,8 +2,8 @@
 typedef struct object object;
 typedef struct vtbl{
 	void(*init)(object*);
-	void(*update)(object*,dt);
-	void(*collision)(object*,object*,dt);
+	void(*update)(object*,framectx*);
+	void(*collision)(object*,object*,framectx*);
 	void(*render)(object*);
 	void(*free)(object*);
 }vtbl;

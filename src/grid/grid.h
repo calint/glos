@@ -1,5 +1,6 @@
 #pragma once
 #include"../lib.h"
+#include"../obj/object.h"
 
 typedef struct cell{
 	dynp objrefs;
@@ -7,17 +8,36 @@ typedef struct cell{
 
 #define cell_def {dynp_def}
 
-inline static void cell_update(cell*o,dt dt){
+
+#define grid_cell_size 20
+#define grid_ncells_wide 1
+#define grid_ncells_high 1
+#define grid_ncells grid_ncells_wide*grid_ncells_high
+
+static cell cells[grid_ncells_high][grid_ncells_wide];
+
+inline static void cell_update(cell*o,framectx*fc){
 	unsigned i=o->objrefs.count;
+
 	if(i==0)
 		return;
+
 	object*oi=(object*)(*o->objrefs.data);
 	while(i--){
+		if(oi->updtk==fc->tick){
+//			printf("[ grid ] skipped updated %s %p\n",oi->n.glo_ptr->name.data,(void*)oi);
+//			printf("[ grid ] %u  %u\n",oi->updtk,fc->tick);
+			oi++;
+			continue;
+		}
+//		printf("[ grid ] updated %s %p\n",oi->n.glo_ptr->name.data,(void*)oi);
+//		printf("[ grid ] %u  %u\n",oi->updtk,fc->tick);
+		oi->updtk=fc->tick;
 		metrics.objects_updated_prv_frame++;
 		if(oi->v.update){
-			oi->v.update(oi,dt);
+			oi->v.update(oi,fc);
 		}else{
-			object_update(oi,dt);
+			object_update(oi,fc);
 		}
 
 		for(int i=0;i<object_part_cap;i++){
@@ -25,20 +45,34 @@ inline static void cell_update(cell*o,dt dt){
 				continue;
 			part*p=oi->part[i];
 			if(p->update){
-				p->update(oi,p,dt);
+				p->update(oi,p,fc);
 				metrics.parts_updated_prv_frame++;
 			}
 		}
-
 		oi++;
 	}
 }
 
-inline static void cell_render(cell*o){
+inline static void cell_render(cell*o,framectx*fc){
 	unsigned i=o->objrefs.count;
-	object*oi=(object*)o->objrefs.data;
+
+	if(i==0)
+		return;
+
+	object*oi=(object*)(*o->objrefs.data);
 	while(i--){
-		object_render(oi++);//? overlapping updates
+		if(oi->drwtk==fc->tick){
+//			printf("[ grid ] skipped rendered %s\n",oi->n.glo_ptr->name.data);
+//			printf("[ grid ] %u  %u\n",oi->updtk,fc->tick);
+			oi++;
+			continue;
+		}
+//		printf("[ grid ] rendered %s %p\n",oi->n.glo_ptr->name.data,(void*)oi);
+//		printf("[ grid ] %u  %u\n",oi->updtk,fc->tick);
+		oi->drwtk=fc->tick;
+		object_render_glo(oi);
+		metrics.objects_rendered_prv_frame++;
+		oi++;
 	}
 }
 
@@ -58,30 +92,25 @@ inline static void cell_add_object(cell*o,object*oo){
 	dynp_add(&o->objrefs,oo);
 }
 
-#define grid_cell_size 20
-#define grid_ncells_wide 8
-#define grid_ncells_high 8
-#define grid_ncells grid_ncells_wide*grid_ncells_high
-
-static cell cells[grid_ncells_wide][grid_ncells_high];
-
 inline static void grid_init(){}
 
-inline static void grid_update(dt dt){
+inline static void grid_update(framectx*fc){
 	cell*p=&cells[0][0];
 	unsigned i=grid_ncells;
+//	printf("-------------------------\n");
 	while(i--){
-		cell_update(p++,dt);
+		cell_update(p,fc);
+		p++;
 	}
 }
 
-inline static void grid_collisions(dt dt){}
+inline static void grid_collisions(framectx*fc){}
 
-inline static void grid_render(){
+inline static void grid_render(framectx*fc){
 	cell*p=&cells[0][0];
 	unsigned i=grid_ncells;
 	while(i--){
-		cell_render(p++);
+		cell_render(p++,fc);
 	}
 }
 
@@ -104,6 +133,7 @@ inline static int clamp(int i,int min,int max_plus_one){
 }
 
 inline static void grid_add(object*o){
+//	printf("[ grid ] add %s %p\n",o->n.glo_ptr->name.data,(void*)o);
 	const float gw=grid_cell_size*grid_ncells_wide;
 	const float gh=grid_cell_size*grid_ncells_high;
 
@@ -137,7 +167,6 @@ inline static void grid_add(object*o){
 inline static void grid_print(){
 	cell*p=&cells[0][0];
 	unsigned i=grid_ncells;
-//	printf("grid{");
 	while(i--){
 //		cell_print(p++);
 		printf(" %d ",p++->objrefs.count);

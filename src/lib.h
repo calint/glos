@@ -10,8 +10,6 @@
 #include"lib/token.h"
 #include"lib/etc.h"
 
-
-
 //		while(n){
 //			printf(n&1?"1":"0");
 //			n>>=1;

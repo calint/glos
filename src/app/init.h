@@ -11,44 +11,49 @@ inline static void main_init_scene(){
 	glos_load_first_from_file("obj/grid.obj");
 	glos_load_first_from_file("obj/santa.obj");
 
-	o=object_alloc(&object_def);
-	o->n.glo_ptr=glos_find_by_name("skydome");
-	o->v.render=object_render_glo;
-	o->b.s=(scale){15,15,15,0};
-
+//	o=object_alloc(&object_def);
+//	o->n.glo_ptr=glos_find_by_name("skydome");
+//	o->v.render=object_render_glo;
+//	o->b.s=(scale){15,15,15,0};
+//	o->b.r=10*15;
+//
 	o=object_alloc(&object_def);
 	o->n.glo_ptr=glos_find_by_name("board");
 	o->v.render=object_render_glo;
 	o->p.p.x=-80;
 	o->p.p.y=0;
 	o->p.p.z=-80;
-
+	o->b.r=10;
+//
 	o=object_alloc(&object_def);
 	o->n.glo_ptr=glos_find_by_name("board");
 	o->v.render=object_render_glo;
 	o->p.p.x=80;
 	o->p.p.z=80;
+	o->b.r=10;
 //
 	o=object_alloc(&object_def);
 	o->n.glo_ptr=glos_find_by_name("grid");
 	o->v.render=object_render_glo;
 	o->b.s=(scale){10,10,10,0};
 	o->p.p=(position){0,0,0,0};
-
+	o->b.r=2*10;
+	game.follow_ptr=o;
 
 	santa*p;
 	o=santa_alloc_def();
 	o->n.glo_ptr=glos_find_by_name("santa");
 	o->b.s=(scale){10,10,10,0};
-	o->p.p=(position){40,2,40,0};
+	o->p.p=(position){30,2,30,0};
+	o->b.r=.5f;
 	p=(santa*)o->part[0];
 	p->keybits_ptr=&net_state_current[1].keybits;
-	game.follow_ptr=o;
 
 	o=santa_alloc_def();
 	o->n.glo_ptr=glos_find_by_name("santa");
 	o->b.s=(scale){10,10,10,0};
-	o->p.p=(position){-40,2,-40,0};
+	o->p.p=(position){-30,2,-30,0};
+	o->b.r=.5f;
 	p=(santa*)o->part[0];
 	p->keybits_ptr=&net_state_current[2].keybits;
 

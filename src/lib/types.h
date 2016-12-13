@@ -23,3 +23,8 @@ typedef float bounding_radius;
 typedef unsigned id;
 typedef float dt;
 typedef const char*path;
+
+typedef struct framectx{
+	dt dt;
+	unsigned tick;
+}framectx;

@@ -10,6 +10,8 @@
 #define parts_def {0,0,0,0,0}
 typedef struct part part;
 typedef struct object{
+	unsigned updtk;
+	unsigned drwtk;
 	node n;
 	bvol b;
 	phy p;
@@ -20,6 +22,8 @@ typedef struct object{
 }object;
 //---------------------------------------------------------------------- -----
 static object object_def={
+	.updtk=0,
+	.drwtk=0,
 	.n=node_def,
 	.b=bvol_def,
 	.p=phy_def,
@@ -31,9 +35,9 @@ static object object_def={
 //----------------------------------------------------------------------- init
 inline static void object_init(object*o){}
 //--------------------------------------------------------------------- update
-inline static void object_update(object*o,dt dt){
-	vec3_inc_with_vec3_over_dt(&o->p.p,&o->p.v,dt);
-	vec3_inc_with_vec3_over_dt(&o->p.a,&o->p.av,dt);
+inline static void object_update(object*o,framectx*fc){
+	vec3_inc_with_vec3_over_dt(&o->p.p,&o->p.v,fc->dt);
+	vec3_inc_with_vec3_over_dt(&o->p.a,&o->p.av,fc->dt);
 	if(o->n.Mmw_valid &&
 		(o->p.v.x||o->p.v.y||o->p.v.z||
 		o->p.av.x||o->p.av.y||

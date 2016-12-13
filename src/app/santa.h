@@ -26,8 +26,8 @@ typedef struct santa{
 }santa;
 //------------------------------------------------------------------ overrides
 static void _santa_init(object*,part*);
-static void _santa_update(object*,part*,dt);
-static void _santa_render(object*,part*);
+static void _santa_update(object*,part*,framectx*fc);
+static void _santa_render(object*,part*,framectx*fc);
 static void _santa_free(object*,part*);
 //----------------------------------------------------------------------- init
 static santa santa_def={
@@ -41,7 +41,7 @@ static santa santa_def={
 };
 //----------------------------------------------------------------------- impl
 static void _santa_init(object*po,part*o){}
-static void _santa_update(object*po,part*o,dt dt){
+static void _santa_update(object*po,part*o,framectx*fc){
 //	printf("%s:%u  [ %p %p ]\n",__FILE__,__LINE__,(void*)po,(void*)o);
 	santa*p=(santa*)o;
 	int n=*p->keybits_ptr;
@@ -57,7 +57,7 @@ static void _santa_update(object*po,part*o,dt dt){
 		po->n.Mmw_valid=0;
 	}
 }
-static void _santa_render(object*po,part*o){}
+static void _santa_render(object*po,part*o,framectx*fc){}
 static void _santa_free(object*po,part*o){}
 //printf("%s:%u  [ %p %p ]\n",__FILE__,__LINE__,(void*)po,(void*)o);
 //----------------------------------------------------------------------------

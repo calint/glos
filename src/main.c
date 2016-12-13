@@ -87,7 +87,7 @@ static struct color{
 }c={.1f,.1f, 0};
 
 
-inline static void main_render(){
+inline static void main_render(framectx*fc){
 	camera_update_matrix_wvp();
 
 	glUniformMatrix4fv(shader_umtx_wvp,1,0,camera.mxwvp);
@@ -96,7 +96,10 @@ inline static void main_render(){
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	if(draw_objects)objects_render();
+
+	if(draw_objects)
+		grid_render(fc);
+//		objects_render();
 
 	if(draw_glos)glos_render();
 
@@ -170,6 +173,7 @@ int main(int argc,char*argv[]){
 	metrics.fps.calculation_intervall_ms=100;
 	metrics_reset_timer();
 	metrics_print_headers(stderr);
+	unsigned frameno=1;
 	for(int running=1;running;){
 		metrics__at__frame_begin();
 		if(use_net){
@@ -285,13 +289,13 @@ int main(int argc,char*argv[]){
 //		printf("   camera: %f  %f  %f   angle: %f\n",
 //				camera.eye.x,camera.eye.y,camera.eye.z,look_angle_z_axis*180/PI);
 
-		vec4 lookvector=vec4_def;
-		const float a=camera_lookangle_y;
-//		printf(" look angle z=%f\n",a);
-		const float move_vector_scale=10;
-		lookvector.x=move_vector_scale*sinf(a);
-		lookvector.y=0;
-		lookvector.z=-move_vector_scale*cosf(a);
+//		vec4 lookvector=vec4_def;
+//		const float a=camera_lookangle_y;
+////		printf(" look angle z=%f\n",a);
+//		const float move_vector_scale=10;
+//		lookvector.x=move_vector_scale*sinf(a);
+//		lookvector.y=0;
+//		lookvector.z=-move_vector_scale*cosf(a);
 
 		if(previous_active_program_ix!=shader.active_program_ix){
 			printf(" * switching to program at index %u\n",
@@ -337,13 +341,19 @@ int main(int argc,char*argv[]){
 //			grid_print();
 		}
 
-		grid_update(use_net?net_dt:metrics.fps.dt);
+		framectx fc={
+				.dt=use_net?net_dt:metrics.fps.dt,
+				.tick=frameno,
+		};
+
+		frameno++;
+
+		grid_update(&fc);
 
 //		objects_update(use_net?net_dt:metrics.fps.dt);
 
 		if(do_main_render)
-//			grid_render();
-			main_render();
+			main_render(&fc);
 
 		if(use_net){
 			net__at__frame_end();
