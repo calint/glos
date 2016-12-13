@@ -3,6 +3,7 @@
 #include"obj.h"
 #include"metrics.h"
 #include"net.h"
+#include"grid.h"
 
 static struct _game{
 	int*keybits_ptr;
@@ -114,12 +115,13 @@ int main(int argc,char*argv[]){
 
 	int use_net=0;
 	if(argc>1 && *argv[1]=='c'){
+		srand(0);
 		use_net=1;
+		if(argc>2){
+			net_host=argv[2];
+		}
 	}
 
-
-	printf("\n--- - - - ---- - - -- - - - - -- - - -- - - - -- - - - - - -");
-	printf("\n g l o s");
 	puts("");
 	printf(":-%15s-:-%-9s-:\n","---------------","---------");
 	printf(": %15s : %-9s :\n","type",           "bytes");
@@ -132,12 +134,13 @@ int main(int argc,char*argv[]){
 
 	unsigned gloid=0,mingloid=0,maxgloid=10;
 	if(use_net)net_init();
+	metrics_init();
 	sdl_init();
 	window_init();
 	shader_init();
 	objects_init();
 	glos_init();
-	metrics_init();
+	grid_init();
 	main_init();
 
 	{
@@ -317,7 +320,6 @@ int main(int argc,char*argv[]){
 			previous_active_program_ix=shader.active_program_ix;
 		}
 
-
 		objects_update(use_net?net_dt:metrics.fps.dt);
 
 		if(do_main_render)
@@ -330,7 +332,7 @@ int main(int argc,char*argv[]){
 	}
 	//---------------------------------------------------------------------free
 	//? early-hangup
-	metrics_free();
+	grid_free();
 	glos_free();
 	objects_free();
 	shader_free();
@@ -338,6 +340,7 @@ int main(int argc,char*argv[]){
 	sdl_free();
 	if(use_net)net_free();
 	metrics_print(stderr);
+	metrics_free();
 	puts(" * clean exit");
 	return 0;
 }

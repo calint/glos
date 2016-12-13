@@ -49,6 +49,7 @@ inline static void net_connect(){
 	server.sin_family=AF_INET;
 	server.sin_port=htons(net_port);
 
+	printf("[ net ] connecting to %s on port %u\n",net_host,net_port);
 	if(connect(net_sockfd,(struct sockaddr *)&server,sizeof(server))<0){
 		fprintf(stderr,"\n%s:%u: connect failed\n",__FILE__,__LINE__);
 		fprintf(stderr,"    server: %s  port: %d\n\n",net_host,net_port);
