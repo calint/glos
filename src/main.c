@@ -5,9 +5,6 @@
 #include"grid.h"
 #include"obj/object_alloc.h"
 
-#define foo(return_type,body_and_args)({return_type __fn__ body_and_args __fn__;})
-#define fob(body)({void __fn__ (object*o) body __fn__;})
-
 static struct _game{
 	int*keybits_ptr;
 	const object*follow_ptr;
@@ -328,7 +325,7 @@ int main(int argc,char*argv[]){
 //			grid_add(o);
 //		}));
 
-		objects_foreach_allocated_all(fob({
+		objects_foreach_allocated_all(foa({
 			grid_add(o);
 		}));
 

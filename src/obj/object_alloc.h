@@ -124,6 +124,10 @@ inline static void objects_free() {
 		o++;
 	}
 }
+
+//-----------------------------------------------------------------------------
+#define foa(body)({void __fn__ (object*o) body __fn__;})
+#define fob(body)({int __fn__ (object*o) body __fn__;})
 //-----------------------------------------------------------------------------
 inline static void objects_foreach_allocated(int(*f)(object*)){
 	object*o=objects;
