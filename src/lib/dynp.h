@@ -185,5 +185,25 @@ inline static void dynp_setz(dynp*o,/*copies*/const void**s){
 }
 
 //-----------------------------------------------------------------------------
-
-
+#define dynp_foo(ls,body)dynp_foreach_all(ls,({void __fn__ (void* o) body __fn__;}))
+#define dynp_foa(ls,body)dynp_foreach_all(ls,({int __fn__ (void* o) body __fn__;}))
+//-----------------------------------------------------------------------------
+inline static void dynp_foreach(dynp*o,int(*f)(void*)){
+	if(!o->count)
+		return;
+	for(unsigned i=0;i<o->count;i++){
+		void* oo=o->data[i];
+		if(f(oo))
+			break;
+	}
+}
+//-----------------------------------------------------------------------------
+inline static void dynp_foreach_all(dynp*o,void(*f)(void*)){
+	if(!o->count)
+		return;
+	for(unsigned i=0;i<o->count;i++){
+		void* oo=o->data[i];
+		f(oo);
+	}
+}
+//-----------------------------------------------------------------------------

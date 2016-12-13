@@ -325,9 +325,9 @@ int main(int argc,char*argv[]){
 //			grid_add(o);
 //		}));
 
-		objects_foreach_allocated_all(foa_object({
+		objects_foa({
 			grid_add(o);
-		}));
+		});
 
 		framectx fc={
 				.dt=use_net?net_dt:metrics.fps.dt,

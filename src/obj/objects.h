@@ -113,9 +113,6 @@ inline static void objects_free() {
 	}
 }
 //-----------------------------------------------------------------------------
-#define foa_object(body)({void __fn__ (object*o) body __fn__;})
-#define fo_object(body)({int __fn__ (object*o) body __fn__;})
-//-----------------------------------------------------------------------------
 inline static void objects_foreach_allocated(int(*f)(object*)){
 	object*o=objects;
 	while(o<objects_end_ptr){
@@ -128,6 +125,7 @@ inline static void objects_foreach_allocated(int(*f)(object*)){
 		o++;
 	}
 }
+#define objects_fou(body)objects_foreach_allocated(({int __fn__ (object*o) body __fn__;}))
 //-----------------------------------------------------------------------------
 inline static void objects_foreach_allocated_all(void(*f)(object*)){
 	object*o=objects;
@@ -140,5 +138,6 @@ inline static void objects_foreach_allocated_all(void(*f)(object*)){
 		o++;
 	}
 }
+#define objects_foa(body)objects_foreach_allocated_all(({void __fn__ (object*o) body __fn__;}))
 //-----------------------------------------------------------------------------
 

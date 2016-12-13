@@ -185,5 +185,25 @@ inline static void str_setz(str*o,/*copies*/const char*s){
 }
 
 //-----------------------------------------------------------------------------
-
-
+#define str_foo(ls,body)dynp_foreach_all(ls,({void __fn__ (char o) body __fn__;}))
+#define str_foa(ls,body)dynp_foreach_all(ls,({int __fn__ (char o) body __fn__;}))
+//-----------------------------------------------------------------------------
+inline static void str_foreach(str*o,int(*f)(char)){
+	if(!o->count)
+		return;
+	for(unsigned i=0;i<o->count;i++){
+		char oo=o->data[i];
+		if(f(oo))
+			break;
+	}
+}
+//-----------------------------------------------------------------------------
+inline static void str_foreach_all(str*o,void(*f)(char)){
+	if(!o->count)
+		return;
+	for(unsigned i=0;i<o->count;i++){
+		char oo=o->data[i];
+		f(oo);
+	}
+}
+//-----------------------------------------------------------------------------

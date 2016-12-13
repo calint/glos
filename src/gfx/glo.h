@@ -43,15 +43,14 @@ inline static void glo_free(glo*o){
 	glDeleteBuffers(1,&o->vtxbuf_id);
 	metrics.buffered_vertex_data-=dynf_size_in_bytes(&o->vtxbuf);
 	dynf_free(&o->vtxbuf);
-
-	for(unsigned i=0;i<o->ranges.count;i++){
-		mtlrng*mr=(mtlrng*)o->ranges.data[i];
+	dynp_foo(&o->ranges,{
+		mtlrng*mr=(mtlrng*)o;
 		objmtl*m=(objmtl*)mr->material_ptr;
 		if(m->texture_id){
 			glDeleteTextures(1,&m->texture_id);
 			metrics.buffered_texture_data-=m->texture_size_bytes;
 		}
-	}
+	});
 	dynp_free(&o->ranges);
 	metrics.glos_allocated--;
 //	memset(o,0,sizeof(glo));
