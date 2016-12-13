@@ -39,14 +39,14 @@ inline static void metrics_reset_timer(){
 }
 
 inline static void metrics_print_headers(FILE*f){
-	fprintf(f," %6s  %6s  %4s  %6s  %6s  %6s  %6s  %6s  %6s  %8s  %5s  %8s  %8s\n",
+	fprintf(f," %6s  %6s  %4s  %7s  %6s  %6s  %6s  %6s  %6s  %8s  %5s  %8s  %8s\n",
 			"ms","dt","fps","netlag","nobj","upd","rend","pupd","prend","gtri",
 			"nglo","arrbufs","texbufs"
 		);
 }
 
 inline static void metrics_print(FILE*f){
-	fprintf(f," %06u  %0.4f  %04d  %0.4f  %06u  %06u  %06u  %06u  %06u  %08u"
+	fprintf(f," %06u  %0.4f  %04d  %0.5f  %06u  %06u  %06u  %06u  %06u  %08u"
 			  "  %05u  %08lu  %08u\n",
 			metrics.tick,
 			metrics.fps.dt,
