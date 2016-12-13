@@ -131,12 +131,12 @@ int main(int argc,char*argv[]){
 	puts("");
 
 	unsigned gloid=0,mingloid=0,maxgloid=10;
+	if(use_net)net_init();
 	sdl_init();
 	window_init();
 	shader_init();
 	objects_init();
 	glos_init();
-	if(use_net)net_init();
 	metrics_init();
 	main_init();
 
@@ -330,13 +330,13 @@ int main(int argc,char*argv[]){
 	}
 	//---------------------------------------------------------------------free
 	//? early-hangup
-	if(use_net)net_free();
 	metrics_free();
 	glos_free();
 	objects_free();
 	shader_free();
 	window_free();
 	sdl_free();
+	if(use_net)net_free();
 	metrics_print(stderr);
 	puts(" * clean exit");
 	return 0;

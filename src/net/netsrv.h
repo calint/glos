@@ -3,7 +3,6 @@
 
 static int netsrv_sockfd;
 static int netsrv_client_sock_fd[net_cap];
-
 static netstate netsrv_state[net_cap];
 
 inline static void netsrv_init(){
@@ -50,7 +49,7 @@ inline static void netsrv_init(){
 	printf(" * waiting for %d players to connect on port %d\n",
 			net_cap,net_port);
 
-	for(int i=0;i<net_cap;i++){
+	for(int i=1;i<net_cap;i++){
 //		struct sockaddr_in client;
 //		const socklen_t c=sizeof(struct sockaddr_in);
 //
@@ -81,7 +80,7 @@ inline static void netsrv_init(){
 
 	printf(" * sending start\n");
 	// send net_active_player_index
-	for(uint32_t i=0;i<net_cap;i++){
+	for(uint32_t i=1;i<net_cap;i++){
 		write(netsrv_client_sock_fd[i],&i,sizeof(uint32_t));
 	}
 }
@@ -91,12 +90,19 @@ inline static void netsrv_loop(){
 	const size_t fullreadsize=sizeof(netstate);
 	uint64_t t0=SDL_GetPerformanceCounter();
 	while(1){
-		for(int i=0;i<net_cap;i++){
+		for(unsigned i=1;i<net_cap;i++){
 			const ssize_t n=recv(netsrv_client_sock_fd[i],&netsrv_state[i],
 					fullreadsize,0);
 			if(n==-1){
 				fprintf(stderr,"\n%s:%u:\n",__FILE__,__LINE__);
 				perror("cause");
+				stacktrace_print(stderr);
+				fprintf(stderr,"\n\n");
+				exit(-1);
+			}
+			if(n==0){
+				fprintf(stderr,"\n%s:%u: player %u disconnected\n",
+						__FILE__,__LINE__,i);
 				stacktrace_print(stderr);
 				fprintf(stderr,"\n\n");
 				exit(-1);
@@ -112,8 +118,9 @@ inline static void netsrv_loop(){
 		const float dt=(float)(t1-t0)/(float)SDL_GetPerformanceFrequency();
 		t0=t1;
 //		printf("netsrv_dt: %f\n",dt);
-		for(int i=0;i<net_cap;i++){
-			write(netsrv_client_sock_fd[i],&dt,sizeof(dt));
+		netsrv_state[0].lookangle_x=dt;
+		for(int i=1;i<net_cap;i++){
+//			write(netsrv_client_sock_fd[i],&dt,sizeof(dt));
 			write(netsrv_client_sock_fd[i],netsrv_state,sizeof(netsrv_state));
 		}
 	}

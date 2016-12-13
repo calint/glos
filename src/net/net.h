@@ -6,7 +6,7 @@
 #include<arpa/inet.h>
 #include<netinet/tcp.h>
 
-#define net_cap 2
+#define net_cap 2+1
 
 static const char*net_host="127.0.0.1";
 static uint16_t net_port=8085;
@@ -20,7 +20,7 @@ typedef struct netstate{
 static netstate net_state_to_send;
 static netstate net_state_current[net_cap];
 
-static uint32_t net_active_player_index;
+static uint32_t net_active_player_index=1;
 static float net_dt;
 
 static int net_sockfd;
@@ -81,13 +81,13 @@ inline static void net__at__frame_begin(){
 
 inline static void net__at__frame_end(){
 	const uint64_t t0=SDL_GetPerformanceCounter();
-	if(recv(net_sockfd,&net_dt,sizeof(net_dt)
-			,0)< 0){
-		fprintf(stderr,"\n%s:%u: receive failed\n",__FILE__,__LINE__);
-		stacktrace_print(stderr);
-		fprintf(stderr,"\n\n");
-		exit(-1);
-	}
+//	if(recv(net_sockfd,&net_dt,sizeof(net_dt)
+//			,0)< 0){
+//		fprintf(stderr,"\n%s:%u: receive failed\n",__FILE__,__LINE__);
+//		stacktrace_print(stderr);
+//		fprintf(stderr,"\n\n");
+//		exit(-1);
+//	}
 
 	// receive previous key states
 	if(recv(net_sockfd,net_state_current,sizeof(net_state_current),0)< 0){
@@ -96,6 +96,7 @@ inline static void net__at__frame_end(){
 		fprintf(stderr,"\n\n");
 		exit(-1);
 	}
+	net_dt=net_state_current[0].lookangle_x;
 	const uint64_t t1=SDL_GetPerformanceCounter();
 	const float dt=(float)(t1-t0)/(float)SDL_GetPerformanceFrequency();
 	metrics.net_lag=dt;
