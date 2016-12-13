@@ -19,7 +19,8 @@ inline static void netsrv_init(){
 	int result=setsockopt(netsrv_fd,IPPROTO_TCP,TCP_NODELAY,
 			(char*)&flag,sizeof(int));
 	if (result<0){
-			fprintf(stderr,"\n%s:%u: set TCP_NODELAY failed\n",__FILE__,__LINE__);
+			fprintf(stderr,"\n%s:%u: set TCP_NODELAY failed\n",
+					__FILE__,__LINE__);
 			stacktrace_print(stderr);
 			fprintf(stderr,"\n\n");
 			exit(-1);
@@ -62,7 +63,8 @@ inline static void netsrv_init(){
 		int result=setsockopt(netsrv_client_fd[i],IPPROTO_TCP,TCP_NODELAY,
 				(char*)&flag,sizeof(int));
 		if (result<0){
-				fprintf(stderr,"\n%s:%u: set TCP_NODELAY failed\n",__FILE__,__LINE__);
+				fprintf(stderr,"\n%s:%u: set TCP_NODELAY failed\n",
+						__FILE__,__LINE__);
 				stacktrace_print(stderr);
 				fprintf(stderr,"\n\n");
 				exit(-1);
