@@ -53,7 +53,7 @@ inline static void object_collision(object*o,object*other,dt dt){}
 //--------------------------------------------------------------------- render
 inline static void object_render(object*o){}
 //----------------------------------------------------------------------- free
-inline static void object_free(object*o){}
+inline static void _object_free_(object*o){}
 //----------------------------------------------------------------------------
 
 

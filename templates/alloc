@@ -23,7 +23,6 @@ inline static ${name}*${name}_alloc(${name}*initializer){
 	int iterate_to_scan_the_table=2;
 	while(iterate_to_scan_the_table--){
 		while(${nameplr}_bits_seek_ptr<${nameplr}_bits_end_ptr){
-
 			// *** critical begin
 			if(*${nameplr}_bits_seek_ptr&1){// is allocated
 				${nameplr}_bits_seek_ptr++;
@@ -32,14 +31,10 @@ inline static ${name}*${name}_alloc(${name}*initializer){
 			}
 			*${nameplr}_bits_seek_ptr=1;// allocate
 			// *** critical end
-
 			${name}*o=${nameplr}_seek_ptr++;
 			*o=initializer?*initializer:${name}_def;
-			o->ptr_to_bits=${nameplr}_bits_seek_ptr++;
-
-			if (o->init)
-				o->init(o);
-
+			o->alloc_bits_ptr=objects_bits_seek_ptr++;
+			if (o->v.init)o->v.init(o);
 			return o;
 		}
 		${nameplr}_bits_seek_ptr=${nameplr}_bits_start_ptr;
@@ -52,16 +47,16 @@ inline static ${name}*${name}_alloc(${name}*initializer){
 //------------------------------------------------------------------------ free
 inline static void ${name}_free(${name}*o){
 #ifdef ${name}_assert_free
-	if(*o->ptr_to_bits&2){
+	if(*o->alloc_bits_ptr&2){
 		fprintf(stderr,"\n    ${name} %p already freed\n",(void*)o);
 		fprintf(stderr,"           in %s at line %d\n\n",__FILE__,__LINE__);
 		exit(-1);
 	}
 #endif
-	*o->ptr_to_bits=2;// flag not allocated and deleted
+	*o->alloc_bits_ptr=2;// flag not allocated and deleted
 }
 //------------------------------------------------------------------- accessors
-inline static void _${name}_assert_bounds(arrayix i){
+inline static void _${name}_assert_bounds(unsigned i){
 	if(i<${name}_cap)
 		return;
 	fprintf(stderr,"\n    ${name} index %u out of bounds %u\n",
@@ -77,14 +72,14 @@ inline static const ${name}*${name}_ptr_const(const void*p){
 //-----------------------------------------------------------------------------
 inline static ${name}*${name}_ptr(void*p){return(${name}*)p;}
 //-----------------------------------------------------------------------------
-inline static ${name}*${name}_at(arrayix i){
+inline static ${name}*${name}_at(unsigned i){
 #ifdef ${name}_assert_bounds
 	_${name}_assert_bounds(i);
 #endif
 	return&${nameplr}[i];
 }
 //-----------------------------------------------------------------------------
-inline static const ${name}*${name}_at_const(arrayix i){
+inline static const ${name}*${name}_at_const(unsigned i){
 #ifdef ${name}_assert_bounds
 	_${name}_assert_bounds(i);
 #endif
@@ -94,23 +89,19 @@ inline static const ${name}*${name}_at_const(arrayix i){
 inline static void ${nameplr}_free() {
 	${name}*o=${nameplr};
 	while(o<${nameplr}_end_ptr){
-		if(!o->ptr_to_bits){
+		if(!o->alloc_bits_ptr){
 			o++;
 			continue;
 		}
-
 		{/*** critical ****/
-		if(*o->ptr_to_bits&1){
-			*o->ptr_to_bits&=(unsigned char)~(1|2);
+		if(*o->alloc_bits_ptr&1){
+			*o->alloc_bits_ptr&=(unsigned char)~(1|2);
 		}else{
 			o++;
 			continue;
 		}
 		/*** critical done ****/}
-
-		if(o->free)
-			o->free(o);
-
+		if(o->v.free)o->v.free(o);
 		for(int i=0;i<${name}_part_cap;i++){
 			if(!o->part[i])
 				continue;
@@ -118,10 +109,36 @@ inline static void ${nameplr}_free() {
 			if(p->free)
 				p->free(o,p);
 		}
-
+		o++;
+	}
+}
+//-----------------------------------------------------------------------------
+#define foa_${name}(body)({void __fn__ (object*o) body __fn__;})
+#define fo_${name}(body)({int __fn__ (object*o) body __fn__;})
+//-----------------------------------------------------------------------------
+inline static void ${nameplr}_foreach_allocated(int(*f)(${name}*)){
+	${name}*o=${nameplr};
+	while(o<${nameplr}_end_ptr){
+		if(!o->alloc_bits_ptr||!(*o->alloc_bits_ptr&1)){
+			o++;
+			continue;
+		}
+		if(f(o))
+			break;
+		o++;
+	}
+}
+//-----------------------------------------------------------------------------
+inline static void ${nameplr}_foreach_allocated_all(void(*f)(${name}*)){
+	${name}*o=${nameplr};
+	while(o<${nameplr}_end_ptr){
+		if(!o->alloc_bits_ptr||!(*o->alloc_bits_ptr&1)){
+			o++;
+			continue;
+		}
+		f(o);
 		o++;
 	}
 }
 //-----------------------------------------------------------------------------
 
-//-----------------------------------------------------------------------------

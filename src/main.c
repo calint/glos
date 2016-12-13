@@ -325,7 +325,7 @@ int main(int argc,char*argv[]){
 //			grid_add(o);
 //		}));
 
-		objects_foreach_allocated_all(foa({
+		objects_foreach_allocated_all(foa_object({
 			grid_add(o);
 		}));
 

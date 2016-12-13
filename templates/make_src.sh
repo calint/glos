@@ -8,4 +8,8 @@ mv -f *.h ../src/lib/ &&
 
 ./dyn.apply objmtls objmtl* &&
 mv -f *.h ../src/gfx/ &&
+
+./alloc.apply alloc object objects 8196 &&
+mv -f *.h ../src/obj/ &&
+
 echo
