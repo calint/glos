@@ -334,7 +334,7 @@ int main(int argc,char*argv[]){
 				grid_add(o);
 				o++;
 			}
-			grid_print();
+//			grid_print();
 		}
 
 
