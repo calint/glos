@@ -7,7 +7,7 @@ void stacktrace_print(FILE*f){
 	void*array[stacktrace_depth];
 	int size=backtrace(array,stacktrace_depth);
 	char**strings=backtrace_symbols(array,size);
-	fprintf(f,"stacktrace %d frames:\n",size);
+//	fprintf(f,"stacktrace %d frames:\n",size);
 
 	for(int i=0;i<size;i++){
 //		char s1[256];

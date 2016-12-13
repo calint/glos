@@ -95,7 +95,7 @@ inline static void main_render(){
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	objects_update(metrics.fps.dt);
+	objects_update(net_dt);
 
 	if(draw_objects)objects_render();
 
@@ -110,10 +110,14 @@ inline static void main_render(){
 
 //------------------------------------------------------------------------ main
 int main(int argc,char*argv[]){
-	while(argc--)printf("%s ",*argv++);
+	if(argc>1 && *argv[1]=='s'){
+		netsrv_init();
+		netsrv_loop();
+		netsrv_free();
+	}
+
 	printf("\n--- - - - ---- - - -- - - - - -- - - -- - - - -- - - - - - -");
-	printf("\n   g l o s                                   -- - -- --- - -");
-	printf("\n- - - -- - --- - --  -- - - - - - -- - - - --  -- -- - - -- ");
+	printf("\n g l o s");
 	puts("");
 	printf(":-%15s-:-%-9s-:\n","---------------","---------");
 	printf(": %15s : %-9s :\n","type",           "bytes");
@@ -165,8 +169,8 @@ int main(int argc,char*argv[]){
 		metrics__at__frame_begin();
 
 		// --
-		net_to_send.lookangle_y=camera_lookangle_y;
-		net_to_send.lookangle_x=camera_lookangle_x;
+		net_state_to_send.lookangle_y=camera_lookangle_y;
+		net_state_to_send.lookangle_x=camera_lookangle_x;
 
 		net_at_new_frame();
 
@@ -214,25 +218,25 @@ int main(int argc,char*argv[]){
 						SDL_SetRelativeMouseMode(mouse_mode);
 //						running=0;
 						break;
-					case SDLK_w:net_to_send.keybits|=1;break;
-					case SDLK_a:net_to_send.keybits|=2;break;
-					case SDLK_s:net_to_send.keybits|=4;break;
-					case SDLK_d:net_to_send.keybits|=8;break;
-					case SDLK_q:net_to_send.keybits|=16;break;
-					case SDLK_e:net_to_send.keybits|=32;break;
-					case SDLK_o:net_to_send.keybits|=64;break;
+					case SDLK_w:net_state_to_send.keybits|=1;break;
+					case SDLK_a:net_state_to_send.keybits|=2;break;
+					case SDLK_s:net_state_to_send.keybits|=4;break;
+					case SDLK_d:net_state_to_send.keybits|=8;break;
+					case SDLK_q:net_state_to_send.keybits|=16;break;
+					case SDLK_e:net_state_to_send.keybits|=32;break;
+					case SDLK_o:net_state_to_send.keybits|=64;break;
 					case SDLK_1:draw_default=1;	break;
 				}
 				break;
 			case SDL_KEYUP:
 				switch (event.key.keysym.sym){
-					case SDLK_w:net_to_send.keybits&=~1;break;
-					case SDLK_a:net_to_send.keybits&=~2;break;
-					case SDLK_s:net_to_send.keybits&=~4;break;
-					case SDLK_d:net_to_send.keybits&=~8;break;
-					case SDLK_q:net_to_send.keybits&=~16;break;
-					case SDLK_e:net_to_send.keybits&=~32;break;
-					case SDLK_o:net_to_send.keybits&=~64;break;
+					case SDLK_w:net_state_to_send.keybits&=~1;break;
+					case SDLK_a:net_state_to_send.keybits&=~2;break;
+					case SDLK_s:net_state_to_send.keybits&=~4;break;
+					case SDLK_d:net_state_to_send.keybits&=~8;break;
+					case SDLK_q:net_state_to_send.keybits&=~16;break;
+					case SDLK_e:net_state_to_send.keybits&=~32;break;
+					case SDLK_o:net_state_to_send.keybits&=~64;break;
 					case SDLK_SPACE:
 						mouse_mode=!mouse_mode;
 						SDL_SetRelativeMouseMode(mouse_mode);
@@ -265,7 +269,7 @@ int main(int argc,char*argv[]){
 		}
 
 		if(game.keybits_ptr)
-			*game.keybits_ptr=net_current_state[net_active_player_index].keybits;
+			*game.keybits_ptr=net_state_current[net_active_player_index].keybits;
 
 
 

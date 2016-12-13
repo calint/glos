@@ -15,7 +15,7 @@ inline static void objects_update(dt dt){
 			o->v.update(o,dt);
 			metrics.objects_updated_prv_frame++;
 		}else{
-			object_update(o,metrics.fps.dt);
+			object_update(o,dt);
 		}
 
 		for(int i=0;i<object_part_cap;i++){

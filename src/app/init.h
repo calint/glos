@@ -40,17 +40,17 @@ inline static void main_init_scene(){
 	o=santa_alloc_def();
 	o->n.glo_ptr=glos_find_by_name("santa");
 	o->b.s=(scale){10,10,10,0};
-	o->p.p=(position){80,2,80,0};
+	o->p.p=(position){40,2,40,0};
 	p=(santa*)o->part[0];
-	p->keybits_ptr=&net_current_state[0].keybits;
+	p->keybits_ptr=&net_state_current[0].keybits;
 	game.follow_ptr=o;
 
 	o=santa_alloc_def();
 	o->n.glo_ptr=glos_find_by_name("santa");
 	o->b.s=(scale){10,10,10,0};
-	o->p.p=(position){-80,2,-80,0};
+	o->p.p=(position){-40,2,-40,0};
 	p=(santa*)o->part[0];
-	p->keybits_ptr=&net_current_state[1].keybits;
+	p->keybits_ptr=&net_state_current[1].keybits;
 
 	camera.eye=(position){0,170,100,0};
 	camera.lookat=(position){0,0,0,0};
