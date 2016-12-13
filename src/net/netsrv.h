@@ -3,7 +3,7 @@
 
 static int netsrv_sockfd;
 static int netsrv_client_sock_fd[net_cap];
-static netstate netsrv_state[net_cap];
+static net_state netsrv_state[net_cap];
 
 inline static void netsrv_init(){
 
@@ -87,7 +87,7 @@ inline static void netsrv_init(){
 
 inline static void netsrv_loop(){
 	printf(" * entering loop\n");
-	const size_t fullreadsize=sizeof(netstate);
+	const size_t fullreadsize=sizeof(net_state);
 	uint64_t t0=SDL_GetPerformanceCounter();
 	while(1){
 		for(unsigned i=1;i<net_cap;i++){
@@ -117,10 +117,8 @@ inline static void netsrv_loop(){
 		const uint64_t t1=SDL_GetPerformanceCounter();
 		const float dt=(float)(t1-t0)/(float)SDL_GetPerformanceFrequency();
 		t0=t1;
-//		printf("netsrv_dt: %f\n",dt);
 		netsrv_state[0].lookangle_x=dt;
 		for(int i=1;i<net_cap;i++){
-//			write(netsrv_client_sock_fd[i],&dt,sizeof(dt));
 			write(netsrv_client_sock_fd[i],netsrv_state,sizeof(netsrv_state));
 		}
 	}

@@ -3,7 +3,7 @@
 #include"metrics.h"
 #include"net.h"
 #include"grid.h"
-#include"obj/object_alloc.h"
+#include"obj/objects.h"
 
 static struct _game{
 	int*keybits_ptr;

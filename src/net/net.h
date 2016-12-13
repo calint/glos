@@ -6,24 +6,20 @@
 #include<arpa/inet.h>
 #include<netinet/tcp.h>
 
-#define net_cap 2+1
-
-static const char*net_host="127.0.0.1";
-static uint16_t net_port=8085;
-
-typedef struct netstate{
+typedef struct net_state{
 	int32_t keybits;
 	float lookangle_y;
 	float lookangle_x;
-}netstate;
+}net_state;
 
-static netstate net_state_to_send;
-static netstate net_state_current[net_cap];
-
-static uint32_t net_active_player_index=1;
-static float net_dt;
-
-static int net_sockfd;
+#define            net_cap 2+1
+static net_state    net_state_to_send;
+static net_state    net_state_current[net_cap];
+static uint32_t    net_active_player_index=1;
+static float       net_dt;
+static int         net_sockfd;
+static const char* net_host="127.0.0.1";
+static uint16_t    net_port=8085;
 
 inline static void net_connect(){
 	struct sockaddr_in server;
@@ -82,14 +78,6 @@ inline static void net__at__frame_begin(){
 
 inline static void net__at__frame_end(){
 	const uint64_t t0=SDL_GetPerformanceCounter();
-//	if(recv(net_sockfd,&net_dt,sizeof(net_dt)
-//			,0)< 0){
-//		fprintf(stderr,"\n%s:%u: receive failed\n",__FILE__,__LINE__);
-//		stacktrace_print(stderr);
-//		fprintf(stderr,"\n\n");
-//		exit(-1);
-//	}
-
 	// receive previous key states
 	if(recv(net_sockfd,net_state_current,sizeof(net_state_current),0)< 0){
 		fprintf(stderr,"\n%s:%u: receive failed\n",__FILE__,__LINE__);
