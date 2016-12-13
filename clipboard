@@ -1,3 +1,13 @@
+		fprintf(stderr,"\n%s:%u: could not connect\n",__FILE__,__LINE__);
+		fprintf(stderr,"    server: %s  port: %d\n\n",host,port);
+		stacktrace_print(stderr);
+		fprintf(stderr,"\n\n");
+		exit(-1);
+
+
+
+
+
 #ifdef glos_assert_bounds
 	if(i>=glos_cap){
 		fprintf(stderr,"\nout of bounds\n");

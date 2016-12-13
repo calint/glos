@@ -1,5 +1,11 @@
 #pragma once
+#include"net.h"
 
-//
-// multiplayer server
-//
+inline static void netsrv_init(){
+
+}
+
+
+inline static void netsrv_free(){
+
+}
