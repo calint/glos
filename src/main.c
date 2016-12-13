@@ -320,6 +320,10 @@ int main(int argc,char*argv[]){
 			previous_active_program_ix=shader.active_program_ix;
 		}
 
+		grid_clear();
+
+//		objects_foreach_allocated(_lambda_1_,NULL);
+
 		objects_update(use_net?net_dt:metrics.fps.dt);
 
 		if(do_main_render)

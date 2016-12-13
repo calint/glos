@@ -165,3 +165,9 @@ inline static objmtls objmtls_from_file(const char*path){
 }
 
 //-----------------------------------------------------------------------------
+
+inline static void objmtls_clear(objmtls*o){
+	o->count=0;
+}
+
+//-----------------------------------------------------------------------------
