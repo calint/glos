@@ -96,13 +96,8 @@ inline static void main_render(framectx*fc){
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
-	if(draw_objects)
-		grid_render(fc);
-//		objects_render();
-
+	if(draw_objects)grid_render(fc);
 	if(draw_glos)glos_render();
-
 	if(draw_default)shader_render();
 
 	SDL_GL_SwapWindow(window.ref);
@@ -349,8 +344,6 @@ int main(int argc,char*argv[]){
 		frameno++;
 
 		grid_update(&fc);
-
-//		objects_update(use_net?net_dt:metrics.fps.dt);
 
 		if(do_main_render)
 			main_render(&fc);
