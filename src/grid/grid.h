@@ -33,12 +33,12 @@ inline static void cell_update(cell*o,framectx*fc){
 //		printf("[ grid ] updated %s %p\n",oi->n.glo_ptr->name.data,(void*)oi);
 //		printf("[ grid ] %u  %u\n",oi->updtk,fc->tick);
 		oi->updtk=fc->tick;
-		metrics.objects_updated_prv_frame++;
 		if(oi->v.update){
 			oi->v.update(oi,fc);
 		}else{
 			object_update(oi,fc);
 		}
+		metrics.objects_updated_prv_frame++;
 
 		for(int i=0;i<object_part_cap;i++){
 			if(!oi->part[i])
@@ -72,6 +72,16 @@ inline static void cell_render(cell*o,framectx*fc){
 		oi->drwtk=fc->tick;
 		object_render_glo(oi);
 		metrics.objects_rendered_prv_frame++;
+
+		for(int i=0;i<object_part_cap;i++){
+			if(!oi->part[i])
+				continue;
+			part*p=oi->part[i];
+			if(p->render){
+				p->render(oi,p,fc);
+				metrics.parts_updated_prv_frame++;
+			}
+		}
 		oi++;
 	}
 }

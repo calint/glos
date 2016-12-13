@@ -84,7 +84,7 @@ static struct color{
 	GLclampf red;
 	GLclampf green;
 	GLclampf blue;
-}c={.1f,.1f, 0};
+}bg={.1f,.1f, 0};
 
 
 inline static void main_render(framectx*fc){
@@ -92,7 +92,7 @@ inline static void main_render(framectx*fc){
 
 	glUniformMatrix4fv(shader_umtx_wvp,1,0,camera.mxwvp);
 
-	glClearColor(c.red,c.green,c.blue,1.0);
+	glClearColor(bg.red,bg.green,bg.blue,1.0);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
