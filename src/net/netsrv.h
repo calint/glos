@@ -89,8 +89,8 @@ inline static void netsrv_init(){
 inline static void netsrv_loop(){
 	printf(" * entering loop\n");
 	const size_t fullreadsize=sizeof(netstate);
+	uint64_t t0=SDL_GetPerformanceCounter();
 	while(1){
-		const uint64_t t0=SDL_GetPerformanceCounter();
 		for(int i=0;i<net_cap;i++){
 			const ssize_t n=recv(netsrv_client_sock_fd[i],&netsrv_state[i],
 					fullreadsize,0);
@@ -110,6 +110,7 @@ inline static void netsrv_loop(){
 		}
 		const uint64_t t1=SDL_GetPerformanceCounter();
 		const float dt=(float)(t1-t0)/(float)SDL_GetPerformanceFrequency();
+		t0=t1;
 //		printf("netsrv_dt: %f\n",dt);
 		for(int i=0;i<net_cap;i++){
 			write(netsrv_client_sock_fd[i],&dt,sizeof(dt));
