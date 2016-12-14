@@ -189,10 +189,12 @@ inline static bool _cell_detect_and_resolve_collision_for_spheres(
 	//   (x1-x2-r1-r2)/(u2-u1)=t
 	const float div=u2-u1;
 	if(div==0){
-		fprintf(stderr,"\n%s:%u: was in collision already\n",__FILE__,__LINE__);
-		stacktrace_print(stderr);
-		fprintf(stderr,"\n\n");
-		exit(-1);
+//		fprintf(stderr,"\n%s:%u: was in collision already\n",__FILE__,__LINE__);
+//		stacktrace_print(stderr);
+//		fprintf(stderr,"\n\n");
+//		exit(-1);
+		// not collision
+		return false;
 	}
 	float t;
 	if(x1<x2){
