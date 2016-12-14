@@ -18,6 +18,8 @@ typedef struct object{
 	phy p;
 	phy p_prv; // physics state from previous frame
 	phy p_nxt; // physics state for next frame
+	position coloff;
+	dt velswapdt;
 	grid_ifc g;
 	vtbl v;
 	type t;
@@ -34,6 +36,8 @@ static object object_def={
 	.p=phy_def,
 	.p_prv=phy_def,
 	.p_nxt=phy_def,
+	.coloff=vec4_def,
+	.velswapdt=0,
 	.g=grid_ifc_def,
 	.v=vtbl_def,
 	.t=type_def,

@@ -14,25 +14,22 @@ inline static void main_init_scene_2(){
 
 	o=object_alloc(&object_def);
 	str_setz(&o->name,"stopper left");
-	o->p.p.x=-8;
-	o->p_nxt=o->p;
+	o->p_nxt.p.x=-8;
 	o->n.glo_ptr=glos_find_by_name("sphere");
 	o->g.collide_bits=1;
 
 	o=object_alloc(&object_def);
 	str_setz(&o->name,"S1");
-	o->p.p.x=-2;
-	o->p.v.x=1;
-	o->p_nxt=o->p;
+	o->p_nxt.p.x=-2;
+	o->p_nxt.v.x=1;
 	o->n.glo_ptr=glos_find_by_name("sphere");
 	o->g.collide_bits=1;
 	o->g.collide_mask=1;
 
 	o=object_alloc(&object_def);
 	str_setz(&o->name,"S2");
-	o->p.p.x=2;
-	o->p.v.x=-1;
-	o->p_nxt=o->p;
+	o->p_nxt.p.x=2;
+	o->p_nxt.v.x=-1;
 	o->n.glo_ptr=glos_find_by_name("sphere");
 	o->g.collide_bits=1;
 	o->g.collide_mask=1;
@@ -40,8 +37,7 @@ inline static void main_init_scene_2(){
 
 	o=object_alloc(&object_def);
 	str_setz(&o->name,"stopper right");
-	o->p.p.x=8;
-	o->p_nxt=o->p;
+	o->p_nxt.p.x=8;
 	o->n.glo_ptr=glos_find_by_name("sphere");
 	o->g.collide_bits=1;
 }
