@@ -17,7 +17,7 @@ typedef struct object{
 	bvol b;
 	phy p;
 	phy p_prv; // physics state from previous frame
-	phy p_nxt; // physics state for next frame
+//	phy p_nxt; // physics state for next frame
 	grid_ifc g;
 	vtbl v;
 	type t;
@@ -33,7 +33,7 @@ static object object_def={
 	.b=bvol_def,
 	.p=phy_def,
 	.p_prv=phy_def,
-	.p_nxt=phy_def,
+//	.p_nxt=phy_def,
 	.g=grid_ifc_def,
 	.v=vtbl_def,
 	.t=type_def,
@@ -43,19 +43,18 @@ static object object_def={
 };
 //----------------------------------------------------------------------------
 inline static void object_update(object*o,framectx*fc){
-	o->p_prv=o->p;
-	o->p.v=o->p_nxt.v;
-
-	phy*p=&o->p;
-	const dt dt=fc->dt;
-	vec3_inc_with_vec3_over_dt(&p->p,&p->v,dt);
-	vec3_inc_with_vec3_over_dt(&p->a,&p->av,dt);
-
 	if(o->n.Mmw_valid && ( // if matrix is flagged valid and
 			!vec3_equals(&o->p_prv.p,&o->p.p) || // if position
 			!vec3_equals(&o->p_prv.a,&o->p.a) )){ // or angle changed
 		o->n.Mmw_valid=0; // invalidate matrix
 	}
+
+	o->p_prv=o->p;
+
+	phy*p=&o->p;
+	const dt dt=fc->dt;
+	vec3_inc_with_vec3_over_dt(&p->p,&p->v,dt);
+	vec3_inc_with_vec3_over_dt(&p->a,&p->av,dt);
 }
 inline static const float*object_get_updated_Mmw(object*o){
 	if(o->n.Mmw_valid)

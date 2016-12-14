@@ -4,7 +4,7 @@
 #include"../obj/part.h"
 #include"cell.h"
 
-#define grid_cell_size 4
+#define grid_cell_size 5
 #define grid_ncells_wide 2
 #define grid_ncells_high 1
 #define grid_ncells grid_ncells_wide*grid_ncells_high

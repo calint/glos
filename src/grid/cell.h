@@ -102,21 +102,39 @@ inline static bool detect_and_resolve_collision_for_spheres(
 		object*o2){
 
 	const vec4 v;vec3_minus(&v,&o2->p.p,&o1->p.p);
-	const float D=o1->b.r+o2->b.r;
-	const float Dsq=D*D;
-	const float Vsq=vec3_dot(&v,&v);
-	if(Vsq>=Dsq)//?
+	const float d=o1->b.r+o2->b.r;
+	const float dsq=d*d;
+	const float epsilon=.01f;
+	const float vsq=vec3_dot(&v,&v)+epsilon;
+	if(!(vsq<dsq))//?
 		return false;
 
 	// in collision
 	//? partial dt
+
+
+	o1->p.p=o1->p_prv.p;
+	o1->p.v=vec4_def;
+	o2->p.p=o2->p_prv.p;
+	o2->p.v=vec4_def;
+
+//	if(detect_and_resolve_collision_for_spheres(o1,o2)){
+//		fprintf(stderr,"\n%s:%u: could not connect\n",__FILE__,__LINE__);
+//		stacktrace_print(stderr);
+//		fprintf(stderr,"\n\n");
+//		exit(-1);
+//
+//	}
 //	o1->p_nxt.v=vec4_def;
 //	o2->p_nxt.v=vec4_def;
 
+//	vec3_negate(&o1->p_nxt.v);
+//	vec3_negate(&o2->p_nxt.v);
 
-	vec3_negate(&o1->p_nxt.v);
-	vec3_negate(&o2->p_nxt.v);
-
+//	o1->p.p.x=o1->p_prv.p.x;
+//	o1->p_nxt.v=vec4_def;
+//	o2->p.p.x=-2;
+//	o2->p_nxt.v=vec4_def;
 	return true;
 }
 

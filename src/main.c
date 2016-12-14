@@ -165,7 +165,7 @@ int main(int argc,char*argv[]){
 //	printf("   * \n");
 	SDL_SetRelativeMouseMode(mouse_mode);
 
-	metrics.fps.calculation_intervall_ms=100;
+	metrics.fps.calculation_intervall_ms=1000;
 	metrics_reset_timer();
 	metrics_print_headers(stderr);
 	unsigned frameno=1;
@@ -321,6 +321,7 @@ int main(int argc,char*argv[]){
 
 		framectx fc={
 				.dt=use_net?net_dt:metrics.fps.dt,
+//				.dt=.001f,
 				.tick=frameno,
 		};
 
