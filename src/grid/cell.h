@@ -147,10 +147,21 @@ inline static bool _cell_detect_and_resolve_collision_for_spheres(
 //	vec3_negate(&o2->p.v);
 
 	// transfer velocities
-	velocity o1v=o1->p.v;
-	o1->p.v=o2->p.v;
-	o2->p.v=o1v;
+	if(o1->g.collide_mask==0){// stopper
+		vec3_negate(&o2->p.v);
+	}else if(o2->g.collide_mask==0){// stopper
+		vec3_negate(&o1->p.v);
+	}else if(o2->g.collide_mask && o1->g.collide_mask){
+		velocity o1v=o1->p.v;
+		o1->p.v=o2->p.v;
+		o2->p.v=o1v;
+	}else{
+		fprintf(stderr,"\n%s:%u: could not connect\n",__FILE__,__LINE__);
+		stacktrace_print(stderr);
+		fprintf(stderr,"\n\n");
+		exit(-1);
 
+	}
 
 //	if(detect_and_resolve_collision_for_spheres(o1,o2)){
 //		fprintf(stderr,"\n%s:%u: could not connect\n",__FILE__,__LINE__);
