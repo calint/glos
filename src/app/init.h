@@ -14,52 +14,47 @@ inline static void main_init_scene_1D(){
 
 	glos_load_all_from_file("obj/rigg1d/sphere.obj");
 
-	// left sphere stopper
 	o=object_alloc(&object_def);
-	str_setz(&o->name,"Sls");
-	o->p.p.x=-8;
-	o->p.p.y=o->b.s.y;
-	o->n.glo_ptr=glos_find_by_name("sphere");
-	o->g.collide_bits=1;
-
-
-	// left sphere
-	o=object_alloc(&object_def);
-	str_setz(&o->name,"Sl");
-	o->p.p.x=-4;
+	str_setz(&o->name,"S1");
+	o->p.p.x=-6;
 	o->p.v.x=1;
 	o->p.p.y=o->b.s.y;
 	o->n.glo_ptr=glos_find_by_name("sphere");
 	o->g.collide_bits=1;
 	o->g.collide_mask=1;
 
-	// right sphere
 	o=object_alloc(&object_def);
-	str_setz(&o->name,"Sr");
+	str_setz(&o->name,"S2");
+	o->p.p.x=-2;
+	o->p.p.y=o->b.s.y;
+	o->n.glo_ptr=glos_find_by_name("sphere");
+	o->g.collide_bits=1;
+	o->g.collide_mask=1;
+
+	o=object_alloc(&object_def);
+	str_setz(&o->name,"S3");
+	o->p.p.x=0;
+	o->p.p.y=o->b.s.y;
+	o->n.glo_ptr=glos_find_by_name("sphere");
+	o->g.collide_bits=1;
+	o->g.collide_mask=1;
+
+	o=object_alloc(&object_def);
+	str_setz(&o->name,"S4");
+	o->p.p.x=2;
+	o->p.p.y=o->b.s.y;
+	o->n.glo_ptr=glos_find_by_name("sphere");
+	o->g.collide_bits=1;
+	o->g.collide_mask=1;
+
+	o=object_alloc(&object_def);
+	str_setz(&o->name,"S5");
 	o->p.p.x=4;
-	o->p.v.x=-1;
+//	o->p.v.x=-1;
 	o->p.p.y=o->b.s.y;
 	o->n.glo_ptr=glos_find_by_name("sphere");
 	o->g.collide_bits=1;
 	o->g.collide_mask=1;
-
-	// right sphere 2
-	o=object_alloc(&object_def);
-	str_setz(&o->name,"Sr2");
-	o->p.p.x=6;
-	o->p.v.x=-1;
-	o->p.p.y=o->b.s.y;
-	o->n.glo_ptr=glos_find_by_name("sphere");
-	o->g.collide_bits=1;
-	o->g.collide_mask=1;
-
-	// right sphere stopper
-	o=object_alloc(&object_def);
-	str_setz(&o->name,"Srs");
-	o->p.p.x=8;
-	o->p.p.y=o->b.s.y;
-	o->n.glo_ptr=glos_find_by_name("sphere");
-	o->g.collide_bits=1;
 
 
 

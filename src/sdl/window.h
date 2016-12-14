@@ -60,8 +60,8 @@ inline static void gl_print_context_profile_and_version(){
 	printf("%-32s  %d\n","SDL_GL_CONTEXT_MAJOR_VERSION",value);
 }
 //--------------------------------------------------------------------- window
-#define window_width 1024
-#define window_height 1024
+#define window_width 512
+#define window_height 512
 
 struct{
 	SDL_Window*ref;

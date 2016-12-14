@@ -169,6 +169,7 @@ int main(int argc,char*argv[]){
 	metrics_reset_timer();
 	metrics_print_headers(stderr);
 	unsigned frameno=1;
+	bool paused=false;
 	for(int running=1;running;){
 		metrics__at__frame_begin();
 		if(use_net){
@@ -219,6 +220,9 @@ int main(int argc,char*argv[]){
 						SDL_SetRelativeMouseMode(mouse_mode);
 //						running=0;
 						break;
+					case SDLK_TAB:
+						paused=!paused;
+						break;
 					case SDLK_w:net_state_to_send.keybits|=1;break;
 					case SDLK_a:net_state_to_send.keybits|=2;break;
 					case SDLK_s:net_state_to_send.keybits|=4;break;
@@ -259,7 +263,7 @@ int main(int argc,char*argv[]){
 						break;
 					}
 					case SDLK_4:camera.type=!camera.type;break;
-					case SDLK_TAB:
+					case SDLK_5:
 						printf("   camera: %f  %f  %f",
 								camera.eye.x,camera.eye.y,camera.eye.z);
 //						camera.ortho=!camera.ortho;
@@ -332,6 +336,9 @@ int main(int argc,char*argv[]){
 		objects_foa({
 			grid_add(o);
 		});
+
+		if(paused)
+			fc.dt=0;
 
 		grid_update(&fc);
 

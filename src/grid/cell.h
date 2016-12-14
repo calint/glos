@@ -113,6 +113,12 @@ inline static void cell_render(cell*o,framectx*fc){
 //    < <.
 //   < < .
 //
+//     ><<
+//     ooo
+//     *.<
+//    < <.
+//   < < .
+//
 //     >.<
 //     ooo
 //     .*.
@@ -133,10 +139,17 @@ inline static bool _cell_detect_and_resolve_collision_for_spheres(
 	// in collision
 
 	//? partial dt
-	o1->p.p=o1->p_prv.p;
-	vec3_negate(&o1->p.v);
-	o2->p.p=o2->p_prv.p;
-	vec3_negate(&o2->p.v);
+
+	// restore previous position
+//	o1->p.p=o1->p_prv.p;
+//	vec3_negate(&o1->p.v);
+//	o2->p.p=o2->p_prv.p;
+//	vec3_negate(&o2->p.v);
+
+	// transfer velocities
+	velocity o1v=o1->p.v;
+	o1->p.v=o2->p.v;
+	o2->p.v=o1v;
 
 
 //	if(detect_and_resolve_collision_for_spheres(o1,o2)){
