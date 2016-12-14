@@ -4,7 +4,8 @@
 #include"scene0.h"
 #include"scene1.h"
 #include"scene2.h"
+#include"scene3.h"
 
 inline static void main_init_scene(){
-	main_init_scene_2();
+	main_init_scene_3();
 }
