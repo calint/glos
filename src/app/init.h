@@ -18,22 +18,21 @@ inline static void main_init_scene_1D(){
 	santa*p;
 
 
-	// right sphere
-	o=object_alloc(&object_def);
-	str_setz(&o->name,"Sr");
-	o->p.p.x=4;
-	o->p.v.x=-1;
-	o->p.p.y=o->b.s.y;
-	o->n.glo_ptr=glos_find_by_name("sphere");
-	o->v.render=_object_render_glo_;
-	o->g.collide_bits=1;
-	o->g.collide_mask=1;
 
 //	p=malloc(sizeof(santa));
 //	*p=santa_def;
 //	p->bounding_glo_ptr=glos_find_by_name("bounding-radius");
 //	p->keybits_ptr=&net_state_current[1].keybits;
 //	o->part[0]=(part*)p;
+
+	// left sphere stopper
+	o=object_alloc(&object_def);
+	str_setz(&o->name,"Sls");
+	o->p.p.x=-6;
+	o->p.p.y=o->b.s.y;
+	o->n.glo_ptr=glos_find_by_name("sphere");
+	o->v.render=_object_render_glo_;
+	o->g.collide_bits=1;
 
 
 	// left sphere
@@ -46,6 +45,28 @@ inline static void main_init_scene_1D(){
 	o->v.render=_object_render_glo_;
 	o->g.collide_bits=1;
 	o->g.collide_mask=1;
+
+	// right sphere
+	o=object_alloc(&object_def);
+	str_setz(&o->name,"Sr");
+	o->p.p.x=4;
+	o->p.v.x=-1;
+	o->p.p.y=o->b.s.y;
+	o->n.glo_ptr=glos_find_by_name("sphere");
+	o->v.render=_object_render_glo_;
+	o->g.collide_bits=1;
+	o->g.collide_mask=1;
+
+	// right sphere stopper
+	o=object_alloc(&object_def);
+	str_setz(&o->name,"Srs");
+	o->p.p.x=6;
+	o->p.p.y=o->b.s.y;
+	o->n.glo_ptr=glos_find_by_name("sphere");
+	o->v.render=_object_render_glo_;
+	o->g.collide_bits=1;
+
+
 
 //	p=malloc(sizeof(santa));
 //	*p=santa_def;
