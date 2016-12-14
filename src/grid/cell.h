@@ -224,9 +224,9 @@ inline static bool _cell_detect_and_resolve_collision_for_spheres(
 	vec3_inc_with_vec3_over_dt(&o1->p_nxt.p,&o1->p_nxt.v,t);//*0.99999f for resolved
 	vec3_inc_with_vec3_over_dt(&o2->p_nxt.p,&o2->p_nxt.v,t);
 
-	// validate
 //	{
-////		const float dist=o2->p_nxt.p.x-o1->p_nxt.p.x;
+//		// validate
+//		const float dist=o2->p_nxt.p.x-o1->p_nxt.p.x;
 //		vec4 vv;vec3_minus(&vv,&o2->p_nxt.p,&o1->p_nxt.p);
 //		const float d=o1->b.r+o2->b.r;
 //		const float dsq=d*d;
@@ -252,7 +252,7 @@ inline static bool _cell_detect_and_resolve_collision_for_spheres(
 		o2->p_nxt.v=swap_from_o1;
 		//	// move in new direction
 	}
-	//? discards the rest of t, toavoidoverlap?
+//	// rest of t, may give overlap?
 	vec3_inc_with_vec3_over_dt(&o1->p_nxt.p,&o1->p_nxt.v,-t);
 	vec3_inc_with_vec3_over_dt(&o2->p_nxt.p,&o2->p_nxt.v,-t);
 

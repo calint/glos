@@ -78,7 +78,8 @@ out vec4 rgba;                            \n\
 void main(){                          \n\
 //	rgba=vec4(1,0,0,1);            \n\
 //	rgba=vrgba;                     \n\
-	rgba=texture2D(utex,vtex)+vrgba; \n\
+	float ambient_light=dot(vnorm,normalize(vec3(0,15,-15)));                     \n\
+	rgba=texture2D(utex,vtex)+vrgba*ambient_light; \n\
 }\n";
 #define shader_apos 0
 #define shader_argba 1
