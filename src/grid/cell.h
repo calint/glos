@@ -156,7 +156,7 @@ inline static bool _cell_detect_and_resolve_collision_for_spheres(
 		o1->p.v=o2->p.v;
 		o2->p.v=o1v;
 	}else{
-		fprintf(stderr,"\n%s:%u: could not connect\n",__FILE__,__LINE__);
+		fprintf(stderr,"\n%s:%u: stoppers in collision\n",__FILE__,__LINE__);
 		stacktrace_print(stderr);
 		fprintf(stderr,"\n\n");
 		exit(-1);
