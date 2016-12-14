@@ -156,15 +156,19 @@ inline static bool _cell_detect_and_resolve_collision_for_spheres1(
 
 inline static bool _cell_detect_and_resolve_collision_for_spheres(
 		object*o1,object*o2,framectx*fc){
-	{
+
 		const vec4 v;vec3_minus(&v,&o2->p.p,&o1->p.p);
 		const float d=o1->b.r+o2->b.r;
 		const float dsq=d*d;
 		const float vsq=vec3_dot(&v,&v);
 		const float diff=dsq-vsq;
+//		if(diff>-.000001f){
+//			return false;
+//		}
 		if(!(vsq<dsq))//?
 			return false;
-	}
+//		puts("");
+
 //	printf(" frame: %u\n",fc->tick);
 	// partial dt to collision
 	const float x1=o1->p.p.x;
@@ -193,7 +197,9 @@ inline static bool _cell_detect_and_resolve_collision_for_spheres(
 //		stacktrace_print(stderr);
 //		fprintf(stderr,"\n\n");
 //		exit(-1);
-		// not collision
+//		// not collision, ? precision 9.53674316e-07
+		printf(" divisor is zero   %s  %s  diff: %f\n",
+				o1->name.data,o2->name.data,diff);
 		return false;
 	}
 	float t;
@@ -240,8 +246,9 @@ inline static bool _cell_detect_and_resolve_collision_for_spheres(
 		o2->p_nxt.v=swap_from_o1;
 		//	// move in new direction
 	}
-	vec3_inc_with_vec3_over_dt(&o1->p_nxt.p,&o1->p_nxt.v,-t);
-	vec3_inc_with_vec3_over_dt(&o2->p_nxt.p,&o2->p_nxt.v,-t);
+	//? discards the rest of t, toavoidoverlap?
+//	vec3_inc_with_vec3_over_dt(&o1->p_nxt.p,&o1->p_nxt.v,-t);
+//	vec3_inc_with_vec3_over_dt(&o2->p_nxt.p,&o2->p_nxt.v,-t);
 
 	return true;
 }
