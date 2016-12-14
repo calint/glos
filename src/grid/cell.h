@@ -131,7 +131,7 @@ inline static bool _cell_detect_and_resolve_collision_for_spheres(
 	const vec4 v;vec3_minus(&v,&o2->p.p,&o1->p.p);
 	const float d=o1->b.r+o2->b.r;
 	const float dsq=d*d;
-	const float epsilon=.01f;
+	const float epsilon=.001f;
 	const float vsq=vec3_dot(&v,&v)+epsilon;
 	if(!(vsq<dsq))//?
 		return false;
