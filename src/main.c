@@ -336,7 +336,7 @@ int main(int argc,char*argv[]){
 
 //		grid_print();
 
-		grid_collisions(&fc);
+		grid_resolve_collisions(&fc);
 
 		if(do_main_render)main_render(&fc);
 

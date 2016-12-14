@@ -23,11 +23,11 @@ inline static void grid_update(framectx*fc){
 	}
 }
 
-inline static void grid_collisions(framectx*fc){
+inline static void grid_resolve_collisions(framectx*fc){
 	cell*p=&cells[0][0];
 	unsigned i=grid_ncells;
 	while(i--){
-		cell_collisions(p++,fc);
+		cell_resolve_collisions(p++,fc);
 	}
 }
 

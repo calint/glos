@@ -82,22 +82,22 @@ inline static void cell_render(cell*o,framectx*fc){
 		oi++;
 	}
 }
+//
+//inline static int solve_3d_are_spheres_in_collision(
+//		const position*p1,float r1,
+//		const position*p2,float r2){
+//
+//	const vec4 v;vec3_minus(&v,p2,p1);// vector from sphere 1 to 2
+//	const float D=r1+r2;// minimum distance
+//	const float Dsq=D*D;
+//	const float Vsq=vec3_dot(&v,&v);
+//	if(Vsq<Dsq){
+//		return 1;
+//	}
+//	return 0;
+//}
 
-inline static int solve_3d_are_spheres_in_collision(
-		const position*p1,float r1,
-		const position*p2,float r2){
-
-	const vec4 v;vec3_minus(&v,p2,p1);// vector from sphere 1 to 2
-	const float D=r1+r2;// minimum distance
-	const float Dsq=D*D;
-	const float Vsq=vec3_dot(&v,&v);
-	if(Vsq<Dsq){
-		return 1;
-	}
-	return 0;
-}
-
-inline static bool resolve_possible_collision(
+inline static bool detect_and_resolve_collision_for_spheres(
 		object*o1,
 		object*o2){
 
@@ -120,7 +120,7 @@ inline static bool resolve_possible_collision(
 	return true;
 }
 
-inline static bool grid_checked_collisions(
+inline static bool _cell_checked_collisions(
 		object*o1,object*o2,framectx*fc){
 
 	metrics.collision_grid_overlap_check++;
@@ -140,7 +140,7 @@ inline static bool grid_checked_collisions(
 	return false;
 }
 
-inline static void cell_collisions(cell*o,framectx*fc){
+inline static void cell_resolve_collisions(cell*o,framectx*fc){
 //	printf("[ cell %p ] detect collisions\n",(void*)o);
 	dynp*ls=&o->objrefs;
 	for(unsigned i=0;i<ls->count-1;i++){
@@ -163,7 +163,7 @@ inline static void cell_collisions(cell*o,framectx*fc){
 //				printf("[ cell %p ][ coldet ][ %p ][ %p ] overlapp\n",(void*)o,
 //						(void*)Oi,(void*)Oj);
 
-				if(grid_checked_collisions(Oi,Oj,fc)){
+				if(_cell_checked_collisions(Oi,Oj,fc)){
 //					printf("[ cell %p ][ coldet ][ %p ][ %p ] already checked\n",(void*)o,
 //							(void*)Oi,(void*)Oj);
 					continue;
@@ -175,7 +175,7 @@ inline static void cell_collisions(cell*o,framectx*fc){
 
 			metrics.collision_detections_considered_prv_frame++;
 
-			if(!resolve_possible_collision(Oi,Oj)){
+			if(!detect_and_resolve_collision_for_spheres(Oi,Oj)){
 //				printf("[ cell %p ][ coldet ][ %p ][ %p ] not in collision\n",
 //						(void*)o,(void*)Oi,(void*)Oj);
 				continue;
