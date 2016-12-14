@@ -4,12 +4,19 @@
 
 
 inline static void main_init_scene_1D(){
-	glos_load_all_from_file("obj/rigg1d/sphere.obj");
+	glos_load_all_from_file("obj/skydome.obj");
+	object*o=object_alloc(&object_def);
+	str_setz(&o->name,"skydome");
+	o->n.glo_ptr=glos_find_by_name("skydome");
+	o->v.render=_object_render_glo_;
+//	o->b.s=(scale){15,15,15,0};
+//	o->b.r=10*15;
+
 
 	camera.eye=(position){0,15,-15,0};
 	camera.lookat=(position){0,0,0,0};
 
-	object*o;
+	glos_load_all_from_file("obj/rigg1d/sphere.obj");
 
 	// left sphere stopper
 	o=object_alloc(&object_def);
