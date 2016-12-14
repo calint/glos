@@ -10,9 +10,9 @@ typedef struct cell{
 #define cell_def {dynp_def}
 
 
-#define grid_cell_size 20
+#define grid_cell_size 4
 #define grid_ncells_wide 2
-#define grid_ncells_high 2
+#define grid_ncells_high 1
 #define grid_ncells grid_ncells_wide*grid_ncells_high
 
 static cell cells[grid_ncells_high][grid_ncells_wide];
@@ -91,6 +91,10 @@ inline static void cell_render(cell*o,framectx*fc){
 	}
 }
 
+inline static void cell_collisions(cell*o,framectx*fc){
+	printf("[ cell %p ] detect collisions\n",(void*)o);
+}
+
 inline static void cell_print(cell*o){
 	printf("cell{%u}",o->objrefs.count);
 }
@@ -119,7 +123,13 @@ inline static void grid_update(framectx*fc){
 	}
 }
 
-inline static void grid_collisions(framectx*fc){}
+inline static void grid_collisions(framectx*fc){
+	cell*p=&cells[0][0];
+	unsigned i=grid_ncells;
+	while(i--){
+		cell_collisions(p++,fc);
+	}
+}
 
 inline static void grid_render(framectx*fc){
 	cell*p=&cells[0][0];

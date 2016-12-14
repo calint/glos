@@ -319,12 +319,6 @@ int main(int argc,char*argv[]){
 			previous_active_program_ix=shader.active_program_ix;
 		}
 
-		grid_clear();
-
-		objects_foa({
-			grid_add(o);
-		});
-
 		framectx fc={
 				.dt=use_net?net_dt:metrics.fps.dt,
 				.tick=frameno,
@@ -332,7 +326,17 @@ int main(int argc,char*argv[]){
 
 		frameno++;
 
+		grid_clear();
+
+		objects_foa({
+			grid_add(o);
+		});
+
 		grid_update(&fc);
+
+		grid_print();
+
+		grid_collisions(&fc);
 
 		if(do_main_render)main_render(&fc);
 

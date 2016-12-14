@@ -5,6 +5,7 @@
 #include"bvol.h"
 #include"phy.h"
 #include"vtbl.h"
+#include"../grid/grid-ifc.h"
 //------------------------------------------------------------------------ def
 #define object_part_cap 5
 #define parts_def {0,0,0,0,0}
@@ -15,6 +16,7 @@ typedef struct object{
 	node n;
 	bvol b;
 	phy p;
+	grid_ifc g;
 	vtbl v;
 	type t;
 	bits*alloc_bits_ptr;
@@ -28,6 +30,7 @@ static object object_def={
 	.n=node_def,
 	.b=bvol_def,
 	.p=phy_def,
+	.g=grid_ifc_def,
 	.v=vtbl_def,
 	.t=type_def,
 	.part=parts_def,
