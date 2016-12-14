@@ -204,8 +204,8 @@ inline static bool _cell_detect_and_resolve_collision_for_spheres(
 //		fprintf(stderr,"\n\n");
 //		exit(-1);
 //		// not collision, ? precision 9.53674316e-07
-		printf(" divisor is zero   %s  %s  diff: %f\n",
-				o1->name.data,o2->name.data,diff);
+//		printf(" divisor is zero   %s  %s  diff: %f\n",
+//				o1->name.data,o2->name.data,diff);
 		return false;
 	}
 	float t;
@@ -253,8 +253,8 @@ inline static bool _cell_detect_and_resolve_collision_for_spheres(
 		//	// move in new direction
 	}
 	//? discards the rest of t, toavoidoverlap?
-//	vec3_inc_with_vec3_over_dt(&o1->p_nxt.p,&o1->p_nxt.v,-t);
-//	vec3_inc_with_vec3_over_dt(&o2->p_nxt.p,&o2->p_nxt.v,-t);
+	vec3_inc_with_vec3_over_dt(&o1->p_nxt.p,&o1->p_nxt.v,-t);
+	vec3_inc_with_vec3_over_dt(&o2->p_nxt.p,&o2->p_nxt.v,-t);
 
 	return true;
 }
@@ -320,8 +320,8 @@ inline static void cell_resolve_collisions(cell*o,framectx*fc){
 				continue;
 			}
 
-			printf("[ %u ][ cell %p ][ coldet ]  '%s' and '%s'\n",
-					fc->tick,(void*)o,Oi->name.data,Oj->name.data);
+//			printf("[ %u ][ cell %p ][ coldet ]  '%s' and '%s'\n",
+//					fc->tick,(void*)o,Oi->name.data,Oj->name.data);
 
 			metrics.collision_detections_prv_frame++;
 
