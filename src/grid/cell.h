@@ -121,6 +121,7 @@ inline static void cell_collisions(cell*o,framectx*fc){
 		for(unsigned j=i+1;j<ls->count;j++){
 			object*Oi=dynp_get(ls,i);
 			object*Oj=dynp_get(ls,j);
+			metrics.collision_detections_possible_prv_frame++;
 			if(!((Oi->g.collide_mask & Oj->g.collide_bits) ||
 				(Oj->g.collide_mask & Oi->g.collide_bits ))){
 //				printf("not tried [ cell ][ collision ][ %p ][ %p ]\n",(void*)Oi,(void*)Oj);
@@ -142,7 +143,7 @@ inline static void cell_collisions(cell*o,framectx*fc){
 			dynp_add(&Oi->g.checked_collisions_list,Oj);
 //			dynp_add(&Oj->g.checked_collisions_list,Oi);//?
 
-			metrics.collision_detections_prv_frame++;
+			metrics.collision_detections_considered_prv_frame++;
 
 			if(!solve_3d_are_spheres_in_collision(
 					&Oi->p.p, Oi->b.r,
@@ -155,6 +156,8 @@ inline static void cell_collisions(cell*o,framectx*fc){
 
 //			printf("[ cell %p ][ coldet ][ %p ][ %p ] collision\n",(void*)o,
 //					(void*)Oi,(void*)Oj);
+
+			metrics.collision_detections_prv_frame++;
 
 			if(Oi->g.collide_mask & Oj->g.collide_bits){
 				if(Oi->v.collision)

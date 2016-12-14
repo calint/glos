@@ -8,6 +8,8 @@
 #define object_assert_free
 #define object_assert_bounds
 #define object_assert_cast
+#define object_metrics
+static unsigned object_metrics_allocated;
 //--------------------------------------------------------------------- storage
 static object objects[object_cap];
 static object*objects_start_ptr=objects;
@@ -31,6 +33,9 @@ inline static object*object_alloc(object*initializer){
 			}
 			*objects_bits_seek_ptr=1;// allocate
 			// *** critical end
+#ifdef object_metrics
+			object_metrics_allocated++;
+#endif
 			object*o=objects_seek_ptr++;
 			*o=initializer?*initializer:object_def;
 			o->alloc_bits_ptr=objects_bits_seek_ptr++;
@@ -52,6 +57,9 @@ inline static void object_free(object*o){
 		fprintf(stderr,"           in %s at line %d\n\n",__FILE__,__LINE__);
 		exit(-1);
 	}
+#endif
+#ifdef object_metrics
+			object_metrics_allocated--;
 #endif
 	*o->alloc_bits_ptr=2;// flag not allocated and deleted
 }

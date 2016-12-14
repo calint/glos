@@ -342,6 +342,8 @@ int main(int argc,char*argv[]){
 
 		if(use_net)net__at__frame_end();
 
+		metrics.objects_allocated=object_metrics_allocated;
+
 		metrics__at__frame_end(stderr);
 	}
 	//---------------------------------------------------------------------free

@@ -8,6 +8,8 @@
 #define ${name}_assert_free
 #define ${name}_assert_bounds
 #define ${name}_assert_cast
+#define ${name}_metrics
+static unsigned ${name}_metrics_allocated;
 //--------------------------------------------------------------------- storage
 static ${name} ${nameplr}[${name}_cap];
 static ${name}*${nameplr}_start_ptr=${nameplr};
@@ -31,6 +33,9 @@ inline static ${name}*${name}_alloc(${name}*initializer){
 			}
 			*${nameplr}_bits_seek_ptr=1;// allocate
 			// *** critical end
+#ifdef ${name}_metrics
+			${name}_metrics_allocated++;
+#endif
 			${name}*o=${nameplr}_seek_ptr++;
 			*o=initializer?*initializer:${name}_def;
 			o->alloc_bits_ptr=objects_bits_seek_ptr++;
@@ -52,6 +57,9 @@ inline static void ${name}_free(${name}*o){
 		fprintf(stderr,"           in %s at line %d\n\n",__FILE__,__LINE__);
 		exit(-1);
 	}
+#endif
+#ifdef ${name}_metrics
+			${name}_metrics_allocated--;
 #endif
 	*o->alloc_bits_ptr=2;// flag not allocated and deleted
 }
