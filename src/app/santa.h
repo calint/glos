@@ -23,6 +23,7 @@ static object santa_obj_def={
 typedef struct santa{
 	part part;
 	int32_t*keybits_ptr;
+	glo*bounding_glo_ptr;
 }santa;
 //------------------------------------------------------------------ overrides
 static void _santa_init(object*,part*);
@@ -34,13 +35,13 @@ static santa santa_def={
 	.part=(part){
 		.init=NULL,
 		.update=_santa_update,
-		.render=NULL,
+		.render=_santa_render,
 		.free=NULL,
 	},
 	.keybits_ptr=0,
+	.bounding_glo_ptr=NULL,
 };
 //----------------------------------------------------------------------- impl
-static void _santa_init(object*po,part*o){}
 static void _santa_update(object*po,part*o,framectx*fc){
 //	printf("%s:%u  [ %p %p ]\n",__FILE__,__LINE__,(void*)po,(void*)o);
 	santa*p=(santa*)o;
@@ -57,7 +58,11 @@ static void _santa_update(object*po,part*o,framectx*fc){
 		po->n.Mmw_valid=0;
 	}
 }
-static void _santa_render(object*po,part*o,framectx*fc){}
+static void _santa_render(object*po,part*o,framectx*fc){
+	const float*f=object_get_updated_Mmw(po);
+	santa*p=(santa*)o;
+	glo_render(p->bounding_glo_ptr,f);
+}
 static void _santa_free(object*po,part*o){}
 //printf("%s:%u  [ %p %p ]\n",__FILE__,__LINE__,(void*)po,(void*)o);
 //----------------------------------------------------------------------------

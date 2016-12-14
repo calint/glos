@@ -7,6 +7,7 @@ inline static void main_init_scene_1D(){
 	glos_load_all_from_file("obj/rigg1d/sphere.obj");
 	glos_load_all_from_file("obj/rigg1d/rigg1d.obj");
 	glos_load_all_from_file("obj/rigg1d/bounding-radius.obj");
+	glos_load_all_from_file("obj/santa.obj");
 //	glos_load_all_from_file("obj/skydome.obj");
 
 
@@ -14,33 +15,39 @@ inline static void main_init_scene_1D(){
 	camera.lookat=(position){0,0,0,0};
 
 	object*o;
+	santa*p;
+
+
+	o=santa_alloc_def();
+	str_setz(&o->name,"santa2");
+	o->n.glo_ptr=glos_find_by_name("santa");
+	p=(santa*)o->part[0];
+	p->keybits_ptr=&net_state_current[1].keybits;
+	p->bounding_glo_ptr=glos_find_by_name("bounding-radius");
 
 //	o=object_alloc(&object_def);
 //	str_setz(&o->name,"skydome");
 //	o->n.glo_ptr=glos_find_by_name("skydome");
 //	o->v.render=object_render_glo;
-
-	o=object_alloc(&object_def);
-	o->n.glo_ptr=glos_find_by_name("rigg1d");
-	o->v.render=object_render_glo;
-
-	o=object_alloc(&object_def);
-	o->n.glo_ptr=glos_find_by_name("bounding-radius");
-	o->v.render=object_render_glo;
-
-	o=object_alloc(&object_def);
-	str_setz(&o->name,"Sl");
-	o->n.glo_ptr=glos_find_by_name("sphere");
-	o->v.render=object_render_glo;
-	o->p.p.x=-4;
-	o->p.p.y=o->b.s.y;
-
-	o=object_alloc(&object_def);
-	str_setz(&o->name,"Sr");
-	o->n.glo_ptr=glos_find_by_name("sphere");
-	o->v.render=object_render_glo;
-	o->p.p.x=4;
-	o->p.p.y=o->b.s.y;
+//
+//	o=object_alloc(&object_def);
+//	o->n.glo_ptr=glos_find_by_name("rigg1d");
+//	o->v.render=object_render_glo;
+//
+//
+//	o=object_alloc(&object_def);
+//	str_setz(&o->name,"Sl");
+//	o->n.glo_ptr=glos_find_by_name("sphere");
+//	o->v.render=object_render_glo;
+//	o->p.p.x=-4;
+//	o->p.p.y=o->b.s.y;
+//
+//	o=object_alloc(&object_def);
+//	str_setz(&o->name,"Sr");
+//	o->n.glo_ptr=glos_find_by_name("sphere");
+//	o->v.render=object_render_glo;
+//	o->p.p.x=4;
+//	o->p.p.y=o->b.s.y;
 }
 
 //static float ground_base_y=.25f;
