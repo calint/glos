@@ -20,14 +20,18 @@ inline static void main_init_scene_1D(){
 
 	o=object_alloc(&object_def);
 	str_setz(&o->name,"sphere");
-	o->n.glo_ptr=glos_find_by_name("sphere");
-	o->v.render=object_render_glo;
+//	o->n.glo_ptr=glos_find_by_name("sphere");
+//	o->v.render=object_render_glo;
 
 	p=malloc(sizeof(santa));
 	*p=santa_def;
 	p->bounding_glo_ptr=glos_find_by_name("bounding-radius");
 	p->keybits_ptr=&net_state_current[1].keybits;
 	o->part[0]=(part*)p;
+
+
+
+
 
 //	o=object_alloc(&object_def);
 //	str_setz(&o->name,"skydome");
