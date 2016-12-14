@@ -44,17 +44,18 @@ static object object_def={
 //----------------------------------------------------------------------------
 inline static void object_update(object*o,framectx*fc){
 	o->p_prv=o->p;
-	o->p=o->p_nxt;
+	o->p.v=o->p_nxt.v;
 
-	phy*p=&o->p_nxt;
+	phy*p=&o->p;
 	const dt dt=fc->dt;
 	vec3_inc_with_vec3_over_dt(&p->p,&p->v,dt);
 	vec3_inc_with_vec3_over_dt(&p->a,&p->av,dt);
 
-//	if(o->n.Mmw_valid&&(p->v.x||p->v.y||p->v.z||p->av.x||p->av.y||p->av.z)){
-//		o->n.Mmw_valid=0;
-//	}
-	o->n.Mmw_valid=0;
+	if(o->n.Mmw_valid && ( // if matrix is flagged valid and
+			!vec3_equals(&o->p_prv.p,&o->p.p) || // if position
+			!vec3_equals(&o->p_prv.a,&o->p.a) )){ // or angle changed
+		o->n.Mmw_valid=0; // invalidate matrix
+	}
 }
 inline static const float*object_get_updated_Mmw(object*o){
 	if(o->n.Mmw_valid)

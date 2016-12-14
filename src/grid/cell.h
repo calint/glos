@@ -110,8 +110,13 @@ inline static bool resolve_possible_collision(
 
 	// in collision
 	//? partial dt
-	o1->p_nxt.v=vec4_def;
-	o2->p_nxt.v=vec4_def;
+//	o1->p_nxt.v=vec4_def;
+//	o2->p_nxt.v=vec4_def;
+
+
+	vec3_negate(&o1->p_nxt.v);
+	vec3_negate(&o2->p_nxt.v);
+
 	return true;
 }
 
