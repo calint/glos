@@ -29,6 +29,7 @@ struct{
 	unsigned collision_detections_prv_frame;
 	unsigned collision_detections_possible_prv_frame;
 	unsigned collision_detections_considered_prv_frame;
+	unsigned collision_grid_overlap_check;
 }metrics;
 
 inline static void metrics_init(){}
@@ -42,14 +43,14 @@ inline static void metrics_reset_timer(){
 }
 
 inline static void metrics_print_headers(FILE*f){
-	fprintf(f," %6s  %6s  %4s  %7s  %6s  %5s  %5s  %5s  %6s  %6s  %6s  %6s  %8s  %5s  %8s  %8s\n",
-			"ms","dt","fps","netlag","nobj","colp","colc","colf","upd","rend","pupd","prend","gtri",
+	fprintf(f," %6s  %6s  %4s  %7s  %6s  %5s  %5s  %5s  %5s  %6s  %6s  %6s  %6s  %8s  %5s  %8s  %8s\n",
+			"ms","dt","fps","netlag","nobj","colp","colc","colf","olchk","upd","rend","pupd","prend","gtri",
 			"nglo","arrbufs","texbufs"
 		);
 }
 
 inline static void metrics_print(FILE*f){
-	fprintf(f," %06u  %0.4f  %04d  %0.5f  %06u  %05u  %05u  %05u  %06u  %06u  %06u  %06u  %08u"
+	fprintf(f," %06u  %0.4f  %04d  %0.5f  %06u  %05u  %05u  %05u  %05u  %06u  %06u  %06u  %06u  %08u"
 			  "  %05u  %08lu  %08u\n",
 			metrics.tick,
 			metrics.fps.dt,
@@ -59,6 +60,7 @@ inline static void metrics_print(FILE*f){
 			metrics.collision_detections_possible_prv_frame,
 			metrics.collision_detections_considered_prv_frame,
 			metrics.collision_detections_prv_frame,
+			metrics.collision_grid_overlap_check,
 			metrics.objects_updated_prv_frame,
 			metrics.objects_rendered_prv_frame,
 			metrics.parts_updated_prv_frame,
@@ -86,6 +88,7 @@ inline static void metrics__at__frame_begin(){
 	metrics.collision_detections_prv_frame=0;
 	metrics.collision_detections_possible_prv_frame=0;
 	metrics.collision_detections_considered_prv_frame=0;
+	metrics.collision_grid_overlap_check=0;
 }
 
 //----------------------------------------------------------------------------

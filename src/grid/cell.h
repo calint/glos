@@ -99,6 +99,9 @@ inline static int solve_3d_are_spheres_in_collision(
 
 inline static int grid_checked_collisions(
 		object*o1,object*o2,framectx*fc){
+
+	metrics.collision_grid_overlap_check++;
+
 	if(o1->g.tick != fc->tick){ // list out of date
 		dynp_clear(&o1->g.checked_collisions_list);
 		o1->g.tick = fc->tick;
@@ -119,17 +122,21 @@ inline static void cell_collisions(cell*o,framectx*fc){
 	dynp*ls=&o->objrefs;
 	for(unsigned i=0;i<ls->count-1;i++){
 		for(unsigned j=i+1;j<ls->count;j++){
+			metrics.collision_detections_possible_prv_frame++;
+
 			object*Oi=dynp_get(ls,i);
 			object*Oj=dynp_get(ls,j);
-			metrics.collision_detections_possible_prv_frame++;
+
 			if(!((Oi->g.collide_mask & Oj->g.collide_bits) ||
 				(Oj->g.collide_mask & Oi->g.collide_bits ))){
 //				printf("not tried [ cell ][ collision ][ %p ][ %p ]\n",(void*)Oi,(void*)Oj);
 				continue;
 			}
+
 			if(is_bit_set(&Oi->g.bits,grid_ifc_overlaps) &&
 				is_bit_set(&Oj->g.bits,grid_ifc_overlaps)){
 				// both overlap grids, this detection might have been tried
+
 //				printf("[ cell %p ][ coldet ][ %p ][ %p ] overlapp\n",(void*)o,
 //						(void*)Oi,(void*)Oj);
 
