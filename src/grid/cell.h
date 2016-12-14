@@ -102,6 +102,29 @@ inline static void cell_render(cell*o,framectx*fc){
 //	}
 //	return 0;
 //}
+//
+
+//     >.
+//     oo
+//     .>
+//       >
+//
+//     ><
+//     oo
+//     <>
+//    <  >
+//
+//     .<<
+//     ooo
+//     <.<
+//    < <.
+//   < < .
+//
+//     >.<
+//     ooo
+//     .*.
+//     <.>
+//    < . >
 
 inline static bool _cell_detect_and_resolve_collision_for_spheres(
 		object*o1,
