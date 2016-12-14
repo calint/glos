@@ -165,7 +165,7 @@ inline static bool _cell_detect_and_resolve_collision_for_spheres(
 		if(!(vsq<dsq))//?
 			return false;
 	}
-	printf(" frame: %u\n",fc->tick);
+//	printf(" frame: %u\n",fc->tick);
 	// partial dt to collision
 	const float x1=o1->p.p.x;
 	const float u1=o1->p.v.x;
