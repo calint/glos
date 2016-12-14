@@ -43,6 +43,16 @@ inline static void main_init_scene_1D(){
 	o->g.collide_bits=1;
 	o->g.collide_mask=1;
 
+	// right sphere 2
+	o=object_alloc(&object_def);
+	str_setz(&o->name,"Sr2");
+	o->p.p.x=6;
+	o->p.v.x=-1;
+	o->p.p.y=o->b.s.y;
+	o->n.glo_ptr=glos_find_by_name("sphere");
+	o->g.collide_bits=1;
+	o->g.collide_mask=1;
+
 	// right sphere stopper
 	o=object_alloc(&object_def);
 	str_setz(&o->name,"Srs");
