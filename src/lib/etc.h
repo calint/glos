@@ -4,19 +4,19 @@
 #include<math.h>
 //----------------------------------------------------------------------------
 
-inline static int bits_is_bit_set(bits*b,int bit_number_starting_at_zero){
+inline static int is_bit_set(bits*b,int bit_number_starting_at_zero){
 	return(*b&(1<<bit_number_starting_at_zero))!=0;
 }
 
 //----------------------------------------------------------------------------
 
-inline static void bits_set_bit(bits*b,int bit_number_starting_at_zero){
+inline static void set_bit(bits*b,int bit_number_starting_at_zero){
 	*b|=(bits)(1<<bit_number_starting_at_zero);
 }
 
 //----------------------------------------------------------------------------
 
-inline static void bits_clear(bits*b,int bit_number_starting_at_zero){
+inline static void clear_bit(bits*b,int bit_number_starting_at_zero){
 	*b&=(bits)~(1<<bit_number_starting_at_zero);
 }
 

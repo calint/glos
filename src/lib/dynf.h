@@ -210,3 +210,19 @@ inline static void dynf_foreach_all(dynf*o,void(*f)(float)){
 	}
 }
 //-----------------------------------------------------------------------------
+// returns count if not found otherwise index
+inline static unsigned dynf_find_index(dynf*o,float oo){
+	for(unsigned i=0;i<o->count;i++){
+		if(dynf_get(o,i)==oo)
+			return i;
+	}
+	return o->count;
+}
+//-----------------------------------------------------------------------------
+inline static unsigned dynf_has(dynf*o,float oo){
+	const unsigned i=dynf_find_index(o,oo);
+	if(i==o->count)
+		return 0;
+	return 1;
+}
+//-----------------------------------------------------------------------------

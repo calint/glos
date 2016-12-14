@@ -2,13 +2,7 @@
 #include"../lib.h"
 #include"../obj/object.h"
 #include"../obj/part.h"
-
-typedef struct cell{
-	dynp objrefs;
-}cell;
-
-#define cell_def {dynp_def}
-
+#include"cell.h"
 
 #define grid_cell_size 4
 #define grid_ncells_wide 2
@@ -16,100 +10,6 @@ typedef struct cell{
 #define grid_ncells grid_ncells_wide*grid_ncells_high
 
 static cell cells[grid_ncells_high][grid_ncells_wide];
-
-inline static void cell_update(cell*o,framectx*fc){
-	unsigned i=o->objrefs.count;
-
-	if(i==0)
-		return;
-
-//	object*oi=*(object**)(o->objrefs.data);
-	while(i--){
-		object*oi=dynp_get(&o->objrefs,i);
-		if(oi->updtk==fc->tick){
-//			printf("[ grid ] skipped updated %s %p\n",oi->n.glo_ptr->name.data,(void*)oi);
-//			printf("[ grid ] %u  %u\n",oi->updtk,fc->tick);
-			oi++;
-			continue;
-		}
-//		printf("[ grid ] updated %s %p\n",oi->n.glo_ptr->name.data,(void*)oi);
-//		printf("[ grid ] %u  %u\n",oi->updtk,fc->tick);
-		oi->updtk=fc->tick;
-		if(oi->v.update){
-			oi->v.update(oi,fc);
-		}else{
-			object_update(oi,fc);
-		}
-		metrics.objects_updated_prv_frame++;
-
-		for(int i=0;i<object_part_cap;i++){
-			if(!oi->part[i])
-				continue;
-			part*p=oi->part[i];
-			if(p->update){
-				p->update(oi,p,fc);
-				metrics.parts_updated_prv_frame++;
-			}
-		}
-		oi++;
-	}
-}
-
-inline static void cell_render(cell*o,framectx*fc){
-	unsigned i=o->objrefs.count;
-
-	if(i==0)
-		return;
-
-//	object*oi=*(object**)(o->objrefs.data);
-	while(i--){
-		object*oi=dynp_get(&o->objrefs,i);
-		if(oi->drwtk==fc->tick){
-//			printf("[ grid ] skipped rendered %s\n",oi->n.glo_ptr->name.data);
-//			printf("[ grid ] %u  %u\n",oi->updtk,fc->tick);
-			oi++;
-			continue;
-		}
-//		printf("[ grid ] rendered %s %p\n",oi->n.glo_ptr->name.data,(void*)oi);
-//		printf("[ grid ] %u  %u\n",oi->updtk,fc->tick);
-		oi->drwtk=fc->tick;
-		if(oi->v.render)
-			oi->v.render(oi,fc);
-//		object_render_glo(oi);
-		metrics.objects_rendered_prv_frame++;
-
-		for(int i=0;i<object_part_cap;i++){
-			if(!oi->part[i])
-				continue;
-			part*p=oi->part[i];
-			if(p->render){
-				p->render(oi,p,fc);
-				metrics.parts_updated_prv_frame++;
-			}
-		}
-		oi++;
-	}
-}
-
-inline static void cell_collisions(cell*o,framectx*fc){
-	printf("[ cell %p ] detect collisions\n",(void*)o);
-}
-
-inline static void cell_print(cell*o){
-	printf("cell{%u}",o->objrefs.count);
-}
-
-inline static void cell_clear(cell*o){
-	dynp_clear(&o->objrefs);
-}
-
-inline static void cell_free(cell*o){
-	dynp_free(&o->objrefs);
-}
-
-inline static void cell_add_object(cell*o,object*oo){
-	dynp_add(&o->objrefs,oo);
-}
 
 inline static void grid_init(){}
 
@@ -191,6 +91,12 @@ inline static void grid_add(object*o){
 			cell*c=&cells[z][x];
 			cell_add_object(c,o);
 		}
+	}
+
+	if(xil==xir && zil==zir){
+		clear_bit(&o->g.bits,grid_ifc_overlaps);
+	}else{
+		set_bit(&o->g.bits,grid_ifc_overlaps);
 	}
 }
 

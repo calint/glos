@@ -210,3 +210,19 @@ inline static void dyni_foreach_all(dyni*o,void(*f)(int)){
 	}
 }
 //-----------------------------------------------------------------------------
+// returns count if not found otherwise index
+inline static unsigned dyni_find_index(dyni*o,int oo){
+	for(unsigned i=0;i<o->count;i++){
+		if(dyni_get(o,i)==oo)
+			return i;
+	}
+	return o->count;
+}
+//-----------------------------------------------------------------------------
+inline static unsigned dyni_has(dyni*o,int oo){
+	const unsigned i=dyni_find_index(o,oo);
+	if(i==o->count)
+		return 0;
+	return 1;
+}
+//-----------------------------------------------------------------------------

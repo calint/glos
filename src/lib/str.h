@@ -210,3 +210,19 @@ inline static void str_foreach_all(str*o,void(*f)(char)){
 	}
 }
 //-----------------------------------------------------------------------------
+// returns count if not found otherwise index
+inline static unsigned str_find_index(str*o,char oo){
+	for(unsigned i=0;i<o->count;i++){
+		if(str_get(o,i)==oo)
+			return i;
+	}
+	return o->count;
+}
+//-----------------------------------------------------------------------------
+inline static unsigned str_has(str*o,char oo){
+	const unsigned i=str_find_index(o,oo);
+	if(i==o->count)
+		return 0;
+	return 1;
+}
+//-----------------------------------------------------------------------------

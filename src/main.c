@@ -334,7 +334,7 @@ int main(int argc,char*argv[]){
 
 		grid_update(&fc);
 
-		grid_print();
+//		grid_print();
 
 		grid_collisions(&fc);
 

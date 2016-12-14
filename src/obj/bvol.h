@@ -6,7 +6,7 @@ typedef struct bvol{
 	bounding_radius r;
 	scale s;
 }bvol;
-#define bvol_def {1.41f,{1,1,1,0}}
+#define bvol_def {1,{1,1,1,0}}
 
 
 inline static void bvol_update_radius_using_scale(bvol*o) {

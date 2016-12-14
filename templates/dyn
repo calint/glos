@@ -210,3 +210,19 @@ inline static void ${name}_foreach_all(${name}*o,void(*f)(${type})){
 	}
 }
 //-----------------------------------------------------------------------------
+// returns count if not found otherwise index
+inline static unsigned ${name}_find_index(${name}*o,${type} oo){
+	for(unsigned i=0;i<o->count;i++){
+		if(${name}_get(o,i)==oo)
+			return i;
+	}
+	return o->count;
+}
+//-----------------------------------------------------------------------------
+inline static unsigned ${name}_has(${name}*o,${type} oo){
+	const unsigned i=${name}_find_index(o,oo);
+	if(i==o->count)
+		return 0;
+	return 1;
+}
+//-----------------------------------------------------------------------------

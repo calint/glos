@@ -210,3 +210,19 @@ inline static void objmtls_foreach_all(objmtls*o,void(*f)(objmtl*)){
 	}
 }
 //-----------------------------------------------------------------------------
+// returns count if not found otherwise index
+inline static unsigned objmtls_find_index(objmtls*o,objmtl* oo){
+	for(unsigned i=0;i<o->count;i++){
+		if(objmtls_get(o,i)==oo)
+			return i;
+	}
+	return o->count;
+}
+//-----------------------------------------------------------------------------
+inline static unsigned objmtls_has(objmtls*o,objmtl* oo){
+	const unsigned i=objmtls_find_index(o,oo);
+	if(i==o->count)
+		return 0;
+	return 1;
+}
+//-----------------------------------------------------------------------------

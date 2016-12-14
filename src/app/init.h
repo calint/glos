@@ -11,7 +11,7 @@ inline static void main_init_scene_1D(){
 //	glos_load_all_from_file("obj/skydome.obj");
 
 
-	camera.eye=(position){0,11,-11,0};
+	camera.eye=(position){0,15,-15,0};
 	camera.lookat=(position){0,0,0,0};
 
 	object*o;
@@ -26,6 +26,9 @@ inline static void main_init_scene_1D(){
 	o->p.p.y=o->b.s.y;
 	o->n.glo_ptr=glos_find_by_name("sphere");
 	o->v.render=_object_render_glo_;
+	o->g.collide_bits=1;
+	o->g.collide_mask=1;
+
 //	p=malloc(sizeof(santa));
 //	*p=santa_def;
 //	p->bounding_glo_ptr=glos_find_by_name("bounding-radius");
@@ -41,6 +44,9 @@ inline static void main_init_scene_1D(){
 	o->p.p.y=o->b.s.y;
 	o->n.glo_ptr=glos_find_by_name("sphere");
 	o->v.render=_object_render_glo_;
+	o->g.collide_bits=1;
+	o->g.collide_mask=1;
+
 //	p=malloc(sizeof(santa));
 //	*p=santa_def;
 //	p->bounding_glo_ptr=glos_find_by_name("bounding-radius");
@@ -48,10 +54,10 @@ inline static void main_init_scene_1D(){
 //	o->part[0]=(part*)p;
 
 	// floor
-//	o=object_alloc(&object_def);
-//	str_setz(&o->name,"rigg");
-//	o->n.glo_ptr=glos_find_by_name("rigg1d");
-//	o->v.render=_object_render_glo_;
+	o=object_alloc(&object_def);
+	str_setz(&o->name,"rigg");
+	o->n.glo_ptr=glos_find_by_name("rigg1d");
+	o->v.render=_object_render_glo_;
 //	p=malloc(sizeof(santa));
 //	*p=santa_def;
 //	p->bounding_glo_ptr=glos_find_by_name("bounding-radius");
