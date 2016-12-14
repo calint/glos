@@ -95,6 +95,7 @@ inline static void cell_render(cell*o,framectx*fc){
 //   o : ball
 //   > : velocity
 //   . : no velocity
+//   * : magnitude vs vector
 //
 //     >.
 //     oo
