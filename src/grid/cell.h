@@ -65,9 +65,15 @@ inline static void cell_render(cell*o,framectx*fc){
 //		printf("[ grid ] rendered %s %p\n",oi->n.glo_ptr->name.data,(void*)oi);
 //		printf("[ grid ] %u  %u\n",oi->updtk,fc->tick);
 		oi->drwtk=fc->tick;
+
+		if(oi->n.glo_ptr){
+			const float*Mmw=object_get_updated_Mmw(oi);
+			glo_render(oi->n.glo_ptr,Mmw);
+		}
+
 		if(oi->v.render)
 			oi->v.render(oi,fc);
-//		object_render_glo(oi);
+
 		metrics.objects_rendered_prv_frame++;
 
 		for(int i=0;i<object_part_cap;i++){

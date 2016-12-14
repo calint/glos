@@ -8,10 +8,6 @@ inline static void main_init_scene_1D(){
 	object*o=object_alloc(&object_def);
 	str_setz(&o->name,"skydome");
 	o->n.glo_ptr=glos_find_by_name("skydome");
-	o->v.render=_object_render_glo_;
-//	o->b.s=(scale){15,15,15,0};
-//	o->b.r=10*15;
-
 
 	camera.eye=(position){0,15,-15,0};
 	camera.lookat=(position){0,0,0,0};
@@ -24,7 +20,6 @@ inline static void main_init_scene_1D(){
 	o->p.p.x=-8;
 	o->p.p.y=o->b.s.y;
 	o->n.glo_ptr=glos_find_by_name("sphere");
-	o->v.render=_object_render_glo_;
 	o->g.collide_bits=1;
 
 
@@ -35,7 +30,6 @@ inline static void main_init_scene_1D(){
 	o->p.v.x=1;
 	o->p.p.y=o->b.s.y;
 	o->n.glo_ptr=glos_find_by_name("sphere");
-	o->v.render=_object_render_glo_;
 	o->g.collide_bits=1;
 	o->g.collide_mask=1;
 
@@ -46,7 +40,6 @@ inline static void main_init_scene_1D(){
 	o->p.v.x=-1;
 	o->p.p.y=o->b.s.y;
 	o->n.glo_ptr=glos_find_by_name("sphere");
-	o->v.render=_object_render_glo_;
 	o->g.collide_bits=1;
 	o->g.collide_mask=1;
 
@@ -56,7 +49,6 @@ inline static void main_init_scene_1D(){
 	o->p.p.x=8;
 	o->p.p.y=o->b.s.y;
 	o->n.glo_ptr=glos_find_by_name("sphere");
-	o->v.render=_object_render_glo_;
 	o->g.collide_bits=1;
 
 
