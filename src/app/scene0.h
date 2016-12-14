@@ -3,8 +3,6 @@
 #include"santa.h"
 
 inline static void main_init_scene_0(){
-	main_init_scene_1D();
-	return;
 	object*o;
 	glos_load_all_from_file("obj/skydome.obj");
 	glos_load_all_from_file("obj/board.obj");
