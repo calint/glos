@@ -50,7 +50,7 @@ inline static void object_update(object*o,framectx*fc){
 	}
 
 	o->p_prv=o->p;
-	o->p.v=o->p_nxt.v;
+//	o->p.v=o->p_nxt.v;
 
 	phy*p=&o->p;
 	const dt dt=fc->dt;
