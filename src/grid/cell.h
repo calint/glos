@@ -139,48 +139,57 @@ inline static bool _cell_detect_and_resolve_collision_for_spheres(
 	// in collision
 
 	//? partial dt
-
-	// restore previous position
-//	o1->p.p=o1->p_prv.p;
-//	vec3_negate(&o1->p.v);
-//	o2->p.p=o2->p_prv.p;
-//	vec3_negate(&o2->p.v);
-
-	// transfer velocities
-	if(o1->g.collide_mask==0){// stopper
-		o2->p_nxt.v=o2->p.v;
-		vec3_negate(&o2->p_nxt.v);
-	}else if(o2->g.collide_mask==0){// stopper
-		o1->p_nxt.v=o1->p.v;
-		vec3_negate(&o1->p_nxt.v);
-	}else if(o2->g.collide_mask && o1->g.collide_mask){
-		o1->p_nxt.v=o2->p.v;
-		o2->p_nxt.v=o1->p.v;
-	}else{
-		fprintf(stderr,"\n%s:%u: stoppers in collision\n",__FILE__,__LINE__);
+	const float x1=o1->p.p.x;
+	const float u1=o1->p.v.x;
+	const float r1=o1->b.r;
+	const float x2=o2->p.p.x;
+	const float u2=o2->p.v.x;
+	const float r2=o1->b.r;
+	// if x1<x2
+	//  x1+u1*t+r1=x2+u2*t-r2
+	// else if x1>x2
+	//  x1+u1*t-r1=x2+u2*t+r2
+	// else
+	//  ?
+	// for x1<x2
+	//  x1+u1*t+r1=x2+u2*t-r2
+	//  x1-x2+r1+r2=u2*t-u1*t
+	//  (x1-x2+r1+r2)/(u2-u1)=t
+	// for x1>x2
+	//  x1+u1*t-r1=x2+u2*t+r2
+	//  x1-x2-r1-r2=u2*t-u1*t
+	//  (x1-x2-r1-r2)/(u2-u1)=t
+	//  (x1-x2-r1-r2)/(u2-u1)=t
+	const float div=u2-u1;
+	if(div==0){
+		fprintf(stderr,"\n%s:%u: was in collision already\n",__FILE__,__LINE__);
 		stacktrace_print(stderr);
 		fprintf(stderr,"\n\n");
 		exit(-1);
-
+	}
+	float t;
+	if(x1<x2){
+		t=(x1-x2+r1+r2)/div;
+	}else if(x1>x2){
+		t=(x1-x2-r1-r2)/div;
+	}else{
+		fprintf(stderr,"\n%s:%u: ??\n",__FILE__,__LINE__);
+		stacktrace_print(stderr);
+		fprintf(stderr,"\n\n");
+		exit(-1);
 	}
 
-//	if(detect_and_resolve_collision_for_spheres(o1,o2)){
-//		fprintf(stderr,"\n%s:%u: could not connect\n",__FILE__,__LINE__);
-//		stacktrace_print(stderr);
-//		fprintf(stderr,"\n\n");
-//		exit(-1);
-//
-//	}
-//	o1->p_nxt.v=vec4_def;
-//	o2->p_nxt.v=vec4_def;
+	vec3_print(&o1->p.p);vec3_print(&o2->p.p);puts("");
+	// move to collision
+	vec3_inc_with_vec3_over_dt(&o1->p.p,&o1->p.v,t);
+	vec3_inc_with_vec3_over_dt(&o2->p.p,&o2->p.v,t);
+	// do remaining 1-t
+	// ...
+	vec3_print(&o1->p.p);vec3_print(&o2->p.p);puts("");
 
-//	vec3_negate(&o1->p_nxt.v);
-//	vec3_negate(&o2->p_nxt.v);
+	_cell_detect_and_resolve_collision_for_spheres(o1,o2,fc);
 
-//	o1->p.p.x=o1->p_prv.p.x;
-//	o1->p_nxt.v=vec4_def;
-//	o2->p.p.x=-2;
-//	o2->p_nxt.v=vec4_def;
+
 	return true;
 }
 

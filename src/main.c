@@ -340,6 +340,8 @@ int main(int argc,char*argv[]){
 		if(paused)
 			fc.dt=0;
 
+		fc.dt=.001f;
+
 		grid_update(&fc);
 
 //		grid_print();
