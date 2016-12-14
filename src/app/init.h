@@ -18,10 +18,13 @@ inline static void main_init_scene_1D(){
 	santa*p;
 
 
-	o=santa_alloc_def();
-	str_setz(&o->name,"santa2");
-	o->n.glo_ptr=glos_find_by_name("santa");
-	p=(santa*)o->part[0];
+	o=object_alloc(&object_def);
+	str_setz(&o->name,"sphere");
+	o->n.glo_ptr=glos_find_by_name("sphere");
+	o->v.render=object_render_glo;
+	p=malloc(sizeof(santa));
+	*p=santa_def;
+	o->part[0]=(part*)p;
 	p->keybits_ptr=&net_state_current[1].keybits;
 	p->bounding_glo_ptr=glos_find_by_name("bounding-radius");
 

@@ -58,9 +58,11 @@ static void _santa_update(object*po,part*o,framectx*fc){
 		po->n.Mmw_valid=0;
 	}
 }
-static void _santa_render(object*po,part*o,framectx*fc){
-	const float*f=object_get_updated_Mmw(po);
-	santa*p=(santa*)o;
+static void _santa_render(object*o,part*po,framectx*fc){
+	santa*p=(santa*)po;
+	if(!p->bounding_glo_ptr)
+		return;
+	const float*f=object_get_updated_Mmw(o);
 	glo_render(p->bounding_glo_ptr,f);
 }
 static void _santa_free(object*po,part*o){}
