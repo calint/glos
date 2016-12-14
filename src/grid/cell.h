@@ -233,8 +233,8 @@ inline static void cell_resolve_collisions(cell*o,framectx*fc){
 				continue;
 			}
 
-			printf("[ cell %p ][ coldet ]  '%s' and '%s'\n",
-					(void*)o,Oi->name.data,Oj->name.data);
+			printf("[ %u ][ cell %p ][ coldet ]  '%s' and '%s'\n",
+					fc->tick,(void*)o,Oi->name.data,Oj->name.data);
 
 			metrics.collision_detections_prv_frame++;
 
