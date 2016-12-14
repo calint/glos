@@ -82,7 +82,7 @@ inline static void cell_render(cell*o,framectx*fc){
 			part*p=oi->part[i];
 			if(p->render){
 				p->render(oi,p,fc);
-				metrics.parts_updated_prv_frame++;
+				metrics.parts_rendered_prv_frame++;
 			}
 		}
 		oi++;
@@ -103,7 +103,7 @@ inline static void cell_render(cell*o,framectx*fc){
 //	return 0;
 //}
 
-inline static bool detect_and_resolve_collision_for_spheres(
+inline static bool _cell_detect_and_resolve_collision_for_spheres(
 		object*o1,
 		object*o2){
 
@@ -199,14 +199,14 @@ inline static void cell_resolve_collisions(cell*o,framectx*fc){
 
 			metrics.collision_detections_considered_prv_frame++;
 
-			if(!detect_and_resolve_collision_for_spheres(Oi,Oj)){
-//				printf("[ cell %p ][ coldet ][ %p ][ %p ] not in collision\n",
-//						(void*)o,(void*)Oi,(void*)Oj);
+			if(!_cell_detect_and_resolve_collision_for_spheres(Oi,Oj)){
+//				printf("[ cell %p ][ coldet ][ %s ][ %s ] not in collision\n",
+//						(void*)o,(void*)Oi->name.data,(void*)Oj->name.data);
 				continue;
 			}
 
-//			printf("[ cell %p ][ coldet ][ %p ][ %p ] collision\n",(void*)o,
-//					(void*)Oi,(void*)Oj);
+			printf("[ cell %p ][ coldet ][ %s ][ %s ] in collision\n",
+					(void*)o,Oi->name.data,Oj->name.data);
 
 			metrics.collision_detections_prv_frame++;
 
