@@ -17,7 +17,7 @@ typedef struct object{
 	bvol b;
 	phy p;
 	phy p_prv; // physics state from previous frame
-//	phy p_nxt; // physics state for next frame
+	phy p_nxt; // physics state for next frame
 	grid_ifc g;
 	vtbl v;
 	type t;
@@ -33,7 +33,7 @@ static object object_def={
 	.b=bvol_def,
 	.p=phy_def,
 	.p_prv=phy_def,
-//	.p_nxt=phy_def,
+	.p_nxt=phy_def,
 	.g=grid_ifc_def,
 	.v=vtbl_def,
 	.t=type_def,
@@ -50,6 +50,7 @@ inline static void object_update(object*o,framectx*fc){
 	}
 
 	o->p_prv=o->p;
+	o->p.v=o->p_nxt.v;
 
 	phy*p=&o->p;
 	const dt dt=fc->dt;

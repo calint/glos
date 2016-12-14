@@ -131,7 +131,7 @@ inline static bool _cell_detect_and_resolve_collision_for_spheres(
 	const vec4 v;vec3_minus(&v,&o2->p.p,&o1->p.p);
 	const float d=o1->b.r+o2->b.r;
 	const float dsq=d*d;
-	const float epsilon=.001f;
+	const float epsilon=0;//.001f;
 	const float vsq=vec3_dot(&v,&v)+epsilon;
 	if(!(vsq<dsq))//?
 		return false;
@@ -148,13 +148,14 @@ inline static bool _cell_detect_and_resolve_collision_for_spheres(
 
 	// transfer velocities
 	if(o1->g.collide_mask==0){// stopper
-		vec3_negate(&o2->p.v);
+		o2->p_nxt.v=o2->p.v;
+		vec3_negate(&o2->p_nxt.v);
 	}else if(o2->g.collide_mask==0){// stopper
-		vec3_negate(&o1->p.v);
+		o1->p_nxt.v=o1->p.v;
+		vec3_negate(&o1->p_nxt.v);
 	}else if(o2->g.collide_mask && o1->g.collide_mask){
-		velocity o1v=o1->p.v;
-		o1->p.v=o2->p.v;
-		o2->p.v=o1v;
+		o1->p_nxt.v=o2->p.v;
+		o2->p_nxt.v=o1->p.v;
 	}else{
 		fprintf(stderr,"\n%s:%u: stoppers in collision\n",__FILE__,__LINE__);
 		stacktrace_print(stderr);
