@@ -110,13 +110,13 @@ inline static bool detect_and_resolve_collision_for_spheres(
 		return false;
 
 	// in collision
+
 	//? partial dt
-
-
 	o1->p.p=o1->p_prv.p;
-	o1->p.v=vec4_def;
+	vec3_negate(&o1->p.v);
 	o2->p.p=o2->p_prv.p;
-	o2->p.v=vec4_def;
+	vec3_negate(&o2->p.v);
+
 
 //	if(detect_and_resolve_collision_for_spheres(o1,o2)){
 //		fprintf(stderr,"\n%s:%u: could not connect\n",__FILE__,__LINE__);
