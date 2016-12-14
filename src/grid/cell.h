@@ -84,20 +84,38 @@ inline static void cell_render(cell*o,framectx*fc){
 }
 
 inline static int solve_3d_are_spheres_in_collision(
-		const position*s1,float r1,
-		const position*s2,float r2){
+		const position*p1,float r1,
+		const position*p2,float r2){
 
-	const vec4 v;vec3_minus(&v,s2,s1);// vector from sphere 1 to 2
-	const float d=r1+r2;// minimum distance
-	const float d2=d*d;
-	const float vlensq=vec3_dot(&v,&v);
-	if(vlensq<d2){
+	const vec4 v;vec3_minus(&v,p2,p1);// vector from sphere 1 to 2
+	const float D=r1+r2;// minimum distance
+	const float Dsq=D*D;
+	const float Vsq=vec3_dot(&v,&v);
+	if(Vsq<Dsq){
 		return 1;
 	}
 	return 0;
 }
 
-inline static int grid_checked_collisions(
+inline static bool resolve_possible_collision(
+		object*o1,
+		object*o2){
+
+	const vec4 v;vec3_minus(&v,&o2->p.p,&o1->p.p);
+	const float D=o1->b.r+o2->b.r;
+	const float Dsq=D*D;
+	const float Vsq=vec3_dot(&v,&v);
+	if(Vsq>=Dsq)//?
+		return false;
+
+	// in collision
+	//? partial dt
+	o1->p_nxt.v=vec4_def;
+	o2->p_nxt.v=vec4_def;
+	return true;
+}
+
+inline static bool grid_checked_collisions(
 		object*o1,object*o2,framectx*fc){
 
 	metrics.collision_grid_overlap_check++;
@@ -112,9 +130,9 @@ inline static int grid_checked_collisions(
 	}
 	if(dynp_has(&o1->g.checked_collisions_list,o2) ||
 		dynp_has(&o2->g.checked_collisions_list,o1)){
-		return 1;
+		return true;
 	}
-	return 0;
+	return false;
 }
 
 inline static void cell_collisions(cell*o,framectx*fc){
@@ -152,10 +170,7 @@ inline static void cell_collisions(cell*o,framectx*fc){
 
 			metrics.collision_detections_considered_prv_frame++;
 
-			if(!solve_3d_are_spheres_in_collision(
-					&Oi->p.p, Oi->b.r,
-					&Oj->p.p, Oj->b.r)){
-
+			if(!resolve_possible_collision(Oi,Oj)){
 //				printf("[ cell %p ][ coldet ][ %p ][ %p ] not in collision\n",
 //						(void*)o,(void*)Oi,(void*)Oj);
 				continue;

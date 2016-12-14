@@ -16,6 +16,8 @@ typedef struct object{
 	node n;
 	bvol b;
 	phy p;
+	phy p_prv; // physics state from previous frame
+	phy p_nxt; // physics state for next frame
 	grid_ifc g;
 	vtbl v;
 	type t;
@@ -30,6 +32,8 @@ static object object_def={
 	.n=node_def,
 	.b=bvol_def,
 	.p=phy_def,
+	.p_prv=phy_def,
+	.p_nxt=phy_def,
 	.g=grid_ifc_def,
 	.v=vtbl_def,
 	.t=type_def,
@@ -37,36 +41,21 @@ static object object_def={
 	.alloc_bits_ptr=0,
 	.name=str_def,
 };
-//----------------------------------------------------------------------- init
-inline static void object_init(object*o){}
-//--------------------------------------------------------------------- update
-inline static void object_update(object*o,framectx*fc){
-	vec3_inc_with_vec3_over_dt(&o->p.p,&o->p.v,fc->dt);
-	vec3_inc_with_vec3_over_dt(&o->p.a,&o->p.av,fc->dt);
-	if(o->n.Mmw_valid &&
-		(o->p.v.x||o->p.v.y||o->p.v.z||
-		o->p.av.x||o->p.av.y||
-		o->p.av.z))
-	{
-		o->n.Mmw_valid=0;
-	}
-}
-//------------------------------------------------------------------ collision
-inline static void object_collision(object*o,object*other,dt dt){}
-//--------------------------------------------------------------------- render
-inline static void object_render(object*o){}
-//----------------------------------------------------------------------- free
-inline static void _object_free_(object*o){}
 //----------------------------------------------------------------------------
+inline static void object_update(object*o,framectx*fc){
+	o->p_prv=o->p;
+	o->p=o->p_nxt;
 
+	phy*p=&o->p_nxt;
+	const dt dt=fc->dt;
+	vec3_inc_with_vec3_over_dt(&p->p,&p->v,dt);
+	vec3_inc_with_vec3_over_dt(&p->a,&p->av,dt);
 
-
-
-
-
-
-
-//----------------------------------------------------------- ------------ lib
+//	if(o->n.Mmw_valid&&(p->v.x||p->v.y||p->v.z||p->av.x||p->av.y||p->av.z)){
+//		o->n.Mmw_valid=0;
+//	}
+	o->n.Mmw_valid=0;
+}
 inline static const float*object_get_updated_Mmw(object*o){
 	if(o->n.Mmw_valid)
 		return o->n.Mmw;
@@ -83,7 +72,6 @@ inline static const float*object_get_updated_Mmw(object*o){
 
 	return o->n.Mmw;
 }
-//----------------------------------------------------------------------------
 inline static void _object_render_glo_(object*o,framectx*fc) {
 	if(!o->n.glo_ptr)
 		return;
@@ -92,12 +80,3 @@ inline static void _object_render_glo_(object*o,framectx*fc) {
 	glo_render(o->n.glo_ptr,f);
 }
 //----------------------------------------------------------------------------
-
-
-
-//	.vtbl={	.init=0,
-//			.update=0,
-//			.collision=0,
-//			.render=0,
-//			.free=0,
-//	},

@@ -2,6 +2,8 @@
 #include<inttypes.h>
 #include"consts.h"
 typedef uint8_t bool;
+#define true 1
+#define false 0
 typedef uint8_t bits;
 typedef uint32_t gid;
 typedef void*ref;

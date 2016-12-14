@@ -24,6 +24,7 @@ inline static void main_init_scene_1D(){
 	o->p.p.x=4;
 	o->p.v.x=-1;
 	o->p.p.y=o->b.s.y;
+	o->p_prv=o->p_nxt=o->p;
 	o->n.glo_ptr=glos_find_by_name("sphere");
 	o->v.render=_object_render_glo_;
 	o->g.collide_bits=1;
@@ -42,6 +43,7 @@ inline static void main_init_scene_1D(){
 	o->p.p.x=-4;
 	o->p.v.x=1;
 	o->p.p.y=o->b.s.y;
+	o->p_prv=o->p_nxt=o->p;
 	o->n.glo_ptr=glos_find_by_name("sphere");
 	o->v.render=_object_render_glo_;
 	o->g.collide_bits=1;
@@ -56,6 +58,7 @@ inline static void main_init_scene_1D(){
 	// floor
 	o=object_alloc(&object_def);
 	str_setz(&o->name,"rigg");
+	o->p_prv=o->p_nxt=o->p;
 	o->n.glo_ptr=glos_find_by_name("rigg1d");
 	o->v.render=_object_render_glo_;
 //	p=malloc(sizeof(santa));
