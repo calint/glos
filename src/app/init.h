@@ -11,24 +11,49 @@ inline static void main_init_scene_1D(){
 //	glos_load_all_from_file("obj/skydome.obj");
 
 
-	camera.eye=(position){0,11,11,0};
+	camera.eye=(position){0,11,-11,0};
 	camera.lookat=(position){0,0,0,0};
 
 	object*o;
 	santa*p;
 
 
+	// right sphere
 	o=object_alloc(&object_def);
-	str_setz(&o->name,"sphere");
-//	o->n.glo_ptr=glos_find_by_name("sphere");
-//	o->v.render=object_render_glo;
+	str_setz(&o->name,"Sr");
+	o->p.p.x=4;
+	o->p.p.y=o->b.s.y;
+	o->n.glo_ptr=glos_find_by_name("sphere");
+	o->v.render=_object_render_glo_;
+//	p=malloc(sizeof(santa));
+//	*p=santa_def;
+//	p->bounding_glo_ptr=glos_find_by_name("bounding-radius");
+//	p->keybits_ptr=&net_state_current[1].keybits;
+//	o->part[0]=(part*)p;
 
-	p=malloc(sizeof(santa));
-	*p=santa_def;
-	p->bounding_glo_ptr=glos_find_by_name("bounding-radius");
-	p->keybits_ptr=&net_state_current[1].keybits;
-	o->part[0]=(part*)p;
 
+	// left sphere
+	o=object_alloc(&object_def);
+	str_setz(&o->name,"Sl");
+	o->p.p.x=-4;
+	o->p.p.y=o->b.s.y;
+	o->n.glo_ptr=glos_find_by_name("sphere");
+	o->v.render=_object_render_glo_;
+//	p=malloc(sizeof(santa));
+//	*p=santa_def;
+//	p->bounding_glo_ptr=glos_find_by_name("bounding-radius");
+//	p->keybits_ptr=&net_state_current[2].keybits;
+//	o->part[0]=(part*)p;
+
+	// floor
+	o=object_alloc(&object_def);
+	str_setz(&o->name,"rigg");
+	o->n.glo_ptr=glos_find_by_name("rigg1d");
+	o->v.render=_object_render_glo_;
+//	p=malloc(sizeof(santa));
+//	*p=santa_def;
+//	p->bounding_glo_ptr=glos_find_by_name("bounding-radius");
+//	o->part[0]=(part*)p;
 
 
 
@@ -38,9 +63,9 @@ inline static void main_init_scene_1D(){
 //	o->n.glo_ptr=glos_find_by_name("skydome");
 //	o->v.render=object_render_glo;
 //
-//	o=object_alloc(&object_def);
-//	o->n.glo_ptr=glos_find_by_name("rigg1d");
-//	o->v.render=object_render_glo;
+	o=object_alloc(&object_def);
+	o->n.glo_ptr=glos_find_by_name("rigg1d");
+	o->v.render=_object_render_glo_;
 //
 //
 //	o=object_alloc(&object_def);
@@ -73,7 +98,7 @@ inline static void main_init_scene(){
 	o=object_alloc(&object_def);
 	str_setz(&o->name,"skydome");
 	o->n.glo_ptr=glos_find_by_name("skydome");
-	o->v.render=object_render_glo;
+	o->v.render=_object_render_glo_;
 	o->b.s=(scale){15,15,15,0};
 	o->b.r=10*15;
 
@@ -96,7 +121,7 @@ inline static void main_init_scene(){
 	o=object_alloc(&object_def);
 	str_setz(&o->name,"grid");
 	o->n.glo_ptr=glos_find_by_name("grid");
-	o->v.render=object_render_glo;
+	o->v.render=_object_render_glo_;
 	o->b.s=(scale){10,10,10,0};
 	o->p.p=(position){0,0,0,0};
 	o->b.r=2*10;

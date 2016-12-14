@@ -12,7 +12,7 @@ static object santa_obj_def={
 	.v={	.init=NULL,
 			.update=NULL,
 			.collision=NULL,
-			.render=object_render_glo,
+			.render=_object_render_glo_,
 			.free=NULL,
 	},
 	.t={type_santa},
@@ -45,6 +45,8 @@ static santa santa_def={
 static void _santa_update(object*po,part*o,framectx*fc){
 //	printf("%s:%u  [ %p %p ]\n",__FILE__,__LINE__,(void*)po,(void*)o);
 	santa*p=(santa*)o;
+	if(!p->keybits_ptr)
+		return;
 	int n=*p->keybits_ptr;
 	velocity*v=&po->p.v;
 	*v=vec4_def;

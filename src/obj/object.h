@@ -81,7 +81,7 @@ inline static const float*object_get_updated_Mmw(object*o){
 	return o->n.Mmw;
 }
 //----------------------------------------------------------------------------
-inline static void object_render_glo(object*o,framectx*fc) {
+inline static void _object_render_glo_(object*o,framectx*fc) {
 	if(!o->n.glo_ptr)
 		return;
 
