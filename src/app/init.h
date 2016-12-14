@@ -4,9 +4,10 @@
 
 
 inline static void main_init_scene_1D(){
-	glos_load_all_from_file("obj/sphere.obj");
-	glos_load_all_from_file("obj/rigg1d.obj");
-	glos_load_all_from_file("obj/skydome.obj");
+	glos_load_all_from_file("obj/rigg1d/sphere.obj");
+	glos_load_all_from_file("obj/rigg1d/rigg1d.obj");
+	glos_load_all_from_file("obj/rigg1d/bounding-radius.obj");
+//	glos_load_all_from_file("obj/skydome.obj");
 
 
 	camera.eye=(position){0,11,11,0};
@@ -21,6 +22,10 @@ inline static void main_init_scene_1D(){
 
 	o=object_alloc(&object_def);
 	o->n.glo_ptr=glos_find_by_name("rigg1d");
+	o->v.render=object_render_glo;
+
+	o=object_alloc(&object_def);
+	o->n.glo_ptr=glos_find_by_name("bounding-radius");
 	o->v.render=object_render_glo;
 
 	o=object_alloc(&object_def);

@@ -278,6 +278,10 @@ static/*gives*/glo*glo_make_first_from_file(const char*path){
 //	return ls;
 //}
 
+inline static const char*str_base_dir(const char*path){
+	return "obj/";
+}
+
 static/*gives*/dynp glo_load_all_from_file(const char*path){
 	printf(" * loading objects from '%s'\n",path);
 	str file=str_from_file(path);
@@ -291,7 +295,7 @@ static/*gives*/dynp glo_load_all_from_file(const char*path){
 	dynf vertex_buffer=dynf_def;
 	dynp mtlrngs=dynp_def;
 	dynp reuslt=dynp_def;
-	const char*basedir="obj/";
+	const char*basedir=str_base_dir(path);
 	while(*p){
 		token t=token_next_from_string(p);
 		p=t.end;//token_size_including_whitespace(&t);
