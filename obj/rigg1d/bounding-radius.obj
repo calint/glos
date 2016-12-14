@@ -1,7 +1,7 @@
 # Blender v2.78 (sub 0) OBJ File: 'bounding-radius.blend'
 # www.blender.org
 mtllib bounding-radius.mtl
-o brad
+o bounding-radius
 v 0.723607 -0.447220 0.525725
 v -0.276388 -0.447220 0.850649
 v -0.894426 -0.447216 0.000000
