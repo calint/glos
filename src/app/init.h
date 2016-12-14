@@ -7,6 +7,7 @@
 #include"scene3.h"
 #include"scene4.h"
 #include"scene5.h"
+#include"scene6.h"
 inline static void main_init_scene(){
-	main_init_scene_5();
+	main_init_scene_6();
 }
