@@ -181,8 +181,24 @@ inline static bool _cell_detect_and_resolve_collision_for_spheres(
 
 //	printf("%f ",t);vec3_print(&o1->p.p);vec3_print(&o2->p.p);puts("");
 	// move to collision
-	vec3_inc_with_vec3_over_dt(&o1->p.p,&o1->p.v,t);
+	vec3_inc_with_vec3_over_dt(&o1->p.p,&o1->p.v,t);//*0.99999f for resolved
 	vec3_inc_with_vec3_over_dt(&o2->p.p,&o2->p.v,t);
+
+	// validate
+	{
+		const vec4 v;vec3_minus(&v,&o2->p.p,&o1->p.p);
+		const float d=o1->b.r+o2->b.r;
+		const float dsq=d*d;
+		const float epsilon=0;//.001f;
+		const float vsq=vec3_dot(&v,&v)+epsilon;
+		if(vsq<dsq){
+			fprintf(stderr,"\n%s:%u: collision not fully resolved\n",__FILE__,__LINE__);
+			stacktrace_print(stderr);
+			fprintf(stderr,"\n\n");
+			exit(-1);
+		}
+	}
+
 //	printf("%f ",t);vec3_print(&o1->p.p);vec3_print(&o2->p.p);puts("");
 	// exchange velocity
 	if(o1->g.collide_mask==0){// o1 is a bouncer
