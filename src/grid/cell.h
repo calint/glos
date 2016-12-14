@@ -161,12 +161,18 @@ inline static bool _cell_detect_and_resolve_collision_for_spheres(
 		const float d=o1->b.r+o2->b.r;
 		const float dsq=d*d;
 		const float vsq=vec3_dot(&v,&v);
-		const float diff=dsq-vsq;
-//		if(diff>-.000001f){
+		const float diff=vsq-dsq;
+		if(diff>=0){
+			return false;
+		}
+		if(diff==0){
+			printf(" diff 0  %s   %s  \n",o1->name.data,o2->name.data);
+		}
+//		if(fabs(diff)<.00001f){
 //			return false;
 //		}
-		if(!(vsq<dsq))//?
-			return false;
+//		if(!(vsq<dsq))//?
+//			return false;
 //		puts("");
 
 //	printf(" frame: %u\n",fc->tick);
