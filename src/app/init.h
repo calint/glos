@@ -2,14 +2,53 @@
 #include"ninja.h"
 #include"santa.h"
 
+
+inline static void main_init_scene_1D(){
+	glos_load_all_from_file("obj/sphere.obj");
+	glos_load_all_from_file("obj/rigg1d.obj");
+	glos_load_all_from_file("obj/skydome.obj");
+
+
+	camera.eye=(position){0,11,11,0};
+	camera.lookat=(position){0,0,0,0};
+
+	object*o;
+
+//	o=object_alloc(&object_def);
+//	str_setz(&o->name,"skydome");
+//	o->n.glo_ptr=glos_find_by_name("skydome");
+//	o->v.render=object_render_glo;
+
+	o=object_alloc(&object_def);
+	o->n.glo_ptr=glos_find_by_name("rigg1d");
+	o->v.render=object_render_glo;
+
+	o=object_alloc(&object_def);
+	str_setz(&o->name,"Sl");
+	o->n.glo_ptr=glos_find_by_name("sphere");
+	o->v.render=object_render_glo;
+	o->p.p.x=-4;
+	o->p.p.y=o->b.s.y;
+
+	o=object_alloc(&object_def);
+	str_setz(&o->name,"Sr");
+	o->n.glo_ptr=glos_find_by_name("sphere");
+	o->v.render=object_render_glo;
+	o->p.p.x=4;
+	o->p.p.y=o->b.s.y;
+}
+
 //static float ground_base_y=.25f;
 
 inline static void main_init_scene(){
+	main_init_scene_1D();
+	return;
 	object*o;
 	glos_load_all_from_file("obj/skydome.obj");
 	glos_load_all_from_file("obj/board.obj");
 	glos_load_first_from_file("obj/grid.obj");
 	glos_load_first_from_file("obj/santa.obj");
+	glos_load_first_from_file("obj/sphere.obj");
 
 	o=object_alloc(&object_def);
 	str_setz(&o->name,"skydome");
