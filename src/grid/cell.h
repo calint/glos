@@ -120,8 +120,7 @@ inline static void cell_render(cell*o,framectx*fc){
 //    < . >
 
 inline static bool _cell_detect_and_resolve_collision_for_spheres(
-		object*o1,
-		object*o2){
+		object*o1,object*o2,framectx*fc){
 
 	const vec4 v;vec3_minus(&v,&o2->p.p,&o1->p.p);
 	const float d=o1->b.r+o2->b.r;
@@ -215,7 +214,7 @@ inline static void cell_resolve_collisions(cell*o,framectx*fc){
 
 			metrics.collision_detections_considered_prv_frame++;
 
-			if(!_cell_detect_and_resolve_collision_for_spheres(Oi,Oj)){
+			if(!_cell_detect_and_resolve_collision_for_spheres(Oi,Oj,fc)){
 //				printf("[ cell %p ][ coldet ][ %s ][ %s ] not in collision\n",
 //						(void*)o,(void*)Oi->name.data,(void*)Oj->name.data);
 				continue;
