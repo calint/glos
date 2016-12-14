@@ -50,12 +50,13 @@ inline static void object_update(object*o,framectx*fc){
 	}
 
 	o->p_prv=o->p;
-//	o->p.v=o->p_nxt.v;
+	o->p=o->p_nxt;
 
 	phy*p=&o->p;
 	const dt dt=fc->dt;
 	vec3_inc_with_vec3_over_dt(&p->p,&p->v,dt);
 	vec3_inc_with_vec3_over_dt(&p->a,&p->av,dt);
+	o->p_nxt=o->p;
 }
 inline static const float*object_get_updated_Mmw(object*o){
 	if(o->n.Mmw_valid)

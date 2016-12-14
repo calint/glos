@@ -124,6 +124,35 @@ inline static void cell_render(cell*o,framectx*fc){
 //     .*.
 //     <.>
 //    < . >
+inline static bool _cell_detect_and_resolve_collision_for_spheres1(
+		object*o1,object*o2,framectx*fc){
+
+	const vec4 v;vec3_minus(&v,&o2->p.p,&o1->p.p);
+	const float d=o1->b.r+o2->b.r;
+	const float dsq=d*d;
+	const float vsq=vec3_dot(&v,&v);
+	const float diff=dsq-vsq;
+	if(!(vsq<dsq))//?
+		return false;
+
+	// in collision
+	printf("frame: %u   %s vs %s\n",fc->tick,o1->name.data,o2->name.data);
+	if(o1->g.collide_mask==0){// o1 is a bouncer
+		vec3_negate(&o2->p.v);
+	}else if(o2->g.collide_mask==0){// o1 is a bouncer
+		vec3_negate(&o1->p.v);
+	}else{// swap velocities
+		const vec4 swap=o1->p.v;
+		o1->p.v=o2->p.v;
+		o2->p.v=swap;
+	}
+//	vec4 swap=o1->p.v;
+//	o1->p.v=o2->p.v;
+//	o2->p.v=swap;
+	vec3_print(&o1->p.p);vec3_print(&o2->p.p);puts("");
+	vec3_print(&o1->p.v);vec3_print(&o2->p.v);puts("");
+	return true;
+}
 
 inline static bool _cell_detect_and_resolve_collision_for_spheres(
 		object*o1,object*o2,framectx*fc){
@@ -131,14 +160,12 @@ inline static bool _cell_detect_and_resolve_collision_for_spheres(
 	const vec4 v;vec3_minus(&v,&o2->p.p,&o1->p.p);
 	const float d=o1->b.r+o2->b.r;
 	const float dsq=d*d;
-	const float epsilon=0;//.001f;
-	const float vsq=vec3_dot(&v,&v)+epsilon;
+	const float vsq=vec3_dot(&v,&v);
+	const float diff=dsq-vsq;
 	if(!(vsq<dsq))//?
 		return false;
 
-	// in collision
-
-	//? partial dt
+	// partial dt to collision
 	const float x1=o1->p.p.x;
 	const float u1=o1->p.v.x;
 	const float r1=o1->b.r;
@@ -146,20 +173,19 @@ inline static bool _cell_detect_and_resolve_collision_for_spheres(
 	const float u2=o2->p.v.x;
 	const float r2=o1->b.r;
 	// if x1<x2
-	//  x1+u1*t+r1=x2+u2*t-r2
+	//   x1+u1*t+r1=x2+u2*t-r2
 	// else if x1>x2
-	//  x1+u1*t-r1=x2+u2*t+r2
+	//   x1+u1*t-r1=x2+u2*t+r2
 	// else
-	//  ?
+	//   ?
 	// for x1<x2
-	//  x1+u1*t+r1=x2+u2*t-r2
-	//  x1-x2+r1+r2=u2*t-u1*t
-	//  (x1-x2+r1+r2)/(u2-u1)=t
+	//   x1+u1*t+r1=x2+u2*t-r2
+	//   x1-x2+r1+r2=u2*t-u1*t
+	//   (x1-x2+r1+r2)/(u2-u1)=t
 	// for x1>x2
-	//  x1+u1*t-r1=x2+u2*t+r2
-	//  x1-x2-r1-r2=u2*t-u1*t
-	//  (x1-x2-r1-r2)/(u2-u1)=t
-	//  (x1-x2-r1-r2)/(u2-u1)=t
+	//   x1+u1*t-r1=x2+u2*t+r2
+	//   x1-x2-r1-r2=u2*t-u1*t
+	//   (x1-x2-r1-r2)/(u2-u1)=t
 	const float div=u2-u1;
 	if(div==0){
 		fprintf(stderr,"\n%s:%u: was in collision already\n",__FILE__,__LINE__);
@@ -181,12 +207,12 @@ inline static bool _cell_detect_and_resolve_collision_for_spheres(
 
 //	printf("%f ",t);vec3_print(&o1->p.p);vec3_print(&o2->p.p);puts("");
 	// move to collision
-	vec3_inc_with_vec3_over_dt(&o1->p.p,&o1->p.v,t);//*0.99999f for resolved
-	vec3_inc_with_vec3_over_dt(&o2->p.p,&o2->p.v,t);
+	vec3_inc_with_vec3_over_dt(&o1->p_nxt.p,&o1->p.v,t);//*0.99999f for resolved
+	vec3_inc_with_vec3_over_dt(&o2->p_nxt.p,&o2->p.v,t);
 
 	// validate
 	{
-		const vec4 v;vec3_minus(&v,&o2->p.p,&o1->p.p);
+		const vec4 v;vec3_minus(&v,&o2->p_nxt.p,&o1->p_nxt.p);
 		const float d=o1->b.r+o2->b.r;
 		const float dsq=d*d;
 		const float epsilon=0;//.001f;
@@ -202,18 +228,18 @@ inline static bool _cell_detect_and_resolve_collision_for_spheres(
 //	printf("%f ",t);vec3_print(&o1->p.p);vec3_print(&o2->p.p);puts("");
 	// exchange velocity
 	if(o1->g.collide_mask==0){// o1 is a bouncer
-		vec3_negate(&o2->p.v);
+		vec3_negate(&o2->p_nxt.v);
 	}else if(o2->g.collide_mask==0){// o1 is a bouncer
-		vec3_negate(&o1->p.v);
+		vec3_negate(&o1->p_nxt.v);
 	}else{// swap velocities
 		const vec4 swap=o1->p.v;
-		o1->p.v=o2->p.v;
-		o2->p.v=swap;
+		o1->p_nxt.v=o2->p.v;
+		o2->p_nxt.v=swap;
 	}
 //	printf("%f ",t);vec3_print(&o1->p.p);vec3_print(&o2->p.p);puts("");
 	// move in new direction
-	vec3_inc_with_vec3_over_dt(&o1->p.p,&o1->p.v,-t);
-	vec3_inc_with_vec3_over_dt(&o2->p.p,&o2->p.v,-t);
+	vec3_inc_with_vec3_over_dt(&o1->p_nxt.p,&o1->p_nxt.v,-t);
+	vec3_inc_with_vec3_over_dt(&o2->p_nxt.p,&o2->p_nxt.v,-t);
 //	printf("%f ",t);vec3_print(&o1->p.p);vec3_print(&o2->p.p);puts("");
 //	_cell_detect_and_resolve_collision_for_spheres(o1,o2,fc);
 	return true;
