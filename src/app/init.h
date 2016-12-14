@@ -5,30 +5,16 @@
 
 inline static void main_init_scene_1D(){
 	glos_load_all_from_file("obj/rigg1d/sphere.obj");
-	glos_load_all_from_file("obj/rigg1d/rigg1d.obj");
-	glos_load_all_from_file("obj/rigg1d/bounding-radius.obj");
-	glos_load_all_from_file("obj/santa.obj");
-//	glos_load_all_from_file("obj/skydome.obj");
-
 
 	camera.eye=(position){0,15,-15,0};
 	camera.lookat=(position){0,0,0,0};
 
 	object*o;
-	santa*p;
-
-
-
-//	p=malloc(sizeof(santa));
-//	*p=santa_def;
-//	p->bounding_glo_ptr=glos_find_by_name("bounding-radius");
-//	p->keybits_ptr=&net_state_current[1].keybits;
-//	o->part[0]=(part*)p;
 
 	// left sphere stopper
 	o=object_alloc(&object_def);
 	str_setz(&o->name,"Sls");
-	o->p.p.x=-6;
+	o->p.p.x=-8;
 	o->p.p.y=o->b.s.y;
 	o->n.glo_ptr=glos_find_by_name("sphere");
 	o->v.render=_object_render_glo_;
@@ -60,7 +46,7 @@ inline static void main_init_scene_1D(){
 	// right sphere stopper
 	o=object_alloc(&object_def);
 	str_setz(&o->name,"Srs");
-	o->p.p.x=6;
+	o->p.p.x=8;
 	o->p.p.y=o->b.s.y;
 	o->n.glo_ptr=glos_find_by_name("sphere");
 	o->v.render=_object_render_glo_;
