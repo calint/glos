@@ -102,12 +102,17 @@ inline static void cell_render(cell*o,framectx*fc){
 //	}
 //	return 0;
 //}
+// newton cradle cases:
 //
-
+//
+//   o : ball
+//   > : velocity
+//   . : no velocity
+//
 //     >.
 //     oo
 //     .>
-//       >
+//     . >
 //
 //     ><
 //     oo
