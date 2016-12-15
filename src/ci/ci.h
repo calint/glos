@@ -1,12 +1,18 @@
 #pragma once
 #include"../lib.h"
 
-typedef struct ci_slot{
+typedef struct ci_member{
 	str type;
 	str name;
-}ci_slot;
+}ci_member;
 
-#define ci_slot_def (ci_slot){str_def,str_def}
+#define ci_member_def (ci_member){str_def,str_def}
+
+inline static void ci_member_free(ci_member*o){
+	str_free(&o->type);
+	str_free(&o->name);
+	free(o);
+}
 
 typedef struct ci_func_arg{
 	str type;
@@ -14,6 +20,12 @@ typedef struct ci_func_arg{
 }ci_func_arg;
 
 #define ci_func_arg_def (ci_func_arg){str_def,str_def}
+
+inline static void ci_func_arg_free(ci_func_arg*o){
+	str_free(&o->name);
+	str_free(&o->type);
+	free(o);
+}
 
 typedef struct ci_func{
 	str type;
@@ -23,31 +35,55 @@ typedef struct ci_func{
 
 #define ci_func_def (ci_func){str_def,str_def,dynp_def}
 
+inline static void ci_func_free(ci_func*o){
+	dynp_foa(&o->args,{
+		ci_func_arg_free((ci_func_arg*)o);
+	});
+	dynp_free(&o->args);
+	str_free(&o->name);
+	str_free(&o->type);
+	free(o);
+}
+
 typedef struct ci_class{
 	str name;
 	dynp/*owns str*/extends;
-	dynp/*owns ci_slot*/slots;
+	dynp/*owns ci_slot*/members;
 	dynp/*owns ci_func*/functions;
 }ci_class;
 
-#define ci_class_def (ci_class){str_def,dynp_def,dynp_def}
-
+#define ci_class_def (ci_class){str_def,dynp_def,dynp_def,dynp_def}
 dynp/*owns*/ci_classes=dynp_def;
+
+inline static void ci_class_free(ci_class*o){
+
+	dynp_foa(&o->functions,{
+			ci_func_free((ci_func*)o);
+	});
+	dynp_free(&o->functions);
+
+	dynp_foa(&o->members,{
+		ci_member_free((ci_member*)o);
+	});
+	dynp_free(&o->members);
+
+	dynp_foa(&o->extends,{
+		str_free((str*)o);
+	});
+	dynp_free(&o->extends);
+
+	str_free(&o->name);
+
+	free(o);
+}
+
 
 inline static void ci_init(){}
 
-inline static void ci_class_free(ci_class*o){
-	for(unsigned i=0;i<o->extends.count;i++){
-		str_free((str*)&o->extends.data[i]);
-	}
-	dynp_free(&o->extends);
-	str_free(&o->name);
-}
-
 static void ci_free(){
-	for(unsigned i=0;i<ci_classes.count;i++){
-		ci_class_free(ci_classes.data[i]);
-	}
+	dynp_foa(&ci_classes,{
+		ci_class_free((ci_class*)o);
+	});
 	dynp_free(&ci_classes);
 }
 
@@ -98,14 +134,15 @@ static void ci_load_def(const char*path){
 					p++;
 					break;
 				}
-				ci_slot*slt=malloc(sizeof(ci_slot));
-				*slt=ci_slot_def;
-				dynp_add(&c->slots,slt);
+				ci_member*m=malloc(sizeof(ci_member));
+				*m=ci_member_def;
+				dynp_add(&c->members,m);
+				token_copy_to_str(&type,&m->type);
 				token name=token_next(&p);
-				token_copy_to_str(&type,&slt->type);
-				token_copy_to_str(&name,&slt->name);
 				if(token_is_empty(&name)){
-					token_copy_to_str(&type,&slt->name);
+					token_copy_to_str(&type,&m->name);
+				}else{
+					token_copy_to_str(&name,&m->name);
 				}
 				if(*p=='('){
 					p++;
@@ -167,8 +204,8 @@ static void ci_load_def(const char*path){
 				str*s=o;
 				printf("    %s %s;\n",s->data,s->data);
 			});
-			dynp_foa(&c->slots,{
-				ci_slot*s=o;
+			dynp_foa(&c->members,{
+				ci_member*s=o;
 				printf("    %s %s;\n",s->type.data,s->name.data);
 			});
 			printf("}%s;\n",c->name.data);
@@ -180,23 +217,11 @@ static void ci_load_def(const char*path){
 				str*s=o;
 				printf("%s_def,",s->data);
 			});
-			dynp_foa(&c->slots,{
-				ci_slot*s=o;
+			dynp_foa(&c->members,{
+				ci_member*s=o;
 				printf("%s_def,",s->type.data);
 			});
 			printf("}\n");
-			// alloc
-			printf("//--- - - ---------------------  - -- - - - - - - -- - - - -- - - - -- - - -\n");
-			printf(	"inline static %s*%s_alloc(){\n"
-					"	%s*p=malloc(sizeof(%s));\n"
-					"	*p=%s_def;\n"
-					"	return p;\n"
-					"}\n",
-					c->name.data,c->name.data,
-					c->name.data,c->name.data,
-					c->name.data
-			);
-
 			// init
 			printf("//--- - - ---------------------  - -- - - - - - - -- - - - -- - - - -- - - -\n");
 			printf(	"inline static void %s_init(%s*o){\n",
@@ -206,7 +231,19 @@ static void ci_load_def(const char*path){
 				printf(	"	%s_init(&o->%s);\n",s->data,s->data);
 			});
 			printf("}\n");
-
+			// alloc
+			printf("//--- - - ---------------------  - -- - - - - - - -- - - - -- - - - -- - - -\n");
+			printf(	"inline static %s*%s_alloc(){\n"
+					"	%s*p=malloc(sizeof(%s));\n"
+					"	*p=%s_def;\n"
+					"	%s_init(p);\n"
+					"	return p;\n"
+					"}\n",
+					c->name.data,c->name.data,
+					c->name.data,c->name.data,
+					c->name.data,
+					c->name.data
+			);
 			// free
 			printf("//--- - - ---------------------  - -- - - - - - - -- - - - -- - - - -- - - -\n");
 			printf(	"inline static void %s_free(%s*o){\n"
