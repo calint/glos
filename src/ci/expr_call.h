@@ -43,7 +43,7 @@ inline static void ci_expr_call_free(ci_expr*o){
 
 inline static /*gives*/ci_expr*ci_expr_next(const char**pp,ci_toc*tc);
 
-inline static /*gives*/ ci_expr_call*ci_expr_call_next(
+inline static /*gives*/ci_expr_call*ci_expr_call_next(
 		const char**pp,ci_toc*tc){
 	token t=token_next(pp);
 	ci_expr_call*o=malloc(sizeof(ci_expr_call));

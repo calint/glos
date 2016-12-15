@@ -48,7 +48,7 @@ inline static /*gives*/ci_expr*ci_expr_next(const char**,ci_toc*);
 
 static /*gives*/ci_block*ci_code_parse(ci_block*o,const char**pp,ci_toc*tc){
 //	ci_code*c=malloc(sizeof(ci_code));
-	*o=ci_code_def;
+//	*o=ci_code_def;
 	ci_toc_push_scope(tc,'b',"");
 	if(**pp=='{'){
 		(*pp)++;

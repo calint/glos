@@ -231,6 +231,60 @@ static void ci_compile_to_c(ci_toc*tc){
 	printf("//--- - - ---------------------  - -- - - - - - - -- - - - -- - - - -- - - -\n");
 	printf("\n");
 }
+
+static /*gives*/ci_class*ci_parse_class(const char**pp,ci_toc*tc,
+		token type,token name){
+	ci_class*c=malloc(sizeof(ci_class));
+	*c=ci_class_def;
+	dynp_add(&ci_classes,c);
+	token_setz(&name,&c->name);
+	ci_toc_push_scope(tc,'c',c->name.data);
+	if(**pp==':'){
+		(*pp)++;
+		while(1){
+			token extends_name=token_next(pp);
+			dynp_add(&c->extends,/*takes*/token_to_str(&extends_name));
+			if(**pp=='{'){
+				break;
+			}else if(**pp==','){
+				(*pp)++;
+				continue;
+			}
+			printf("<file> <line:col> expected '{' or ',' followed by "
+					"class name");
+			exit(1);
+
+		}
+	}
+	if(**pp!='{'){
+		printf("<file> <line:col> expected '{' to open class body");
+		exit(1);
+	}
+	(*pp)++;
+	while(1){
+		token type=token_next(pp);
+		if(token_is_empty(&type)){
+			if(**pp!='}'){
+				printf("<file> <line:col> expected '}' to close class body\n");
+				exit(1);
+			}
+			(*pp)++;
+			break;
+		}
+		token name=token_next(pp);
+		if(**pp=='('){
+			(*pp)++;
+			ci_parse_func(pp,tc,c,&type,&name);
+		}else if(**pp=='=' || **pp==';'){
+			ci_parse_field(pp,tc,c,&type,&name);
+		}else{
+			printf("<file> <line:col> expected ';'\n");
+			exit(1);
+		}
+	}
+	ci_toc_pop_scope(tc);
+	return/*gives*/c;
+}
 static void ci_compile(const char*path){
 	str s=str_from_file(path);
 	const char*p=s.data;
@@ -244,55 +298,8 @@ static void ci_compile(const char*path){
 			exit(1);
 		}
 		token nm=token_next(&p);
-		ci_class*c=malloc(sizeof(ci_class));
-		*c=ci_class_def;
+		ci_class*c=/*takes*/ci_parse_class(&p,&toc,t,nm);
 		dynp_add(&ci_classes,c);
-		token_setz(&nm,&c->name);
-		ci_toc_push_scope(&toc, 'c',c->name.data);
-		if(*p==':'){
-			p++;
-			while(1){
-				token extends_name=token_next(&p);
-				dynp_add(&c->extends,/*takes*/token_to_str(&extends_name));
-				if(*p=='{'){
-					break;
-				}else if(*p==','){
-					p++;
-					continue;
-				}
-				printf("<file> <line:col> expected '{' or ',' followed by "
-						"class name");
-				exit(1);
-
-			}
-		}
-		if(*p!='{'){
-			printf("<file> <line:col> expected '{' to open class body");
-			exit(1);
-		}
-		p++;
-		while(1){
-			token type=token_next(&p);
-			if(token_is_empty(&type)){
-				if(*p!='}'){
-					printf("<file> <line:col> expected '}' to close class body\n");
-					exit(1);
-				}
-				p++;
-				break;
-			}
-			token name=token_next(&p);
-			if(*p=='('){
-				p++;
-				ci_parse_func(&p,&toc,c,&type,&name);
-			}else if(*p=='=' || *p==';'){
-				ci_parse_field(&p,&toc,c,&type,&name);
-			}else{
-				printf("<file> <line:col> expected ';'\n");
-				exit(1);
-			}
-		}
-		ci_toc_pop_scope(&toc);//, 'c',c->name.data);
 	}
 	ci_compile_to_c(&toc);
 }

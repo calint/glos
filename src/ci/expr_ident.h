@@ -5,6 +5,7 @@
 
 typedef struct ci_expr_ident{
 	ci_expr super;
+	str type;
 	str name;
 }ci_expr_ident;
 
@@ -26,7 +27,7 @@ inline static void _ci_expr_ident_compile_(
 }
 
 #define ci_expr_ident_def (ci_expr_ident){\
-	{_ci_expr_ident_compile_,_ci_expr_ident_free_},str_def}
+	{_ci_expr_ident_compile_,_ci_expr_ident_free_},str_def,str_def}
 
 //inline static void ci_expr_ident_free(ci_expr_ident*o){
 //	ci_expression_free(&o->super);
