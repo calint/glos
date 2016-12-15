@@ -107,7 +107,7 @@ inline static void main_render(framectx*fc){
 int main(int argc,char*argv[]){
 	ci_init();
 	ci_compile("ci/main.ci");
-	ci_free();
+//	ci_free();
 
 	if(argc>1 && *argv[1]=='s'){
 		netsrv_init();

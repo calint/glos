@@ -37,6 +37,55 @@ inline static /*gives*/ci_expr*ci_expr_next(
 	return (ci_expr*)e;
 }
 
+static void ci_parse_function(const char**pp,ci_toc*tc,ci_class*c,
+		token*type,token*name){
+	ci_func*f=malloc(sizeof(ci_func));
+	*f=ci_func_def;
+	dynp_add(&c->functions,f);
+	token_copy_to_str(type,&f->type);
+	token_copy_to_str(name,&f->name);
+	while(1){
+		token argtype=token_next(pp);
+		if(token_is_empty(&argtype)){
+			if(**pp==')'){
+				(*pp)++;
+				break;
+			}
+			printf("<file> <line:col> expected function arguments or ')'\n");
+			exit(1);
+		}
+		token argname=token_next(pp);
+		ci_func_arg*fa=malloc(sizeof(ci_func_arg));
+		*fa=ci_func_arg_def;
+		dynp_add(&f->args,fa);
+		token_copy_to_str(&argtype,&fa->type);
+		token_copy_to_str(&argname,&fa->name);
+		if(**pp==','){
+			(*pp)++;
+			continue;
+		}
+	}
+	if(**pp=='{'){//? require
+		(*pp)++;
+	}
+	while(1){
+		ci_expr*e=ci_expr_next(tc,pp);
+		if(ci_expr_is_empty(e)){
+			if(**pp=='}'){
+				(*pp)++;
+				break;
+			}
+		}
+		dynp_add(&f->exprs,e);
+		if(**pp==';'){
+			(*pp)++;
+			continue;
+		}
+		printf("<file> <line:col> expected ';'\n");
+		exit(1);
+	}
+}
+
 static void ci_compile(const char*path){
 	str s=str_from_file(path);
 	const char*p=s.data;
@@ -86,63 +135,20 @@ static void ci_compile(const char*path){
 					p++;
 					break;
 				}
-				ci_field*m=malloc(sizeof(ci_field));
-				*m=ci_field_def;
-				dynp_add(&c->members,m);
-				token_copy_to_str(&type,&m->type);
+				ci_field*f=malloc(sizeof(ci_field));
+				*f=ci_field_def;
+				dynp_add(&c->members,f);
+				token_copy_to_str(&type,&f->type);
 				token name=token_next(&p);
 				if(token_is_empty(&name)){
-					token_copy_to_str(&type,&m->name);
+					token_copy_to_str(&type,&f->name);
 				}else{
-					token_copy_to_str(&name,&m->name);
+					token_copy_to_str(&name,&f->name);
 				}
+				ci_toc_add_identifier(&toc,f->name.data);
 				if(*p=='('){
 					p++;
-					ci_func*f=malloc(sizeof(ci_func));
-					*f=ci_func_def;
-					dynp_add(&c->functions,f);
-					token_copy_to_str(&type,&f->type);
-					token_copy_to_str(&name,&f->name);
-					while(1){
-						token argtype=token_next(&p);
-						if(token_is_empty(&argtype)){
-							if(*p==')'){
-								p++;
-								break;
-							}
-							printf("<file> <line:col> expected function arguments or ')'\n");
-							exit(1);
-						}
-						token argname=token_next(&p);
-						ci_func_arg*fa=malloc(sizeof(ci_func_arg));
-						*fa=ci_func_arg_def;
-						dynp_add(&f->args,fa);
-						token_copy_to_str(&argtype,&fa->type);
-						token_copy_to_str(&argname,&fa->name);
-						if(*p==','){
-							p++;
-							continue;
-						}
-					}
-					if(*p=='{'){//? require
-						p++;
-					}
-					while(1){
-						ci_expr*e=ci_expr_next(&toc,&p);
-						if(ci_expr_is_empty(e)){
-							if(*p=='}'){
-								p++;
-								break;
-							}
-						}
-						dynp_add(&f->exprs,e);
-						if(*p==';'){
-							p++;
-							continue;
-						}
-						printf("<file> <line:col> expected ';'\n");
-						exit(1);
-					}
+					ci_parse_function(&p,&toc,c,&type,&name);
 				}else if(*p=='='){
 					p++;
 					printf("<file> <line:col> member initializer not supported\n");
