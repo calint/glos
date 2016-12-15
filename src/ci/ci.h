@@ -74,10 +74,12 @@ inline static void ci_func_free(ci_func*o){
 		ci_statement_free((ci_statement*)o);
 	});
 	dynp_free(&o->stmts);
+
 	dynp_foa(&o->args,{
 		ci_func_arg_free((ci_func_arg*)o);
 	});
 	dynp_free(&o->args);
+
 	str_free(&o->name);
 	str_free(&o->type);
 	free(o);
