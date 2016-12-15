@@ -10,5 +10,5 @@
 #include"scene6.h"
 #include"scene7.h"
 inline static void main_init_scene(){
-	main_init_scene_7();
+	main_init_scene_0();
 }

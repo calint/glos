@@ -63,10 +63,35 @@ inline static unsigned token_get_uint(token*t){
 	return(unsigned)i;
 }
 
-inline static token token_next_from_string(const char*s){
-	const char*p=s;
+//inline static token token_next_from_string(const char*s){
+//	const char*p=s;
+//	token t;
+//	t.begin=s;
+//	while(1){
+//		if(!*p)break;
+//		if(!isspace(*p))break;
+//		p++;
+//	}
+//	t.content=p;
+//	while(1){
+//		if(!*p)break;
+//		if(isspace(*p))break;
+//		p++;
+//	}
+//	t.content_end=p;
+//	while(1){
+//		if(!*p)break;
+//		if(!isspace(*p))break;
+//		p++;
+//	}
+//	t.end=p;
+//	return t;
+//}
+
+inline static token token_next(const char**s){
+	const char*p=*s;
 	token t;
-	t.begin=s;
+	t.begin=p;
 	while(1){
 		if(!*p)break;
 		if(!isspace(*p))break;
@@ -84,7 +109,7 @@ inline static token token_next_from_string(const char*s){
 		if(!isspace(*p))break;
 		p++;
 	}
-	t.end=p;
+	*s=t.end=p;
 	return t;
 }
 

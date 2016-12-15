@@ -109,13 +109,14 @@ inline static void objects_free() {
 			continue;
 		}
 		/*** critical done ****/}
-		if(o->v.free)o->v.free(o);
+		if(o->v.free)
+			o->v.free(o);
 		for(int i=0;i<object_part_cap;i++){
 			if(!o->part[i])
 				continue;
 			part*p=(part*)o->part[i];
-			if(p->free)
-				p->free(o,p);
+			if(p->free)p->
+					free(o,p);
 		}
 		o++;
 	}

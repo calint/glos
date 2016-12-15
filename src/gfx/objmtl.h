@@ -49,17 +49,14 @@ inline static void objmtls_load_from_file(const char*path){
 	objmtl*o=NULL;
 	const char*p=file.data;
 	while(*p){
-		token t=token_next_from_string(p);
-		p=t.end;
-
+		token t=token_next(&p);
 		if(token_starts_with(&t,"#")){
 			p=scan_to_including_newline(p);
 			continue;
 		}
 		if(token_starts_with(&t,"newmtl")){
 			o=objmtl_alloc();
-			token t=token_next_from_string(p);
-			p=t.end;
+			token t=token_next(&p);
 			unsigned n=token_size(&t);
 			str_add_list(&o->name,t.content,n);
 			str_add(&o->name,0);
@@ -67,8 +64,7 @@ inline static void objmtls_load_from_file(const char*path){
 			continue;
 		}
 		if(token_equals(&t,"Ns")){
-			token t=token_next_from_string(p);
-			p=t.end;
+			token t=token_next(&p);
 			float f=token_get_float(&t);
 			o->Ns=f;
 			continue;
@@ -79,16 +75,13 @@ inline static void objmtls_load_from_file(const char*path){
 				token_equals(&t,"Ke")){
 			vec4 v;
 
-			token x=token_next_from_string(p);
-			p=x.end;
+			token x=token_next(&p);
 			v.x=token_get_float(&x);
 
-			token y=token_next_from_string(p);
-			p=y.end;
+			token y=token_next(&p);
 			v.y=token_get_float(&y);
 
-			token z=token_next_from_string(p);
-			p=z.end;
+			token z=token_next(&p);
 			v.z=token_get_float(&z);
 
 			v.w=0;
@@ -106,24 +99,21 @@ inline static void objmtls_load_from_file(const char*path){
 		}
 
 		if(token_equals(&t,"Ni")){
-			token t=token_next_from_string(p);
-			p=t.end;
+			token t=token_next(&p);
 			float f=token_get_float(&t);
 			o->Ni=f;
 			continue;
 		}
 
 		if(token_equals(&t,"d")){
-			token t=token_next_from_string(p);
-			p=t.end;
+			token t=token_next(&p);
 			float f=token_get_float(&t);
 			o->d=f;
 			continue;
 		}
 
 		if(token_equals(&t,"map_Kd")){
-			token t=token_next_from_string(p);
-			p=t.end;
+			token t=token_next(&p);
 			unsigned n=token_size(&t);
 			str_add_list(&o->map_Kd,t.content,n);
 			str_add(&o->map_Kd,0);

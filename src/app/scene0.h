@@ -8,7 +8,7 @@ inline static void main_init_scene_0(){
 	glos_load_all_from_file("obj/board.obj");
 	glos_load_first_from_file("obj/grid.obj");
 	glos_load_first_from_file("obj/santa.obj");
-	glos_load_first_from_file("obj/sphere.obj");
+//	glos_load_first_from_file("obj/sphere.obj");
 
 	o=object_alloc(&object_def);
 	str_setz(&o->name,"skydome");

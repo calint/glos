@@ -72,7 +72,7 @@ inline static const float*object_get_updated_Mmw(object*o){
 	mat4_append_rotation_about_z_axis(
 			o->n.Mmw,o->p.a.z);
 
-	mat4_scale(o->n.Mmw,&o->b.s);
+	mat3_scale(o->n.Mmw,&o->b.s);
 
 	o->n.Mmw_valid=1;
 

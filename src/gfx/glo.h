@@ -73,15 +73,14 @@ static/*gives*/glo*glo_make_next_from_string(const char**ptr_p){
 	int first_o=1;
 	str object_name=str_def;
 	while(*p){
-		token t=token_next_from_string(p);
-		p=t.end;//token_size_including_whitespace(&t);
+		token t=token_next(&p);
+//		p=t.end;//token_size_including_whitespace(&t);
 		if(token_starts_with(&t,"#")){
 			p=scan_to_including_newline(p);
 			continue;
 		}
 		if(token_equals(&t,"mtllib")){
-			token t=token_next_from_string(p);
-			p=t.end;
+			token t=token_next(&p);
 			str s=str_def;
 			str_add_string(&s,basedir);
 			str_add_list(&s,t.content,token_size(&t));
@@ -92,8 +91,7 @@ static/*gives*/glo*glo_make_next_from_string(const char**ptr_p){
 		if(token_equals(&t,"o")){
 			if(first_o){
 				first_o=0;
-				token t=token_next_from_string(p);
-				p=t.end;
+				token t=token_next(&p);
 				str_add_list(&object_name,t.content,token_size(&t));
 				str_add(&object_name,0);
 				puts(object_name.data);
@@ -104,7 +102,7 @@ static/*gives*/glo*glo_make_next_from_string(const char**ptr_p){
 			break;
 		}
 		if(token_equals(&t,"usemtl")){
-			token t=token_next_from_string(p);
+			token t=token_next(&p);
 			str name=str_def;
 			str_add_list(&name,t.content,token_size(&t));
 			str_add(&name,0);
@@ -141,17 +139,14 @@ static/*gives*/glo*glo_make_next_from_string(const char**ptr_p){
 			continue;
 		}
 		if(token_equals(&t,"v")){
-			token tx=token_next_from_string(p);
+			token tx=token_next(&p);
 			float x=token_get_float(&tx);
-			p=tx.end;
 
-			token ty=token_next_from_string(p);
+			token ty=token_next(&p);
 			float y=token_get_float(&ty);
-			p=ty.end;
 
-			token tz=token_next_from_string(p);
+			token tz=token_next(&p);
 			float z=token_get_float(&tz);
-			p=tz.end;
 
 			vec4*ptr=malloc(sizeof(vec4));
 			*ptr=(vec4){x,y,z,0};
@@ -159,13 +154,11 @@ static/*gives*/glo*glo_make_next_from_string(const char**ptr_p){
 			continue;
 		}
 		if(token_equals(&t,"vt")){
-			token tu=token_next_from_string(p);
+			token tu=token_next(&p);
 			float u=token_get_float(&tu);
-			p=tu.end;
 
-			token tv=token_next_from_string(p);
+			token tv=token_next(&p);
 			float v=token_get_float(&tv);
-			p=tv.end;
 
 			vec4*ptr=malloc(sizeof(vec4));
 			*ptr=(vec4){u,v,0,0};
@@ -173,16 +166,13 @@ static/*gives*/glo*glo_make_next_from_string(const char**ptr_p){
 			continue;
 		}
 		if(token_equals(&t,"vn")){
-			token tx=token_next_from_string(p);
-			p=tx.end;
+			token tx=token_next(&p);
 			float x=token_get_float(&tx);
 
-			token ty=token_next_from_string(p);
-			p=ty.end;
+			token ty=token_next(&p);
 			float y=token_get_float(&ty);
 
-			token tz=token_next_from_string(p);
-			p=tz.end;
+			token tz=token_next(&p);
 			float z=token_get_float(&tz);
 
 
@@ -311,58 +301,48 @@ static/*gives*/dynp glo_load_all_from_file(const char*path){
 	dynp reuslt=dynp_def;
 //	const char*basedir=str_base_dir(path);
 	while(*p){
-		token t=token_next_from_string(p);
-		p=t.end;//token_size_including_whitespace(&t);
+		token t=token_next(&p);
 		if(token_starts_with(&t,"#")){
 			p=scan_to_including_newline(p);
 		}else if(token_equals(&t,"mtllib")){
-			token t=token_next_from_string(p);
-			p=t.end;
+			token t=token_next(&p);
 			str s=str_def;
 			str_add_list(&s,basedir.data,basedir.count);
 			str_add_list(&s,t.content,token_size(&t));
 			str_add(&s,0);
 			objmtls_load_from_file(s.data);
 		}else if(token_equals(&t,"v")){
-			token tx=token_next_from_string(p);
+			token tx=token_next(&p);
 			float x=token_get_float(&tx);
-			p=tx.end;
 
-			token ty=token_next_from_string(p);
+			token ty=token_next(&p);
 			float y=token_get_float(&ty);
-			p=ty.end;
 
-			token tz=token_next_from_string(p);
+			token tz=token_next(&p);
 			float z=token_get_float(&tz);
-			p=tz.end;
 
 			vec4*ptr=malloc(sizeof(vec4));
 			*ptr=(vec4){x,y,z,0};
 			dynp_add(&vertices,ptr);
 			continue;
 		}else if(token_equals(&t,"vt")){
-			token tu=token_next_from_string(p);
+			token tu=token_next(&p);
 			float u=token_get_float(&tu);
-			p=tu.end;
 
-			token tv=token_next_from_string(p);
+			token tv=token_next(&p);
 			float v=token_get_float(&tv);
-			p=tv.end;
 
 			vec4*ptr=malloc(sizeof(vec4));
 			*ptr=(vec4){u,v,0,0};
 			dynp_add(&texuv,ptr);
 		}else if(token_equals(&t,"vn")){
-			token tx=token_next_from_string(p);
-			p=tx.end;
+			token tx=token_next(&p);
 			float x=token_get_float(&tx);
 
-			token ty=token_next_from_string(p);
-			p=ty.end;
+			token ty=token_next(&p);
 			float y=token_get_float(&ty);
 
-			token tz=token_next_from_string(p);
-			p=tz.end;
+			token tz=token_next(&p);
 			float z=token_get_float(&tz);
 
 
@@ -381,11 +361,9 @@ static/*gives*/dynp glo_load_all_from_file(const char*path){
 	unsigned vtxbufix_base=0;
 	str name=str_def;
 	while(*p){
-		token t=token_next_from_string(p);
-		p=t.end;
+		token t=token_next(&p);
 		if(token_equals(&t,"o")){
-			token t=token_next_from_string(p);
-			p=t.end;
+			token t=token_next(&p);
 			name=str_def;
 			str_add_list(&name,t.content,token_size(&t));
 			str_add(&name,0);
@@ -418,8 +396,7 @@ static/*gives*/dynp glo_load_all_from_file(const char*path){
 			continue;
 		}
 		if(token_equals(&t,"usemtl")){
-			token t=token_next_from_string(p);
-			p=t.end;
+			token t=token_next(&p);
 			str name=str_def;
 			str_add_list(&name,t.content,token_size(&t));
 			str_add(&name,0);

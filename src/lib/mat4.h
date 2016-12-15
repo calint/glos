@@ -441,7 +441,7 @@ inline static void mat4_set_scale(mat4 o,scale*s){
 }
 
 
-inline static void mat4_scale(mat4 o,scale*s){
+inline static void mat3_scale(mat4 o,scale*s){
 	// [ 0 4  8 12 ]   [ x 0 0 0 ]
 	// [ 1 5  9 13 ] x [ 0 y 0 0 ]
 	// [ 2 6 10 14 ]   [ 0 0 z 0 ]
