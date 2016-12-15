@@ -150,8 +150,11 @@ static void ci_compile_to_c(ci_toc*tc){
 			str*s=o;
 			printf("    %s %s;\n",s->data,s->data);
 		});
+
+		// fields
 		dynp_foa(&c->fields,{
 			ci_field*s=o;
+			ci_toc_add_ident(tc,s->name.data);
 			printf("    %s %s;\n",s->type.data,s->name.data);
 		});
 		printf("}%s;\n",c->name.data);
