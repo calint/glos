@@ -162,15 +162,15 @@ inline static bool _cell_detect_and_resolve_collision_for_spheres(
 		object*o1,object*o2,framectx*fc){
 
 	const vec4 v;vec3_minus(&v,&o2->p.p,&o1->p.p);
-	const float d=o1->b.r+o2->b.r;
-	const float dsq=d*d;
-	const float vsq=vec3_dot(&v,&v);
-	const float diff=vsq-dsq;
-	if(diff>=0){
+	const float d=o1->b.r+o2->b.r;  // minimum distance
+	const float dsq=d*d;            //  squared
+	const float vsq=vec3_dot(&v,&v);// distance of vector squared
+	const float diff=vsq-dsq;       //
+	if(diff>=0){                    //
 		return false;
 	}
-
-//	if(fabs(diff)<.000001f){
+//
+//	if(fabs(diff)<.01f){
 //		printf("   ... diff within error margin  %f\n",diff);
 //		return false;
 //	}

@@ -12,7 +12,7 @@
  [ ]     center/scale/position
  [ ]   faces to ccw
  [ ] draw bounding volume
- [ ]   sphere
+ [x]   sphere
  [ ]   box
  [ ]   planes
  [x] multiple materials in render
@@ -52,7 +52,7 @@
  [x]     perspective
  [x]   look-at
  [ ]   click select
- [ ]   follow
+ [x]   follow
  [ ]     pd regulator
  [ ]     pid regulator
  [ ]   script
@@ -64,13 +64,13 @@
  [x] mouse
  [x]   fps controls
  [ ]   alternative controls
+ [o] light sources
+ [o]   ambient
  [ ] shadow map
  [ ]   render to texture
  [x]   use several programs
- [ ] light sources
- [ ]   ambient
  [ ]   ortho
- [ ]     zoom zbuf to encompase view frustum
+ [ ]     zoom zbuf render to encompass view frustum
  [ ]   persp
  [ ] hierarchial objects
  [ ]   cached matrices
@@ -83,8 +83,8 @@
  [x]   sky dome
  [x]   ground plane
  [ ] 3D newton conservation with spheres
- [ ]   1D
+ [x]   1D cradle
  [ ]   2D
- [ ]
+ [ ]   3D
  
  
