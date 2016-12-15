@@ -41,11 +41,10 @@ inline static void ci_expr_call_free(ci_expr*o){
 	free(o);
 }
 
-inline static /*gives*/ci_expr*ci_expr_next(
-		ci_toc*toc,const char**pp);
+inline static /*gives*/ci_expr*ci_expr_next(const char**pp,ci_toc*tc);
 
 inline static /*gives*/ ci_expr_call*ci_expr_call_next(
-		ci_toc*toc,const char**pp){
+		const char**pp,ci_toc*tc){
 	token t=token_next(pp);
 	ci_expr_call*o=malloc(sizeof(ci_expr_call));
 	*o=ci_expr_call_def;
@@ -57,7 +56,7 @@ inline static /*gives*/ ci_expr_call*ci_expr_call_next(
 				(*pp)++;
 				break;
 			}
-			ci_expr*a=ci_expr_next(toc,pp);
+			ci_expr*a=ci_expr_next(pp,tc);
 			if(ci_expr_is_empty(a)){
 				printf("<file> <line> <col> expected ')' or more arguments");
 				exit(1);

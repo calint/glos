@@ -4,7 +4,7 @@
 #include "expr.h"
 #include "expr_call.h"
 #include "expr_ident.h"
-
+#include "ci_code.h"
 dynp/*owns*/ci_classes=dynp_def;
 
 inline static void ci_init(){}
@@ -17,7 +17,7 @@ static void ci_free(){
 }
 
 inline static /*gives*/ci_expr*ci_expr_next(
-		ci_toc*toc,const char**pp){
+		const char**pp,ci_toc*tc){
 	token t=token_next(pp);
 	if(token_is_empty(&t)){
 		ci_expr*e=malloc(sizeof(ci_expr));
@@ -27,7 +27,7 @@ inline static /*gives*/ci_expr*ci_expr_next(
 
 	if(**pp=='('){// function call
 		*pp=t.begin;
-		ci_expr_call*e=ci_expr_call_next(toc,pp);
+		ci_expr_call*e=ci_expr_call_next(pp,tc);
 		return (ci_expr*)e;
 	}
 	// assuming identifier
@@ -60,31 +60,32 @@ static void ci_parse_func(const char**pp,ci_toc*tc,ci_class*c,
 		dynp_add(&f->args,fa);
 		token_setz(&argtype,&fa->type);
 		token_setz(&argname,&fa->name);
-		ci_toc_add_identifier(tc,fa->name.data);
+		ci_toc_add_ident(tc,fa->name.data);
 		if(**pp==','){
 			(*pp)++;
 			continue;
 		}
 	}
-	if(**pp=='{'){//? require
-		(*pp)++;
-	}
-	while(1){
-		ci_expr*e=ci_expr_next(tc,pp);
-		if(ci_expr_is_empty(e)){
-			if(**pp=='}'){
-				(*pp)++;
-				break;
-			}
-		}
-		dynp_add(&f->exprs,e);
-		if(**pp==';'){
-			(*pp)++;
-			continue;
-		}
-		printf("<file> <line:col> expected ';'\n");
-		exit(1);
-	}
+	ci_code_parse(&f->code,pp,tc);
+//	if(**pp=='{'){//? require
+//		(*pp)++;
+//	}
+//	while(1){
+//		ci_expr*e=ci_expr_next(pp,tc);
+//		if(ci_expr_is_empty(e)){
+//			if(**pp=='}'){
+//				(*pp)++;
+//				break;
+//			}
+//		}
+//		dynp_add(&f->exprs,e);
+//		if(**pp==';'){
+//			(*pp)++;
+//			continue;
+//		}
+//		printf("<file> <line:col> expected ';'\n");
+//		exit(1);
+//	}
 }
 
 static void ci_parse_field(const char**pp,ci_toc*tc,ci_class*c,
@@ -100,7 +101,7 @@ static void ci_parse_field(const char**pp,ci_toc*tc,ci_class*c,
 	dynp_add(&c->fields,f);
 	if(**pp=='='){
 		(*pp)++;
-		ci_expr*e=ci_expr_next(tc,pp);
+		ci_expr*e=ci_expr_next(pp,tc);
 		f->initval=e;
 	}
 	if(**pp!=';'){
@@ -108,7 +109,7 @@ static void ci_parse_field(const char**pp,ci_toc*tc,ci_class*c,
 		exit(1);
 	}
 	(*pp)++;
-	ci_toc_add_identifier(tc,f->name.data);
+	ci_toc_add_ident(tc,f->name.data);
 }
 
 static void ci_compile_to_c(ci_toc*tc){
@@ -234,15 +235,10 @@ static void ci_compile_to_c(ci_toc*tc){
 				ci_func_arg*a=o;
 				printf(",");
 				printf("%s %s",a->type.data,a->name.data);
-				ci_toc_add_identifier(tc,a->name.data);
+				ci_toc_add_ident(tc,a->name.data);
 			});
-			printf("){\n");
-			dynp_foa(&f->exprs,{
-				ci_expr*e=o;
-				e->compile(e,tc);
-				printf(";\n");
-			});
-			printf("}\n");
+			printf(")");
+			f->code.super.compile((ci_expr*)&f->code,tc);
 			ci_toc_pop_scope(tc);
 		});
 		ci_toc_pop_scope(tc);
