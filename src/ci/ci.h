@@ -1,14 +1,37 @@
 #pragma once
 #include"../lib.h"
 
-typedef struct ci_statement{
+typedef struct ci_toc{
 
+}ci_toc;
+
+#define ci_toc_def {}
+
+inline static void ci_toc_free(ci_toc*o){
+	free(o);
+}
+
+typedef struct ci_statement{
+	struct ci_statement*parent;
 }ci_statement;
 
-#define ci_statement_def {}
+#define ci_statement_def (ci_statement){NULL}
 
 inline static void ci_statement_free(ci_statement*o){
 	free(o);
+}
+
+inline static /*gives*/ci_statement*ci_statement_next(ci_statement*parent,
+		const char**p){
+	token t=token_next(p);
+	ci_statement*s=malloc(sizeof(ci_statement));
+	*s=ci_statement_def;
+	s->parent=parent;
+	return s;
+}
+
+inline static int ci_statment_is_empty(ci_statement*o){
+	return 1;
 }
 
 typedef struct ci_member{
@@ -40,8 +63,8 @@ inline static void ci_func_arg_free(ci_func_arg*o){
 typedef struct ci_func{
 	str type;
 	str name;
-	dynp/*owns ci_func_arg*/args;
-	dynp/*owns ci_statment*/stmts;
+	dynp/*owns ci_func_arg**/args;
+	dynp/*owns ci_statment**/stmts;
 }ci_func;
 
 #define ci_func_def (ci_func){str_def,str_def,dynp_def,dynp_def}
@@ -187,12 +210,18 @@ static void ci_compile(const char*path){
 							continue;
 						}
 					}
-					if(*p=='{'){
+					if(*p=='{'){//? require
 						p++;
 					}
-					token body=token_next(&p);
-					if(*p=='}'){
-						p++;
+					while(1){
+						ci_statement*stmt=ci_statement_next(NULL,&p);
+						if(ci_statment_is_empty(stmt)){
+							if(*p=='}'){
+								p++;
+								break;
+							}
+						}
+						dynp_add(&f->stmts,stmt);
 					}
 				}else if(*p=='='){
 					p++;
