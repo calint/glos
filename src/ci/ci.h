@@ -17,25 +17,25 @@ static void ci_free(){
 }
 
 
-inline static /*gives*/ci_expression*ci_expr_next(
+inline static /*gives*/ci_expr*ci_expr_next(
 		ci_toc*toc,const char**pp){
 	token t=token_next(pp);
 	if(token_is_empty(&t)){
-		ci_expression*e=malloc(sizeof(ci_expression));
-		*e=ci_expression_def;
+		ci_expr*e=malloc(sizeof(ci_expr));
+		*e=ci_expr_def;
 		return e;
 	}
 
 	if(**pp=='('){// function call
 		*pp=t.begin;
 		ci_expr_call*e=ci_expr_call_next(toc,pp);
-		return (ci_expression*)e;
+		return (ci_expr*)e;
 	}
 	// assuming identifier
 	ci_expr_ident*e=malloc(sizeof(ci_expr_ident));
 	*e=ci_expr_ident_def;
 	token_copy_to_str(&t,&e->name);
-	return (ci_expression*)e;
+	return (ci_expr*)e;
 }
 
 static void ci_compile(const char*path){
@@ -128,8 +128,8 @@ static void ci_compile(const char*path){
 						p++;
 					}
 					while(1){
-						ci_expression*e=ci_expr_next(&toc,&p);
-						if(ci_expression_is_empty(e)){
+						ci_expr*e=ci_expr_next(&toc,&p);
+						if(ci_expr_is_empty(e)){
 							if(*p=='}'){
 								p++;
 								break;
@@ -244,7 +244,7 @@ static void ci_compile(const char*path){
 				});
 				printf("){\n");
 				dynp_foa(&f->exprs,{
-					ci_expression*e=o;
+					ci_expr*e=o;
 					e->compile(e,&toc);
 					printf(";\n");
 				});

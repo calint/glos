@@ -2,18 +2,18 @@
 #include"../lib.h"
 #include "toc.h"
 
-typedef struct ci_expression{
-	void (*compile)(struct ci_expression*,struct ci_toc*);
-	void (*free)(struct ci_expression*);
-}ci_expression;
+typedef struct ci_expr{
+	void (*compile)(struct ci_expr*,struct ci_toc*);
+	void (*free)(struct ci_expr*);
+}ci_expr;
 
-inline static void ci_expression_free(ci_expression*o){
+inline static void ci_expr_free(ci_expr*o){
 //	free(o);
 }
 
-#define ci_expression_def (ci_expression){NULL,ci_expression_free}
+#define ci_expr_def (ci_expr){NULL,ci_expr_free}
 
-inline static int ci_expression_is_empty(ci_expression*o){
+inline static int ci_expr_is_empty(ci_expr*o){
 	return o->compile==NULL;
 }
 

@@ -13,11 +13,11 @@ typedef struct ci_func{
 
 inline static void ci_func_free(ci_func*o){
 	dynp_foa(&o->exprs,{
-		ci_expression*oo=(ci_expression*)o;
+		ci_expr*oo=(ci_expr*)o;
 		if(oo->free)
 			oo->free(oo);
 		else
-			ci_expression_free(oo);
+			ci_expr_free(oo);
 	});
 	dynp_free(&o->exprs);
 
