@@ -10,5 +10,6 @@ class player:object,santa{
 	
 	void print_info(char* s){
 		puts(s);
+		puts(keybits);
 	}
 }

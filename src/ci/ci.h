@@ -37,11 +37,11 @@ inline static /*gives*/ci_expr*ci_expr_next(
 	return (ci_expr*)e;
 }
 
-static void ci_parse_function(const char**pp,ci_toc*tc,ci_class*c,
+static void ci_parse_func(const char**pp,ci_toc*tc,ci_class*c,
 		token*type,token*name){
 	ci_func*f=malloc(sizeof(ci_func));
 	*f=ci_func_def;
-	dynp_add(&c->functions,f);
+	dynp_add(&c->funcs,f);
 	token_setz(type,&f->type);
 	token_setz(name,&f->name);
 	while(1){
@@ -60,6 +60,7 @@ static void ci_parse_function(const char**pp,ci_toc*tc,ci_class*c,
 		dynp_add(&f->args,fa);
 		token_setz(&argtype,&fa->type);
 		token_setz(&argname,&fa->name);
+		ci_toc_add_identifier(tc,fa->name.data);
 		if(**pp==','){
 			(*pp)++;
 			continue;
@@ -142,104 +143,109 @@ static void ci_compile_to_c(ci_toc*tc){
 //	return;
 
 	dynp_foa(&ci_classes,{
-			ci_class*c=o;
-			printf("\n");
-			printf("//--- - - ---------------------  - -- - - - - - - -- - - - -- - - - -- - - -\n");
-			printf("static typedef struct %s{\n",c->name.data);
-			dynp_foa(&c->extends,{
-				str*s=o;
-				printf("    %s %s;\n",s->data,s->data);
-			});
-			dynp_foa(&c->fields,{
-				ci_field*s=o;
-				printf("    %s %s;\n",s->type.data,s->name.data);
-			});
-			printf("}%s;\n",c->name.data);
+		ci_class*c=o;
+		ci_toc_push_scope(tc,'c',c->name.data);
+		printf("\n");
+		printf("//--- - - ---------------------  - -- - - - - - - -- - - - -- - - - -- - - -\n");
+		printf("static typedef struct %s{\n",c->name.data);
+		dynp_foa(&c->extends,{
+			str*s=o;
+			printf("    %s %s;\n",s->data,s->data);
+		});
+		dynp_foa(&c->fields,{
+			ci_field*s=o;
+			printf("    %s %s;\n",s->type.data,s->name.data);
+		});
+		printf("}%s;\n",c->name.data);
 
-			printf("\n");
+		printf("\n");
 
-			// #define object_def {...}
-			printf("#define %s_def {",c->name.data);
-			dynp_foa(&c->extends,{
-				str*s=o;
-				printf("%s_def,",s->data);
-			});
-			dynp_foa(&c->fields,{
-				ci_field*s=o;
-				if(s->initval){
-					s->initval->compile(s->initval,tc);
-				}else{
-					printf("%s_def",s->type.data);
-				}
-				printf(",");
-			});
-			printf("}\n");
+		// #define object_def {...}
+		printf("#define %s_def {",c->name.data);
+		dynp_foa(&c->extends,{
+			str*s=o;
+			printf("%s_def,",s->data);
+		});
+		dynp_foa(&c->fields,{
+			ci_field*s=o;
+			if(s->initval){
+				s->initval->compile(s->initval,tc);
+			}else{
+				printf("%s_def",s->type.data);
+			}
+			printf(",");
+		});
+		printf("}\n");
 
-			// init
-			printf("//--- - - ---------------------  - -- - - - - - - -- - - - -- - - - -- - - -\n");
-			printf(	"inline static void %s_init(%s*o){\n",
-					c->name.data,c->name.data);
-			dynp_foa(&c->extends,{
-				str*s=o;
-				printf(	"	%s_init(&o->%s);\n",s->data,s->data);
-			});
-			printf("}\n");
+		// init
+		printf("//--- - - ---------------------  - -- - - - - - - -- - - - -- - - - -- - - -\n");
+		printf(	"inline static void %s_init(%s*o){\n",
+				c->name.data,c->name.data);
+		dynp_foa(&c->extends,{
+			str*s=o;
+			printf(	"	%s_init(&o->%s);\n",s->data,s->data);
+		});
+		printf("}\n");
 
-			// alloc
-			printf("//--- - - ---------------------  - -- - - - - - - -- - - - -- - - - -- - - -\n");
-			printf(	"inline static %s*%s_alloc(){\n"
-					"	%s*p=malloc(sizeof(%s));\n"
-					"	*p=%s_def;\n"
-					"	%s_init(p);\n"
-					"	return p;\n"
-					"}\n",
-					c->name.data,c->name.data,
-					c->name.data,c->name.data,
-					c->name.data,
-					c->name.data
+		// alloc
+		printf("//--- - - ---------------------  - -- - - - - - - -- - - - -- - - - -- - - -\n");
+		printf(	"inline static %s*%s_alloc(){\n"
+				"	%s*p=malloc(sizeof(%s));\n"
+				"	*p=%s_def;\n"
+				"	%s_init(p);\n"
+				"	return p;\n"
+				"}\n",
+				c->name.data,c->name.data,
+				c->name.data,c->name.data,
+				c->name.data,
+				c->name.data
+		);
+		// free
+		printf("//--- - - ---------------------  - -- - - - - - - -- - - - -- - - - -- - - -\n");
+		printf(	"inline static void %s_free(%s*o){\n"
+				,c->name.data,c->name.data);
+
+		dynp_foar(&c->extends,{
+			str*s=o;
+			printf(	"	%s_free(&o->%s);\n",s->data,s->data);
+		});
+		printf("	free(o);\n");
+		printf("}\n");
+
+		// casts
+		printf("//--- - - ---------------------  - -- - - - - - - -- - - - -- - - - -- - - -\n");
+		dynp_foa(&c->extends,{
+			str*s=o;
+			printf(	"inline static %s*%s_as_%s(%s*o){"
+					"return(%s*)&o->%s;"
+					"}\n",s->data,c->name.data,s->data,c->name.data,
+					s->data,s->data
 			);
-			// free
-			printf("//--- - - ---------------------  - -- - - - - - - -- - - - -- - - - -- - - -\n");
-			printf(	"inline static void %s_free(%s*o){\n"
-					,c->name.data,c->name.data);
+		});
 
-			dynp_foar(&c->extends,{
-				str*s=o;
-				printf(	"	%s_free(&o->%s);\n",s->data,s->data);
+		// functions
+		printf("//--- - - ---------------------  - -- - - - - - - -- - - - -- - - - -- - - -\n");
+		dynp_foa(&c->funcs,{
+			ci_func*f=o;
+			ci_toc_push_scope(tc,'f',f->name.data);
+			printf("inline static %s %s_%s(",f->type.data,c->name.data,f->name.data);
+			printf("%s*o",c->name.data);
+			dynp_foa(&f->args,{
+				ci_func_arg*a=o;
+				printf(",");
+				printf("%s %s",a->type.data,a->name.data);
+				ci_toc_add_identifier(tc,a->name.data);
 			});
-			printf("	free(o);\n");
+			printf("){\n");
+			dynp_foa(&f->exprs,{
+				ci_expr*e=o;
+				e->compile(e,tc);
+				printf(";\n");
+			});
 			printf("}\n");
-
-			// casts
-			printf("//--- - - ---------------------  - -- - - - - - - -- - - - -- - - - -- - - -\n");
-			dynp_foa(&c->extends,{
-				str*s=o;
-				printf(	"inline static %s*%s_as_%s(%s*o){"
-						"return(%s*)&o->%s;"
-						"}\n",s->data,c->name.data,s->data,c->name.data,
-						s->data,s->data
-				);
-			});
-
-			// functions
-			printf("//--- - - ---------------------  - -- - - - - - - -- - - - -- - - - -- - - -\n");
-			dynp_foa(&c->functions,{
-				ci_func*f=o;
-				printf("inline static %s %s_%s(",f->type.data,c->name.data,f->name.data);
-				printf("%s*o",c->name.data);
-				dynp_foa(&f->args,{
-					ci_func_arg*a=o;
-					printf(",");
-					printf("%s %s",a->type.data,a->name.data);
-				});
-				printf("){\n");
-				dynp_foa(&f->exprs,{
-					ci_expr*e=o;
-					e->compile(e,tc);
-					printf(";\n");
-				});
-				printf("}\n");
-			});
+			ci_toc_pop_scope(tc);
+		});
+		ci_toc_pop_scope(tc);
 	});
 	printf("//--- - - ---------------------  - -- - - - - - - -- - - - -- - - - -- - - -\n");
 	printf("\n");
@@ -297,7 +303,7 @@ static void ci_compile(const char*path){
 			token name=token_next(&p);
 			if(*p=='('){
 				p++;
-				ci_parse_function(&p,&toc,c,&type,&name);
+				ci_parse_func(&p,&toc,c,&type,&name);
 			}else if(*p=='=' || *p==';'){
 				ci_parse_field(&p,&toc,c,&type,&name);
 			}else{

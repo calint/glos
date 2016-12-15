@@ -32,6 +32,13 @@ inline static void ci_toc_push_scope(ci_toc*o,char type,const char*name){
 	s->type=type;
 	s->name=name;
 	dynp_add(&o->scopes,s);
+
+//	printf("//");
+//	dynp_foa(&o->scopes,{
+//			ci_toc_scope*s=(ci_toc_scope*)o;
+//			printf(" %s :: ",s->name);
+//	});
+//	printf("\n");
 }
 
 inline static void ci_toc_add_identifier(ci_toc*o,const char*name){
@@ -51,6 +58,8 @@ inline static int ci_toc_has_identifier(ci_toc*oo,const char*name){
 }
 
 inline static void ci_toc_pop_scope(ci_toc*o){
-	ci_toc_scope_free(dynp_get_last(&o->scopes));
+	ci_toc_scope*s=dynp_get_last(&o->scopes);
+//	printf("    popped   %s  \n\n\n",s->name);
+	ci_toc_scope_free(s);
 	o->scopes.count--;//? pop
 }

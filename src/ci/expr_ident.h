@@ -15,8 +15,13 @@ inline static void _ci_expr_ident_free_(struct ci_expr*oo){
 }
 
 inline static void _ci_expr_ident_compile_(
-		struct ci_expr*oo,ci_toc*toc){
+		struct ci_expr*oo,ci_toc*tc){
 	ci_expr_ident*o=(ci_expr_ident*)oo;
+	if(ci_toc_has_identifier(tc,o->name.data)){
+		printf("%s",o->name.data);
+		return;
+	}
+	// constant
 	printf("%s",o->name.data);
 }
 
