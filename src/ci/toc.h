@@ -16,13 +16,12 @@ inline static void ci_toc_free(ci_toc*o){
 typedef struct ci_toc_scope{
 	char type;
 	const char*name;
-	dynp/*own identifiers*/idents;
+	dynp/*const char**/idents;
 }ci_toc_scope;
 
 #define ci_toc_scope_def (ci_toc_scope){0,NULL,dynp_def}
 
 inline static void ci_toc_scope_free(ci_toc_scope*o){
-	dynp_foa(&o->idents,{free(o);});
 	dynp_free(&o->idents);
 	free(o);
 }

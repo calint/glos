@@ -33,7 +33,7 @@ inline static /*gives*/ci_expr*ci_expr_next(
 	// assuming identifier
 	ci_expr_ident*e=malloc(sizeof(ci_expr_ident));
 	*e=ci_expr_ident_def;
-	token_copy_to_str(&t,&e->name);
+	token_set_str(&t,&e->name);
 	return (ci_expr*)e;
 }
 
@@ -42,8 +42,8 @@ static void ci_parse_function(const char**pp,ci_toc*tc,ci_class*c,
 	ci_func*f=malloc(sizeof(ci_func));
 	*f=ci_func_def;
 	dynp_add(&c->functions,f);
-	token_copy_to_str(type,&f->type);
-	token_copy_to_str(name,&f->name);
+	token_set_str(type,&f->type);
+	token_set_str(name,&f->name);
 	while(1){
 		token argtype=token_next(pp);
 		if(token_is_empty(&argtype)){
@@ -58,8 +58,8 @@ static void ci_parse_function(const char**pp,ci_toc*tc,ci_class*c,
 		ci_func_arg*fa=malloc(sizeof(ci_func_arg));
 		*fa=ci_func_arg_def;
 		dynp_add(&f->args,fa);
-		token_copy_to_str(&argtype,&fa->type);
-		token_copy_to_str(&argname,&fa->name);
+		token_set_str(&argtype,&fa->type);
+		token_set_str(&argname,&fa->name);
 		if(**pp==','){
 			(*pp)++;
 			continue;
@@ -90,14 +90,14 @@ static void ci_parse_field(const char**pp,ci_toc*tc,ci_class*c,
 		token*type,token*name){
 	ci_field*f=malloc(sizeof(ci_field));
 	*f=ci_field_def;
-	token_copy_to_str(type,&f->type);
+	token_set_str(type,&f->type);
 	if(token_is_empty(name)){
-		token_copy_to_str(type,&f->name);
+		token_set_str(type,&f->name);
 	}else{
-		token_copy_to_str(name,&f->name);
+		token_set_str(name,&f->name);
 	}
 	dynp_add(&c->fields,f);
-//	ci_toc_add_identifier(tc,f->name.data);
+	ci_toc_add_identifier(tc,f->name.data);
 }
 
 static void ci_compile_to_c(ci_toc*tc){
@@ -242,7 +242,7 @@ static void ci_compile(const char*path){
 		ci_class*c=malloc(sizeof(ci_class));
 		*c=ci_class_def;
 		dynp_add(&ci_classes,c);
-		token_copy_to_str(&nm,&c->name);
+		token_set_str(&nm,&c->name);
 		ci_toc_push_scope(&toc, 'c',c->name.data);
 		if(*p==':'){
 			p++;
