@@ -8,6 +8,12 @@ typedef struct ci_expression_identifier{
 	str name;
 }ci_expression_identifier;
 
+inline static void _ci_expression_identifier_free_(struct ci_expression*oo){
+	ci_expression_identifier*o=(ci_expression_identifier*)oo;
+	str_free(&o->name);
+	ci_expression_free((ci_expression*)o);
+}
+
 inline static void _ci_expression_identifier_compile_(
 		struct ci_expression*oo,ci_toc*toc){
 	ci_expression_identifier*o=(ci_expression_identifier*)oo;

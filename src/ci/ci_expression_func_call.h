@@ -25,13 +25,19 @@ inline static void _ci_expression_func_call_compile_(
 }
 
 #define ci_expression_func_call_def (ci_expression_func_call){\
-	{_ci_expression_func_call_compile_},str_def,dynp_def}
+	{_ci_expression_func_call_compile_,ci_expression_func_call_free},\
+	str_def,dynp_def}
 
-inline static void ci_expression_func_call_free(ci_expression_func_call*o){
-	ci_expression_free(&o->super);
-//	dynp_foa(&o->args,{
-//			ci_experssion_func_call_arg_free((ci_experssion_func_call_arg_free*)o);
-//	});
+inline static void ci_expression_func_call_free(ci_expression*o){
+	ci_expression_func_call*oo=(ci_expression_func_call*)o;
+	ci_expression_free(&oo->super);
+	dynp_foa(&oo->args,{
+			ci_expression*e=(ci_expression*)o;
+			if(e->free)
+				e->free(e);
+			else
+				ci_expression_free(e);
+	});
 	free(o);
 }
 

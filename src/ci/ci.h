@@ -154,7 +154,7 @@ static void ci_compile(const char*path){
 								break;
 							}
 						}
-						dynp_add(&f->stmts,e);
+						dynp_add(&f->exprs,e);
 						if(*p==';'){
 							p++;
 							continue;
@@ -262,7 +262,7 @@ static void ci_compile(const char*path){
 					printf("%s %s",a->type.data,a->name.data);
 				});
 				printf("){\n");
-				dynp_foa(&f->stmts,{
+				dynp_foa(&f->exprs,{
 					ci_expression*e=o;
 					e->compile(e,&toc);
 					printf(";\n");
