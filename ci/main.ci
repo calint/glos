@@ -5,7 +5,7 @@ class santa{
 	dynp presents;
 }
 class player:object,santa{
-	int keybits=0x1000;
+	int keybits=100;
 	vec3 lookvec;
 	
 	void print_info(char* s){

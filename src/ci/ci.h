@@ -30,11 +30,23 @@ inline static /*gives*/ci_expr*ci_expr_next(
 		ci_expr_call*e=ci_expr_call_next(pp,tc);
 		return (ci_expr*)e;
 	}
-	// assuming identifier
+	str name=str_def;
+	token_setz(&t,&name);
+	if(ci_toc_has_ident(tc, name.data)){
+		// assuming identifier
+		ci_expr_ident*e=malloc(sizeof(ci_expr_ident));
+		*e=ci_expr_ident_def;
+		e->name=name;
+		return(ci_expr*)e;
+	}
+
+	// constant
 	ci_expr_ident*e=malloc(sizeof(ci_expr_ident));
 	*e=ci_expr_ident_def;
-	token_setz(&t,&e->name);
-	return (ci_expr*)e;
+	e->name=name;
+	e->cnst=1;
+	return(ci_expr*)e;
+
 }
 
 static void ci_parse_func(const char**pp,ci_toc*tc,ci_class*c,
