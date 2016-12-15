@@ -5,8 +5,8 @@
 typedef struct ci_class{
 	str name;
 	dynp/*owns str*/extends;
-	dynp/*owns ci_slot*/fields;
-	dynp/*owns ci_func*/funcs;
+	dynp/*owns field*/fields;
+	dynp/*owns func*/funcs;
 }ci_class;
 
 #define ci_class_def (ci_class){str_def,dynp_def,dynp_def,dynp_def}

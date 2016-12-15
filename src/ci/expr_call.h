@@ -5,7 +5,7 @@
 
 typedef struct ci_expr_call{
 	ci_expr super;
-	str func_name;
+	str name;
 	dynp/*owns ci_expression*/args;
 }ci_expr_call;
 
@@ -13,7 +13,7 @@ inline static void _ci_expr_call_compile_(
 		struct ci_expr*o,ci_toc*toc){
 
 	ci_expr_call*e=(ci_expr_call*)o;
-	printf("%s(",e->func_name.data);
+	printf("%s(",e->name.data);
 	dynp_foac(&e->args,{
 		ci_expr*a=(ci_expr*)o;
 		a->compile(a,toc);
@@ -49,7 +49,7 @@ inline static /*gives*/ ci_expr_call*ci_expr_call_next(
 	token t=token_next(pp);
 	ci_expr_call*o=malloc(sizeof(ci_expr_call));
 	*o=ci_expr_call_def;
-	token_setz(&t,&o->func_name);
+	token_setz(&t,&o->name);
 	if(**pp=='('){// arguments
 		(*pp)++;
 		while(1){
