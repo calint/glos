@@ -21,7 +21,7 @@ inline static void _ci_expression_identifier_compile_(
 }
 
 #define ci_expression_identifier_def (ci_expression_identifier){\
-	{_ci_expression_identifier_compile_},str_def}
+	{_ci_expression_identifier_compile_,_ci_expression_identifier_free_},str_def}
 
 inline static void ci_expression_identifier_free(ci_expression_identifier*o){
 	ci_expression_free(&o->super);

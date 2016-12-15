@@ -38,25 +38,6 @@ inline static /*gives*/ci_expression*ci_expression_next(
 	return (ci_expression*)e;
 }
 
-//
-//inline static /*gives*/ci_expression*ci_expression_next(
-//		ci_toc*toc,const char**pp){
-//	token t=token_next(pp);
-//	str nm=str_def;
-//	token_copy_to_str(&t,&nm);
-//	if(token_is_empty(&t)){
-//		ci_expression*s=malloc(sizeof(ci_expression));
-//		*s=ci_expression_def;
-//		return s;
-//	}
-//	if(**pp=='('){// function call
-//		*pp=t.begin;
-//		return (ci_expression*)ci_expression_func_call_next(toc,pp);
-//	}
-//	printf("<file> <line:col> expected '%s(..)' for function call",nm.data);
-//	exit(1);
-//}
-
 static void ci_compile(const char*path){
 	str s=str_from_file(path);
 	const char*p=s.data;
