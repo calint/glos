@@ -16,7 +16,6 @@ static void ci_free(){
 	dynp_free(&ci_classes);
 }
 
-
 inline static /*gives*/ci_expr*ci_expr_next(
 		ci_toc*toc,const char**pp){
 	token t=token_next(pp);
@@ -50,12 +49,13 @@ static void ci_compile(const char*path){
 			printf("expected class declaration\n");
 			exit(1);
 		}
-
 		token nm=token_next(&p);
 		ci_class*c=malloc(sizeof(ci_class));
 		*c=ci_class_def;
 		dynp_add(&ci_classes,c);
 		token_copy_to_str(&nm,&c->name);
+
+		ci_toc_push_scope(&toc, 'c',c->name.data);
 		if(*p==':'){
 			p++;
 			while(1){
@@ -156,6 +156,7 @@ static void ci_compile(const char*path){
 				}
 			}
 		}
+		ci_toc_pop_scope(&toc);//, 'c',c->name.data);
 	}
 	// print
 	printf("// compiled from: %s\n",path);
