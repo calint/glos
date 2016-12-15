@@ -1,9 +1,9 @@
 #pragma once
 #include"../lib.h"
-#include"ci_class.h"
-#include"ci_expression.h"
-#include"ci_expression_func_call.h"
-#include"ci_expression_identifier.h"
+#include "class.h"
+#include "expression.h"
+#include "expression_func_call.h"
+#include "expression_identifier.h"
 
 dynp/*owns*/ci_classes=dynp_def;
 

@@ -1,7 +1,7 @@
 #pragma once
 #include"../lib.h"
-#include"ci_member.h"
-#include"ci_func.h"
+#include "func.h"
+#include "member.h"
 typedef struct ci_class{
 	str name;
 	dynp/*owns str*/extends;

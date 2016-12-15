@@ -1,6 +1,6 @@
 #pragma once
 #include"../lib.h"
-#include"ci_toc.h"
+#include "toc.h"
 
 typedef struct ci_expression{
 	void (*compile)(struct ci_expression*,struct ci_toc*);

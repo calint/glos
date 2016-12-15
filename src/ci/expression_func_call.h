@@ -1,7 +1,7 @@
 #pragma once
 #include"../lib.h"
-#include"ci_toc.h"
-#include"ci_expression.h"
+#include "expression.h"
+#include "toc.h"
 
 typedef struct ci_expression_func_call{
 	ci_expression super;
