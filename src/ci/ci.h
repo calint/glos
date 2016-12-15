@@ -1,9 +1,9 @@
 #pragma once
 #include"../lib.h"
 #include "class.h"
-#include "expression.h"
-#include "expression_func_call.h"
-#include "expression_identifier.h"
+#include "expr.h"
+#include "expr_call.h"
+#include "expr_ident.h"
 
 dynp/*owns*/ci_classes=dynp_def;
 
@@ -32,8 +32,8 @@ inline static /*gives*/ci_expression*ci_expression_next(
 		return (ci_expression*)e;
 	}
 	// assuming identifier
-	ci_expression_identifier*e=malloc(sizeof(ci_expression_identifier));
-	*e=ci_expression_identifier_def;
+	ci_expr_ident*e=malloc(sizeof(ci_expr_ident));
+	*e=ci_expr_ident_def;
 	token_copy_to_str(&t,&e->name);
 	return (ci_expression*)e;
 }
