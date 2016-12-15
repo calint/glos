@@ -1,6 +1,9 @@
 #pragma once
 #include"../lib.h"
 #include"ci_class.h"
+#include"ci_expression.h"
+#include"ci_expression_func_call.h"
+#include"ci_expression_identifier.h"
 
 dynp/*owns*/ci_classes=dynp_def;
 
@@ -13,9 +16,51 @@ static void ci_free(){
 	dynp_free(&ci_classes);
 }
 
+
+inline static /*gives*/ci_expression*ci_expression_next(
+		ci_toc*toc,const char**pp){
+	token t=token_next(pp);
+	if(token_is_empty(&t)){
+		ci_expression*e=malloc(sizeof(ci_expression));
+		*e=ci_expression_def;
+		return e;
+	}
+
+	if(**pp=='('){// function call
+		*pp=t.begin;
+		ci_expression_func_call*e=ci_expression_func_call_next(toc,pp);
+		return (ci_expression*)e;
+	}
+	// assuming identifier
+	ci_expression_identifier*e=malloc(sizeof(ci_expression_identifier));
+	*e=ci_expression_identifier_def;
+	token_copy_to_str(&t,&e->name);
+	return (ci_expression*)e;
+}
+
+//
+//inline static /*gives*/ci_expression*ci_expression_next(
+//		ci_toc*toc,const char**pp){
+//	token t=token_next(pp);
+//	str nm=str_def;
+//	token_copy_to_str(&t,&nm);
+//	if(token_is_empty(&t)){
+//		ci_expression*s=malloc(sizeof(ci_expression));
+//		*s=ci_expression_def;
+//		return s;
+//	}
+//	if(**pp=='('){// function call
+//		*pp=t.begin;
+//		return (ci_expression*)ci_expression_func_call_next(toc,pp);
+//	}
+//	printf("<file> <line:col> expected '%s(..)' for function call",nm.data);
+//	exit(1);
+//}
+
 static void ci_compile(const char*path){
 	str s=str_from_file(path);
 	const char*p=s.data;
+	ci_toc toc=ci_toc_def;
 	while(1){
 		token t=token_next(&p);
 		if(token_is_empty(&t))
@@ -102,14 +147,20 @@ static void ci_compile(const char*path){
 						p++;
 					}
 					while(1){
-						ci_statement*stmt=ci_statement_next(NULL,&p);
-						if(ci_statment_is_empty(stmt)){
+						ci_expression*e=ci_expression_next(&toc,&p);
+						if(ci_expression_is_empty(e)){
 							if(*p=='}'){
 								p++;
 								break;
 							}
 						}
-						dynp_add(&f->stmts,stmt);
+						dynp_add(&f->stmts,e);
+						if(*p==';'){
+							p++;
+							continue;
+						}
+						printf("<file> <line:col> expected ';'\n");
+						exit(1);
 					}
 				}else if(*p=='='){
 					p++;

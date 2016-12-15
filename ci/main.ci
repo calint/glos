@@ -8,6 +8,7 @@ class player:object,santa{
 	int keybits;
 	vec3 lookvec;
 	
-	void print_info(str* s){
+	void print_info(char* s){
+		puts(s);
 	}
 }
