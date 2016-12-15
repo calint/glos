@@ -325,7 +325,6 @@ int main(int argc,char*argv[]){
 
 		framectx fc={
 				.dt=use_net?net_dt:metrics.fps.dt,
-//				.dt=.001f,
 				.tick=frameno,
 		};
 
@@ -340,7 +339,8 @@ int main(int argc,char*argv[]){
 		if(paused)
 			fc.dt=0;
 		else
-			fc.dt=.0005f;
+//			fc.dt=.0005f;
+			fc.dt=1.0f/60;
 
 		grid_update(&fc);
 

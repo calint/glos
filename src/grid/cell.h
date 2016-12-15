@@ -198,20 +198,12 @@ inline static bool _cell_detect_and_resolve_collision_for_spheres(
 	//   (x1-x2-r1-r2)/(u2-u1)=t
 	const float div=u2-u1;
 	if(div==0){
-//		fprintf(stderr,"\n%s:%u: was in collision already\n",__FILE__,__LINE__);
-//		stacktrace_print(stderr);
-//		fprintf(stderr,"\n\n");
-//		exit(-1);
-//		// not collision, ? precision 9.53674316e-07
-//		printf(" divisor is zero   %s  %s  diff: %f\n",
-//				o1->name.data,o2->name.data,diff);
-//		printf(" !!! diff=%f   dx2-dx1==0     %s x=%f  vs %s x=%f     dx=%f   du=%f\n",
-//				diff,
-//				o1->name.data,o1->p.p.x,
-//				o2->name.data,o2->p.p.x,
-//				diff,div);
-//
-		// number precision
+		//? number precision
+		printf(" *** du=0   diff=%f    dx=%f    %s x=%f    vs   %s x=%f\n",
+				diff,
+				o2->p.p.x-o1->p.p.x,
+				o1->name.data,o1->p.p.x,
+				o2->name.data,o2->p.p.x);
 		return false;
 	}
 	float t;
@@ -220,14 +212,14 @@ inline static bool _cell_detect_and_resolve_collision_for_spheres(
 	}else if(x1>x2){
 		t=(x1-x2-r1-r2)/div;
 	}else{
-		fprintf(stderr,"\n%s:%u: ??\n",__FILE__,__LINE__);
+		fprintf(stderr,"\n%s:%u: x1==x2?\n",__FILE__,__LINE__);
 		stacktrace_print(stderr);
 		fprintf(stderr,"\n\n");
 		exit(-1);
 	}
 
-	// move to collision
-	vec3_inc_with_vec3_over_dt(&o1->p_nxt.p,&o1->p_nxt.v,t);//*0.99999f for resolved
+	// move objects to moment off collision
+	vec3_inc_with_vec3_over_dt(&o1->p_nxt.p,&o1->p_nxt.v,t);
 	vec3_inc_with_vec3_over_dt(&o2->p_nxt.p,&o2->p_nxt.v,t);
 
 //	{
@@ -246,7 +238,7 @@ inline static bool _cell_detect_and_resolve_collision_for_spheres(
 //		}
 //	}
 
-	// swap velocity
+	// swap velocities
 	if(o1->g.collide_mask==0){// o1 is a bouncer
 		vec3_negate(&o2->p_nxt.v);
 	}else if(o2->g.collide_mask==0){// o2 is a bouncer
