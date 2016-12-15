@@ -1,10 +1,10 @@
 #pragma once
 #include"../lib.h"
+#include "block.h"
 #include "class.h"
 #include "expr.h"
 #include "expr_call.h"
 #include "expr_ident.h"
-#include "ci_code.h"
 dynp/*owns*/ci_classes=dynp_def;
 
 inline static void ci_init(){}
@@ -41,9 +41,11 @@ static void ci_parse_func(const char**pp,ci_toc*tc,ci_class*c,
 		token*type,token*name){
 	ci_func*f=malloc(sizeof(ci_func));
 	*f=ci_func_def;
-	dynp_add(&c->funcs,f);
 	token_setz(type,&f->type);
 	token_setz(name,&f->name);
+	dynp_add(&c->funcs,f);
+
+	ci_toc_push_scope(tc,'f',f->name.data);
 	while(1){
 		token argtype=token_next(pp);
 		if(token_is_empty(&argtype)){
@@ -60,32 +62,15 @@ static void ci_parse_func(const char**pp,ci_toc*tc,ci_class*c,
 		dynp_add(&f->args,fa);
 		token_setz(&argtype,&fa->type);
 		token_setz(&argname,&fa->name);
+
 		ci_toc_add_ident(tc,fa->name.data);
+
 		if(**pp==','){
 			(*pp)++;
-			continue;
 		}
 	}
 	ci_code_parse(&f->code,pp,tc);
-//	if(**pp=='{'){//? require
-//		(*pp)++;
-//	}
-//	while(1){
-//		ci_expr*e=ci_expr_next(pp,tc);
-//		if(ci_expr_is_empty(e)){
-//			if(**pp=='}'){
-//				(*pp)++;
-//				break;
-//			}
-//		}
-//		dynp_add(&f->exprs,e);
-//		if(**pp==';'){
-//			(*pp)++;
-//			continue;
-//		}
-//		printf("<file> <line:col> expected ';'\n");
-//		exit(1);
-//	}
+	ci_toc_pop_scope(tc);
 }
 
 static void ci_parse_field(const char**pp,ci_toc*tc,ci_class*c,

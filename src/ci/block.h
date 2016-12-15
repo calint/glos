@@ -3,14 +3,14 @@
 #include "expr.h"
 #include "toc.h"
 
-typedef struct ci_code{
+typedef struct ci_block{
 	ci_expr super;
 	int is_encaps;
 	dynp/*own expr*/exprs;
-}ci_code;
+}ci_block;
 
-inline static void _ci_code_free_(ci_expr*oo){
-	ci_code*o=(ci_code*)oo;
+inline static void _ci_block_free_(ci_expr*oo){
+	ci_block*o=(ci_block*)oo;
 	dynp_foa(&o->exprs,{
 		ci_expr*oo=(ci_expr*)o;
 		if(oo->free)
@@ -21,8 +21,8 @@ inline static void _ci_code_free_(ci_expr*oo){
 	dynp_free(&o->exprs);
 }
 
-inline static void _ci_code_compile_(ci_expr*oo,ci_toc*tc){
-	ci_code*o=(ci_code*)oo;
+inline static void _ci_block_compile_(ci_expr*oo,ci_toc*tc){
+	ci_block*o=(ci_block*)oo;
 	if(o->is_encaps){
 		printf("{\n");
 	}
@@ -37,7 +37,7 @@ inline static void _ci_code_compile_(ci_expr*oo,ci_toc*tc){
 
 }
 
-#define ci_code_def (ci_code){{_ci_code_compile_,_ci_code_free_},0,dynp_def}
+#define ci_code_def (ci_block){{_ci_block_compile_,_ci_block_free_},0,dynp_def}
 
 //inline static void ci_expr_ident_free(ci_expr_ident*o){
 //	ci_expression_free(&o->super);
@@ -46,9 +46,10 @@ inline static void _ci_code_compile_(ci_expr*oo,ci_toc*tc){
 
 inline static /*gives*/ci_expr*ci_expr_next(const char**,ci_toc*);
 
-static /*gives*/ci_code*ci_code_parse(ci_code*o,const char**pp,ci_toc*tc){
+static /*gives*/ci_block*ci_code_parse(ci_block*o,const char**pp,ci_toc*tc){
 //	ci_code*c=malloc(sizeof(ci_code));
 	*o=ci_code_def;
+	ci_toc_push_scope(tc,'b',"");
 	if(**pp=='{'){
 		(*pp)++;
 		o->is_encaps=1;
@@ -73,5 +74,6 @@ static /*gives*/ci_code*ci_code_parse(ci_code*o,const char**pp,ci_toc*tc){
 		}
 		(*pp)++;
 	}
+	ci_toc_pop_scope(tc);
 	return o;
 }
