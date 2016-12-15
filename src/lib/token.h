@@ -105,6 +105,8 @@ inline static token token_next(const char**s){
 		if(*p=='{')break;
 		if(*p=='}')break;
 		if(*p==',')break;
+		if(*p=='=')break;
+		if(*p==';')break;
 		p++;
 	}
 	t.content_end=p;
@@ -181,4 +183,8 @@ inline static /*gives*/str*token_to_str(token*o){
 	str_add_list(s,o->content,(unsigned)(o->content_end-o->content));
 	str_add(s,0);
 	return s;
+}
+
+inline static bool token_is_empty(token*o){
+	return o->content_end==o->content;
 }

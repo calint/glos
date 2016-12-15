@@ -190,6 +190,7 @@ inline static void dynf_setz(dynf*o,/*copies*/const float*s){
 //-----------------------------------------------------------------------------
 #define dynf_foa(ls,body)dynp_foreach_all(ls,({void __fn__ (float o) body __fn__;}))
 #define dynf_fou(ls,body)dynp_foreach(ls,({int __fn__ (float o) body __fn__;}))
+#define dynf_foar(ls,body)dynp_foreach_all_rev(ls,({void __fn__ (float o) body __fn__;}))
 //-----------------------------------------------------------------------------
 inline static void dynf_foreach(dynf*o,int(*f)(float)){
 	if(!o->count)
@@ -205,6 +206,15 @@ inline static void dynf_foreach_all(dynf*o,void(*f)(float)){
 	if(!o->count)
 		return;
 	for(unsigned i=0;i<o->count;i++){
+		float oo=o->data[i];
+		f(oo);
+	}
+}
+//-----------------------------------------------------------------------------
+inline static void dynf_foreach_all_rev(dynf*o,void(*f)(float)){
+	if(!o->count)
+		return;
+	for(int i=(signed)o->count-1;i!=0;i--){
 		float oo=o->data[i];
 		f(oo);
 	}

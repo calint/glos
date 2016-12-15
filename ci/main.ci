@@ -1,3 +1,10 @@
+class object{
+	char[8] type;
+}
+class santa{
+	dynp presents;
+}
 class player:object,santa{
-	int keybits=0;
+	int keybits;
+	vec3 lookvec;
 }

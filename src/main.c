@@ -105,14 +105,24 @@ inline static void main_render(framectx*fc){
 
 
 
+
+typedef struct ci_slot{
+	str type;
+	str name;
+}ci_slot;
+
+#define ci_slot_def (ci_slot){str_def,str_def}
+
 typedef struct ci_class{
 	str name;
 	dynp/*owns*//*str*/extends;
 	dynp/*owns*//*token*/body;
+	dynp/*owns*//*ci_slot*/slots;
 }ci_class;
-#define ci_class_def (ci_class){str_def,dynp_def,dynp_def}
-dynp/*owns*/ci_classes=dynp_def;
 
+#define ci_class_def (ci_class){str_def,dynp_def,dynp_def,dynp_def}
+
+dynp/*owns*/ci_classes=dynp_def;
 
 inline static void ci_class_free(ci_class*o){
 	for(unsigned i=0;i<o->extends.count;i++){
@@ -126,21 +136,28 @@ inline static void ci_class_free(ci_class*o){
 static void load_def(const char*path){
 	str s=str_from_file(path);
 	const char*p=s.data;
-	token t=token_next(&p);
-	if(token_equals(&t,"class")){
+	while(1){
+		token t=token_next(&p);
+		if(token_is_empty(&t))
+			break;
+		if(!token_equals(&t,"class")){
+			printf("expected class declaration\n");
+			exit(1);
+		}
+
 		token nm=token_next(&p);
 		ci_class*c=malloc(sizeof(ci_class));
 		*c=ci_class_def;
 		dynp_add(&ci_classes,c);
 		token_copy_to_str(&nm,&c->name);
-		if(*p==':'){// extends
+		if(*p==':'){
 			p++;
 			while(1){
 				token extends_name=token_next(&p);
 				dynp_add(&c->extends,/*takes*/token_to_str(&extends_name));
-				if(*p=='{'){// body
+				if(*p=='{'){
 					break;
-				}else if(*p==','){// body
+				}else if(*p==','){
 					p++;
 					continue;
 				}
@@ -150,27 +167,117 @@ static void load_def(const char*path){
 
 			}
 		}
-		// body starts
+		// class body starts
 		if(*p=='{'){ // compound
-			while(*p && *p!='}'){
-				p++;
+			p++;
+			while(1){
+				token type=token_next(&p);
+				if(token_is_empty(&type) && *p=='}'){
+					p++;
+					break;
+				}
+				ci_slot*slt=malloc(sizeof(ci_slot));
+				*slt=ci_slot_def;
+				dynp_add(&c->slots,slt);
+				token name=token_next(&p);
+				token_copy_to_str(&type,&slt->type);
+				token_copy_to_str(&name,&slt->name);
+				if(token_is_empty(&name)){
+					token_copy_to_str(&type,&slt->name);
+				}
+				if(*p=='('){
+					p++;
+					printf("<file> <line:col> functions not supported\n");
+					exit(1);
+				}
+				if(*p=='='){
+					p++;
+					printf("<file> <line:col> member initializer not supported\n");
+					exit(1);
+				}
+				if(*p==';'){
+					p++;
+					continue;
+				}
 			}
 		}
-		// print
-		dynp_foa(&ci_classes,{
-				ci_class*c=o;
-				printf("typedef struct %s{\n",c->name.data);
-				dynp_foa(&c->extends,{
-					str*s=o;
-					printf("    struct %s;\n",s->data);
-				});
-				printf("}%s;",c->name.data);
-		});
-		// done
-		return;
 	}
-	printf("expected class declaration\n");
-	exit(1);
+	// print
+	printf("// compiled from: %s\n",path);
+	dynp_foa(&ci_classes,{
+			ci_class*c=o;
+			printf("\n");
+			printf("//--- - - ---------------------  - -- - - - - - - -- - - - -- - - - -- - - -\n");
+			printf("static typedef struct %s{\n",c->name.data);
+			dynp_foa(&c->extends,{
+				str*s=o;
+				printf("    %s %s;\n",s->data,s->data);
+			});
+			dynp_foa(&c->slots,{
+				ci_slot*s=o;
+				printf("    %s %s;\n",s->type.data,s->name.data);
+			});
+			printf("}%s;\n",c->name.data);
+
+			printf("\n");
+			// #define object_def {...}
+			printf("#define %s_def {",c->name.data);
+			dynp_foa(&c->extends,{
+				str*s=o;
+				printf("%s_def,",s->data);
+			});
+			dynp_foa(&c->slots,{
+				ci_slot*s=o;
+				printf("%s_def,",s->type.data);
+			});
+			printf("}\n");
+			// alloc
+			printf("//--- - - ---------------------  - -- - - - - - - -- - - - -- - - - -- - - -\n");
+			printf(	"inline static %s*%s_alloc(){\n"
+					"	%s*p=malloc(sizeof(%s));\n"
+					"	*p=%s_def;\n"
+					"	return p;\n"
+					"}\n",
+					c->name.data,c->name.data,
+					c->name.data,c->name.data,
+					c->name.data
+			);
+
+			// init
+			printf("//--- - - ---------------------  - -- - - - - - - -- - - - -- - - - -- - - -\n");
+			printf(	"inline static void %s_init(%s*o){\n",
+					c->name.data,c->name.data);
+			dynp_foa(&c->extends,{
+				str*s=o;
+				printf(	"	%s_init(&o->%s);\n",s->data,s->data);
+			});
+			printf("}\n");
+
+			// free
+			printf("//--- - - ---------------------  - -- - - - - - - -- - - - -- - - - -- - - -\n");
+			printf(	"inline static void %s_free(%s*o){\n"
+					,c->name.data,c->name.data);
+
+			dynp_foar(&c->extends,{
+				str*s=o;
+				printf(	"	%s_free(&o->%s);\n",s->data,s->data);
+			});
+			printf("	free(o);\n");
+			printf("}\n");
+
+			// casts
+			printf("//--- - - ---------------------  - -- - - - - - - -- - - - -- - - - -- - - -\n");
+			dynp_foa(&c->extends,{
+				str*s=o;
+				printf(	"inline static %s*%s_as_%s(%s*o){"
+						"return(%s*)&o->%s;"
+						"}\n",s->data,c->name.data,s->data,c->name.data,
+						s->data,s->data
+				);
+			});
+	});
+	printf("//--- - - ---------------------  - -- - - - - - - -- - - - -- - - - -- - - -\n");
+	printf("\n");
 }
 
 static void ci_free(){
