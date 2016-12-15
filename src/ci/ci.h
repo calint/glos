@@ -256,12 +256,16 @@ static void ci_compile(const char*path){
 				ci_func*f=o;
 				printf("inline static %s %s_%s(",f->type.data,c->name.data,f->name.data);
 				printf("%s*o",c->name.data);
-				dynp_foac(&f->args,{
+				dynp_foa(&f->args,{
 					ci_func_arg*a=o;
 					printf(",");
 					printf("%s %s",a->type.data,a->name.data);
 				});
 				printf("){\n");
+				dynp_foa(&f->stmts,{
+					ci_expression*e=o;
+					e->compile(e,&toc);
+				});
 				printf("}\n");
 			});
 	});
