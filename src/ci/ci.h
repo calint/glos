@@ -1,6 +1,16 @@
 #pragma once
 #include"../lib.h"
 
+typedef struct ci_statement{
+
+}ci_statement;
+
+#define ci_statement_def {}
+
+inline static void ci_statement_free(ci_statement*o){
+	free(o);
+}
+
 typedef struct ci_member{
 	str type;
 	str name;
@@ -31,11 +41,16 @@ typedef struct ci_func{
 	str type;
 	str name;
 	dynp/*owns ci_func_arg*/args;
+	dynp/*owns ci_statment*/stmts;
 }ci_func;
 
-#define ci_func_def (ci_func){str_def,str_def,dynp_def}
+#define ci_func_def (ci_func){str_def,str_def,dynp_def,dynp_def}
 
 inline static void ci_func_free(ci_func*o){
+	dynp_foa(&o->stmts,{
+		ci_statement_free((ci_statement*)o);
+	});
+	dynp_free(&o->stmts);
 	dynp_foa(&o->args,{
 		ci_func_arg_free((ci_func_arg*)o);
 	});
@@ -58,7 +73,7 @@ dynp/*owns*/ci_classes=dynp_def;
 inline static void ci_class_free(ci_class*o){
 
 	dynp_foa(&o->functions,{
-			ci_func_free((ci_func*)o);
+		ci_func_free((ci_func*)o);
 	});
 	dynp_free(&o->functions);
 
@@ -87,7 +102,7 @@ static void ci_free(){
 	dynp_free(&ci_classes);
 }
 
-static void ci_load_def(const char*path){
+static void ci_compile(const char*path){
 	str s=str_from_file(path);
 	const char*p=s.data;
 	while(1){
