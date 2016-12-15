@@ -47,13 +47,13 @@ inline static void ci_toc_add_ident(ci_toc*o,const char*name){
 }
 
 
-inline static int ci_toc_has_ident(ci_toc*oo,const char*name){
+inline static char ci_toc_find_ident_type(ci_toc*oo,const char*name){
 	for(int j=(signed)oo->scopes.count-1;j>=0;j--){
 		ci_toc_scope*s=dynp_get(&oo->scopes,(unsigned)j);
 		for(unsigned i=0;i<s->idents.count;i++){
 			const char*id=(const char*)dynp_get(&s->idents,i);
 			if(!strcmp(id,name))
-				return 1;
+				return s->type;
 		}
 	}
 	return 0;
