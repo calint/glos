@@ -17,7 +17,7 @@ static void ci_free(){
 }
 
 
-inline static /*gives*/ci_expression*ci_expression_next(
+inline static /*gives*/ci_expression*ci_expr_next(
 		ci_toc*toc,const char**pp){
 	token t=token_next(pp);
 	if(token_is_empty(&t)){
@@ -28,7 +28,7 @@ inline static /*gives*/ci_expression*ci_expression_next(
 
 	if(**pp=='('){// function call
 		*pp=t.begin;
-		ci_expression_func_call*e=ci_expression_func_call_next(toc,pp);
+		ci_expr_call*e=ci_expr_call_next(toc,pp);
 		return (ci_expression*)e;
 	}
 	// assuming identifier
@@ -128,7 +128,7 @@ static void ci_compile(const char*path){
 						p++;
 					}
 					while(1){
-						ci_expression*e=ci_expression_next(&toc,&p);
+						ci_expression*e=ci_expr_next(&toc,&p);
 						if(ci_expression_is_empty(e)){
 							if(*p=='}'){
 								p++;
