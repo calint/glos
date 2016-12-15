@@ -234,15 +234,15 @@ static void ci_load_def(const char*path){
 			printf("//--- - - ---------------------  - -- - - - - - - -- - - - -- - - - -- - - -\n");
 			dynp_foa(&c->functions,{
 				ci_func*f=o;
-				printf("    %s %s(",f->type.data,f->name.data);
+				printf("inline static %s %s_%s(",f->type.data,c->name.data,f->name.data);
+				printf("%s*o",c->name.data);
 				dynp_foac(&f->args,{
 					ci_func_arg*a=o;
+					printf(",");
 					printf("%s %s",a->type.data,a->name.data);
-					if(i+1<f->args.count){
-						printf(",");
-					}
 				});
-				printf(")\n");
+				printf("){\n");
+				printf("}\n");
 			});
 	});
 	printf("//--- - - ---------------------  - -- - - - - - - -- - - - -- - - - -- - - -\n");
