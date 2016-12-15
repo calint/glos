@@ -206,6 +206,11 @@ inline static bool _cell_detect_and_resolve_collision_for_spheres(
 //		// not collision, ? precision 9.53674316e-07
 //		printf(" divisor is zero   %s  %s  diff: %f\n",
 //				o1->name.data,o2->name.data,diff);
+		printf(" !!! dx2-dx1==0     %s x=%f  vs %s x=%f     dx=%f   du=%f\n",
+				o1->name.data,o1->p.p.x,
+				o2->name.data,o2->p.p.x,
+				diff,div);
+
 		return false;
 	}
 	float t;
