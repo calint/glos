@@ -265,6 +265,7 @@ static void ci_compile(const char*path){
 				dynp_foa(&f->stmts,{
 					ci_expression*e=o;
 					e->compile(e,&toc);
+					printf(";\n");
 				});
 				printf("}\n");
 			});

@@ -11,7 +11,17 @@ typedef struct ci_expression_func_call{
 
 inline static void _ci_expression_func_call_compile_(
 		struct ci_expression*o,ci_toc*toc){
-	printf(" compile statement \n");
+
+	ci_expression_func_call*e=(ci_expression_func_call*)o;
+	printf("%s(",e->func_name.data);
+	dynp_foac(&e->args,{
+		ci_expression*a=(ci_expression*)o;
+		a->compile(a,toc);
+		if(i!=e->args.count-1){
+			printf(",");
+		}
+	});
+	printf(")");
 }
 
 #define ci_expression_func_call_def (ci_expression_func_call){\
