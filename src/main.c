@@ -103,8 +103,86 @@ inline static void main_render(framectx*fc){
 	SDL_GL_SwapWindow(window.ref);
 }
 
+
+
+typedef struct ci_class{
+	str name;
+	dynp/*owns*//*str*/extends;
+	dynp/*owns*//*token*/body;
+}ci_class;
+#define ci_class_def (ci_class){str_def,dynp_def,dynp_def}
+dynp/*owns*/ci_classes=dynp_def;
+
+
+inline static void ci_class_free(ci_class*o){
+	for(unsigned i=0;i<o->extends.count;i++){
+		str_free((str*)&o->extends.data[i]);
+	}
+	dynp_free(&o->extends);
+	dynp_free(&o->body);
+	str_free(&o->name);
+}
+
+static void load_def(const char*path){
+	str s=str_from_file(path);
+	const char*p=s.data;
+	token t=token_next(&p);
+	if(token_equals(&t,"class")){
+		token nm=token_next(&p);
+		ci_class*c=malloc(sizeof(ci_class));
+		*c=ci_class_def;
+		dynp_add(&ci_classes,c);
+		token_copy_to_str(&nm,&c->name);
+		if(*p==':'){// extends
+			p++;
+			while(1){
+				token extends_name=token_next(&p);
+				dynp_add(&c->extends,/*takes*/token_to_str(&extends_name));
+				if(*p=='{'){// body
+					break;
+				}else if(*p==','){// body
+					p++;
+					continue;
+				}
+				printf("<file> <line:col> expected '{' or ',' followed by "
+						"class name");
+				exit(1);
+
+			}
+		}
+		// body starts
+		if(*p=='{'){ // compound
+			while(*p && *p!='}'){
+				p++;
+			}
+		}
+		// print
+		dynp_foa(&ci_classes,{
+				ci_class*c=o;
+				printf("typedef struct %s{\n",c->name.data);
+				dynp_foa(&c->extends,{
+					str*s=o;
+					printf("    struct %s;\n",s->data);
+				});
+				printf("}%s;",c->name.data);
+		});
+		// done
+		return;
+	}
+	printf("expected class declaration\n");
+	exit(1);
+}
+
+static void ci_free(){
+	for(unsigned i=0;i<ci_classes.count;i++){
+		free(ci_classes.data[i]);
+	}
+	dynp_free(&ci_classes);
+}
+
 //------------------------------------------------------------------------ main
 int main(int argc,char*argv[]){
+	load_def("ci/main.ci");
 	if(argc>1 && *argv[1]=='s'){
 		netsrv_init();
 		netsrv_loop();

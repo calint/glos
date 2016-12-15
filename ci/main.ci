@@ -1,0 +1,3 @@
+class player:object,santa{
+	int keybits=0;
+}
