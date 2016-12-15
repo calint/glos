@@ -86,6 +86,20 @@ static void ci_parse_function(const char**pp,ci_toc*tc,ci_class*c,
 	}
 }
 
+static void ci_parse_field(const char**pp,ci_toc*tc,ci_class*c,
+		token*type,token*name){
+	ci_field*f=malloc(sizeof(ci_field));
+	*f=ci_field_def;
+	dynp_add(&c->fields,f);
+	token_copy_to_str(type,&f->type);
+	if(token_is_empty(name)){
+		token_copy_to_str(type,&f->name);
+	}else{
+		token_copy_to_str(name,&f->name);
+	}
+	ci_toc_add_identifier(tc,f->name.data);
+
+}
 static void ci_compile(const char*path){
 	str s=str_from_file(path);
 	const char*p=s.data;
@@ -135,27 +149,13 @@ static void ci_compile(const char*path){
 					p++;
 					break;
 				}
-				ci_field*f=malloc(sizeof(ci_field));
-				*f=ci_field_def;
-				dynp_add(&c->members,f);
-				token_copy_to_str(&type,&f->type);
 				token name=token_next(&p);
-				if(token_is_empty(&name)){
-					token_copy_to_str(&type,&f->name);
-				}else{
-					token_copy_to_str(&name,&f->name);
-				}
-				ci_toc_add_identifier(&toc,f->name.data);
 				if(*p=='('){
 					p++;
 					ci_parse_function(&p,&toc,c,&type,&name);
-				}else if(*p=='='){
+				}else if(*p=='=' || *p==';'){
 					p++;
-					printf("<file> <line:col> member initializer not supported\n");
-					exit(1);
-				}else if(*p==';'){
-					p++;
-					continue;
+					ci_parse_field(&p,&toc,c,&type,&name);
 				}else{
 					printf("<file> <line:col> expected ';'\n");
 					exit(1);
@@ -175,7 +175,7 @@ static void ci_compile(const char*path){
 				str*s=o;
 				printf("    %s %s;\n",s->data,s->data);
 			});
-			dynp_foa(&c->members,{
+			dynp_foa(&c->fields,{
 				ci_field*s=o;
 				printf("    %s %s;\n",s->type.data,s->name.data);
 			});
@@ -188,7 +188,7 @@ static void ci_compile(const char*path){
 				str*s=o;
 				printf("%s_def,",s->data);
 			});
-			dynp_foa(&c->members,{
+			dynp_foa(&c->fields,{
 				ci_field*s=o;
 				printf("%s_def,",s->type.data);
 			});

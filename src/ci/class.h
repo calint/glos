@@ -5,7 +5,7 @@
 typedef struct ci_class{
 	str name;
 	dynp/*owns str*/extends;
-	dynp/*owns ci_slot*/members;
+	dynp/*owns ci_slot*/fields;
 	dynp/*owns ci_func*/functions;
 }ci_class;
 
@@ -18,10 +18,10 @@ inline static void ci_class_free(ci_class*o){
 	});
 	dynp_free(&o->functions);
 
-	dynp_foa(&o->members,{
+	dynp_foa(&o->fields,{
 		ci_field_free((ci_field*)o);
 	});
-	dynp_free(&o->members);
+	dynp_free(&o->fields);
 
 	dynp_foa(&o->extends,{
 		str_free((str*)o);
