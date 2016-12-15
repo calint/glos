@@ -49,7 +49,7 @@ inline static /*gives*/ ci_expr_call*ci_expr_call_next(
 	token t=token_next(pp);
 	ci_expr_call*o=malloc(sizeof(ci_expr_call));
 	*o=ci_expr_call_def;
-	token_set_str(&t,&o->func_name);
+	token_setz(&t,&o->func_name);
 	if(**pp=='('){// arguments
 		(*pp)++;
 		while(1){

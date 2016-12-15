@@ -166,7 +166,7 @@ inline static const char*scan_to_including_newline(const char*p){
 	}
 }
 
-inline static void token_set_str(token*o,str*s){
+inline static void token_setz(token*o,str*s){
 	str_clear(s);
 	str_add_list(s,o->content,(unsigned)(o->content_end-o->content));
 	str_add(s,0);

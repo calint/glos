@@ -33,7 +33,7 @@ inline static /*gives*/ci_expr*ci_expr_next(
 	// assuming identifier
 	ci_expr_ident*e=malloc(sizeof(ci_expr_ident));
 	*e=ci_expr_ident_def;
-	token_set_str(&t,&e->name);
+	token_setz(&t,&e->name);
 	return (ci_expr*)e;
 }
 
@@ -42,8 +42,8 @@ static void ci_parse_function(const char**pp,ci_toc*tc,ci_class*c,
 	ci_func*f=malloc(sizeof(ci_func));
 	*f=ci_func_def;
 	dynp_add(&c->functions,f);
-	token_set_str(type,&f->type);
-	token_set_str(name,&f->name);
+	token_setz(type,&f->type);
+	token_setz(name,&f->name);
 	while(1){
 		token argtype=token_next(pp);
 		if(token_is_empty(&argtype)){
@@ -58,8 +58,8 @@ static void ci_parse_function(const char**pp,ci_toc*tc,ci_class*c,
 		ci_func_arg*fa=malloc(sizeof(ci_func_arg));
 		*fa=ci_func_arg_def;
 		dynp_add(&f->args,fa);
-		token_set_str(&argtype,&fa->type);
-		token_set_str(&argname,&fa->name);
+		token_setz(&argtype,&fa->type);
+		token_setz(&argname,&fa->name);
 		if(**pp==','){
 			(*pp)++;
 			continue;
@@ -90,13 +90,23 @@ static void ci_parse_field(const char**pp,ci_toc*tc,ci_class*c,
 		token*type,token*name){
 	ci_field*f=malloc(sizeof(ci_field));
 	*f=ci_field_def;
-	token_set_str(type,&f->type);
+	token_setz(type,&f->type);
 	if(token_is_empty(name)){
-		token_set_str(type,&f->name);
+		token_setz(type,&f->name);
 	}else{
-		token_set_str(name,&f->name);
+		token_setz(name,&f->name);
 	}
 	dynp_add(&c->fields,f);
+	if(**pp=='='){
+		(*pp)++;
+		ci_expr*e=ci_expr_next(tc,pp);
+		f->initval=e;
+	}
+	if(**pp!=';'){
+		printf("<file> <line:col> expected ';' to finish field declaration\n");
+		exit(1);
+	}
+	(*pp)++;
 	ci_toc_add_identifier(tc,f->name.data);
 }
 
@@ -147,6 +157,7 @@ static void ci_compile_to_c(ci_toc*tc){
 			printf("}%s;\n",c->name.data);
 
 			printf("\n");
+
 			// #define object_def {...}
 			printf("#define %s_def {",c->name.data);
 			dynp_foa(&c->extends,{
@@ -155,9 +166,15 @@ static void ci_compile_to_c(ci_toc*tc){
 			});
 			dynp_foa(&c->fields,{
 				ci_field*s=o;
-				printf("%s_def,",s->type.data);
+				if(s->initval){
+					s->initval->compile(s->initval,tc);
+				}else{
+					printf("%s_def",s->type.data);
+				}
+				printf(",");
 			});
 			printf("}\n");
+
 			// init
 			printf("//--- - - ---------------------  - -- - - - - - - -- - - - -- - - - -- - - -\n");
 			printf(	"inline static void %s_init(%s*o){\n",
@@ -167,6 +184,7 @@ static void ci_compile_to_c(ci_toc*tc){
 				printf(	"	%s_init(&o->%s);\n",s->data,s->data);
 			});
 			printf("}\n");
+
 			// alloc
 			printf("//--- - - ---------------------  - -- - - - - - - -- - - - -- - - - -- - - -\n");
 			printf(	"inline static %s*%s_alloc(){\n"
@@ -242,7 +260,7 @@ static void ci_compile(const char*path){
 		ci_class*c=malloc(sizeof(ci_class));
 		*c=ci_class_def;
 		dynp_add(&ci_classes,c);
-		token_set_str(&nm,&c->name);
+		token_setz(&nm,&c->name);
 		ci_toc_push_scope(&toc, 'c',c->name.data);
 		if(*p==':'){
 			p++;
@@ -261,30 +279,30 @@ static void ci_compile(const char*path){
 
 			}
 		}
-		// class body starts
-		if(*p=='{'){ // compound
-			p++;
-			while(1){
-				token type=token_next(&p);
-				if(token_is_empty(&type)){
-					if(*p!='}'){
-						printf("<file> <line:col> expected end of class\n");
-						exit(1);
-					}
-					p++;
-					break;
-				}
-				token name=token_next(&p);
-				if(*p=='('){
-					p++;
-					ci_parse_function(&p,&toc,c,&type,&name);
-				}else if(*p=='=' || *p==';'){
-					p++;
-					ci_parse_field(&p,&toc,c,&type,&name);
-				}else{
-					printf("<file> <line:col> expected ';'\n");
+		if(*p!='{'){
+			printf("<file> <line:col> expected '{' to open class body");
+			exit(1);
+		}
+		p++;
+		while(1){
+			token type=token_next(&p);
+			if(token_is_empty(&type)){
+				if(*p!='}'){
+					printf("<file> <line:col> expected '}' to close class body\n");
 					exit(1);
 				}
+				p++;
+				break;
+			}
+			token name=token_next(&p);
+			if(*p=='('){
+				p++;
+				ci_parse_function(&p,&toc,c,&type,&name);
+			}else if(*p=='=' || *p==';'){
+				ci_parse_field(&p,&toc,c,&type,&name);
+			}else{
+				printf("<file> <line:col> expected ';'\n");
+				exit(1);
 			}
 		}
 		ci_toc_pop_scope(&toc);//, 'c',c->name.data);
