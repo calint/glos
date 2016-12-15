@@ -189,6 +189,7 @@ inline static void dyni_setz(dyni*o,/*copies*/const int*s){
 
 //-----------------------------------------------------------------------------
 #define dyni_foa(ls,body)dynp_foreach_all(ls,({void __fn__ (int o) body __fn__;}))
+#define dyni_foac(ls,body)dynp_foreach_all_count(ls,({void __fn__ (int o,unsigned i) body __fn__;}))
 #define dyni_fou(ls,body)dynp_foreach(ls,({int __fn__ (int o) body __fn__;}))
 #define dyni_foar(ls,body)dynp_foreach_all_rev(ls,({void __fn__ (int o) body __fn__;}))
 //-----------------------------------------------------------------------------
@@ -208,6 +209,15 @@ inline static void dyni_foreach_all(dyni*o,void(*f)(int)){
 	for(unsigned i=0;i<o->count;i++){
 		int oo=o->data[i];
 		f(oo);
+	}
+}
+//-----------------------------------------------------------------------------
+inline static void dyni_foreach_all_count(dyni*o,void(*f)(int,unsigned)){
+	if(!o->count)
+		return;
+	for(unsigned i=0;i<o->count;i++){
+		int oo=o->data[i];
+		f(oo,i);
 	}
 }
 //-----------------------------------------------------------------------------
