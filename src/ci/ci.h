@@ -32,7 +32,7 @@ inline static /*gives*/ci_expr*ci_expr_next(
 	}
 	str name=str_def;
 	token_setz(&t,&name);
-	if(ci_toc_find_ident_type(tc, name.data)){
+	if(ci_toc_find_ident_type(tc,name.data)){
 		// assuming identifier
 		ci_expr_ident*e=malloc(sizeof(ci_expr_ident));
 		*e=ci_expr_ident_def;
