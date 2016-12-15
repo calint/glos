@@ -1,7 +1,7 @@
 #pragma once
 #include"../lib.h"
+#include "field.h"
 #include "func.h"
-#include "member.h"
 typedef struct ci_class{
 	str name;
 	dynp/*owns str*/extends;
@@ -19,7 +19,7 @@ inline static void ci_class_free(ci_class*o){
 	dynp_free(&o->functions);
 
 	dynp_foa(&o->members,{
-		ci_member_free((ci_member*)o);
+		ci_field_free((ci_field*)o);
 	});
 	dynp_free(&o->members);
 

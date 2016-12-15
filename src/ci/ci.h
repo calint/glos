@@ -86,8 +86,8 @@ static void ci_compile(const char*path){
 					p++;
 					break;
 				}
-				ci_member*m=malloc(sizeof(ci_member));
-				*m=ci_member_def;
+				ci_field*m=malloc(sizeof(ci_field));
+				*m=ci_field_def;
 				dynp_add(&c->members,m);
 				token_copy_to_str(&type,&m->type);
 				token name=token_next(&p);
@@ -169,7 +169,7 @@ static void ci_compile(const char*path){
 				printf("    %s %s;\n",s->data,s->data);
 			});
 			dynp_foa(&c->members,{
-				ci_member*s=o;
+				ci_field*s=o;
 				printf("    %s %s;\n",s->type.data,s->name.data);
 			});
 			printf("}%s;\n",c->name.data);
@@ -182,7 +182,7 @@ static void ci_compile(const char*path){
 				printf("%s_def,",s->data);
 			});
 			dynp_foa(&c->members,{
-				ci_member*s=o;
+				ci_field*s=o;
 				printf("%s_def,",s->type.data);
 			});
 			printf("}\n");
