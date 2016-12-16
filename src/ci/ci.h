@@ -27,26 +27,29 @@ inline static /*gives*/ci_expr*ci_expr_next(
 		return e;
 	}
 
+//	if(token_equals(&t,"loop")){
+//		ci_expr_loop_next(pp,tc);
+//
+//	}
+	str name=str_def;
+	token_setz(&t,&name);
 	if(**pp=='('){// function call
-		*pp=t.begin;
-		ci_expr_call*e=ci_expr_call_next(pp,tc);
+		ci_expr_call*e=ci_expr_call_next(pp,tc,/*gives*/name);
 		return (ci_expr*)e;
 	}
 
-	str name=str_def;
-	token_setz(&t,&name);
 	if(**pp=='='){// assignment
 		(*pp)++;
 		ci_expr_assign*e=malloc(sizeof(ci_expr_assign));
 		*e=ci_expr_assign_def;
 		e->expr=ci_expr_next(pp,tc);
-		e->name=name;
+		e->name=/*gives*/name;
 		return(ci_expr*)e;
 	}
 
 	ci_expr_ident*e=malloc(sizeof(ci_expr_ident));
 	*e=ci_expr_ident_def;
-	e->name=name;
+	e->name=/*gives*/name;
 	return(ci_expr*)e;
 }
 

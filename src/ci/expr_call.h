@@ -44,35 +44,36 @@ inline static void ci_expr_call_free(ci_expr*o){
 inline static /*gives*/ci_expr*ci_expr_next(const char**pp,ci_toc*tc);
 
 inline static /*gives*/ci_expr_call*ci_expr_call_next(
-		const char**pp,ci_toc*tc){
-	token t=token_next(pp);
+		const char**pp,ci_toc*tc,/*takes*/str name){
 	ci_expr_call*o=malloc(sizeof(ci_expr_call));
 	*o=ci_expr_call_def;
-	token_setz(&t,&o->name);
-	if(**pp=='('){// arguments
-		(*pp)++;
-		while(1){
-			if(**pp==')'){
-				(*pp)++;
-				break;
-			}
-			ci_expr*a=ci_expr_next(pp,tc);
-			if(ci_expr_is_empty(a)){
-				printf("<file> <line> <col> expected ')' or more arguments");
-				exit(1);
-			}
-			dynp_add(&o->args,a);
-			if(**pp==','){
-				(*pp)++;
-				continue;
-			}
-			if(**pp==')'){
-				(*pp)++;
-				break;
-			}
-			printf("<file> <line> <col> expected ',' followed by more arguments");
+	o->name=name;
+	if(**pp!='('){// arguments
+		printf("<file> <line> <col> expected '(' followed by arguments and ')'");
+		exit(1);
+	}
+	(*pp)++;
+	while(1){
+		if(**pp==')'){
+			(*pp)++;
+			break;
+		}
+		ci_expr*a=ci_expr_next(pp,tc);
+		if(ci_expr_is_empty(a)){
+			printf("<file> <line> <col> expected ')' or more arguments");
 			exit(1);
 		}
+		dynp_add(&o->args,a);
+		if(**pp==','){
+			(*pp)++;
+			continue;
+		}
+		if(**pp==')'){
+			(*pp)++;
+			break;
+		}
+		printf("<file> <line> <col> expected ',' followed by more arguments");
+		exit(1);
 	}
 	return o;
 }

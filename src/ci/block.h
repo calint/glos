@@ -44,7 +44,7 @@ inline static void _ci_block_compile_(ci_expr*oo,ci_toc*tc){
 //	free(o);
 //}
 
-inline static /*gives*/ci_expr*ci_expr_next(const char**,ci_toc*);
+inline static /*gives*/ci_expr*ci_expr_next(const char**pp,ci_toc*tc);
 
 static /*gives*/ci_block*ci_code_parse(ci_block*o,const char**pp,ci_toc*tc){
 //	ci_code*c=malloc(sizeof(ci_code));
