@@ -23,7 +23,7 @@ inline static void ci_free(){
 	dynp_free(&ci_classes);
 }
 
-inline static /*gives*/ci_expr*ci_expr_next(
+inline static /*gives*/ci_expr*ci_expr_new_from_pp(
 		const char**pp,ci_toc*tc){
 
 	token tk=token_next(pp);
@@ -68,8 +68,12 @@ inline static /*gives*/ci_expr*ci_expr_next(
 
 	if(**pp=='='){// assignment
 		(*pp)++;
-		ci_expr_assign*e=/*takes*/ci_expr_assign_next(pp,tc,/*gives*/name);
-		return(ci_expr*)e;
+		if(**pp!='='){
+			(*pp)++;
+			ci_expr_assign*e=/*takes*/ci_expr_assign_next(pp,tc,/*gives*/name);
+			return(ci_expr*)e;
+		}
+		(*pp)--;
 	}
 
 	ci_expr_ident*e=malloc(sizeof(ci_expr_ident));
@@ -110,7 +114,7 @@ inline static void _ci_parse_func(const char**pp,ci_toc*tc,ci_class*c,
 			(*pp)++;
 		}
 	}
-	ci_code_parse(&f->code,pp,tc);
+	ci_block_parse(&f->code,pp,tc);
 	ci_toc_pop_scope(tc);
 }
 
@@ -127,7 +131,7 @@ inline static void _ci_parse_field(const char**pp,ci_toc*tc,ci_class*c,
 	dynp_add(&c->fields,f);
 	if(**pp=='='){
 		(*pp)++;
-		ci_expr*e=ci_expr_next(pp,tc);
+		ci_expr*e=ci_expr_new_from_pp(pp,tc);
 		f->initval=e;
 	}
 	if(**pp!=';'){

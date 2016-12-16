@@ -28,7 +28,7 @@ inline static ci_expr_loop*ci_expr_loop_next(const char**pp,ci_toc*tc){
 	ci_toc_push_scope(tc,'l',"");
 	ci_expr_loop*o=malloc(sizeof(ci_expr_loop));
 	*o=ci_expr_loop_def;
-	ci_code_parse(&o->code,pp,tc);
+	ci_block_parse(&o->code,pp,tc);
 	ci_toc_pop_scope(tc);
 	return o;
 }

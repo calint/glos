@@ -6,12 +6,15 @@
 typedef struct ci_expr_bool{
 	ci_expr super;
 
+	// element
 	struct ci_expr*lh;
 
 	char op;
 
 	struct ci_expr*rh;
 
+
+	// list
 	str bool_op_list;
 
 	dynp/*owns &expr_bool*/bool_list;
@@ -41,15 +44,36 @@ inline static void ci_expr_bool_parse(ci_expr_bool*o,
 	o->super.type=str_from_string("bool");
 	if(**pp!='('){//   keybits==1 && ok || (a&b!=0)
 		o->is_encapsulated=false;
-		token l=token_next(pp);
-		char op=0;
+		o->lh=ci_expr_new_from_pp(pp,tc);
 		if(**pp=='='){
 			(*pp)++;
 			if(**pp!='='){
 				printf("<file> <line:col> expected '=='\n");
 				exit(1);
 			}
-			op='=';
+			o->op='=';
+			(*pp)++;
+		}
+		o->rh=ci_expr_new_from_pp(pp,tc);
+		//? keybits==1 && ok
+		if(**pp=='&'){
+			(*pp)++;
+			if(**pp=='&'){
+				(*pp)++;
+				printf("<file> <line:col> and list not supported\n");
+				exit(1);
+			}
+		}else if(**pp=='|'){
+			(*pp)++;
+			if(**pp=='|'){
+				(*pp)++;
+				printf("<file> <line:col> and list not supported\n");
+				exit(1);
+			}
+		}else{
+			return;
+//			printf("<file> <line:col> unknown boolean operator. expected && or ||\n");
+//			exit(1);
 		}
 	}
 	o->is_encapsulated=true;
