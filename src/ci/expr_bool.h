@@ -5,9 +5,9 @@
 #include"block.h"
 typedef struct ci_expr_bool{
 	ci_expr super;
-	struct ci_expr_bool lh;
+	struct ci_expr_bool*lh;
 	char op;
-	struct ci_expr_bool rh;
+	struct ci_expr_bool*rh;
 
 }ci_expr_bool;
 
@@ -20,9 +20,9 @@ inline static void _ci_expr_bool_free_(ci_expr*oo){
 }
 
 #define ci_expr_bool_def (ci_expr_bool){\
-	{str_def,_ci_expr_if_compile_,_ci_expr_if_free_}}
+	{str_def,_ci_expr_bool_compile_,_ci_expr_bool_free_}}
 
-inline static ci_expr*ci_expr_if_next(const char**pp,ci_toc*tc){
+inline static ci_expr*ci_expr_bool_next(const char**pp,ci_toc*tc){
 	if(**pp!=';'){
 		printf("\n\n<file> <line:col> expected ';' after keyword 'break'");
 		exit(1);
