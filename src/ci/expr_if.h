@@ -30,8 +30,6 @@ inline static ci_expr_if*ci_expr_if_next(const char**pp,ci_toc*tc){
 	ci_expr_if*o=malloc(sizeof(ci_expr_if));
 	*o=ci_expr_if_def;
 	ci_expr_bool_parse(&o->cond,pp,tc);
-	ci_toc_push_scope(tc,'i',"");
 	ci_block_parse(&o->code,pp,tc);
-	ci_toc_pop_scope(tc);
 	return o;
 }

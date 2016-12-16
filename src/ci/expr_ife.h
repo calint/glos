@@ -45,9 +45,7 @@ inline static ci_expr_ife*ci_expr_ife_next(const char**pp,ci_toc*tc){
 		dynp_add(&o->ifs,i);
 
 		ci_expr_bool_parse(&i->cond,pp,tc);
-		ci_toc_push_scope(tc,'i',"");
 		ci_block_parse(&i->code,pp,tc);
-		ci_toc_pop_scope(tc);
 
 
 		token t=token_next(pp);
@@ -58,9 +56,7 @@ inline static ci_expr_ife*ci_expr_ife_next(const char**pp,ci_toc*tc){
 
 		token t2=token_next(pp);
 		if(!token_equals(&t2,"if")){
-			ci_toc_push_scope(tc,'e',"");
 			ci_block_parse(&o->elsecode,pp,tc);
-			ci_toc_pop_scope(tc);
 			return o;
 		}
 	}
