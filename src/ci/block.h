@@ -29,7 +29,7 @@ inline static void _ci_block_compile_(const ci_expr*oo,ci_toc*tc){
 	for(unsigned i=0;i<o->exprs.count;i++){
 		ci_expr*e=dynp_get(&o->exprs,i);
 		e->compile(e,tc);
-		printf(";\n");
+		printf(";\n");//? e->is_block
 	}
 	if(o->is_encaps){
 		printf("}\n");

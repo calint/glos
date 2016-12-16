@@ -11,7 +11,10 @@ typedef struct ci_expr_if{
 }ci_expr_if;
 
 inline static void _ci_expr_if_compile_(const ci_expr*oo,ci_toc*tc){
-	printf("if");
+	ci_expr_if*o=(ci_expr_if*)oo;
+	printf("if ");
+	_ci_expr_bool_compile_((ci_expr*)&o->cond,tc);
+	_ci_block_compile_((ci_expr*)&o->code,tc);
 }
 
 inline static void _ci_expr_if_free_(ci_expr*oo){
