@@ -12,9 +12,9 @@ typedef struct ci_expr_bool{
 
 	struct ci_expr_bool*rh;
 
-	str boolexpr_op_list;
+	str bool_op_list;
 
-	dynp/*owns &expr_bool*/boolexpr_list;
+	dynp/*owns &expr_bool*/bool_list;
 
 }ci_expr_bool;
 
@@ -32,10 +32,13 @@ inline static void _ci_expr_bool_free_(ci_expr*oo){
 	str_def,\
 	dynp_def}
 
-inline static ci_expr*ci_expr_bool_next(const char**pp,ci_toc*tc){
+inline static ci_expr*ci_expr_bool_parse(ci_expr_bool*o,
+		const char**pp,ci_toc*tc){
+
+	o->super.type=str_from_string("bool");
 	if(**pp!='('){
-		printf("\n\n<file> <line:col> expected '(' and condition after 'if'");
-		exit(1);
+
+
 	}
 	(*pp)++;
 	ci_expr_bool*e=malloc(sizeof(ci_expr_bool));

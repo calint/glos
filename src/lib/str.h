@@ -247,3 +247,9 @@ inline static unsigned str_has(str*o,char oo){
 	return 1;
 }
 //-----------------------------------------------------------------------------
+inline static/*gives*/str str_from_string(const char*s){
+	str o=str_def;
+	str_add_string(&o,s);
+	str_add(&o,0);
+	return o;
+}

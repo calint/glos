@@ -18,15 +18,12 @@ inline static void _ci_expr_if_free_(ci_expr*oo){
 }
 
 #define ci_expr_if_def (ci_expr_if){\
-	{str_def,_ci_expr_if_compile_,_ci_expr_if_free_}}
+	{str_def,_ci_expr_if_compile_,_ci_expr_if_free_},\
+	ci_expr_bool_def}
 
 inline static ci_expr*ci_expr_if_next(const char**pp,ci_toc*tc){
-	if(**pp!=';'){
-		printf("\n\n<file> <line:col> expected ';' after keyword 'break'");
-		exit(1);
-	}
-	(*pp)++;
-	ci_expr_if*e=malloc(sizeof(ci_expr_if));
-	*e=ci_expr_if_def;
-	return(ci_expr*)e;
+	ci_expr_if*o=malloc(sizeof(ci_expr_if));
+	*o=ci_expr_if_def;
+	ci_expr_bool_parse(&o->cond,pp,tc);
+	return(ci_expr*)o;
 }

@@ -2,7 +2,6 @@ class player:object,santa{
 	int keybits=1;
 
 	void set_keybits(int kb){
-		int a=kb;
-		int b=keybits;
+		if(keybits==kb)
 	}
 }
