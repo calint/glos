@@ -17,14 +17,15 @@ inline static void _ci_expr_ident_free_(struct ci_expr*oo){
 
 inline static void _ci_expr_ident_compile_(
 		struct ci_expr*oo,ci_toc*tc){
+
 	ci_expr_ident*o=(ci_expr_ident*)oo;
-	const char idtype=ci_toc_find_ident_context(tc,o->name.data);
-	if(idtype=='c'){
+	const char idtype=ci_toc_find_ident_type(tc,o->name.data);
+	if(idtype=='c'){// class member
 		printf("o->%s",o->name.data);
 		o->cnst=0;
 		return;
 	}
-	if(idtype){
+	if(idtype){// local identifier
 		printf("%s",o->name.data);
 		o->cnst=0;
 		return;

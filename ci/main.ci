@@ -3,11 +3,9 @@ class object{
 }
 class santa{
 	dynp presents;
-	santa(const char*str){}
-	virtual ~santa(){}
 }
 class player:object,santa{
-	auto keybits=100;
+	int keybits=100;
 	vec3 lookvec;
 	
 	void print_info(char* s){
