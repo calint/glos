@@ -29,7 +29,15 @@ typedef struct ci_expr_bool{
 
 inline static void _ci_expr_bool_compile_(const ci_expr*oo,ci_toc*tc){
 	ci_expr_bool*o=(ci_expr_bool*)oo;
+
+	if(o->lh_negate)
+		printf("!");
+
 	o->lh->compile(o->lh,tc);
+
+	if(!o->rh)
+		return;
+
 	if(o->op=='='){
 		printf("==");
 	}else if(o->op=='!'){
@@ -38,6 +46,9 @@ inline static void _ci_expr_bool_compile_(const ci_expr*oo,ci_toc*tc){
 		printf("<file> <line:col> unknown op '%d' ')'\n",o->op);
 		exit(1);
 	}
+
+	if(o->rh_negate)
+		printf("!");
 
 	o->rh->compile(o->rh,tc);
 }
@@ -84,8 +95,8 @@ inline static void ci_expr_bool_parse(ci_expr_bool*o,
 			o->op='!';
 			(*pp)++;
 		}else{// if(active)
-			printf("<file> <line:col> expected operator '==' or '!='\n");
-			exit(1);
+//			o->op='.';
+			return;
 		}
 
 		if(**pp=='!'){// if(!ok){}
