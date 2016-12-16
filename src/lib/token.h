@@ -30,17 +30,28 @@ inline static unsigned token_size(token*t){
 	return (unsigned)(t->content_end-t->content);
 }
 
-inline static int token_starts_with(token*t,const char*str){
-	return strncmp(str,t->content,strlen(str))==0;
-}
+//inline static int token_starts_with(token*t,const char*str){
+//	return strncmp(str,t->content,strlen(str))==0;
+//}
 
-inline static int token_equals(token*t,const char*str){
+inline static bool token_starts_with(token*t,const char*str){
 	const char*p=t->content;//? stdlib
 	while(1){
 		if(p==t->content_end)
 			return 1;
 		if(*p!=*str)
 			return 0;
+		p++;
+		str++;
+	}
+}
+
+inline static bool token_equals(token*t,const char*str){
+	const char*p=t->content;
+	while(1){
+		if(!*str)return 1;
+		if(p==t->content_end)return 0;
+		if(*p!=*str)return 0;
 		p++;
 		str++;
 	}
