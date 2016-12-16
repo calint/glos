@@ -16,6 +16,7 @@ class player:object,santa{
 	void set_keybits(int kb){
 		loop{
 			keybits=kb;
+			break;
 		}
 	}
 }
