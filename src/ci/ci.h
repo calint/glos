@@ -14,7 +14,7 @@ dynp/*owns*/ci_classes=dynp_def;
 
 inline static void ci_init(){}
 
-static void ci_free(){
+inline static void ci_free(){
 	dynp_foa(&ci_classes,{
 		ci_class_free((ci_class*)o);
 	});
@@ -68,7 +68,7 @@ inline static /*gives*/ci_expr*ci_expr_next(
 	return(ci_expr*)e;
 }
 
-static void ci_parse_func(const char**pp,ci_toc*tc,ci_class*c,
+inline static void ci_parse_func(const char**pp,ci_toc*tc,ci_class*c,
 		token*type,token*name){
 	ci_func*f=malloc(sizeof(ci_func));
 	*f=ci_func_def;
@@ -104,7 +104,7 @@ static void ci_parse_func(const char**pp,ci_toc*tc,ci_class*c,
 	ci_toc_pop_scope(tc);
 }
 
-static void ci_parse_field(const char**pp,ci_toc*tc,ci_class*c,
+inline static void ci_parse_field(const char**pp,ci_toc*tc,ci_class*c,
 		token*type,token*name){
 	ci_field*f=malloc(sizeof(ci_field));
 	*f=ci_field_def;
@@ -128,7 +128,7 @@ static void ci_parse_field(const char**pp,ci_toc*tc,ci_class*c,
 	ci_toc_add_ident(tc,f->name.data);
 }
 
-static void ci_compile_to_c(ci_toc*tc){
+inline static void ci_compile_to_c(ci_toc*tc){
 //	for(unsigned i=0;i<ci_classes.count;i++){
 //		ci_class*c=dynp_get(&ci_classes,i);
 //		printf("\n");
@@ -274,7 +274,7 @@ static void ci_compile_to_c(ci_toc*tc){
 	printf("\n");
 }
 
-static /*gives*/ci_class*ci_parse_class(const char**pp,ci_toc*tc,
+inline static /*gives*/ci_class*ci_parse_class(const char**pp,ci_toc*tc,
 		token type,token name){
 	ci_class*c=malloc(sizeof(ci_class));
 	*c=ci_class_def;
@@ -327,7 +327,7 @@ static /*gives*/ci_class*ci_parse_class(const char**pp,ci_toc*tc,
 	ci_toc_pop_scope(tc);
 	return/*gives*/c;
 }
-static void ci_compile(const char*path){
+inline static void ci_compile(const char*path){
 	str s=str_from_file(path);
 	const char*p=s.data;
 	ci_toc toc=ci_toc_def;
