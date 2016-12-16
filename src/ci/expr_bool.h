@@ -24,7 +24,12 @@ typedef struct ci_expr_bool{
 }ci_expr_bool;
 
 inline static void _ci_expr_bool_compile_(const ci_expr*oo,ci_toc*tc){
-	printf("bool");
+	ci_expr_bool*o=(ci_expr_bool*)oo;
+	o->lh->compile(o->lh,tc);
+	if(o->op=='='){
+		printf("==");
+	}
+	o->rh->compile(o->rh,tc);
 }
 
 inline static void _ci_expr_bool_free_(ci_expr*oo){

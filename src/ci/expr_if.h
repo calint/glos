@@ -14,6 +14,7 @@ inline static void _ci_expr_if_compile_(const ci_expr*oo,ci_toc*tc){
 	ci_expr_if*o=(ci_expr_if*)oo;
 	printf("if ");
 	_ci_expr_bool_compile_((ci_expr*)&o->cond,tc);
+	printf(" ");
 	_ci_block_compile_((ci_expr*)&o->code,tc);
 }
 
