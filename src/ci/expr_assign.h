@@ -23,13 +23,12 @@ inline static void _ci_expr_assign_compile_(
 	if(idtype=='c'){// class member
 		printf("o->%s=",o->name.data);
 		o->expr->compile(o->expr,tc);
-		printf(";\n");
+//		printf(";\n");
 		return;
 	}
 	if(idtype){// local identifier
 		printf("%s",o->name.data);
 		o->expr->compile((ci_expr*)o,tc);
-		printf(";\n");
 		return;
 	}
 	// constant
