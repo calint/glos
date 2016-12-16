@@ -3,6 +3,7 @@
 #include "block.h"
 #include "expr.h"
 #include "func_arg.h"
+#include"block.h"
 typedef struct ci_func{
 	str type;
 	str name;
@@ -10,7 +11,7 @@ typedef struct ci_func{
 	ci_block code;
 }ci_func;
 
-#define ci_func_def (ci_func){str_def,str_def,dynp_def,ci_code_def}
+#define ci_func_def (ci_func){str_def,str_def,dynp_def,ci_block_def}
 
 inline static void ci_func_free(ci_func*o){
 	dynp_foa(&o->args,{

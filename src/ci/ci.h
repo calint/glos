@@ -6,6 +6,7 @@
 #include "expr_call.h"
 #include "expr_ident.h"
 #include "expr_assign.h"
+#include "expr_loop.h"
 
 dynp/*owns*/ci_classes=dynp_def;
 
@@ -27,10 +28,10 @@ inline static /*gives*/ci_expr*ci_expr_next(
 		return e;
 	}
 
-//	if(token_equals(&t,"loop")){
-//		ci_expr_loop_next(pp,tc);
-//
-//	}
+	if(token_equals(&t,"loop")){
+		ci_expr_loop*e=ci_expr_loop_next(pp,tc);
+		return (ci_expr*)e;
+	}
 	str name=str_def;
 	token_setz(&t,&name);
 	if(**pp=='('){// function call

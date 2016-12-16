@@ -37,7 +37,8 @@ inline static void _ci_block_compile_(ci_expr*oo,ci_toc*tc){
 
 }
 
-#define ci_code_def (ci_block){{str_def,_ci_block_compile_,_ci_block_free_},0,dynp_def}
+#define ci_block_def (ci_block){{str_def,_ci_block_compile_,_ci_block_free_},\
+	0,dynp_def}
 
 //inline static void ci_expr_ident_free(ci_expr_ident*o){
 //	ci_expression_free(&o->super);
@@ -64,8 +65,8 @@ static /*gives*/ci_block*ci_code_parse(ci_block*o,const char**pp,ci_toc*tc){
 			(*pp)++;
 			continue;
 		}
-		printf("<file> <line:col> expected ';'\n");
-		exit(1);
+//		printf("<file> <line:col> expected ';'\n");
+//		exit(1);
 	}
 	if(o->is_encaps){
 		if(**pp!='}'){
