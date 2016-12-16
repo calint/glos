@@ -5,6 +5,8 @@
 #include "expr.h"
 #include "expr_call.h"
 #include "expr_ident.h"
+#include "expr_assign.h"
+
 dynp/*owns*/ci_classes=dynp_def;
 
 inline static void ci_init(){}
@@ -30,8 +32,18 @@ inline static /*gives*/ci_expr*ci_expr_next(
 		ci_expr_call*e=ci_expr_call_next(pp,tc);
 		return (ci_expr*)e;
 	}
+
 	str name=str_def;
 	token_setz(&t,&name);
+	if(**pp=='='){// assignment
+		(*pp)++;
+		ci_expr_assign*e=malloc(sizeof(ci_expr_assign));
+		*e=ci_expr_assign_def;
+		e->expr=ci_expr_next(pp,tc);
+		e->name=name;
+		return(ci_expr*)e;
+	}
+
 	ci_expr_ident*e=malloc(sizeof(ci_expr_ident));
 	*e=ci_expr_ident_def;
 	e->name=name;
