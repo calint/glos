@@ -25,7 +25,7 @@ inline static void _ci_expr_call_compile_(
 }
 
 #define ci_expr_call_def (ci_expr_call){\
-	{_ci_expr_call_compile_,ci_expr_call_free},\
+	{str_def,_ci_expr_call_compile_,ci_expr_call_free},\
 	str_def,dynp_def}
 
 inline static void ci_expr_call_free(ci_expr*o){

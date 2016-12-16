@@ -32,21 +32,10 @@ inline static /*gives*/ci_expr*ci_expr_next(
 	}
 	str name=str_def;
 	token_setz(&t,&name);
-	if(ci_toc_find_ident_type(tc,name.data)){
-		// assuming identifier
-		ci_expr_ident*e=malloc(sizeof(ci_expr_ident));
-		*e=ci_expr_ident_def;
-		e->name=name;
-		return(ci_expr*)e;
-	}
-
-	// constant
 	ci_expr_ident*e=malloc(sizeof(ci_expr_ident));
 	*e=ci_expr_ident_def;
 	e->name=name;
-	e->cnst=1;
 	return(ci_expr*)e;
-
 }
 
 static void ci_parse_func(const char**pp,ci_toc*tc,ci_class*c,
@@ -155,6 +144,14 @@ static void ci_compile_to_c(ci_toc*tc){
 		dynp_foa(&c->fields,{
 			ci_field*s=o;
 			ci_toc_add_ident(tc,s->name.data);
+			if(!strcmp(s->type.data,"auto")){
+				if(!s->initval){
+					printf("<file> <line:col> expected initializer with auto");
+					exit(1);
+				}
+				s->initval->compile(s->initval,tc);
+				s->type=s->initval->type;
+			}
 			printf("    %s %s;\n",s->type.data,s->name.data);
 		});
 		printf("}%s;\n",c->name.data);
@@ -313,8 +310,7 @@ static void ci_compile(const char*path){
 			exit(1);
 		}
 		token nm=token_next(&p);
-		ci_class*c=/*takes*/ci_parse_class(&p,&toc,t,nm);
-		dynp_add(&ci_classes,c);
+		ci_parse_class(&p,&toc,t,nm);
 	}
 	ci_compile_to_c(&toc);
 }

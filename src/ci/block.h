@@ -37,7 +37,7 @@ inline static void _ci_block_compile_(ci_expr*oo,ci_toc*tc){
 
 }
 
-#define ci_code_def (ci_block){{_ci_block_compile_,_ci_block_free_},0,dynp_def}
+#define ci_code_def (ci_block){{str_def,_ci_block_compile_,_ci_block_free_},0,dynp_def}
 
 //inline static void ci_expr_ident_free(ci_expr_ident*o){
 //	ci_expression_free(&o->super);
