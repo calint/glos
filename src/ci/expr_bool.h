@@ -30,6 +30,25 @@ typedef struct ci_expr_bool{
 inline static void _ci_expr_bool_compile_(const ci_expr*oo,ci_toc*tc){
 	ci_expr_bool*o=(ci_expr_bool*)oo;
 
+	if(o->bool_list.count){
+		if(o->is_encapsulated){
+			printf("(");
+		}
+		for(unsigned i=0;i<o->bool_list.count;i++){
+			ci_expr_bool*b=(ci_expr_bool*)dynp_get(&o->bool_list,i);
+			_ci_expr_bool_compile_((ci_expr*)b,tc);
+			// ...
+		}
+		if(o->is_encapsulated){
+			printf(")");
+		}
+		return;
+	}
+
+	if(o->is_encapsulated){
+		printf("(");
+	}
+
 	if(o->lh_negate)
 		printf("!");
 
@@ -59,6 +78,10 @@ inline static void _ci_expr_bool_compile_(const ci_expr*oo,ci_toc*tc){
 		printf("!");
 
 	o->rh->compile(o->rh,tc);
+
+	if(o->is_encapsulated){
+		printf(")");
+	}
 }
 
 inline static void _ci_expr_bool_free_(ci_expr*oo){
@@ -67,7 +90,7 @@ inline static void _ci_expr_bool_free_(ci_expr*oo){
 
 #define ci_expr_bool_def (ci_expr_bool){\
 	{str_def,_ci_expr_bool_compile_,_ci_expr_bool_free_},\
-	false,NULL,0,NULL,false,\
+	false,NULL,0,false,NULL,\
 	str_def,\
 	dynp_def,\
 	false}
@@ -150,9 +173,17 @@ inline static void ci_expr_bool_parse(ci_expr_bool*o,
 //			exit(1);
 		}
 	}
+
+	// example (a==b && c==d)
 	o->is_encapsulated=true;
 	(*pp)++;
 	ci_expr_bool*e=malloc(sizeof(ci_expr_bool));
 	*e=ci_expr_bool_def;
-	ci_expr_bool_parse(o,pp,tc);
+	ci_expr_bool_parse(e,pp,tc);
+	dynp_add(&o->bool_list,e);
+	if(**pp!=')'){
+		printf("<file> <line:col> expected ')' after condition\n");
+		exit(1);
+	}
+	(*pp)++;
 }

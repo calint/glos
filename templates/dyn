@@ -246,3 +246,10 @@ inline static unsigned ${name}_has(${name}*o,${type} oo){
 	return 1;
 }
 //-----------------------------------------------------------------------------
+inline static/*gives*/${name} ${name}_from_string(const ${type}*s){
+	${name} o=${name}_def;
+	${name}_add_string(&o,s);
+	${name}_add(&o,0);
+	return o;
+}
+//-----------------------------------------------------------------------------

@@ -246,3 +246,10 @@ inline static unsigned dynp_has(dynp*o,void* oo){
 	return 1;
 }
 //-----------------------------------------------------------------------------
+inline static/*gives*/dynp dynp_from_string(const void**s){
+	dynp o=dynp_def;
+	dynp_add_string(&o,s);
+	dynp_add(&o,0);
+	return o;
+}
+//-----------------------------------------------------------------------------

@@ -246,3 +246,10 @@ inline static unsigned dyni_has(dyni*o,int oo){
 	return 1;
 }
 //-----------------------------------------------------------------------------
+inline static/*gives*/dyni dyni_from_string(const int*s){
+	dyni o=dyni_def;
+	dyni_add_string(&o,s);
+	dyni_add(&o,0);
+	return o;
+}
+//-----------------------------------------------------------------------------

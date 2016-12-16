@@ -246,3 +246,10 @@ inline static unsigned objmtls_has(objmtls*o,objmtl* oo){
 	return 1;
 }
 //-----------------------------------------------------------------------------
+inline static/*gives*/objmtls objmtls_from_string(const objmtl**s){
+	objmtls o=objmtls_def;
+	objmtls_add_string(&o,s);
+	objmtls_add(&o,0);
+	return o;
+}
+//-----------------------------------------------------------------------------

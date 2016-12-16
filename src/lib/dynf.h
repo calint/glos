@@ -246,3 +246,10 @@ inline static unsigned dynf_has(dynf*o,float oo){
 	return 1;
 }
 //-----------------------------------------------------------------------------
+inline static/*gives*/dynf dynf_from_string(const float*s){
+	dynf o=dynf_def;
+	dynf_add_string(&o,s);
+	dynf_add(&o,0);
+	return o;
+}
+//-----------------------------------------------------------------------------

@@ -17,7 +17,6 @@ typedef struct str{
 	unsigned count;
 	unsigned cap;
 }str;
-
 #define str_def (str){0,0,0}
 
 //--------------------------------------------------------------------- private
@@ -253,3 +252,4 @@ inline static/*gives*/str str_from_string(const char*s){
 	str_add(&o,0);
 	return o;
 }
+//-----------------------------------------------------------------------------
