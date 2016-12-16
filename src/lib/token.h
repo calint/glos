@@ -10,6 +10,8 @@ typedef struct token{
 	const char*end;
 }token;
 
+#define token_def (token){NULL,NULL,NULL,NULL}
+
 inline static size_t token_size_including_whitespace(token*t){
 	return (size_t)(t->end-t->begin);
 }
@@ -192,4 +194,12 @@ inline static /*gives*/str*token_to_str(token*o){
 
 inline static bool token_is_empty(token*o){
 	return o->content_end==o->content;
+}
+
+inline static void token_skip_empty_space(const char**pp){
+	while(1){
+		if(!**pp)break;
+		if(!isspace(**pp))break;
+		(*pp)++;
+	}
 }

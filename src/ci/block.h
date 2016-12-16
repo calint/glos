@@ -7,6 +7,7 @@ typedef struct ci_block{
 	ci_expr super;
 	int is_encaps;
 	dynp/*own expr*/exprs;
+	token token_pre_block;
 }ci_block;
 
 inline static void _ci_block_free_(ci_expr*oo){
@@ -38,7 +39,7 @@ inline static void _ci_block_compile_(const ci_expr*oo,ci_toc*tc){
 }
 
 #define ci_block_def (ci_block){{str_def,_ci_block_compile_,_ci_block_free_},\
-	0,dynp_def}
+	0,dynp_def,token_def}
 
 //inline static void ci_expr_ident_free(ci_expr_ident*o){
 //	ci_expression_free(&o->super);
@@ -50,6 +51,7 @@ inline static /*gives*/ci_expr*ci_expr_new_from_pp(const char**pp,ci_toc*tc);
 inline static /*gives*/ci_block*ci_block_parse(ci_block*o,const char**pp,ci_toc*tc){
 //	ci_code*c=malloc(sizeof(ci_code));
 //	*o=ci_code_def;
+	o->token_pre_block=token_next(pp);//? exclude { from delimiters
 	ci_toc_push_scope(tc,'b',"");
 	if(**pp=='{'){
 		(*pp)++;

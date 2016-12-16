@@ -25,17 +25,33 @@ typedef struct ci_expr_bool{
 
 	bool is_encapsulated;
 
+	bool is_negated;
+
 }ci_expr_bool;
 
 inline static void _ci_expr_bool_compile_(const ci_expr*oo,ci_toc*tc){
 	ci_expr_bool*o=(ci_expr_bool*)oo;
 
 	if(o->bool_list.count){
+		if(o->is_negated){
+			printf("!");
+		}
 		if(o->is_encapsulated){
 			printf("(");
 		}
 		for(unsigned i=0;i<o->bool_list.count;i++){
 			ci_expr_bool*b=(ci_expr_bool*)dynp_get(&o->bool_list,i);
+			char op=str_get(&o->bool_op_list,i);
+			if(op){
+				if(op=='&'){
+					printf(" && ");
+				}else if(op=='|'){
+					printf(" || ");
+				}else{
+					printf("<file> <line:col> unknown op '%d' '%c'\n",op,op);
+					exit(1);
+				}
+			}
 			_ci_expr_bool_compile_((ci_expr*)b,tc);
 			// ...
 		}
@@ -93,19 +109,34 @@ inline static void _ci_expr_bool_free_(ci_expr*oo){
 	false,NULL,0,false,NULL,\
 	str_def,\
 	dynp_def,\
-	false}
+	false,false}
 
 inline static void ci_expr_bool_parse(ci_expr_bool*o,
 		const char**pp,ci_toc*tc){
 
 	o->super.type=str_from_string("bool");
+
+	token_skip_empty_space(pp);
+
+	bool neg=false;
+	if(**pp=='!'){// if(!ok){}
+		(*pp)++;
+		neg=true;
+	}
+
 	if(**pp!='('){//   keybits==1 && ok || (a&b!=0)
 		o->is_encapsulated=false;
 
-		if(**pp=='!'){// if(!ok){}
+		if(!neg && **pp=='!'){// if(!ok){}
 			(*pp)++;
 			o->lh_negate=true;
+		}else if(neg && **pp=='!'){// if(!!ok){}
+			printf("<file> <line:col> did not expect !!\n");
+			exit(1);
+		}else{
+			o->lh_negate=neg;
 		}
+
 
 		o->lh=ci_expr_new_from_pp(pp,tc);
 
@@ -152,38 +183,66 @@ inline static void ci_expr_bool_parse(ci_expr_bool*o,
 		}
 
 		o->rh=ci_expr_new_from_pp(pp,tc);
+
+
 		//? keybits==1 && ok
 		if(**pp=='&'){
 			(*pp)++;
 			if(**pp=='&'){
-				(*pp)++;
-				printf("<file> <line:col> and list not supported\n");
+				(*pp)--;
+				return;
+			}else{
+				printf("<file> <line:col> expected &&\n");
 				exit(1);
 			}
 		}else if(**pp=='|'){
 			(*pp)++;
 			if(**pp=='|'){
-				(*pp)++;
-				printf("<file> <line:col> and list not supported\n");
+				(*pp)--;
+				printf("<file> <line:col> expected ||\n");
 				exit(1);
 			}
 		}else{
-			return;
-//			printf("<file> <line:col> unknown boolean operator. expected && or ||\n");
-//			exit(1);
+			printf("<file> <line:col> expected && or ||\n");
+			exit(1);
 		}
 	}
 
 	// example (a==b && c==d)
 	o->is_encapsulated=true;
+	o->is_negated=neg;
 	(*pp)++;
-	ci_expr_bool*e=malloc(sizeof(ci_expr_bool));
-	*e=ci_expr_bool_def;
-	ci_expr_bool_parse(e,pp,tc);
-	dynp_add(&o->bool_list,e);
-	if(**pp!=')'){
-		printf("<file> <line:col> expected ')' after condition\n");
-		exit(1);
+	str_add(&o->bool_op_list,0);
+	while(1){
+		ci_expr_bool*e=malloc(sizeof(ci_expr_bool));
+		*e=ci_expr_bool_def;
+		ci_expr_bool_parse(e,pp,tc);
+		dynp_add(&o->bool_list,e);
+		token_skip_empty_space(pp);
+		if(**pp==')'){
+			(*pp)++;
+			return;
+		}
+		if(**pp=='&'){
+			(*pp)++;
+			if(**pp!='&'){
+				printf("<file> <line:col> expected && \n");
+				exit(1);
+			}
+			(*pp)++;
+			str_add(&o->bool_op_list,'&');
+		}else if(**pp=='|'){
+			(*pp)++;
+			if(**pp!='|'){
+				printf("<file> <line:col> expected || \n");
+				exit(1);
+			}
+			(*pp)++;
+			str_add(&o->bool_op_list,'|');
+		}else{
+			printf("<file> <line:col> expected && or ||\n");
+			exit(1);
+		}
+
 	}
-	(*pp)++;
 }
