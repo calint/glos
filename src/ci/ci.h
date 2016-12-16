@@ -257,8 +257,13 @@ inline static void _ci_compile_to_c(ci_toc*tc){
 		printf("//--- - - ---------------------  - -- - - - - - - -- - - - -- - - - -- - - -\n");
 		dynp_foa(&c->extends,{
 			str*s=o;
-			printf(	"inline static %s*%s_as_%s(%s*o){"
+			printf(	"inline static %s*%s_as_%s(const %s*o){"
 					"return(%s*)&o->%s;"
+					"}\n",s->data,c->name.data,s->data,c->name.data,
+					s->data,s->data
+			);
+			printf(	"inline static const %s*%s_as_const_%s(const %s*o){"
+					"return(const %s*)&o->%s;"
 					"}\n",s->data,c->name.data,s->data,c->name.data,
 					s->data,s->data
 			);
