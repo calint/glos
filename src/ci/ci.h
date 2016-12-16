@@ -288,7 +288,7 @@ inline static void _ci_compile_to_c(ci_toc*tc){
 		});
 		ci_toc_pop_scope(tc);
 	});
-	printf("//--- - - ---------------------  - -- - - - - - - -- - - - -- - - - -- - - -\n");
+	printf("\n//--- - - ---------------------  - -- - - - - - - -- - - - -- - - - -- - - -\n");
 	printf("\n");
 }
 
