@@ -42,6 +42,14 @@ inline static void _ci_expr_bool_compile_(const ci_expr*oo,ci_toc*tc){
 		printf("==");
 	}else if(o->op=='!'){
 		printf("!=");
+	}else if(o->op=='>'){
+		printf(">");
+	}else if(o->op=='g'){
+		printf(">=");
+	}else if(o->op=='<'){
+		printf("<");
+	}else if(o->op=='l'){
+		printf("<=");
 	}else{
 		printf("<file> <line:col> unknown op '%d' ')'\n",o->op);
 		exit(1);
@@ -94,6 +102,22 @@ inline static void ci_expr_bool_parse(ci_expr_bool*o,
 			}
 			o->op='!';
 			(*pp)++;
+		}else if(**pp=='>'){
+			(*pp)++;
+			if(**pp=='='){
+				(*pp)++;
+				o->op='g';
+			}else{
+				o->op='>';
+			}
+		}else if(**pp=='<'){
+			(*pp)++;
+			if(**pp=='='){
+				(*pp)++;
+				o->op='l';
+			}else{
+				o->op='<';
+			}
 		}else{// if(active)
 //			o->op='.';
 			return;
