@@ -9,6 +9,7 @@
 #include "expr_loop.h"
 #include "expr_break.h"
 #include "expr_continue.h"
+#include "expr_var.h"
 
 dynp/*owns*/ci_classes=dynp_def;
 
@@ -23,42 +24,45 @@ inline static void ci_free(){
 
 inline static /*gives*/ci_expr*ci_expr_next(
 		const char**pp,ci_toc*tc){
-	token t=token_next(pp);
-	if(token_is_empty(&t)){
+
+	token tk=token_next(pp);
+	if(token_is_empty(&tk)){
 		ci_expr*e=malloc(sizeof(ci_expr));
 		*e=ci_expr_def;
 		return e;
 	}
 
-	if(token_equals(&t,"loop")){
+	if(token_equals(&tk,"loop")){
 		ci_expr_loop*e=ci_expr_loop_next(pp,tc);
 		return (ci_expr*)e;
 	}
 
-	if(token_equals(&t,"break")){
+	if(token_equals(&tk,"break")){
 		ci_expr_break*e=ci_expr_break_next(pp,tc);
 		return (ci_expr*)e;
 	}
 
-	if(token_equals(&t,"continue")){
+	if(token_equals(&tk,"continue")){
 		ci_expr_continue*e=ci_expr_continue_next(pp,tc);
 		return (ci_expr*)e;
 	}
 
-
 	str name=str_def;
-	token_setz(&t,&name);
+	token_setz(&tk,&name);
+	if(token_equals(&tk,"int")){
+		ci_expr_var*e=ci_expr_var_next(pp,tc,name);
+		return(ci_expr*)e;
+	}
+
+
 	if(**pp=='('){// function call
 		ci_expr_call*e=ci_expr_call_next(pp,tc,/*gives*/name);
-		return (ci_expr*)e;
+		return(ci_expr*)e;
 	}
 
 	if(**pp=='='){// assignment
 		(*pp)++;
-		ci_expr_assign*e=malloc(sizeof(ci_expr_assign));
-		*e=ci_expr_assign_def;
-		e->expr=ci_expr_next(pp,tc);
-		e->name=/*gives*/name;
+		ci_expr_assign*e=/*takes*/ci_expr_assign_next(pp,tc,/*gives*/name);
 		return(ci_expr*)e;
 	}
 

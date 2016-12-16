@@ -1,23 +1,8 @@
-class object{
-	char[8] type;
-}
-class santa{
-	dynp presents;
-}
 class player:object,santa{
-	int keybits=100;
-	vec3 lookvec;
-	
-	void print_info(char* s){
-		puts(s);
-		puts(keybits);
-	}
-	
+	int keybits=1;
+
 	void set_keybits(int kb){
-		loop{
-			keybits=kb;
-			break;
-			continue;
-		}
+		int a=kb;
+		int b=keybits;
 	}
 }

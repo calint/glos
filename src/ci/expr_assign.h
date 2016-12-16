@@ -27,8 +27,8 @@ inline static void _ci_expr_assign_compile_(
 		return;
 	}
 	if(idtype){// local identifier
-		printf("%s",o->name.data);
-		o->expr->compile((ci_expr*)o,tc);
+		printf("%s=",o->name.data);
+		o->expr->compile(o->expr,tc);
 		return;
 	}
 	// constant
@@ -50,7 +50,19 @@ inline static void _ci_expr_assign_compile_(
 #define ci_expr_assign_def (ci_expr_assign){\
 	{str_def,_ci_expr_assign_compile_,_ci_expr_assign_free_},str_def,0}
 
-//inline static void ci_expr_ident_free(ci_expr_ident*o){
-//	ci_expression_free(&o->super);
-//	free(o);
-//}
+inline static/*gives*/ci_expr_assign*ci_expr_assign_next(
+		const char**pp,ci_toc*tc,/*takes*/str name){
+
+	ci_expr_assign*e=malloc(sizeof(ci_expr_assign));
+	*e=ci_expr_assign_def;
+	e->name=/*gives*/name;
+	e->expr=ci_expr_next(pp,tc);
+	return e;
+}
+
+inline static void ci_expr_assign_parse(ci_expr_assign*o,
+		const char**pp,ci_toc*tc,/*takes*/str name){
+
+	o->name=/*gives*/name;
+	o->expr=ci_expr_next(pp,tc);
+}
