@@ -30,11 +30,11 @@ inline static unsigned token_size(token*t){
 	return (unsigned)(t->content_end-t->content);
 }
 
-//inline static int token_starts_with(token*t,const char*str){
-//	return strncmp(str,t->content,strlen(str))==0;
-//}
+inline static int token_starts_with(token*t,const char*str){
+	return strncmp(str,t->content,strlen(str))==0;
+}
 
-inline static bool token_starts_with(token*t,const char*str){
+inline static bool token_equals(token*t,const char*str){
 	const char*p=t->content;//? stdlib
 	while(1){
 		if(p==t->content_end)
@@ -45,17 +45,17 @@ inline static bool token_starts_with(token*t,const char*str){
 		str++;
 	}
 }
-
-inline static bool token_equals(token*t,const char*str){
-	const char*p=t->content;
-	while(1){
-		if(!*str)return 1;
-		if(p==t->content_end)return 0;
-		if(*p!=*str)return 0;
-		p++;
-		str++;
-	}
-}
+//
+//inline static bool token_equals(token*t,const char*str){
+//	const char*p=t->content;
+//	while(1){
+//		if(!*str)return 1;
+//		if(p==t->content_end)return 0;
+//		if(*p!=*str)return 0;
+//		p++;
+//		str++;
+//	}
+//}
 
 inline static float token_get_float(token*t){
 	float f=(float)atof(t->content);//? assuming file ends with whitespace
@@ -125,6 +125,31 @@ inline static token token_next(const char**s){
 		if(*p=='!')break;
 		if(*p=='>')break;
 		if(*p=='<')break;
+		p++;
+	}
+	t.content_end=p;
+	while(1){
+		if(!*p)break;
+		if(!isspace(*p))break;
+		p++;
+	}
+	*s=t.end=p;
+	return t;
+}
+
+inline static token token_next2(const char**s){
+	const char*p=*s;
+	token t;
+	t.begin=p;
+	while(1){
+		if(!*p)break;
+		if(!isspace(*p))break;
+		p++;
+	}
+	t.content=p;
+	while(1){
+		if(!*p)break;
+		if(isspace(*p))break;
 		p++;
 	}
 	t.content_end=p;

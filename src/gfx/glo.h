@@ -301,7 +301,7 @@ static/*gives*/dynp glo_load_all_from_file(const char*path){
 	dynp reuslt=dynp_def;
 //	const char*basedir=str_base_dir(path);
 	while(*p){
-		token t=token_next(&p);
+		token t=token_next2(&p);
 		if(token_starts_with(&t,"#")){
 			p=scan_to_including_newline(p);
 		}else if(token_equals(&t,"mtllib")){
@@ -361,7 +361,7 @@ static/*gives*/dynp glo_load_all_from_file(const char*path){
 	unsigned vtxbufix_base=0;
 	str name=str_def;
 	while(*p){
-		token t=token_next(&p);
+		token t=token_next2(&p);
 		if(token_equals(&t,"o")){
 			token t=token_next(&p);
 			name=str_def;
