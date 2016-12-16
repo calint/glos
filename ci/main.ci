@@ -17,6 +17,7 @@ class player:object,santa{
 		loop{
 			keybits=kb;
 			break;
+			continue;
 		}
 	}
 }

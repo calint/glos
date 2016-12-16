@@ -8,6 +8,7 @@
 #include "expr_assign.h"
 #include "expr_loop.h"
 #include "expr_break.h"
+#include "expr_continue.h"
 
 dynp/*owns*/ci_classes=dynp_def;
 
@@ -36,6 +37,11 @@ inline static /*gives*/ci_expr*ci_expr_next(
 
 	if(token_equals(&t,"break")){
 		ci_expr_break*e=ci_expr_break_next(pp,tc);
+		return (ci_expr*)e;
+	}
+
+	if(token_equals(&t,"continue")){
+		ci_expr_continue*e=ci_expr_continue_next(pp,tc);
 		return (ci_expr*)e;
 	}
 
