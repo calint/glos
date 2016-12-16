@@ -37,8 +37,11 @@ inline static int token_starts_with(token*t,const char*str){
 inline static bool token_equals(token*t,const char*str){
 	const char*p=t->content;//? stdlib
 	while(1){
-		if(p==t->content_end)
-			return 1;
+		if(p==t->content_end){
+			if(!*str)
+				return 1;
+			return 0;
+		}
 		if(*p!=*str)
 			return 0;
 		p++;

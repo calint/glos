@@ -15,12 +15,11 @@ inline static void _ci_expr_ife_compile_(const ci_expr*oo,ci_toc*tc){
 	ci_expr_ife*o=(ci_expr_ife*)oo;
 
 	for(unsigned i=0;i<o->ifs.count;i++){
-		ci_expr_if*iff=dynp_get(&o->ifs,i);
+		ci_expr_if*iff=(ci_expr_if*)dynp_get(&o->ifs,i);
 		if(i){
-			printf(" else if ");
-		}else{
-			printf("if ");
+			printf(" else ");
 		}
+		_ci_expr_if_compile_((ci_expr*)iff,tc);
 	}
 	if(o->elsecode.exprs.count){
 		printf(" else ");
@@ -34,7 +33,7 @@ inline static void _ci_expr_ife_free_(ci_expr*oo){
 
 #define ci_expr_ife_def (ci_expr_ife){\
 	{str_def,_ci_expr_ife_compile_,_ci_expr_ife_free_},\
-	ci_expr_bool_def,ci_block_def,dynp_def,ci_block_def}
+	dynp_def,ci_block_def}
 
 inline static ci_expr_ife*ci_expr_ife_next(const char**pp,ci_toc*tc){
 	ci_expr_ife*o=malloc(sizeof(ci_expr_ife));

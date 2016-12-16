@@ -33,7 +33,7 @@ inline static void _ci_block_compile_(const ci_expr*oo,ci_toc*tc){
 		printf(";\n");//? e->is_block
 	}
 	if(o->is_encaps){
-		printf("}\n");
+		printf("}");
 	}
 
 }

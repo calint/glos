@@ -17,3 +17,11 @@ class player:object,santa{
 		}
 	}
 }
+
+
+		if (keybits || keybits!=kb && (kb==2 && keybits) ) {
+		
+		}else if(kb==1){
+		}else{
+
+		}

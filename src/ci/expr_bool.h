@@ -184,6 +184,9 @@ inline static void ci_expr_bool_parse(ci_expr_bool*o,
 
 		o->rh=ci_expr_new_from_pp(pp,tc);
 
+		if(**pp==')'){
+			return;
+		}
 
 		//? keybits==1 && ok
 		if(**pp=='&'){

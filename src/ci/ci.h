@@ -10,7 +10,7 @@
 #include "expr_break.h"
 #include "expr_continue.h"
 #include "expr_var.h"
-#include "expr_if.h"
+#include "expr_ife.h"
 
 dynp/*owns*/ci_classes=dynp_def;
 
@@ -49,7 +49,7 @@ inline static /*gives*/ci_expr*ci_expr_new_from_pp(
 	}
 
 	if(token_equals(&tk,"if")){
-		ci_expr_if*e=ci_expr_if_next(pp,tc);
+		ci_expr_ife*e=ci_expr_ife_next(pp,tc);
 		return (ci_expr*)e;
 	}
 
@@ -69,7 +69,6 @@ inline static /*gives*/ci_expr*ci_expr_new_from_pp(
 	if(**pp=='='){// assignment
 		(*pp)++;
 		if(**pp!='='){
-			(*pp)++;
 			ci_expr_assign*e=/*takes*/ci_expr_assign_next(pp,tc,/*gives*/name);
 			return(ci_expr*)e;
 		}
