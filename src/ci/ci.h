@@ -72,7 +72,7 @@ inline static /*gives*/ci_expr*ci_expr_next(
 	return(ci_expr*)e;
 }
 
-inline static void ci_parse_func(const char**pp,ci_toc*tc,ci_class*c,
+inline static void _ci_parse_func(const char**pp,ci_toc*tc,ci_class*c,
 		token*type,token*name){
 	ci_func*f=malloc(sizeof(ci_func));
 	*f=ci_func_def;
@@ -108,7 +108,7 @@ inline static void ci_parse_func(const char**pp,ci_toc*tc,ci_class*c,
 	ci_toc_pop_scope(tc);
 }
 
-inline static void ci_parse_field(const char**pp,ci_toc*tc,ci_class*c,
+inline static void _ci_parse_field(const char**pp,ci_toc*tc,ci_class*c,
 		token*type,token*name){
 	ci_field*f=malloc(sizeof(ci_field));
 	*f=ci_field_def;
@@ -132,7 +132,7 @@ inline static void ci_parse_field(const char**pp,ci_toc*tc,ci_class*c,
 	ci_toc_add_ident(tc,f->name.data);
 }
 
-inline static void ci_compile_to_c(ci_toc*tc){
+inline static void _ci_compile_to_c(ci_toc*tc){
 //	for(unsigned i=0;i<ci_classes.count;i++){
 //		ci_class*c=dynp_get(&ci_classes,i);
 //		printf("\n");
@@ -278,7 +278,7 @@ inline static void ci_compile_to_c(ci_toc*tc){
 	printf("\n");
 }
 
-inline static /*gives*/ci_class*ci_parse_class(const char**pp,ci_toc*tc,
+inline static /*gives*/ci_class*_ci_parse_class(const char**pp,ci_toc*tc,
 		token type,token name){
 	ci_class*c=malloc(sizeof(ci_class));
 	*c=ci_class_def;
@@ -320,9 +320,9 @@ inline static /*gives*/ci_class*ci_parse_class(const char**pp,ci_toc*tc,
 		token name=token_next(pp);
 		if(**pp=='('){
 			(*pp)++;
-			ci_parse_func(pp,tc,c,&type,&name);
+			_ci_parse_func(pp,tc,c,&type,&name);
 		}else if(**pp=='=' || **pp==';'){
-			ci_parse_field(pp,tc,c,&type,&name);
+			_ci_parse_field(pp,tc,c,&type,&name);
 		}else{
 			printf("<file> <line:col> expected ';'\n");
 			exit(1);
@@ -331,7 +331,7 @@ inline static /*gives*/ci_class*ci_parse_class(const char**pp,ci_toc*tc,
 	ci_toc_pop_scope(tc);
 	return/*gives*/c;
 }
-inline static void ci_compile(const char*path){
+inline static void ci_compile_file(const char*path){
 	str s=str_from_file(path);
 	const char*p=s.data;
 	ci_toc toc=ci_toc_def;
@@ -340,12 +340,12 @@ inline static void ci_compile(const char*path){
 		if(token_is_empty(&t))
 			break;
 		if(!token_equals(&t,"class")){
-			printf("expected class declaration\n");
+			printf("expected 'class' declaration\n");
 			exit(1);
 		}
 		token nm=token_next(&p);
-		ci_parse_class(&p,&toc,t,nm);
+		_ci_parse_class(&p,&toc,t,nm);
 	}
-	ci_compile_to_c(&toc);
+	_ci_compile_to_c(&toc);
 }
 
