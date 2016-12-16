@@ -21,7 +21,7 @@ inline static void _ci_block_free_(ci_expr*oo){
 	dynp_free(&o->exprs);
 }
 
-inline static void _ci_block_compile_(ci_expr*oo,ci_toc*tc){
+inline static void _ci_block_compile_(const ci_expr*oo,ci_toc*tc){
 	ci_block*o=(ci_block*)oo;
 	if(o->is_encaps){
 		printf("{\n");

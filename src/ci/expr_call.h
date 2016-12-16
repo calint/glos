@@ -9,9 +9,7 @@ typedef struct ci_expr_call{
 	dynp/*owns ci_expression*/args;
 }ci_expr_call;
 
-inline static void _ci_expr_call_compile_(
-		struct ci_expr*o,ci_toc*toc){
-
+inline static void _ci_expr_call_compile_(const ci_expr*o,ci_toc*toc){
 	ci_expr_call*e=(ci_expr_call*)o;
 	printf("%s(",e->name.data);
 	dynp_foac(&e->args,{

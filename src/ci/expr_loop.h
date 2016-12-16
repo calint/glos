@@ -8,13 +8,13 @@ typedef struct ci_expr_loop{
 	ci_block code;
 }ci_expr_loop;
 
-inline static void _ci_expr_loop_free_(struct ci_expr*oo){
+inline static void _ci_expr_loop_free_(ci_expr*oo){
 	ci_expr_loop*o=(ci_expr_loop*)oo;
 	_ci_block_free_((ci_expr*)&o->code);
 	ci_expr_free(&o->super);
 }
 
-inline static void _ci_ci_expr_loop_compile_(struct ci_expr*oo,ci_toc*tc){
+inline static void _ci_ci_expr_loop_compile_(const ci_expr*oo,ci_toc*tc){
 	ci_expr_loop*o=(ci_expr_loop*)oo;
 	printf("while(1)");
 	o->code.super.compile((ci_expr*)&o->code,tc);

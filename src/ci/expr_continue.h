@@ -7,11 +7,11 @@ typedef struct ci_expr_continue{
 	ci_expr super;
 }ci_expr_continue;
 
-inline static void _ci_expr_continue_free_(struct ci_expr*oo){
+inline static void _ci_expr_continue_free_(ci_expr*oo){
 	ci_expr_free(oo);
 }
 
-inline static void _cci_expr_continue_compile_(struct ci_expr*oo,ci_toc*tc){
+inline static void _cci_expr_continue_compile_(const ci_expr*oo,ci_toc*tc){
 	printf("continue");
 }
 

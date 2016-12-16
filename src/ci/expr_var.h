@@ -16,8 +16,7 @@ inline static void _ci_expr_var_free_(ci_expr*oo){
 	_ci_expr_assign_free_((ci_expr*)&o->initval);
 }
 
-inline static void _ci_expr_var_compile_(
-		struct ci_expr*oo,ci_toc*tc){
+inline static void _ci_expr_var_compile_(const ci_expr*oo,ci_toc*tc){
 
 	ci_expr_var*o=(ci_expr_var*)oo;
 	const char idtype=ci_toc_find_ident_type(tc,o->initval.name.data);

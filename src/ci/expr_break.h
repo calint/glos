@@ -7,11 +7,11 @@ typedef struct ci_expr_break{
 	ci_expr super;
 }ci_expr_break;
 
-inline static void _ci_expr_break_free_(struct ci_expr*oo){
+inline static void _ci_expr_break_free_(ci_expr*oo){
 	ci_expr_free(oo);
 }
 
-inline static void _ci_expr_break_compile_(struct ci_expr*oo,ci_toc*tc){
+inline static void _ci_expr_break_compile_(const ci_expr*oo,ci_toc*tc){
 	printf("break");
 }
 
