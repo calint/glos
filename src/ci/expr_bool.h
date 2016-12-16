@@ -7,9 +7,13 @@ typedef struct ci_expr_bool{
 	ci_expr super;
 
 	// element
+	bool lh_negate;
+
 	struct ci_expr*lh;
 
 	char op;
+
+	bool rh_negate;
 
 	struct ci_expr*rh;
 
@@ -28,7 +32,13 @@ inline static void _ci_expr_bool_compile_(const ci_expr*oo,ci_toc*tc){
 	o->lh->compile(o->lh,tc);
 	if(o->op=='='){
 		printf("==");
+	}else if(o->op=='!'){
+		printf("!=");
+	}else{
+		printf("<file> <line:col> unknown op '%d' ')'\n",o->op);
+		exit(1);
 	}
+
 	o->rh->compile(o->rh,tc);
 }
 
@@ -38,10 +48,10 @@ inline static void _ci_expr_bool_free_(ci_expr*oo){
 
 #define ci_expr_bool_def (ci_expr_bool){\
 	{str_def,_ci_expr_bool_compile_,_ci_expr_bool_free_},\
-	NULL,0,NULL,\
+	false,NULL,0,NULL,false,\
 	str_def,\
 	dynp_def,\
-	0}
+	false}
 
 inline static void ci_expr_bool_parse(ci_expr_bool*o,
 		const char**pp,ci_toc*tc){
@@ -49,7 +59,14 @@ inline static void ci_expr_bool_parse(ci_expr_bool*o,
 	o->super.type=str_from_string("bool");
 	if(**pp!='('){//   keybits==1 && ok || (a&b!=0)
 		o->is_encapsulated=false;
+
+		if(**pp=='!'){// if(!ok){}
+			(*pp)++;
+			o->lh_negate=true;
+		}
+
 		o->lh=ci_expr_new_from_pp(pp,tc);
+
 		if(**pp=='='){
 			(*pp)++;
 			if(**pp!='='){
@@ -58,7 +75,24 @@ inline static void ci_expr_bool_parse(ci_expr_bool*o,
 			}
 			o->op='=';
 			(*pp)++;
+		}else if(**pp=='!'){
+			(*pp)++;
+			if(**pp!='='){
+				printf("<file> <line:col> expected '!='\n");
+				exit(1);
+			}
+			o->op='!';
+			(*pp)++;
+		}else{// if(active)
+			printf("<file> <line:col> expected operator '==' or '!='\n");
+			exit(1);
 		}
+
+		if(**pp=='!'){// if(!ok){}
+			(*pp)++;
+			o->rh_negate=true;
+		}
+
 		o->rh=ci_expr_new_from_pp(pp,tc);
 		//? keybits==1 && ok
 		if(**pp=='&'){
