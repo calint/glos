@@ -18,7 +18,7 @@ inline static void _ci_expr_ident_free_(struct ci_expr*oo){
 inline static void _ci_expr_ident_compile_(const ci_expr*oo,ci_toc*tc){
 
 	ci_expr_ident*o=(ci_expr_ident*)oo;
-	const char idtype=ci_toc_find_ident_type(tc,o->name.data);
+	const char idtype=ci_toc_find_ident_scope_type(tc,o->name.data);
 	if(idtype=='c'){// class member
 		printf("o->%s",o->name.data);
 		o->cnst=0;

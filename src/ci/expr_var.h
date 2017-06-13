@@ -19,7 +19,7 @@ inline static void _ci_expr_var_free_(ci_expr*oo){
 inline static void _ci_expr_var_compile_(const ci_expr*oo,ci_toc*tc){
 
 	ci_expr_var*o=(ci_expr_var*)oo;
-	const char idtype=ci_toc_find_ident_type(tc,o->initval.name.data);
+	const char idtype=ci_toc_find_ident_scope_type(tc,o->initval.name.data);
 	if(idtype){
 		printf("\n\n<file> <line:col> '%s' is already declared at ..."
 				,o->initval.name.data);
