@@ -3,7 +3,6 @@
 #include"metrics.h"
 #include"net.h"
 #include"grid.h"
-#include"ci.h"
 #include"obj/objects.h"
 
 static struct _game{
@@ -105,10 +104,6 @@ inline static void main_render(framectx*fc){
 }
 //------------------------------------------------------------------------ main
 int main(int argc,char*argv[]){
-	ci_init();
-	ci_compile_file("ci/main.ci");
-//	ci_free();
-
 	if(argc>1 && *argv[1]=='s'){
 		netsrv_init();
 		netsrv_loop();

@@ -21,7 +21,7 @@ inline static void cell_update(cell*o,framectx*fc){
 		if(oi->updtk==fc->tick){
 //			printf("[ grid ] skipped updated %s %p\n",oi->n.glo_ptr->name.data,(void*)oi);
 //			printf("[ grid ] %u  %u\n",oi->updtk,fc->tick);
-			oi++;
+//			oi++;
 			continue;
 		}
 //		printf("[ grid ] updated %s %p\n",oi->n.glo_ptr->name.data,(void*)oi);
@@ -43,7 +43,7 @@ inline static void cell_update(cell*o,framectx*fc){
 				metrics.parts_updated_prv_frame++;
 			}
 		}
-		oi++;
+//		oi++;
 	}
 }
 
