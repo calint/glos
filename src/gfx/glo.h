@@ -235,7 +235,7 @@ static/*gives*/glo*glo_make_next_from_string(const char**ptr_p){
 	mr->material_ptr=current_objmtl;
 	dynp_add(&mtlrngs,mr);
 
-	printf("    %u range%cs   %lu vertices   %zu B\n",
+	printf("    %u range%c   %lu vertices   %zu B\n",
 			mtlrngs.count,mtlrngs.count==1?' ':'s',
 			vertex_buffer.count/sizeof(vertex),
 			dynf_size_in_bytes(&vertex_buffer));
@@ -384,7 +384,7 @@ static/*gives*/dynp glo_load_all_from_file(const char*path){
 			*g=(glo){/*gives*/vertex_buffer,/*gives*/mtlrngs,0,/*gives*/name};
 			dynp_add(&reuslt,g);
 
-			printf("    %u range%cs   %lu vertices   %zu B\n",
+			printf("    %u range%c   %lu vertices   %zu B\n",
 					mtlrngs.count,mtlrngs.count==1?' ':'s',
 					vertex_buffer.count/sizeof(vertex),
 					dynf_size_in_bytes(&vertex_buffer));
@@ -487,7 +487,7 @@ static/*gives*/dynp glo_load_all_from_file(const char*path){
 	*g=(glo){/*gives*/vertex_buffer,/*gives*/mtlrngs,0,/*gives*/name};
 	dynp_add(&reuslt,g);
 
-	printf("    %u range%cs   %lu vertices   %zu B\n",
+	printf("    %u range%c   %lu vertices   %zu B\n",
 			mtlrngs.count,mtlrngs.count==1?' ':'s',
 			vertex_buffer.count/sizeof(vertex),
 			dynf_size_in_bytes(&vertex_buffer));

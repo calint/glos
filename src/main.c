@@ -200,9 +200,6 @@ int main(int argc,char*argv[]){
 			}
 			case SDL_QUIT:running=0;break;
 			case SDL_MOUSEMOTION:{
-//				printf(" relx,rely=%d,%d    look angle:%f\n",
-//						event.motion.xrel,event.motion.yrel,
-//						look_angle_z_axis*180/PI);
 				if(event.motion.xrel!=0){
 					camera_lookangle_y+=(float)event.motion.xrel
 							*rad_over_mouse_pixels*mouse_sensitivity;
@@ -276,13 +273,12 @@ int main(int argc,char*argv[]){
 			net_state_current[net_active_player_index].keybits=
 					net_state_to_send.keybits;
 		}
-		if(game.keybits_ptr)
+		if(game.keybits_ptr){
 			*game.keybits_ptr=net_state_current[net_active_player_index].keybits;
-
+		}
 		if(game.follow_ptr){
 			camera.lookat=game.follow_ptr->p.p;
 		}
-
 
 //		printf("   camera: %f  %f  %f   angle: %f\n",
 //				camera.eye.x,camera.eye.y,camera.eye.z,look_angle_z_axis*180/PI);
@@ -335,11 +331,11 @@ int main(int argc,char*argv[]){
 			grid_add(o);
 		});
 
-		if(paused)
-			fc.dt=0;
-		else
-//			fc.dt=.0005f;
-			fc.dt=1.0f/60;
+// 		if(paused)
+// 			fc.dt=0;
+// 		else
+// //			fc.dt=.0005f;
+// 			fc.dt=1.0f/60;
 
 		grid_update(&fc);
 

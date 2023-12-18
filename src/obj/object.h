@@ -76,6 +76,11 @@ inline static const float*object_get_updated_Mmw(object*o){
 
 	o->n.Mmw_valid=1;
 
+	// printf("\n-- %s\n",o->name.data);
+	// printf("%f %f %f %f\n",o->n.Mmw[0],o->n.Mmw[1],o->n.Mmw[2],o->n.Mmw[3]);
+	// printf("%f %f %f %f\n",o->n.Mmw[4],o->n.Mmw[5],o->n.Mmw[6],o->n.Mmw[7]);
+	// printf("%f %f %f %f\n",o->n.Mmw[8],o->n.Mmw[9],o->n.Mmw[10],o->n.Mmw[11]);
+	// printf("\npos: %f, %f, %f\n",o->p.p.x,o->p.p.y,o->p.p.z);
 	return o->n.Mmw;
 }
 inline static void _object_render_glo_(object*o,framectx*fc) {

@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "grid-ifc.h": "c",
+        "window.h": "c",
+        "sdl.h": "c"
+    }
+}

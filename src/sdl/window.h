@@ -67,7 +67,7 @@ struct{
 	SDL_Window*ref;
 	SDL_Renderer*renderer;
 	SDL_GLContext*glcontext;
-	SDL_Surface*surface;
+//	SDL_Surface*surface;
 }window;
 static inline void window_init() {
 //	puts(" *** requested:");
@@ -107,11 +107,11 @@ static inline void window_init() {
 		printf("%s %d: %s",__FILE__,__LINE__,SDL_GetError());
 		exit(31);
 	}
-	window.surface=SDL_GetWindowSurface(window.ref);
-	if (!window.surface){
-		printf("%s %d: %s",__FILE__,__LINE__,SDL_GetError());
-		exit(15);
-	}
+//	window.surface=SDL_GetWindowSurface(window.ref);
+//	if (!window.surface){
+//		printf("%s %d: %s",__FILE__,__LINE__,SDL_GetError());
+//		exit(15);
+//	}
 	window.renderer=SDL_CreateRenderer(window.ref,-1,SDL_WINDOW_OPENGL);
 	if (!window.renderer){
 		printf("%s %d: %s",__FILE__,__LINE__,SDL_GetError());

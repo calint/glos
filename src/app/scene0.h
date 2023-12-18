@@ -49,6 +49,7 @@ inline static void main_init_scene_0(){
 	o->n.glo_ptr=glos_find_by_name("santa");
 	o->b.s=(scale){10,10,10,0};
 	o->p.p=(position){-30,2,-30,0};
+	o->p_nxt=o->p;
 	o->b.r=.5f;
 	p=(santa*)o->part[0];
 	p->keybits_ptr=&net_state_current[2].keybits;
@@ -58,12 +59,13 @@ inline static void main_init_scene_0(){
 	o->n.glo_ptr=glos_find_by_name("santa");
 	o->b.s=(scale){10,10,10,0};
 	o->p.p=(position){30,2,30,0};
+	o->p_nxt=o->p;
 	o->b.r=.5f;
 	p=(santa*)o->part[0];
 	p->keybits_ptr=&net_state_current[1].keybits;
 
 
-	camera.eye=(position){30,120,140,0};
+	camera.eye=(position){30,120,-140,0};
 	camera.lookat=(position){0,0,0,0};
 
 //
