@@ -1,9 +1,14 @@
-#include"lib.h"
-#include"metrics.h"
-#include"gfx.h"
-#include"net.h"
-#include"grid.h"
-#include"obj/objects.h"
+#include "lib.h"
+
+#include "metrics.h"
+
+#include "gfx.h"
+
+#include "net.h"
+
+#include "grid.h"
+
+#include "obj/objects.h"
 
 static struct _game {
   int *keybits_ptr;
