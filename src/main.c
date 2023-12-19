@@ -178,6 +178,15 @@ int main(int argc, char *argv[]) {
   metrics_print_headers(stderr);
   unsigned frameno = 1;
   bool paused = false;
+
+  framectx fc = {
+      .dt = 0.1f,
+      .tick = 0,
+  };
+  // grid_clear();
+  // objects_foa({ grid_add(o); });
+  // grid_update(&fc);
+
   for (int running = 1; running;) {
     metrics__at__frame_begin();
     if (use_net) {
@@ -363,34 +372,24 @@ int main(int argc, char *argv[]) {
       previous_active_program_ix = shader.active_program_ix;
     }
 
-    framectx fc = {
-        .dt = use_net ? net_dt : metrics.fps.dt,
-        .tick = frameno,
-    };
+    fc.dt = use_net ? net_dt : metrics.fps.dt;
+    fc.tick = frameno;
 
     frameno++;
 
     grid_clear();
-
     objects_foa({ grid_add(o); });
-
-    // 		if(paused)
-    // 			fc.dt=0;
-    // 		else
-    // //			fc.dt=.0005f;
-    // 			fc.dt=1.0f/60;
-
     grid_update(&fc);
-
     //		grid_print();
-
     grid_resolve_collisions(&fc);
 
-    if (do_main_render)
+    if (do_main_render) {
       main_render(&fc);
+    }
 
-    if (use_net)
+    if (use_net) {
       net__at__frame_end();
+    }
 
     metrics.objects_allocated = object_metrics_allocated;
 

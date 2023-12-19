@@ -2,7 +2,7 @@
 #include "ninja.h"
 #include "santa.h"
 
-inline static void main_init_scene_do() {
+inline static void main_init_scene_8() {
   object *o;
   glos_load_all_from_file("obj/skydome.obj");
   glos_load_all_from_file("obj/board.obj");
@@ -44,25 +44,19 @@ inline static void main_init_scene_do() {
   game.follow_ptr = o;
   santa *p;
 
-  o = santa_alloc_def();
-  str_setz(&o->name, "santa2");
-  o->node.glo = glos_find_by_name("santa");
-  o->bounding_volume.scale = (scale){10, 10, 10, 0};
-  o->physics.position = (position){-30, 2, -30, 0};
-  o->physics_nxt = o->physics;
-  o->bounding_volume.radius = .5f;
-  p = (santa *)o->part[0];
-  p->keybits_ptr = &net_state_current[2].keybits;
-
-  o = santa_alloc_def();
-  str_setz(&o->name, "santa1");
-  o->node.glo = glos_find_by_name("santa");
-  o->bounding_volume.scale = (scale){10, 10, 10, 0};
-  o->physics.position = (position){30, 2, 30, 0};
-  o->physics_nxt = o->physics;
-  o->bounding_volume.radius = .5f;
-  p = (santa *)o->part[0];
-  p->keybits_ptr = &net_state_current[1].keybits;
+  for (float y = -80; y <= 80; y += 2) {
+    for (float x = -80; x <= 80; x += 2) {
+      o = santa_alloc_def();
+      str_setz(&o->name, "santa");
+      o->node.glo = glos_find_by_name("santa");
+      o->bounding_volume.scale = (scale){10, 10, 10, 0};
+      o->physics.position = (position){x, 2, y, 0};
+      o->physics_nxt = o->physics;
+      o->bounding_volume.radius = .5f;
+      p = (santa *)o->part[0];
+      p->keybits_ptr = &net_state_current[1].keybits;
+    }
+  }
 
   camera.eye = (position){30, 120, -140, 0};
   camera.lookat = (position){0, 0, 0, 0};

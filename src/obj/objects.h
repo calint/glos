@@ -4,7 +4,7 @@
 //-----------------------------------------------------------------------------
 #include"object.h"
 #include"part.h"
-#define object_cap 8196
+#define object_cap 32768
 #define object_assert_free
 #define object_assert_bounds
 #define object_assert_cast

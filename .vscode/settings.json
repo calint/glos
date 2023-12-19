@@ -6,6 +6,7 @@
         "lib.h": "c",
         "token.h": "c",
         "types.h": "c",
-        "gfx.h": "c"
+        "gfx.h": "c",
+        "scene0.h": "c"
     }
 }

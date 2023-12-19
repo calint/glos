@@ -300,6 +300,7 @@ inline static void cell_resolve_collisions(cell *o, framectx *fc) {
 
       object *Oi = dynp_get(ls, i);
       object *Oj = dynp_get(ls, j);
+      // printf("%s vs %s\n",Oi->name.data,Oj->name.data);
 
       if (!((Oi->grid_ifc.collide_mask & Oj->grid_ifc.collide_bits) ||
             (Oj->grid_ifc.collide_mask & Oi->grid_ifc.collide_bits))) {

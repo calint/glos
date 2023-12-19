@@ -4,9 +4,9 @@
 #include "../obj/part.h"
 #include "cell.h"
 
-#define grid_cell_size 5
-#define grid_ncells_wide 1
-#define grid_ncells_high 1
+#define grid_cell_size 20
+#define grid_ncells_wide 8
+#define grid_ncells_high 8
 #define grid_ncells grid_ncells_wide *grid_ncells_high
 
 static cell cells[grid_ncells_high][grid_ncells_wide];
@@ -24,6 +24,7 @@ inline static void grid_update(framectx *fc) {
 }
 
 inline static void grid_resolve_collisions(framectx *fc) {
+  // printf("-------------------------------\n");
   cell *p = &cells[0][0];
   unsigned i = grid_ncells;
   while (i--) {
@@ -69,21 +70,22 @@ inline static void grid_add(object *o) {
 
   const float r = o->bounding_volume.radius;
 
-  const float xl = gw / 2 - o->physics.position.x - r;
-  const float xr = gw / 2 - o->physics.position.x + r;
-  const float zl = gh / 2 - o->physics.position.z - r;
-  const float zr = gh / 2 - o->physics.position.z + r;
+  const float xl = gw / 2 + o->physics.position.x - r;
+  const float xr = gw / 2 + o->physics.position.x + r;
+  const float zl = gh / 2 + o->physics.position.z - r;
+  const float zr = gh / 2 + o->physics.position.z + r;
 
   int xil = (int)(xl / grid_cell_size);
-  xil = clamp(xil, 0, grid_ncells_wide);
-
   int xir = (int)((xr) / grid_cell_size);
-  xir = clamp(xir, 0, grid_ncells_wide);
-
   int zil = (int)(zl / grid_cell_size);
-  zil = clamp(zil, 0, grid_ncells_high);
-
   int zir = (int)((zr) / grid_cell_size);
+
+  // printf("%s  zil=%d  zir=%d  xil=%d  xir=%d\n", o->name.data, zil, zir, xil,
+  //        xir);
+
+  xil = clamp(xil, 0, grid_ncells_wide);
+  xir = clamp(xir, 0, grid_ncells_wide);
+  zil = clamp(zil, 0, grid_ncells_high);
   zir = clamp(zir, 0, grid_ncells_high);
 
   for (int z = zil; z <= zir; z++) {
