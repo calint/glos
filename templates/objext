@@ -2,20 +2,27 @@
 //--------------------------------------------------------------- ${name}
 //------------------------------------------------------------------------ def
 static object ${name}_def={
-	.n=node_def,
-	.b={	.r=1.4f,
-			.s={1,1,1,0}},
-	.p={	.p={0,0,0,0},
-			.v={0,0,0,0},
-			.a={0,0,0,0},
-			.av={0,0,0,0},},
-	.v={	.init=NULL,
-			.update=NULL,
-			.collision=NULL,
-			.render=object_render_glob,
-			.free=NULL,
+	.node=node_def,
+	.bounding_volume={
+		.radius=1.4f,
+		.scale={1,1,1,0}
 	},
-	.t={{'a','a',0,0,0,0,0,0}},
+	.physics={
+		.position={0,0,0,0},
+		.velocity={0,0,0,0},
+		.angle={0,0,0,0},
+		.angular_velocity={0,0,0,0},
+	},
+	.vtbl={
+		.init=NULL,
+		.update=NULL,
+		.collision=NULL,
+		.render=object_render_glob,
+		.free=NULL,
+	},
+	.type={
+		{'a','a',0,0,0,0,0,0}
+	},
 	.part={NULL,NULL,NULL,NULL},
 	.alloc_bits_ptr=NULL,
 };

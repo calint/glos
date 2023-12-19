@@ -2,6 +2,10 @@
     "files.associations": {
         "grid-ifc.h": "c",
         "window.h": "c",
-        "sdl.h": "c"
+        "sdl.h": "c",
+        "lib.h": "c",
+        "token.h": "c",
+        "types.h": "c",
+        "gfx.h": "c"
     }
 }
