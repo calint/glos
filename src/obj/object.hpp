@@ -2,7 +2,7 @@
 //--------------------------------------------------------------------- object
 #include "../grid/grid-ifc.h"
 #include "../lib.h"
-#include "bounding_volume.h"
+#include "bounding_volume.hpp"
 #include "node.hpp"
 #include "physics.hpp"
 #include "vtbl.hpp"
@@ -62,7 +62,7 @@ static object object_def = {
     .update_tick = 0,
     .draw_tick = 0,
     .node{},
-    .bounding_volume = bounding_volume_def,
+    .bounding_volume{},
     .physics_prv{},
     .physics_nxt{},
     .physics{},

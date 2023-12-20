@@ -1,20 +1,15 @@
 #pragma once
 #include "../lib.h"
 
-//------------------------------------------------------------- bounding volume
-typedef struct bounding_volume {
-  radius radius;
-  scale scale;
-} bounding_volume;
-#define bounding_volume_def                                                    \
-  {                                                                            \
-    1, { 1, 1, 1, 0 }                                                          \
-  }
+class bounding_volume final {
+public:
+  radius radius = 0;
+  scale scale{};
 
-inline static void
-bounding_volume_update_radius_using_scale(bounding_volume *o) {
-  o->radius = (radius)sqrtf(o->scale.x * o->scale.x + o->scale.y * o->scale.y);
-}
+  inline void update_radius_using_scale() {
+    radius = sqrtf(scale.x * scale.x + scale.y * scale.y);
+  }
+};
 
 //
 // typedef vec3 vector;
