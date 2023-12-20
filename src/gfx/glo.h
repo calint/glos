@@ -52,6 +52,7 @@ inline static void glo_free(glo *o) {
     free(mr);
   });
   dynp_free(&o->ranges);
+  str_free(&o->name);
   free(o);
   metrics.glos_allocated--;
 }
@@ -241,7 +242,8 @@ static /*gives*/ glo *glo_make_next_from_string(const char **ptr_p) {
          dynf_size_in_bytes(&vertex_buffer));
 
   glo *g = /*takes*/ glo_alloc_zeroed();
-  *g = (glo){vertex_buffer, mtlrngs, 0, /*gives*/ object_name};
+  *g = (glo){/*gives*/ vertex_buffer, /*gives*/ mtlrngs, 0,
+             /*gives*/ object_name};
   *ptr_p = p;
 
   dynp_foa(&vertices, { free(o); });
