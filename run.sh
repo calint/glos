@@ -1,6 +1,6 @@
 BIN=glos
 
-#VALGRIND='valgrind --leak-check=full --track-origins=yes'
 VALGRIND=
+VALGRIND='valgrind --leak-check=full --track-origins=yes'
 
 ./make.sh && $VALGRIND ./$BIN

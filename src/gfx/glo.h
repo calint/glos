@@ -1,22 +1,23 @@
 #pragma once
 #include "objmtl.h"
 #include <stdio.h>
+#include <vector>
 
-typedef struct mtlrng {
-  unsigned begin, count;
-  objmtl *material_ptr;
-  str name;
-} mtlrng;
+class mtlrng {
+public:
+  unsigned begin = 0;
+  unsigned count = 0;
+  objmtl *material_ptr = nullptr;
+  str name = str_def;
+};
 
-#define mtlrng_def                                                             \
-  (mtlrng) { 0, 0, NULL, str_def }
-
-typedef struct glo {
-  dynf vtxbuf;
-  dynp ranges;
+class glo {
+public:
+  std::vector<float> vtxbuf{};
+  std::vector<mtlrng> ranges{};
   id vtxbuf_id;
   str name;
-} glo;
+};
 
 #define glo_def                                                                \
   (glo) { dynf_def, dynp_def, str_def }
@@ -28,7 +29,7 @@ typedef struct glo {
 
 inline static /*gives*/ glo *glo_alloc_zeroed() {
   metrics.glos_allocated++;
-  return (glo *)calloc(1, sizeof(glo));
+  return new glo();
 }
 
 // inline static /*gives*/ glo *glo_alloc_from(const glo *g) {
@@ -50,8 +51,8 @@ static inline void _foreach_range_(void *o) {
 
 inline static void glo_free(glo *o) {
   glDeleteBuffers(1, &o->vtxbuf_id);
-  metrics.buffered_vertex_data -= dynf_size_in_bytes(&o->vtxbuf);
-  dynf_free(&o->vtxbuf);
+  metrics.buffered_vertex_data -= o->vtxbuf.size() * sizeof(float);
+  // dynf_free(&o->vtxbuf);
   // dynp_foa(&o->ranges, {
   //   mtlrng *mr = (mtlrng *)o;
   //   objmtl *m = (objmtl *)mr->material_ptr;
@@ -61,10 +62,15 @@ inline static void glo_free(glo *o) {
   //   }
   //   free(mr);
   // });
-  dynp_foreach_all(&o->ranges, _foreach_range_);
-  dynp_free(&o->ranges);
+  for (mtlrng &mr : o->ranges) {
+    objmtl *m = (objmtl *)mr.material_ptr;
+    if (m->texture_id) {
+      glDeleteTextures(1, &m->texture_id);
+      metrics.buffered_texture_data -= m->texture_size_bytes;
+    }
+  }
   str_free(&o->name);
-  free(o);
+  delete o;
   metrics.glos_allocated--;
 }
 
@@ -77,8 +83,9 @@ static /*gives*/ glo *glo_make_from_string(const char **ptr_p) {
   dynp normals = dynp_def;
   dynp texuv = dynp_def;
 
-  dynf vertex_buffer = dynf_def;
-  dynp mtlrngs = dynp_def;
+  // dynf vertex_buffer = dynf_def;
+  std::vector<float> vertex_buffer{};
+  std::vector<mtlrng> mtlrngs{};
 
   objmtl *current_objmtl = NULL;
   const char *basedir = "obj/";
@@ -140,11 +147,12 @@ static /*gives*/ glo *glo_make_from_string(const char **ptr_p) {
       }
       str_free(&name);
       if (prev_vtxbufix != vtxbufix) {
-        mtlrng *mr = (mtlrng *)malloc(sizeof(mtlrng));
-        mr->begin = prev_vtxbufix;
-        mr->count = vtxbufix;
-        mr->material_ptr = current_objmtl;
-        dynp_add(&mtlrngs, mr);
+        mtlrngs.emplace_back(prev_vtxbufix, vtxbufix, current_objmtl, str_def);
+        // mtlrng *mr = (mtlrng *)malloc(sizeof(mtlrng));
+        // mr->begin = prev_vtxbufix;
+        // mr->count = vtxbufix;
+        // mr->material_ptr = current_objmtl;
+        // dynp_add(&mtlrngs, mr);
         prev_vtxbufix = vtxbufix;
       }
       current_objmtl = m;
@@ -222,40 +230,42 @@ static /*gives*/ glo *glo_make_from_string(const char **ptr_p) {
         vec4 *norm = (vec4 *)dynp_get(&normals, ix3 - 1);
 
         // buffer
-        dynf_add(&vertex_buffer, vtx->x);
-        dynf_add(&vertex_buffer, vtx->y);
-        dynf_add(&vertex_buffer, vtx->z);
+        vertex_buffer.push_back(vtx->x);
+        vertex_buffer.push_back(vtx->y);
+        vertex_buffer.push_back(vtx->z);
 
-        dynf_add(&vertex_buffer, current_objmtl->Kd.x);
-        dynf_add(&vertex_buffer, current_objmtl->Kd.y);
-        dynf_add(&vertex_buffer, current_objmtl->Kd.z);
-        dynf_add(&vertex_buffer, 1);
+        vertex_buffer.push_back(current_objmtl->Kd.x);
+        vertex_buffer.push_back(current_objmtl->Kd.y);
+        vertex_buffer.push_back(current_objmtl->Kd.z);
+        vertex_buffer.push_back(1);
 
-        dynf_add(&vertex_buffer, norm->x);
-        dynf_add(&vertex_buffer, norm->y);
-        dynf_add(&vertex_buffer, norm->z);
+        vertex_buffer.push_back(norm->x);
+        vertex_buffer.push_back(norm->y);
+        vertex_buffer.push_back(norm->z);
 
-        dynf_add(&vertex_buffer, tex->x);
-        dynf_add(&vertex_buffer, tex->y);
+        vertex_buffer.push_back(tex->x);
+        vertex_buffer.push_back(tex->y);
 
         vtxbufix++;
       }
       continue;
     }
   }
-  mtlrng *mr = (mtlrng *)malloc(sizeof(mtlrng));
-  //					*mr=material_range_def;
-  mr->begin = prev_vtxbufix;
-  mr->count = vtxbufix;
-  mr->material_ptr = current_objmtl;
-  dynp_add(&mtlrngs, mr);
+  // mtlrng *mr = (mtlrng *)malloc(sizeof(mtlrng));
+  // //					*mr=material_range_def;
+  // mr->begin = prev_vtxbufix;
+  // mr->count = vtxbufix;
+  // mr->material_ptr = current_objmtl;
+  // dynp_add(&mtlrngs, mr);
 
-  printf("    %u range%c   %lu vertices   %zu B\n", mtlrngs.count,
-         mtlrngs.count == 1 ? ' ' : 's', vertex_buffer.count / sizeof(vertex),
-         dynf_size_in_bytes(&vertex_buffer));
+  mtlrngs.emplace_back(prev_vtxbufix, vtxbufix, current_objmtl, str_def);
+
+  printf("    %zu range%c   %lu vertices   %zu B\n", mtlrngs.size(),
+         mtlrngs.size() == 1 ? ' ' : 's', vertex_buffer.size() / sizeof(vertex),
+         vertex_buffer.size() * sizeof(float));
 
   glo *g = /*takes*/ glo_alloc_zeroed();
-  *g = (glo){/*gives*/ vertex_buffer, /*gives*/ mtlrngs, 0,
+  *g = (glo){std::move(vertex_buffer), std::move(mtlrngs), 0,
              /*gives*/ object_name};
   *ptr_p = p;
 
@@ -560,8 +570,8 @@ inline static void glo_upload_to_opengl(glo *o) {
   // upload vertex buffer
   glGenBuffers(1, &o->vtxbuf_id);
   glBindBuffer(GL_ARRAY_BUFFER, o->vtxbuf_id);
-  glBufferData(GL_ARRAY_BUFFER, (signed)dynf_size_in_bytes(&o->vtxbuf),
-               o->vtxbuf.data, GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, (signed)(o->vtxbuf.size() * sizeof(float)),
+               o->vtxbuf.data(), GL_STATIC_DRAW);
 
   // upload materials
   // dynp_foa(&o->ranges, {
@@ -595,11 +605,40 @@ inline static void glo_upload_to_opengl(glo *o) {
   //     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
   //   }
   // });
-  dynp_foreach_all(&o->ranges, _foreach_material_upload_);
+  for (const auto &mr : o->ranges) {
+    objmtl *m = mr.material_ptr;
+    if (m->map_Kd.count) { // load texture
+      glGenTextures(1, &m->texture_id);
 
-  metrics.buffered_vertex_data += dynf_size_in_bytes(&o->vtxbuf);
+      printf(" * loading texture %u from '%s'\n", m->texture_id,
+             m->map_Kd.data);
+
+      glBindTexture(GL_TEXTURE_2D, m->texture_id);
+
+      SDL_Surface *surface = IMG_Load(m->map_Kd.data);
+      if (!surface) {
+        exit(-1);
+      }
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface->w, surface->h, 0, GL_RGB,
+                   GL_UNSIGNED_BYTE, surface->pixels);
+
+      m->texture_size_bytes =
+          (unsigned)(surface->w * surface->h * (signed)sizeof(uint32_t));
+
+      SDL_FreeSurface(surface);
+
+      metrics.buffered_texture_data += m->texture_size_bytes;
+
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    }
+    // dynp_foreach_all(&o->ranges, _foreach_material_upload_);
+
+    metrics.buffered_vertex_data += o->vtxbuf.size() * sizeof(float);
+  }
 }
-
 //-----------------------------------------------------------------------
 // calls
 
@@ -665,7 +704,24 @@ inline static void glo_render(glo *o, const mat4 mtxmw) {
   //   }
   // });
 
-  dynp_foreach_all(&o->ranges, _foreach_render_);
+  for (const auto &mr : o->ranges) {
+    objmtl *m = mr.material_ptr;
+    if (m->texture_id) {
+      glUniform1i(shader_utex, 0);
+      glActiveTexture(GL_TEXTURE0);
+      glBindTexture(GL_TEXTURE_2D, m->texture_id);
+      glEnableVertexAttribArray(shader_atex);
+    } else {
+      glActiveTexture(GL_TEXTURE0);
+      glBindTexture(GL_TEXTURE_2D, 0);
+      glDisableVertexAttribArray(shader_atex);
+    }
+    glDrawArrays(GL_TRIANGLES, (signed)mr.begin, (signed)mr.count);
+    metrics.triangles_rendered_prv_frame += mr.count / 3;
+    if (m->texture_id) {
+      glBindTexture(GL_TEXTURE_2D, 0);
+    }
+  }
 }
 
 //---------------------------------------------------------------------
@@ -694,7 +750,7 @@ inline static void glos_free() {
 
 inline static void _foreach_render_glos_(void *o) {
   glo *g = (glo *)o;
-  if (g->ranges.count) {
+  if (!g->ranges.empty()) {
     glo_render(g++, mat4_identity);
   }
 }
