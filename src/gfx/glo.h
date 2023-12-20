@@ -15,8 +15,8 @@ class glo {
 public:
   std::vector<float> vtxbuf{};
   std::vector<mtlrng> ranges{};
-  id vtxbuf_id;
-  str name;
+  id vtxbuf_id = 0;
+  std::string name = "";
 };
 
 inline static /*gives*/ glo *glo_alloc_zeroed() {
@@ -34,7 +34,6 @@ inline static void glo_free(glo *o) {
       metrics.buffered_texture_data -= m->texture_size_bytes;
     }
   }
-  str_free(&o->name);
   delete o;
   metrics.glos_allocated--;
 }
@@ -56,7 +55,7 @@ static /*gives*/ glo *glo_make_from_string(const char **ptr_p) {
   unsigned vtxbufix = 0;
   unsigned prev_vtxbufix = 0;
   int first_o = 1;
-  str object_name = str_def;
+  std::string object_name = "";
   while (*p) {
     token t = token_next(&p);
     if (token_starts_with(&t, "#")) {
@@ -77,10 +76,9 @@ static /*gives*/ glo *glo_make_from_string(const char **ptr_p) {
       if (first_o) {
         first_o = 0;
         token t = token_next(&p);
-        str_add_list(&object_name, t.content, token_size(&t));
-        str_add(&object_name, 0);
-        puts(object_name.data);
-        //				p=scan_to_including_newline(p);
+        const unsigned n = token_size(&t);
+        object_name = std::string{t.content, t.content + n};
+        puts(object_name.c_str());
         continue;
       }
       p = t.begin;
@@ -409,7 +407,7 @@ inline static glo *glos_find_by_name(const char *name) {
   glo *found = NULL;
   for (unsigned i = 0; i < glos.count; i++) {
     glo *o = (glo *)glos.data[i];
-    if (!strcmp(name, o->name.data)) {
+    if (!strcmp(name, o->name.c_str())) {
       found = o;
       break;
     }
