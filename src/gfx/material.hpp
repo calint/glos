@@ -1,5 +1,4 @@
 #pragma once
-#include "../lib.h"
 #include <string>
 #include <vector>
 
@@ -25,7 +24,7 @@ public:
   float Ni = 0;
   float d = 0;
   std::string map_Kd = "";
-  id texture_id = 0;
+  unsigned texture_id = 0;
   unsigned texture_size_bytes = 0;
 };
 

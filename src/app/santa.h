@@ -74,7 +74,7 @@ static void _santa_render(object *o, part *po, framectx *fc) {
   santa *p = (santa *)po;
   if (!p->bounding_glo_ptr)
     return;
-  const float *f = object_get_updated_Mmw(o);
+  const float *f = o->get_updated_Mmw();
   glo_render(p->bounding_glo_ptr, f);
 }
 static void _santa_free(object *po, part *o) {}

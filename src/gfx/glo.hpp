@@ -15,7 +15,7 @@ class glo {
 public:
   std::vector<float> vtxbuf{};
   std::vector<material_range> ranges{};
-  id vtxbuf_id = 0;
+  unsigned vtxbuf_id = 0;
   std::string name = "";
 };
 

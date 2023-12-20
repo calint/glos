@@ -31,7 +31,6 @@ typedef vec4 angle;
 typedef vec4 scale;
 typedef vec4 angular_velocity;
 typedef float radius;
-typedef unsigned id;
 typedef float dt;
 typedef const char *path;
 

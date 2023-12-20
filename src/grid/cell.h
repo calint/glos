@@ -33,7 +33,7 @@ inline static void cell_update(cell *o, framectx *fc) {
     if (oi->vtbl.update) {
       oi->vtbl.update(oi, fc);
     } else {
-      object_update(oi, fc);
+      oi->update(fc);
     }
     metrics.objects_updated_prv_frame++;
 
@@ -72,7 +72,7 @@ inline static void cell_render(cell *o, framectx *fc) {
     oi->draw_tick = fc->tick;
 
     if (oi->node.glo) {
-      const float *Mmw = object_get_updated_Mmw(oi);
+      const float *Mmw = oi->get_updated_Mmw();
       glo_render(oi->node.glo, Mmw);
     }
 
@@ -149,7 +149,8 @@ _cell_detect_and_resolve_collision_for_spheres1(object *o1, object *o2,
   }
 
   // in collision
-  printf("frame: %u   %s vs %s\n", fc->tick, o1->name.data, o2->name.data);
+  printf("frame: %u   %s vs %s\n", fc->tick, o1->name.c_str(),
+         o2->name.c_str());
   if (o1->grid_ifc.collide_mask == 0) { // o1 is a bouncer
     vec3_negate(&o2->physics.velocity);
   } else if (o2->grid_ifc.collide_mask == 0) { // o1 is a bouncer
@@ -216,8 +217,8 @@ inline static int _cell_detect_and_resolve_collision_for_spheres(object *o1,
   if (div == 0) {
     //? number precision
     printf(" *** du=0   diff=%f    dx=%f    %s x=%f    vs   %s x=%f\n", diff,
-           o2->physics.position.x - o1->physics.position.x, o1->name.data,
-           o1->physics.position.x, o2->name.data, o2->physics.position.x);
+           o2->physics.position.x - o1->physics.position.x, o1->name.c_str(),
+           o1->physics.position.x, o2->name.c_str(), o2->physics.position.x);
     return 0;
   }
   float t;

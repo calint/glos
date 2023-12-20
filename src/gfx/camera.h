@@ -4,7 +4,6 @@ struct {
   position eye;
   float mxwvp[16];
   position lookat;
-  //	position*follow_ptr;
   vec4 up;
   float znear, zfar;
   float wi, hi;
