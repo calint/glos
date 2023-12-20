@@ -19,49 +19,14 @@ public:
   str name;
 };
 
-#define glo_def                                                                \
-  (glo) { dynf_def, dynp_def, str_def }
-
-// inline static /*gives*/ glo *glo_alloc() {
-//   metrics.glos_allocated++;
-//   return (glo *)malloc(sizeof(glo));
-// }
-
 inline static /*gives*/ glo *glo_alloc_zeroed() {
   metrics.glos_allocated++;
   return new glo();
 }
 
-// inline static /*gives*/ glo *glo_alloc_from(const glo *g) {
-//   metrics.glos_allocated++;
-//   glo *o = malloc(sizeof(glo));
-//   *o = *g;
-//   return o;
-// }
-
-static inline void _foreach_range_(void *o) {
-  mtlrng *mr = (mtlrng *)o;
-  objmtl *m = (objmtl *)mr->material_ptr;
-  if (m->texture_id) {
-    glDeleteTextures(1, &m->texture_id);
-    metrics.buffered_texture_data -= m->texture_size_bytes;
-  }
-  free(mr);
-}
-
 inline static void glo_free(glo *o) {
   glDeleteBuffers(1, &o->vtxbuf_id);
   metrics.buffered_vertex_data -= o->vtxbuf.size() * sizeof(float);
-  // dynf_free(&o->vtxbuf);
-  // dynp_foa(&o->ranges, {
-  //   mtlrng *mr = (mtlrng *)o;
-  //   objmtl *m = (objmtl *)mr->material_ptr;
-  //   if (m->texture_id) {
-  //     glDeleteTextures(1, &m->texture_id);
-  //     metrics.buffered_texture_data -= m->texture_size_bytes;
-  //   }
-  //   free(mr);
-  // });
   for (mtlrng &mr : o->ranges) {
     objmtl *m = (objmtl *)mr.material_ptr;
     if (m->texture_id) {
@@ -79,11 +44,10 @@ static inline void _foreach_free_(void *o) { free(o); }
 static /*gives*/ glo *glo_make_from_string(const char **ptr_p) {
   const char *p = *ptr_p;
 
-  dynp vertices = dynp_def;
-  dynp normals = dynp_def;
-  dynp texuv = dynp_def;
+  std::vector<vec4> vertices{};
+  std::vector<vec4> normals{};
+  std::vector<vec4> texuv{};
 
-  // dynf vertex_buffer = dynf_def;
   std::vector<float> vertex_buffer{};
   std::vector<mtlrng> mtlrngs{};
 
@@ -171,9 +135,7 @@ static /*gives*/ glo *glo_make_from_string(const char **ptr_p) {
       token tz = token_next(&p);
       float z = token_get_float(&tz);
 
-      vec4 *ptr = (vec4 *)malloc(sizeof(vec4));
-      *ptr = (vec4){x, y, z, 0};
-      dynp_add(&vertices, ptr);
+      vertices.emplace_back(x, y, z, 0);
       continue;
     }
     if (token_equals(&t, "vt")) {
@@ -183,9 +145,7 @@ static /*gives*/ glo *glo_make_from_string(const char **ptr_p) {
       token tv = token_next(&p);
       float v = token_get_float(&tv);
 
-      vec4 *ptr = (vec4 *)malloc(sizeof(vec4));
-      *ptr = (vec4){u, v, 0, 0};
-      dynp_add(&texuv, ptr);
+      texuv.emplace_back(u, v, 0, 0);
       continue;
     }
     if (token_equals(&t, "vn")) {
@@ -198,9 +158,7 @@ static /*gives*/ glo *glo_make_from_string(const char **ptr_p) {
       token tz = token_next(&p);
       float z = token_get_float(&tz);
 
-      vec4 *ptr = (vec4 *)malloc(sizeof(vec4));
-      *ptr = (vec4){x, y, z, 0};
-      dynp_add(&normals, ptr);
+      normals.emplace_back(x, y, z, 0);
       continue;
     }
 
@@ -210,41 +168,35 @@ static /*gives*/ glo *glo_make_from_string(const char **ptr_p) {
         token vert1 = token_from_string_additional_delim(p, '/');
         p = vert1.end;
         unsigned ix1 = token_get_uint(&vert1);
-        vec4 *vtx = (vec4 *)dynp_get(&vertices, ix1 - 1);
+        const vec4 &vtx = vertices.at(ix1 - 1);
 
         // texture index
         token vert2 = token_from_string_additional_delim(p, '/');
         p = vert2.end;
-        unsigned ix2 = token_get_uint(&vert2);
-        vec4 tx, *tex;
-        tex = &tx;
-        if (ix2) {
-          tex = (vec4 *)dynp_get(&texuv, ix2 - 1);
-        } else {
-          *tex = (vec4){0, 0, 0, 0};
-        }
+        const unsigned ix2 = token_get_uint(&vert2);
+        const vec4 tex = ix2 ? texuv.at(ix2 - 1) : (vec4){0, 0, 0, 0};
         // normal
         token vert3 = token_from_string_additional_delim(p, '/');
         p = vert3.end;
         unsigned ix3 = token_get_uint(&vert3);
-        vec4 *norm = (vec4 *)dynp_get(&normals, ix3 - 1);
+        const vec4 &norm = normals.at(ix3 - 1);
 
         // buffer
-        vertex_buffer.push_back(vtx->x);
-        vertex_buffer.push_back(vtx->y);
-        vertex_buffer.push_back(vtx->z);
+        vertex_buffer.push_back(vtx.x);
+        vertex_buffer.push_back(vtx.y);
+        vertex_buffer.push_back(vtx.z);
 
         vertex_buffer.push_back(current_objmtl->Kd.x);
         vertex_buffer.push_back(current_objmtl->Kd.y);
         vertex_buffer.push_back(current_objmtl->Kd.z);
         vertex_buffer.push_back(1);
 
-        vertex_buffer.push_back(norm->x);
-        vertex_buffer.push_back(norm->y);
-        vertex_buffer.push_back(norm->z);
+        vertex_buffer.push_back(norm.x);
+        vertex_buffer.push_back(norm.y);
+        vertex_buffer.push_back(norm.z);
 
-        vertex_buffer.push_back(tex->x);
-        vertex_buffer.push_back(tex->y);
+        vertex_buffer.push_back(tex.x);
+        vertex_buffer.push_back(tex.y);
 
         vtxbufix++;
       }
@@ -268,16 +220,6 @@ static /*gives*/ glo *glo_make_from_string(const char **ptr_p) {
   *g = (glo){std::move(vertex_buffer), std::move(mtlrngs), 0,
              /*gives*/ object_name};
   *ptr_p = p;
-
-  // dynp_foa(&vertices, { free(o); });
-  dynp_foreach_all(&vertices, _foreach_free_);
-  dynp_free(&vertices);
-  // dynp_foa(&texuv, { free(o); });
-  dynp_foreach_all(&texuv, _foreach_free_);
-  dynp_free(&texuv);
-  // dynp_foa(&normals, { free(o); });
-  dynp_foreach_all(&normals, _foreach_free_);
-  dynp_free(&normals);
 
   return g;
 }
