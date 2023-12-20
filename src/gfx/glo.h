@@ -1,6 +1,7 @@
 #pragma once
 #include "objmtl.h"
 #include <stdio.h>
+#include <string>
 #include <vector>
 
 class mtlrng {
@@ -8,7 +9,6 @@ public:
   unsigned begin = 0;
   unsigned count = 0;
   objmtl *material_ptr = nullptr;
-  str name = str_def;
 };
 
 class glo {
@@ -59,7 +59,6 @@ static /*gives*/ glo *glo_make_from_string(const char **ptr_p) {
   str object_name = str_def;
   while (*p) {
     token t = token_next(&p);
-    //		p=t.end;//token_size_including_whitespace(&t);
     if (token_starts_with(&t, "#")) {
       p = scan_to_including_newline(p);
       continue;
@@ -95,7 +94,6 @@ static /*gives*/ glo *glo_make_from_string(const char **ptr_p) {
       objmtl *m = NULL;
       for (unsigned i = 0; i < materials.count; i++) {
         objmtl *mm = objmtls_get(&materials, i);
-        //				printf("%s\n",mm->name.data);
         if (!strcmp(mm->name.data, name.data)) {
           m = mm;
           break;
@@ -111,12 +109,7 @@ static /*gives*/ glo *glo_make_from_string(const char **ptr_p) {
       }
       str_free(&name);
       if (prev_vtxbufix != vtxbufix) {
-        mtlrngs.emplace_back(prev_vtxbufix, vtxbufix, current_objmtl, str_def);
-        // mtlrng *mr = (mtlrng *)malloc(sizeof(mtlrng));
-        // mr->begin = prev_vtxbufix;
-        // mr->count = vtxbufix;
-        // mr->material_ptr = current_objmtl;
-        // dynp_add(&mtlrngs, mr);
+        mtlrngs.emplace_back(prev_vtxbufix, vtxbufix, current_objmtl);
         prev_vtxbufix = vtxbufix;
       }
       current_objmtl = m;
@@ -203,14 +196,8 @@ static /*gives*/ glo *glo_make_from_string(const char **ptr_p) {
       continue;
     }
   }
-  // mtlrng *mr = (mtlrng *)malloc(sizeof(mtlrng));
-  // //					*mr=material_range_def;
-  // mr->begin = prev_vtxbufix;
-  // mr->count = vtxbufix;
-  // mr->material_ptr = current_objmtl;
-  // dynp_add(&mtlrngs, mr);
 
-  mtlrngs.emplace_back(prev_vtxbufix, vtxbufix, current_objmtl, str_def);
+  mtlrngs.emplace_back(prev_vtxbufix, vtxbufix, current_objmtl);
 
   printf("    %zu range%c   %lu vertices   %zu B\n", mtlrngs.size(),
          mtlrngs.size() == 1 ? ' ' : 's', vertex_buffer.size() / sizeof(vertex),
@@ -224,29 +211,6 @@ static /*gives*/ glo *glo_make_from_string(const char **ptr_p) {
   return g;
 }
 
-// // returns vertex buffer of array of triangles
-// //                      [ x y z   r g b a   nx ny nz   u v]
-// static /*gives*/ glo *glo_make_from_file(const char *path) {
-//   printf(" * loading object from '%s'\n", path);
-//   str file = /*takes*/ str_from_file(path);
-//   const char *p = file.data;
-//   glo *g = /*takes*/ glo_make_from_string(&p);
-//   str_free(&file);
-//   return g;
-// }
-
-// static/*gives*/dynp glo_load_all_from_file(const char*path){
-////	stacktrace_print();
-//	dync file=dync_from_file(path);
-//	const char*p=file.data;
-//	dynp ls=dynp_def;
-//	while(*p){
-//		glo*g=glo_load_next_from_string(&p);
-//		dynp_add(&ls,g);
-//	}
-//	return ls;
-//}
-
 inline static void str_base_dir(str *o) {
   while (1) {
     const char *p = o->data + o->count - 1;
@@ -257,226 +221,6 @@ inline static void str_base_dir(str *o) {
     o->count--;
   }
 }
-
-// static /*gives*/ dynp glo_load_all_from_file(const char *path) {
-//   printf(" * loading objects from '%s'\n", path);
-//   str file = /*takes*/ str_from_file(path);
-
-//   str basedir = str_def;
-//   basedir.data = path;
-//   basedir.count = (unsigned)(strlen(path) + 1);
-//   basedir.cap = basedir.count;
-//   str_base_dir(&basedir);
-
-//   const char *p = file.data;
-
-//   dynp vertices = dynp_def;
-//   dynp normals = dynp_def;
-//   dynp texuv = dynp_def;
-
-//   dynf vertex_buffer = dynf_def;
-//   dynp mtlrngs = dynp_def;
-//   dynp result = dynp_def;
-//   //	const char*basedir=str_base_dir(path);
-//   while (*p) {
-//     token t = token_next2(&p);
-//     if (token_starts_with(&t, "#")) {
-//       p = scan_to_including_newline(p);
-//     } else if (token_equals(&t, "mtllib")) {
-//       token t = token_next(&p);
-//       str s = str_def;
-//       str_add_list(&s, basedir.data, basedir.count);
-//       str_add_list(&s, t.content, token_size(&t));
-//       str_add(&s, 0);
-//       objmtls_load_from_file(s.data);
-//       str_free(&s);
-//     } else if (token_equals(&t, "v")) {
-//       token tx = token_next(&p);
-//       float x = token_get_float(&tx);
-
-//       token ty = token_next(&p);
-//       float y = token_get_float(&ty);
-
-//       token tz = token_next(&p);
-//       float z = token_get_float(&tz);
-
-//       vec4 *ptr = malloc(sizeof(vec4));
-//       *ptr = (vec4){x, y, z, 0};
-//       dynp_add(&vertices, ptr);
-//       continue;
-//     } else if (token_equals(&t, "vt")) {
-//       token tu = token_next(&p);
-//       float u = token_get_float(&tu);
-
-//       token tv = token_next(&p);
-//       float v = token_get_float(&tv);
-
-//       vec4 *ptr = malloc(sizeof(vec4));
-//       *ptr = (vec4){u, v, 0, 0};
-//       dynp_add(&texuv, ptr);
-//     } else if (token_equals(&t, "vn")) {
-//       token tx = token_next(&p);
-//       float x = token_get_float(&tx);
-
-//       token ty = token_next(&p);
-//       float y = token_get_float(&ty);
-
-//       token tz = token_next(&p);
-//       float z = token_get_float(&tz);
-
-//       vec4 *ptr = malloc(sizeof(vec4));
-//       *ptr = (vec4){x, y, z, 0};
-//       dynp_add(&normals, ptr);
-//     } else {
-//       p = scan_to_including_newline(p);
-//     }
-//   }
-//   objmtl *current_objmtl = NULL;
-//   unsigned vtxbufix = 0;
-//   unsigned prev_vtxbufix = 0;
-//   int first_o = 1;
-//   p = file.data;
-//   unsigned vtxbufix_base = 0;
-//   str name = str_def;
-//   while (*p) {
-//     token t = token_next2(&p);
-//     if (token_equals(&t, "o")) {
-//       token t = token_next(&p);
-//       name = str_def;
-//       str_add_list(&name, t.content, token_size(&t));
-//       str_add(&name, 0);
-//       puts(name.data);
-//       p = scan_to_including_newline(p);
-//       if (first_o) {
-//         first_o = 0;
-//         continue;
-//       }
-//       mtlrng *mr = malloc(sizeof(mtlrng));
-//       //					*mr=material_range_def;
-//       mr->begin = prev_vtxbufix - vtxbufix_base;
-//       mr->count = vtxbufix - prev_vtxbufix;
-//       mr->material_ptr = current_objmtl;
-//       dynp_add(&mtlrngs, mr);
-
-//       glo *g = /*takes*/ glo_alloc_zeroed();
-//       *g = (glo){/*gives*/ vertex_buffer, /*gives*/ mtlrngs, 0, /*gives*/
-//       name}; dynp_add(&result, g);
-
-//       printf("    %u range%c   %lu vertices   %zu B\n", mtlrngs.count,
-//              mtlrngs.count == 1 ? ' ' : 's',
-//              vertex_buffer.count / sizeof(vertex),
-//              dynf_size_in_bytes(&vertex_buffer));
-
-//       vtxbufix_base = prev_vtxbufix = vtxbufix;
-//       vertex_buffer = dynf_def;
-//       mtlrngs = dynp_def;
-
-//       continue;
-//     }
-//     if (token_equals(&t, "usemtl")) {
-//       token t = token_next(&p);
-//       str name = str_def;
-//       str_add_list(&name, t.content, token_size(&t));
-//       str_add(&name, 0);
-
-//       objmtl *m = NULL;
-//       for (unsigned i = 0; i < materials.count; i++) {
-//         m = objmtls_get(&materials, i);
-//         if (!strcmp(m->name.data, name.data)) {
-//           break;
-//         }
-//       }
-//       if (!m) {
-//         fprintf(stderr, "\ncould not find material\n");
-//         fprintf(stderr, "   %s\n", name.data);
-//         fprintf(stderr, "\n     %s %d\n", __FILE__, __LINE__);
-//         exit(-1);
-//       }
-//       str_free(&name);
-//       if (prev_vtxbufix != vtxbufix) {
-//         mtlrng *mr = malloc(sizeof(mtlrng));
-//         //					*mr=material_range_def;
-//         mr->begin = prev_vtxbufix - vtxbufix_base;
-//         mr->count = vtxbufix - prev_vtxbufix;
-//         mr->material_ptr = current_objmtl;
-//         dynp_add(&mtlrngs, mr);
-//         prev_vtxbufix = vtxbufix;
-//       }
-//       current_objmtl = m;
-//     }
-//     if (token_equals(&t, "f")) {
-//       for (int i = 0; i < 3; i++) {
-//         // position
-//         token vert1 = token_from_string_additional_delim(p, '/');
-//         p = vert1.end;
-//         unsigned ix1 = token_get_uint(&vert1);
-//         vec4 *vtx = (vec4 *)dynp_get(&vertices, ix1 - 1);
-
-//         // texture index
-//         token vert2 = token_from_string_additional_delim(p, '/');
-//         p = vert2.end;
-//         unsigned ix2 = token_get_uint(&vert2);
-//         vec4 tx, *tex;
-//         tex = &tx;
-//         if (ix2) {
-//           tex = (vec4 *)dynp_get(&texuv, ix2 - 1);
-//         } else {
-//           *tex = (vec4){0, 0, 0, 0};
-//         }
-//         // normal
-//         token vert3 = token_from_string_additional_delim(p, '/');
-//         p = vert3.end;
-//         unsigned ix3 = token_get_uint(&vert3);
-//         vec4 *norm = (vec4 *)dynp_get(&normals, ix3 - 1);
-
-//         // buffer
-//         dynf_add(&vertex_buffer, vtx->x);
-//         dynf_add(&vertex_buffer, vtx->y);
-//         dynf_add(&vertex_buffer, vtx->z);
-
-//         dynf_add(&vertex_buffer, current_objmtl->Kd.x);
-//         dynf_add(&vertex_buffer, current_objmtl->Kd.y);
-//         dynf_add(&vertex_buffer, current_objmtl->Kd.z);
-//         dynf_add(&vertex_buffer, 1);
-
-//         dynf_add(&vertex_buffer, norm->x);
-//         dynf_add(&vertex_buffer, norm->y);
-//         dynf_add(&vertex_buffer, norm->z);
-
-//         dynf_add(&vertex_buffer, tex->x);
-//         dynf_add(&vertex_buffer, tex->y);
-
-//         vtxbufix++;
-//       }
-//       continue;
-//     }
-//     p = scan_to_including_newline(p);
-//   }
-
-//   mtlrng *mr = malloc(sizeof(mtlrng));
-//   //					*mr=material_range_def;
-//   mr->begin = prev_vtxbufix - vtxbufix_base;
-//   mr->count = vtxbufix - prev_vtxbufix;
-//   mr->material_ptr = current_objmtl;
-//   dynp_add(&mtlrngs, mr);
-
-//   glo *g = /*takes*/ glo_alloc_zeroed();
-//   *g = (glo){/*gives*/ vertex_buffer, /*gives*/ mtlrngs, 0, /*gives*/ name};
-//   dynp_add(&result, g);
-
-//   printf("    %u range%c   %lu vertices   %zu B\n", mtlrngs.count,
-//          mtlrngs.count == 1 ? ' ' : 's', vertex_buffer.count /
-//          sizeof(vertex), dynf_size_in_bytes(&vertex_buffer));
-
-//   dynp_foa(&vertices, { free(o); });
-//   dynp_free(&vertices);
-//   dynp_foa(&texuv, { free(o); });
-//   dynp_free(&texuv);
-//   dynp_foa(&normals, { free(o); });
-//   dynp_free(&normals);
-//   str_free(&file);
-//   return /*gives*/ result;
-// }
 
 inline static void _foreach_material_upload_(void *o) {
   mtlrng *mr = (mtlrng *)o;
@@ -515,39 +259,7 @@ inline static void glo_upload_to_opengl(glo *o) {
   glBufferData(GL_ARRAY_BUFFER, (signed)(o->vtxbuf.size() * sizeof(float)),
                o->vtxbuf.data(), GL_STATIC_DRAW);
 
-  // upload materials
-  // dynp_foa(&o->ranges, {
-  //   mtlrng *mr = o;
-  //   objmtl *m = mr->material_ptr;
-  //   if (m->map_Kd.count) { // load texture
-  //     glGenTextures(1, &m->texture_id);
-
-  //     printf(" * loading texture %u from '%s'\n", m->texture_id,
-  //            m->map_Kd.data);
-
-  //     glBindTexture(GL_TEXTURE_2D, m->texture_id);
-
-  //     SDL_Surface *surface = IMG_Load(m->map_Kd.data);
-  //     if (!surface)
-  //       exit(-1);
-  //     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface->w, surface->h, 0,
-  //     GL_RGB,
-  //                  GL_UNSIGNED_BYTE, surface->pixels);
-
-  //     m->texture_size_bytes =
-  //         (unsigned)(surface->w * surface->h * (signed)sizeof(uint32_t));
-
-  //     SDL_FreeSurface(surface);
-
-  //     metrics.buffered_texture_data += m->texture_size_bytes;
-
-  //     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-  //     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  //     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-  //     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-  //   }
-  // });
-  for (const auto &mr : o->ranges) {
+  for (const mtlrng &mr : o->ranges) {
     objmtl *m = mr.material_ptr;
     if (m->map_Kd.count) { // load texture
       glGenTextures(1, &m->texture_id);
@@ -622,31 +334,7 @@ inline static void glo_render(glo *o, const mat4 mtxmw) {
   glVertexAttribPointer(shader_atex, 2, GL_FLOAT, GL_FALSE, sizeof(vertex),
                         (GLvoid *)((3 + 4 + 3) * sizeof(float)));
 
-  // dynp_foa(&o->ranges, {
-  //   mtlrng *mr = o;
-  //   objmtl *m = mr->material_ptr;
-
-  //   if (m->texture_id) {
-  //     glUniform1i(shader_utex, 0);
-  //     glActiveTexture(GL_TEXTURE0);
-  //     glBindTexture(GL_TEXTURE_2D, m->texture_id);
-  //     glEnableVertexAttribArray(shader_atex);
-  //   } else {
-  //     glActiveTexture(GL_TEXTURE0);
-  //     glBindTexture(GL_TEXTURE_2D, 0);
-  //     glDisableVertexAttribArray(shader_atex);
-  //   }
-
-  //   glDrawArrays(GL_TRIANGLES, (signed)mr->begin, (signed)mr->count);
-  //   metrics.triangles_rendered_prv_frame += mr->count / 3;
-
-  //   if (m->texture_id) {
-  //     glBindTexture(GL_TEXTURE_2D, 0);
-  //     //			glDisableVertexAttribArray(shader_atex);
-  //   }
-  // });
-
-  for (const auto &mr : o->ranges) {
+  for (const mtlrng &mr : o->ranges) {
     objmtl *m = mr.material_ptr;
     if (m->texture_id) {
       glUniform1i(shader_utex, 0);
@@ -717,20 +405,6 @@ inline static void glos_load_from_file(const char *path) {
   dynp_add(&glos, /*gives*/ g);
 }
 
-// inline static void glos_load_all_from_file(const char *path) {
-//   dynp ls = /*takes*/ glo_load_all_from_file(path);
-//   dynp_foa(&ls, {
-//     glo *g = o;
-//     glo_upload_to_opengl(g);
-//     dynp_add(&glos, g);
-//   });
-//   dynp_free(&ls);
-// }
-//
-// inline static glo*glos_last_in_array(){
-//	return glo_at(glos.data[glos.count-1]);
-//}
-
 inline static glo *glos_find_by_name(const char *name) {
   glo *found = NULL;
   for (unsigned i = 0; i < glos.count; i++) {
@@ -740,18 +414,9 @@ inline static glo *glos_find_by_name(const char *name) {
       break;
     }
   }
-
-  // glo *found = NULL;
-  // dynp_fou(&glos, {
-  //   glo *g = o;
-  //   if (!strcmp(name, g->name.data)) {
-  //     found = g;
-  //     return 1;
-  //   }
-  //   return 0;
-  // });
-  if (found)
+  if (found) {
     return found;
+  }
   fprintf(stderr, "\n%s:%u: could not find glo '%s' \n", __FILE__, __LINE__,
           name);
   stacktrace_print(stderr);
