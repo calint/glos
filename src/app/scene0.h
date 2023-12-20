@@ -4,11 +4,9 @@
 
 inline static void main_init_scene_do() {
   object *o;
-  glos_load_all_from_file("obj/skydome.obj");
-  glos_load_all_from_file("obj/board.obj");
-  glos_load_first_from_file("obj/grid.obj");
-  glos_load_first_from_file("obj/santa.obj");
-  //	glos_load_first_from_file("obj/sphere.obj");
+  glos_load_from_file("obj/skydome.obj");
+  glos_load_from_file("obj/grid.obj");
+  glos_load_from_file("obj/santa.obj");
 
   o = object_alloc(&object_def);
   str_setz(&o->name, "skydome");
@@ -16,22 +14,6 @@ inline static void main_init_scene_do() {
   o->vtbl.render = _object_render_glo_;
   o->bounding_volume.scale = (scale){15, 15, 15, 0};
   o->bounding_volume.radius = 10 * 15;
-
-  //	o=object_alloc(&object_def);
-  //	o->n.glo_ptr=glos_find_by_name("board");
-  //	o->v.render=object_render_glo;
-  //	o->p.p.x=-80;
-  //	o->p.p.y=10;
-  //	o->p.p.z=-80;
-  //	o->b.r=10;
-  //
-  //	o=object_alloc(&object_def);
-  //	o->n.glo_ptr=glos_find_by_name("board");
-  //	o->v.render=object_render_glo;
-  //	o->p.p.x=80;
-  //	o->p.p.y=10;
-  //	o->p.p.z=80;
-  //	o->b.r=10;
 
   o = object_alloc(&object_def);
   str_setz(&o->name, "grid");
@@ -41,7 +23,6 @@ inline static void main_init_scene_do() {
   o->physics.position = (position){0, 0, 0, 0};
   o->bounding_volume.radius = 2 * 10;
 
-  game.follow_ptr = o;
   santa *p;
 
   o = santa_alloc_def();
@@ -64,6 +45,7 @@ inline static void main_init_scene_do() {
   p = (santa *)o->part[0];
   p->keybits_ptr = &net_state_current[1].keybits;
 
+  game.follow_ptr = o;
   camera.eye = (position){30, 120, -140, 0};
   camera.lookat = (position){0, 0, 0, 0};
 
