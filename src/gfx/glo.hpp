@@ -19,27 +19,11 @@ public:
   std::string name = "";
 };
 
-inline static /*gives*/ glo *glo_alloc_zeroed() {
-  metrics.glos_allocated++;
-  return new glo();
-}
-
 inline static void glo_free(glo *o) {
   glDeleteBuffers(1, &o->vtxbuf_id);
   metrics.buffered_vertex_data -= o->vtxbuf.size() * sizeof(float);
-  for (material_range &mr : o->ranges) {
-    //! free all materials in materials_free()
-    const material &m = materials.at(mr.material_ix);
-    if (m.texture_id) {
-      glDeleteTextures(1, &m.texture_id);
-      metrics.buffered_texture_data -= m.texture_size_bytes;
-    }
-  }
-  delete o;
   metrics.glos_allocated--;
 }
-
-static inline void _foreach_free_(void *o) { free(o); }
 
 static /*gives*/ glo *glo_make_from_string(const char **ptr_p) {
   const char *p = *ptr_p;
@@ -297,42 +281,22 @@ inline static void glo_render(glo *o, const mat4 mtxmw) {
 //---------------------------------------------------------------------
 // storage
 
-static dynp glos = dynp_def;
-
-inline static glo *glo_at(unsigned i) { return (glo *)dynp_get(&glos, i); }
-inline static const glo *glo_at_const(unsigned i) {
-  return (const glo *)dynp_get(&glos, i);
-}
-inline static unsigned glos_count() { return glos.count; }
+static std::vector<glo> glos{};
 
 inline static void glos_init() {}
 
-inline static void _foreach_free_glo_(void *o) {
-  glo *g = (glo *)o;
-  glo_free(g);
-}
-
 inline static void glos_free() {
-  // dynp_foa(&glos, { glo_free(o); });
-  dynp_foreach_all(&glos, _foreach_free_glo_);
-  dynp_free(&glos);
-}
-
-inline static void _foreach_render_glos_(void *o) {
-  glo *g = (glo *)o;
-  if (!g->ranges.empty()) {
-    glo_render(g++, mat4_identity);
+  for (glo &g : glos) {
+    glo_free(&g);
   }
 }
 
 inline static void glos_render() {
-  // dynp_foa(&glos, {
-  //   glo *g = o;
-  //   if (g->ranges.count) {
-  //     glo_render(g++, mat4_identity);
-  //   }
-  // });
-  dynp_foreach_all(&glos, _foreach_render_glos_);
+  for (glo &g : glos) {
+    if (not g.ranges.empty()) {
+      glo_render(&g, mat4_identity);
+    }
+  }
 }
 
 inline static void glos_load_from_file(const char *path) {
@@ -342,20 +306,15 @@ inline static void glos_load_from_file(const char *path) {
   glo *g = /*takes*/ glo_make_from_string(&p);
   str_free(&file);
   glo_upload_to_opengl(g);
-  dynp_add(&glos, /*gives*/ g);
+  glos.push_back(std::move(*g));
+  delete g;
 }
 
 inline static glo *glos_find_by_name(const char *name) {
-  glo *found = NULL;
-  for (unsigned i = 0; i < glos.count; i++) {
-    glo *o = (glo *)glos.data[i];
-    if (!strcmp(name, o->name.c_str())) {
-      found = o;
-      break;
+  for (glo &g : glos) {
+    if (!strcmp(name, g.name.c_str())) {
+      return &g;
     }
-  }
-  if (found) {
-    return found;
   }
   fprintf(stderr, "\n%s:%u: could not find glo '%s' \n", __FILE__, __LINE__,
           name);

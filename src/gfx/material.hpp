@@ -103,3 +103,12 @@ inline static void objmtls_load_from_file(const char *path) {
   }
   str_free(&file);
 }
+
+static inline void materials_free() {
+  for (const material &m : materials) {
+    if (m.texture_id) {
+      glDeleteTextures(1, &m.texture_id);
+      metrics.buffered_texture_data -= m.texture_size_bytes;
+    }
+  }
+}

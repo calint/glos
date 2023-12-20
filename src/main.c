@@ -142,7 +142,7 @@ int main(int argc, char *argv[]) {
   printf(":-%15s-:-%-9s-:\n", "---------------", "--------");
   puts("");
 
-  unsigned gloid = 0, mingloid = 0, maxgloid = 10;
+  unsigned gloid = 0;
   if (use_net) {
     net_init();
   }
@@ -300,10 +300,11 @@ int main(int argc, char *argv[]) {
           break;
         case SDLK_2: {
           gloid++;
-          if (gloid > maxgloid) {
-            gloid = mingloid;
+          if (gloid == glos.size()) {
+            gloid = 0;
           }
-          object_at(0)->node.glo = glo_at(gloid);
+          //? getting pointer to volatile memory
+          object_at(0)->node.glo = &glos.at(gloid);
           break;
         }
         case SDLK_3: {
@@ -403,6 +404,7 @@ int main(int argc, char *argv[]) {
   grid_free();
   glos_free();
   objects_free();
+  materials_free();
   shader_free();
   window_free();
   sdl_free();
