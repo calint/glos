@@ -27,7 +27,7 @@ inline static void _${name}_insure_free_capcity(${name}*o,unsigned n){
 		return;
 	if(o->data){
 		unsigned new_cap=o->cap*2;
-		${type} *new_data=realloc(o->data,sizeof(${type})*new_cap);
+		${type} *new_data=(${type}*)realloc(o->data,sizeof(${type})*new_cap);
 		if(!new_data){
 			fprintf(stderr,"\nout-of-memory");
 			fprintf(stderr,"\tfile: '%s'  line: %d\n\n",__FILE__,__LINE__);
@@ -40,7 +40,7 @@ inline static void _${name}_insure_free_capcity(${name}*o,unsigned n){
 		return;
 	}
 	o->cap=${name}_initial_capacity;
-	o->data=malloc(sizeof(${type})*o->cap);
+	o->data=(${type}*)malloc(sizeof(${type})*o->cap);
 	if(!o->data){
 		fprintf(stderr,"\nout-of-memory");
 		fprintf(stderr,"\tfile: '%s'  line: %d\n\n",__FILE__,__LINE__);
@@ -95,9 +95,9 @@ inline static void ${name}_free(${name}*o){
 
 //-----------------------------------------------------------------------------
 
-inline static void ${name}_add_list(${name}*o,/*copies*/const ${type}*str,unsigned n){
+inline static void ${name}_add_list(${name}*o,/*copies*/${type} const*str,unsigned n){
 	//? optimize memcpy
-	const ${type}*p=str;
+	${type} const*p=str;
 	while(n--){
 		_${name}_insure_free_capcity(o,1);
 		*(o->data+o->count++)=*p++;
@@ -106,9 +106,9 @@ inline static void ${name}_add_list(${name}*o,/*copies*/const ${type}*str,unsign
 
 //-----------------------------------------------------------------------------
 
-inline static void ${name}_add_string(${name}*o,/*copies*/const ${type}*str){
+inline static void ${name}_add_string(${name}*o,/*copies*/${type} const*str){
 	//? optimize
-	const ${type}*p=str;
+	${type} const*p=str;
 	while(*p){
 		_${name}_insure_free_capcity(o,1);
 		*(o->data+o->count++)=*p++;
@@ -162,7 +162,7 @@ inline static ${name} ${name}_from_file(const char*path){
 
 	return (${name}){
 		.data=filedata,
-		.count=((unsigned)length+1)/sizeof(${type}),
+		.count=(unsigned)((length+1)/sizeof(${type})),
 		.cap=(unsigned)length+1
 	};
 }
@@ -175,9 +175,9 @@ inline static void ${name}_clear(${name}*o){
 
 //-----------------------------------------------------------------------------
 
-inline static void ${name}_setz(${name}*o,/*copies*/const ${type}*s){
+inline static void ${name}_setz(${name}*o,/*copies*/${type} const*s){
 	//? optimize
-	const ${type}*p=s;
+	${type} const*p=s;
 	o->count=0;
 	while(*p){
 		_${name}_insure_free_capcity(o,1);
@@ -246,7 +246,7 @@ inline static unsigned ${name}_has(${name}*o,${type} oo){
 	return 1;
 }
 //-----------------------------------------------------------------------------
-inline static/*gives*/${name} ${name}_from_string(const ${type}*s){
+inline static/*gives*/${name} ${name}_from_string(${type} const*s){
 	${name} o=${name}_def;
 	${name}_add_string(&o,s);
 	${name}_add(&o,0);

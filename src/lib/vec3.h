@@ -54,6 +54,6 @@ inline static void vec3_print(vec4 *o) {
   printf(" | %f  %f  %f |", o->x, o->y, o->z);
 }
 
-inline static bool vec3_equals(vec4 *o, vec4 *oo) {
+inline static int vec3_equals(vec4 *o, vec4 *oo) {
   return o->x == oo->x && o->y == oo->y && o->z == oo->z;
 }

@@ -63,7 +63,7 @@ inline static void gl_print_context_profile_and_version() {
 struct {
   SDL_Window *ref;
   SDL_Renderer *renderer;
-  SDL_GLContext *glcontext;
+  SDL_GLContext glcontext;
   //	SDL_Surface*surface;
 } window;
 static inline void window_init() {

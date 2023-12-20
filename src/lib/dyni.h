@@ -27,7 +27,7 @@ inline static void _dyni_insure_free_capcity(dyni*o,unsigned n){
 		return;
 	if(o->data){
 		unsigned new_cap=o->cap*2;
-		int *new_data=realloc(o->data,sizeof(int)*new_cap);
+		int *new_data=(int*)realloc(o->data,sizeof(int)*new_cap);
 		if(!new_data){
 			fprintf(stderr,"\nout-of-memory");
 			fprintf(stderr,"\tfile: '%s'  line: %d\n\n",__FILE__,__LINE__);
@@ -40,7 +40,7 @@ inline static void _dyni_insure_free_capcity(dyni*o,unsigned n){
 		return;
 	}
 	o->cap=dyni_initial_capacity;
-	o->data=malloc(sizeof(int)*o->cap);
+	o->data=(int*)malloc(sizeof(int)*o->cap);
 	if(!o->data){
 		fprintf(stderr,"\nout-of-memory");
 		fprintf(stderr,"\tfile: '%s'  line: %d\n\n",__FILE__,__LINE__);
@@ -95,9 +95,9 @@ inline static void dyni_free(dyni*o){
 
 //-----------------------------------------------------------------------------
 
-inline static void dyni_add_list(dyni*o,/*copies*/const int*str,unsigned n){
+inline static void dyni_add_list(dyni*o,/*copies*/int const*str,unsigned n){
 	//? optimize memcpy
-	const int*p=str;
+	int const*p=str;
 	while(n--){
 		_dyni_insure_free_capcity(o,1);
 		*(o->data+o->count++)=*p++;
@@ -106,9 +106,9 @@ inline static void dyni_add_list(dyni*o,/*copies*/const int*str,unsigned n){
 
 //-----------------------------------------------------------------------------
 
-inline static void dyni_add_string(dyni*o,/*copies*/const int*str){
+inline static void dyni_add_string(dyni*o,/*copies*/int const*str){
 	//? optimize
-	const int*p=str;
+	int const*p=str;
 	while(*p){
 		_dyni_insure_free_capcity(o,1);
 		*(o->data+o->count++)=*p++;
@@ -162,7 +162,7 @@ inline static dyni dyni_from_file(const char*path){
 
 	return (dyni){
 		.data=filedata,
-		.count=((unsigned)length+1)/sizeof(int),
+		.count=(unsigned)((length+1)/sizeof(int)),
 		.cap=(unsigned)length+1
 	};
 }
@@ -175,9 +175,9 @@ inline static void dyni_clear(dyni*o){
 
 //-----------------------------------------------------------------------------
 
-inline static void dyni_setz(dyni*o,/*copies*/const int*s){
+inline static void dyni_setz(dyni*o,/*copies*/int const*s){
 	//? optimize
-	const int*p=s;
+	int const*p=s;
 	o->count=0;
 	while(*p){
 		_dyni_insure_free_capcity(o,1);
@@ -246,7 +246,7 @@ inline static unsigned dyni_has(dyni*o,int oo){
 	return 1;
 }
 //-----------------------------------------------------------------------------
-inline static/*gives*/dyni dyni_from_string(const int*s){
+inline static/*gives*/dyni dyni_from_string(int const*s){
 	dyni o=dyni_def;
 	dyni_add_string(&o,s);
 	dyni_add(&o,0);

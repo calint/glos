@@ -35,7 +35,7 @@ inline static int token_starts_with(token *t, const char *str) {
   return strncmp(str, t->content, strlen(str)) == 0;
 }
 
-inline static bool token_equals(token *t, const char *str) {
+inline static int token_equals(token *t, const char *str) {
   const char *p = t->content; //? stdlib
   while (1) {
     if (p == t->content_end) {
@@ -49,17 +49,6 @@ inline static bool token_equals(token *t, const char *str) {
     str++;
   }
 }
-//
-// inline static bool token_equals(token*t,const char*str){
-//	const char*p=t->content;
-//	while(1){
-//		if(!*str)return 1;
-//		if(p==t->content_end)return 0;
-//		if(*p!=*str)return 0;
-//		p++;
-//		str++;
-//	}
-//}
 
 inline static float token_get_float(token *t) {
   float f = (float)atof(t->content); //? assuming file ends with whitespace
@@ -252,14 +241,14 @@ inline static /*gives*/ str token_to_str2(token *o) {
 }
 
 inline static /*gives*/ str *token_to_str(token *o) {
-  str *s = malloc(sizeof(str));
+  str *s = (str *)malloc(sizeof(str));
   *s = str_def;
   str_add_list(s, o->content, (unsigned)(o->content_end - o->content));
   str_add(s, 0);
   return s;
 }
 
-inline static bool token_is_empty(token *o) {
+inline static int token_is_empty(token *o) {
   return o->content_end == o->content;
 }
 

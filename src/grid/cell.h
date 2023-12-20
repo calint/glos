@@ -129,17 +129,17 @@ inline static void cell_render(cell *o, framectx *fc) {
 //     .*.
 //     <.>
 //    < . >
-inline static bool
+inline static int
 _cell_detect_and_resolve_collision_for_spheres1(object *o1, object *o2,
                                                 framectx *fc) {
 
-  const vec4 v;
+  vec4 v;
   vec3_minus(&v, &o2->physics.position, &o1->physics.position);
   const float d = o1->bounding_volume.radius + o2->bounding_volume.radius;
   const float dsq = d * d;
   const float vsq = vec3_dot(&v, &v);
   if (!(vsq < dsq)) //?
-    return false;
+    return 0;
 
   const float diff = fabs(dsq - vsq);
   if (diff < .00001f) {
@@ -166,21 +166,21 @@ _cell_detect_and_resolve_collision_for_spheres1(object *o1, object *o2,
   vec3_print(&o1->physics.velocity);
   vec3_print(&o2->physics.velocity);
   puts("");
-  return true;
+  return 1;
 }
 
-inline static bool
+inline static int
 _cell_detect_and_resolve_collision_for_spheres(object *o1, object *o2,
                                                framectx *fc) {
 
-  const vec4 v;
+  vec4 v;
   vec3_minus(&v, &o2->physics.position, &o1->physics.position);
   const float d = o1->bounding_volume.radius + o2->bounding_volume.radius; // minimum distance
   const float dsq = d * d;                 //  squared
   const float vsq = vec3_dot(&v, &v);      // distance of vector squared
   const float diff = vsq - dsq;            //
   if (diff >= 0) {                         //
-    return false;
+    return 0;
   }
   //
   //	if(fabs(diff)<.01f){
@@ -215,7 +215,7 @@ _cell_detect_and_resolve_collision_for_spheres(object *o1, object *o2,
     printf(" *** du=0   diff=%f    dx=%f    %s x=%f    vs   %s x=%f\n", diff,
            o2->physics.position.x - o1->physics.position.x, o1->name.data,
            o1->physics.position.x, o2->name.data, o2->physics.position.x);
-    return false;
+    return 0;
   }
   float t;
   if (x1 < x2) {
@@ -268,10 +268,10 @@ _cell_detect_and_resolve_collision_for_spheres(object *o1, object *o2,
   vec3_inc_with_vec3_over_dt(&o2->physics_nxt.position,
                              &o2->physics_nxt.velocity, -t);
 
-  return true;
+  return 1;
 }
 
-inline static bool _cell_checked_collisions(object *o1, object *o2,
+inline static int _cell_checked_collisions(object *o1, object *o2,
                                             framectx *fc) {
 
   metrics.collision_grid_overlap_check++;
@@ -286,9 +286,9 @@ inline static bool _cell_checked_collisions(object *o1, object *o2,
   }
   if (dynp_has(&o1->grid_ifc.checked_collisions_list, o2) ||
       dynp_has(&o2->grid_ifc.checked_collisions_list, o1)) {
-    return true;
+    return 1;
   }
-  return false;
+  return 0;
 }
 
 inline static void cell_resolve_collisions(cell *o, framectx *fc) {

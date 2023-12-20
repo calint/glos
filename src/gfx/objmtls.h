@@ -27,7 +27,7 @@ inline static void _objmtls_insure_free_capcity(objmtls*o,unsigned n){
 		return;
 	if(o->data){
 		unsigned new_cap=o->cap*2;
-		objmtl* *new_data=realloc(o->data,sizeof(objmtl*)*new_cap);
+		objmtl* *new_data=(objmtl**)realloc(o->data,sizeof(objmtl*)*new_cap);
 		if(!new_data){
 			fprintf(stderr,"\nout-of-memory");
 			fprintf(stderr,"\tfile: '%s'  line: %d\n\n",__FILE__,__LINE__);
@@ -40,7 +40,7 @@ inline static void _objmtls_insure_free_capcity(objmtls*o,unsigned n){
 		return;
 	}
 	o->cap=objmtls_initial_capacity;
-	o->data=malloc(sizeof(objmtl*)*o->cap);
+	o->data=(objmtl**)malloc(sizeof(objmtl*)*o->cap);
 	if(!o->data){
 		fprintf(stderr,"\nout-of-memory");
 		fprintf(stderr,"\tfile: '%s'  line: %d\n\n",__FILE__,__LINE__);
@@ -95,9 +95,9 @@ inline static void objmtls_free(objmtls*o){
 
 //-----------------------------------------------------------------------------
 
-inline static void objmtls_add_list(objmtls*o,/*copies*/const objmtl**str,unsigned n){
+inline static void objmtls_add_list(objmtls*o,/*copies*/objmtl* const*str,unsigned n){
 	//? optimize memcpy
-	const objmtl**p=str;
+	objmtl* const*p=str;
 	while(n--){
 		_objmtls_insure_free_capcity(o,1);
 		*(o->data+o->count++)=*p++;
@@ -106,9 +106,9 @@ inline static void objmtls_add_list(objmtls*o,/*copies*/const objmtl**str,unsign
 
 //-----------------------------------------------------------------------------
 
-inline static void objmtls_add_string(objmtls*o,/*copies*/const objmtl**str){
+inline static void objmtls_add_string(objmtls*o,/*copies*/objmtl* const*str){
 	//? optimize
-	const objmtl**p=str;
+	objmtl* const*p=str;
 	while(*p){
 		_objmtls_insure_free_capcity(o,1);
 		*(o->data+o->count++)=*p++;
@@ -162,7 +162,7 @@ inline static objmtls objmtls_from_file(const char*path){
 
 	return (objmtls){
 		.data=filedata,
-		.count=((unsigned)length+1)/sizeof(objmtl*),
+		.count=(unsigned)((length+1)/sizeof(objmtl*)),
 		.cap=(unsigned)length+1
 	};
 }
@@ -175,9 +175,9 @@ inline static void objmtls_clear(objmtls*o){
 
 //-----------------------------------------------------------------------------
 
-inline static void objmtls_setz(objmtls*o,/*copies*/const objmtl**s){
+inline static void objmtls_setz(objmtls*o,/*copies*/objmtl* const*s){
 	//? optimize
-	const objmtl**p=s;
+	objmtl* const*p=s;
 	o->count=0;
 	while(*p){
 		_objmtls_insure_free_capcity(o,1);
@@ -246,7 +246,7 @@ inline static unsigned objmtls_has(objmtls*o,objmtl* oo){
 	return 1;
 }
 //-----------------------------------------------------------------------------
-inline static/*gives*/objmtls objmtls_from_string(const objmtl**s){
+inline static/*gives*/objmtls objmtls_from_string(objmtl* const*s){
 	objmtls o=objmtls_def;
 	objmtls_add_string(&o,s);
 	objmtls_add(&o,0);

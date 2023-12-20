@@ -27,7 +27,7 @@ inline static void _dynf_insure_free_capcity(dynf*o,unsigned n){
 		return;
 	if(o->data){
 		unsigned new_cap=o->cap*2;
-		float *new_data=realloc(o->data,sizeof(float)*new_cap);
+		float *new_data=(float*)realloc(o->data,sizeof(float)*new_cap);
 		if(!new_data){
 			fprintf(stderr,"\nout-of-memory");
 			fprintf(stderr,"\tfile: '%s'  line: %d\n\n",__FILE__,__LINE__);
@@ -40,7 +40,7 @@ inline static void _dynf_insure_free_capcity(dynf*o,unsigned n){
 		return;
 	}
 	o->cap=dynf_initial_capacity;
-	o->data=malloc(sizeof(float)*o->cap);
+	o->data=(float*)malloc(sizeof(float)*o->cap);
 	if(!o->data){
 		fprintf(stderr,"\nout-of-memory");
 		fprintf(stderr,"\tfile: '%s'  line: %d\n\n",__FILE__,__LINE__);
@@ -95,9 +95,9 @@ inline static void dynf_free(dynf*o){
 
 //-----------------------------------------------------------------------------
 
-inline static void dynf_add_list(dynf*o,/*copies*/const float*str,unsigned n){
+inline static void dynf_add_list(dynf*o,/*copies*/float const*str,unsigned n){
 	//? optimize memcpy
-	const float*p=str;
+	float const*p=str;
 	while(n--){
 		_dynf_insure_free_capcity(o,1);
 		*(o->data+o->count++)=*p++;
@@ -106,9 +106,9 @@ inline static void dynf_add_list(dynf*o,/*copies*/const float*str,unsigned n){
 
 //-----------------------------------------------------------------------------
 
-inline static void dynf_add_string(dynf*o,/*copies*/const float*str){
+inline static void dynf_add_string(dynf*o,/*copies*/float const*str){
 	//? optimize
-	const float*p=str;
+	float const*p=str;
 	while(*p){
 		_dynf_insure_free_capcity(o,1);
 		*(o->data+o->count++)=*p++;
@@ -162,7 +162,7 @@ inline static dynf dynf_from_file(const char*path){
 
 	return (dynf){
 		.data=filedata,
-		.count=((unsigned)length+1)/sizeof(float),
+		.count=(unsigned)((length+1)/sizeof(float)),
 		.cap=(unsigned)length+1
 	};
 }
@@ -175,9 +175,9 @@ inline static void dynf_clear(dynf*o){
 
 //-----------------------------------------------------------------------------
 
-inline static void dynf_setz(dynf*o,/*copies*/const float*s){
+inline static void dynf_setz(dynf*o,/*copies*/float const*s){
 	//? optimize
-	const float*p=s;
+	float const*p=s;
 	o->count=0;
 	while(*p){
 		_dynf_insure_free_capcity(o,1);
@@ -246,7 +246,7 @@ inline static unsigned dynf_has(dynf*o,float oo){
 	return 1;
 }
 //-----------------------------------------------------------------------------
-inline static/*gives*/dynf dynf_from_string(const float*s){
+inline static/*gives*/dynf dynf_from_string(float const*s){
 	dynf o=dynf_def;
 	dynf_add_string(&o,s);
 	dynf_add(&o,0);

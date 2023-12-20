@@ -178,7 +178,6 @@ int main(int argc, char *argv[]) {
   metrics_reset_timer();
   metrics_print_headers(stderr);
   unsigned frameno = 1;
-  bool paused = false;
 
   framectx fc = {
       .dt = 0.1f,
@@ -237,9 +236,6 @@ int main(int argc, char *argv[]) {
           mouse_mode = !mouse_mode;
           SDL_SetRelativeMouseMode(mouse_mode);
           //						running=0;
-          break;
-        case SDLK_TAB:
-          paused = !paused;
           break;
         case SDLK_w:
           net_state_to_send.keybits |= 1;

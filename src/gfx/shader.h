@@ -49,7 +49,7 @@ static unsigned shader_def_program_id;
 
 //----------------------------------------------------------------------------
 
-static char *shader_vertex_source =
+static const char *shader_vertex_source =
     "#version 130                                              \n\
 uniform mat4 umtx_mw; // model-to-world-matrix              \n\
 uniform mat4 umtx_wvp;// world-to-view-to-projection         \n\
@@ -66,7 +66,7 @@ void main(){                                                         \n\
 	vnorm=anorm;                                            \n\
 	vtex=atex;                                               \n\
 }\n";
-static char *shader_fragment_source = "#version 130             \n\
+static const char *shader_fragment_source = "#version 130             \n\
 uniform sampler2D utex;                    \n\
 uniform vec4 solid_color;         \n\
 in vec4 vrgba;                              \n\
@@ -133,7 +133,7 @@ inline static program *shader_load_program_from_source(const char *vert_src,
   shader_def_program_id = glCreateProgram();
   unsigned gid = shader_def_program_id;
 
-  program *p = malloc(sizeof(program));
+  program *p = (program *)malloc(sizeof(program));
   *p = program_def;
 
   p->id = gid;
@@ -291,14 +291,14 @@ inline static void shader_load() {
   //
   //	glTexImage2D(
   //	    GL_TEXTURE_2D, 0, GL_RGB, 800, 600, 0, GL_RGB, GL_UNSIGNED_BYTE,
-  //NULL
+  // NULL
   //	);
   //
   //	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   //	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   //	glFramebufferTexture2D(
   //	    GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texColorBuffer,
-  //0
+  // 0
   //	);
   //	gl_check_error("exit shader_load  render to frame buffer 1");
   //	GLuint rboDepthStencil;
@@ -313,7 +313,7 @@ inline static void shader_load() {
   //
   //	glFramebufferRenderbuffer(
   //	    GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER,
-  //rboDepthStencil
+  // rboDepthStencil
   //	);
   //	gl_check_error("exit shader_load  render to frame buffer 5");
   //	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);

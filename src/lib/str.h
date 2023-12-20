@@ -27,7 +27,7 @@ inline static void _str_insure_free_capcity(str*o,unsigned n){
 		return;
 	if(o->data){
 		unsigned new_cap=o->cap*2;
-		char *new_data=realloc(o->data,sizeof(char)*new_cap);
+		char *new_data=(char*)realloc(o->data,sizeof(char)*new_cap);
 		if(!new_data){
 			fprintf(stderr,"\nout-of-memory");
 			fprintf(stderr,"\tfile: '%s'  line: %d\n\n",__FILE__,__LINE__);
@@ -40,7 +40,7 @@ inline static void _str_insure_free_capcity(str*o,unsigned n){
 		return;
 	}
 	o->cap=str_initial_capacity;
-	o->data=malloc(sizeof(char)*o->cap);
+	o->data=(char*)malloc(sizeof(char)*o->cap);
 	if(!o->data){
 		fprintf(stderr,"\nout-of-memory");
 		fprintf(stderr,"\tfile: '%s'  line: %d\n\n",__FILE__,__LINE__);
@@ -95,9 +95,9 @@ inline static void str_free(str*o){
 
 //-----------------------------------------------------------------------------
 
-inline static void str_add_list(str*o,/*copies*/const char*str,unsigned n){
+inline static void str_add_list(str*o,/*copies*/char const*str,unsigned n){
 	//? optimize memcpy
-	const char*p=str;
+	char const*p=str;
 	while(n--){
 		_str_insure_free_capcity(o,1);
 		*(o->data+o->count++)=*p++;
@@ -106,9 +106,9 @@ inline static void str_add_list(str*o,/*copies*/const char*str,unsigned n){
 
 //-----------------------------------------------------------------------------
 
-inline static void str_add_string(str*o,/*copies*/const char*str){
+inline static void str_add_string(str*o,/*copies*/char const*str){
 	//? optimize
-	const char*p=str;
+	char const*p=str;
 	while(*p){
 		_str_insure_free_capcity(o,1);
 		*(o->data+o->count++)=*p++;
@@ -162,7 +162,7 @@ inline static str str_from_file(const char*path){
 
 	return (str){
 		.data=filedata,
-		.count=((unsigned)length+1)/sizeof(char),
+		.count=(unsigned)((length+1)/sizeof(char)),
 		.cap=(unsigned)length+1
 	};
 }
@@ -175,9 +175,9 @@ inline static void str_clear(str*o){
 
 //-----------------------------------------------------------------------------
 
-inline static void str_setz(str*o,/*copies*/const char*s){
+inline static void str_setz(str*o,/*copies*/char const*s){
 	//? optimize
-	const char*p=s;
+	char const*p=s;
 	o->count=0;
 	while(*p){
 		_str_insure_free_capcity(o,1);
@@ -246,7 +246,7 @@ inline static unsigned str_has(str*o,char oo){
 	return 1;
 }
 //-----------------------------------------------------------------------------
-inline static/*gives*/str str_from_string(const char*s){
+inline static/*gives*/str str_from_string(char const*s){
 	str o=str_def;
 	str_add_string(&o,s);
 	str_add(&o,0);

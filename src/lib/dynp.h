@@ -27,7 +27,7 @@ inline static void _dynp_insure_free_capcity(dynp*o,unsigned n){
 		return;
 	if(o->data){
 		unsigned new_cap=o->cap*2;
-		void* *new_data=realloc(o->data,sizeof(void*)*new_cap);
+		void* *new_data=(void**)realloc(o->data,sizeof(void*)*new_cap);
 		if(!new_data){
 			fprintf(stderr,"\nout-of-memory");
 			fprintf(stderr,"\tfile: '%s'  line: %d\n\n",__FILE__,__LINE__);
@@ -40,7 +40,7 @@ inline static void _dynp_insure_free_capcity(dynp*o,unsigned n){
 		return;
 	}
 	o->cap=dynp_initial_capacity;
-	o->data=malloc(sizeof(void*)*o->cap);
+	o->data=(void**)malloc(sizeof(void*)*o->cap);
 	if(!o->data){
 		fprintf(stderr,"\nout-of-memory");
 		fprintf(stderr,"\tfile: '%s'  line: %d\n\n",__FILE__,__LINE__);
@@ -95,9 +95,9 @@ inline static void dynp_free(dynp*o){
 
 //-----------------------------------------------------------------------------
 
-inline static void dynp_add_list(dynp*o,/*copies*/const void**str,unsigned n){
+inline static void dynp_add_list(dynp*o,/*copies*/void* const*str,unsigned n){
 	//? optimize memcpy
-	const void**p=str;
+	void* const*p=str;
 	while(n--){
 		_dynp_insure_free_capcity(o,1);
 		*(o->data+o->count++)=*p++;
@@ -106,9 +106,9 @@ inline static void dynp_add_list(dynp*o,/*copies*/const void**str,unsigned n){
 
 //-----------------------------------------------------------------------------
 
-inline static void dynp_add_string(dynp*o,/*copies*/const void**str){
+inline static void dynp_add_string(dynp*o,/*copies*/void* const*str){
 	//? optimize
-	const void**p=str;
+	void* const*p=str;
 	while(*p){
 		_dynp_insure_free_capcity(o,1);
 		*(o->data+o->count++)=*p++;
@@ -162,7 +162,7 @@ inline static dynp dynp_from_file(const char*path){
 
 	return (dynp){
 		.data=filedata,
-		.count=((unsigned)length+1)/sizeof(void*),
+		.count=(unsigned)((length+1)/sizeof(void*)),
 		.cap=(unsigned)length+1
 	};
 }
@@ -175,9 +175,9 @@ inline static void dynp_clear(dynp*o){
 
 //-----------------------------------------------------------------------------
 
-inline static void dynp_setz(dynp*o,/*copies*/const void**s){
+inline static void dynp_setz(dynp*o,/*copies*/void* const*s){
 	//? optimize
-	const void**p=s;
+	void* const*p=s;
 	o->count=0;
 	while(*p){
 		_dynp_insure_free_capcity(o,1);
@@ -246,7 +246,7 @@ inline static unsigned dynp_has(dynp*o,void* oo){
 	return 1;
 }
 //-----------------------------------------------------------------------------
-inline static/*gives*/dynp dynp_from_string(const void**s){
+inline static/*gives*/dynp dynp_from_string(void* const*s){
 	dynp o=dynp_def;
 	dynp_add_string(&o,s);
 	dynp_add(&o,0);
