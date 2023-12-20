@@ -1,6 +1,8 @@
 #pragma once
 #include "../lib.h"
 #include <string>
+#include <vector>
+
 // newmtl texture
 // Ns 96.078431
 // Ka 1.000000 1.000000 1.000000
@@ -27,13 +29,10 @@ public:
   unsigned texture_size_bytes = 0;
 };
 
-#include "objmtls.h"
-
-static objmtls materials;
+static std::vector<objmtl> materials{};
 
 inline static void objmtls_load_from_file(const char *path) {
   str file = /*takes*/ str_from_file(path);
-  objmtl *o = NULL;
   const char *p = file.data;
   while (*p) {
     token t = token_next(&p);
@@ -42,18 +41,16 @@ inline static void objmtls_load_from_file(const char *path) {
       continue;
     }
     if (token_starts_with(&t, "newmtl")) {
-      o = new objmtl{};
+      materials.push_back({});
       token t = token_next(&p);
       const unsigned n = token_size(&t);
-      o->name = std::string{t.content, t.content + n};
-
-      objmtls_add(&materials, o);
+      materials.back().name = std::string{t.content, t.content + n};
       continue;
     }
     if (token_equals(&t, "Ns")) {
       token t = token_next(&p);
       float f = token_get_float(&t);
-      o->Ns = f;
+      materials.back().Ns = f;
       continue;
     }
     if (token_equals(&t, "Ka") || token_equals(&t, "Kd") ||
@@ -72,13 +69,13 @@ inline static void objmtls_load_from_file(const char *path) {
       v.w = 0;
 
       if (token_equals(&t, "Ka")) {
-        o->Ka = v;
+        materials.back().Ka = v;
       } else if (token_equals(&t, "Kd")) {
-        o->Kd = v;
+        materials.back().Kd = v;
       } else if (token_equals(&t, "Ks")) {
-        o->Ks = v;
+        materials.back().Ks = v;
       } else if (token_equals(&t, "Ke")) {
-        o->Ke = v;
+        materials.back().Ke = v;
       }
       continue;
     }
@@ -86,21 +83,21 @@ inline static void objmtls_load_from_file(const char *path) {
     if (token_equals(&t, "Ni")) {
       token t = token_next(&p);
       float f = token_get_float(&t);
-      o->Ni = f;
+      materials.back().Ni = f;
       continue;
     }
 
     if (token_equals(&t, "d")) {
       token t = token_next(&p);
       float f = token_get_float(&t);
-      o->d = f;
+      materials.back().d = f;
       continue;
     }
 
     if (token_equals(&t, "map_Kd")) {
       const token t = token_next(&p);
       const unsigned n = token_size(&t);
-      o->map_Kd = std::string{t.content, t.content + n};
+      materials.back().map_Kd = std::string{t.content, t.content + n};
       continue;
     }
   }

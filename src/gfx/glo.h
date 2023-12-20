@@ -29,10 +29,10 @@ inline static void glo_free(glo *o) {
   metrics.buffered_vertex_data -= o->vtxbuf.size() * sizeof(float);
   for (mtlrng &mr : o->ranges) {
     //! free all materials in materials_free()
-    const objmtl *m = objmtls_get(&materials, mr.material_ix);
-    if (m->texture_id) {
-      glDeleteTextures(1, &m->texture_id);
-      metrics.buffered_texture_data -= m->texture_size_bytes;
+    const objmtl &m = materials.at(mr.material_ix);
+    if (m.texture_id) {
+      glDeleteTextures(1, &m.texture_id);
+      metrics.buffered_texture_data -= m.texture_size_bytes;
     }
   }
   delete o;
@@ -91,9 +91,9 @@ static /*gives*/ glo *glo_make_from_string(const char **ptr_p) {
       str_add_list(&name, t.content, token_size(&t));
       str_add(&name, 0);
       bool found = false;
-      for (unsigned i = 0; i < materials.count; i++) {
-        objmtl *mm = objmtls_get(&materials, i);
-        if (!strcmp(mm->name.c_str(), name.data)) {
+      for (unsigned i = 0; i < materials.size(); i++) {
+        objmtl &mm = materials.at(i);
+        if (!strcmp(mm.name.c_str(), name.data)) {
           current_objmtl_ix = i;
           found = true;
           break;
@@ -155,7 +155,7 @@ static /*gives*/ glo *glo_make_from_string(const char **ptr_p) {
     }
 
     if (token_equals(&t, "f")) {
-      objmtl *current_objmtl = objmtls_get(&materials, current_objmtl_ix);
+      const objmtl &current_objmtl = materials.at(current_objmtl_ix);
       for (int i = 0; i < 3; i++) {
         // position
         token vert1 = token_from_string_additional_delim(p, '/');
@@ -179,9 +179,9 @@ static /*gives*/ glo *glo_make_from_string(const char **ptr_p) {
         vertex_buffer.push_back(vtx.y);
         vertex_buffer.push_back(vtx.z);
 
-        vertex_buffer.push_back(current_objmtl->Kd.x);
-        vertex_buffer.push_back(current_objmtl->Kd.y);
-        vertex_buffer.push_back(current_objmtl->Kd.z);
+        vertex_buffer.push_back(current_objmtl.Kd.x);
+        vertex_buffer.push_back(current_objmtl.Kd.y);
+        vertex_buffer.push_back(current_objmtl.Kd.z);
         vertex_buffer.push_back(1);
 
         vertex_buffer.push_back(norm.x);
@@ -230,35 +230,34 @@ inline static void glo_upload_to_opengl(glo *o) {
                o->vtxbuf.data(), GL_STATIC_DRAW);
 
   for (const mtlrng &mr : o->ranges) {
-    objmtl *m = objmtls_get(&materials, mr.material_ix);
-    if (not m->map_Kd.empty()) { // load texture
-      glGenTextures(1, &m->texture_id);
+    objmtl &m = materials.at(mr.material_ix);
+    if (not m.map_Kd.empty()) { // load texture
+      glGenTextures(1, &m.texture_id);
 
-      printf(" * loading texture %u from '%s'\n", m->texture_id,
-             m->map_Kd.c_str());
+      printf(" * loading texture %u from '%s'\n", m.texture_id,
+             m.map_Kd.c_str());
 
-      glBindTexture(GL_TEXTURE_2D, m->texture_id);
+      glBindTexture(GL_TEXTURE_2D, m.texture_id);
 
-      SDL_Surface *surface = IMG_Load(m->map_Kd.c_str());
+      SDL_Surface *surface = IMG_Load(m.map_Kd.c_str());
       if (!surface) {
         exit(-1);
       }
       glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface->w, surface->h, 0, GL_RGB,
                    GL_UNSIGNED_BYTE, surface->pixels);
 
-      m->texture_size_bytes =
-          (unsigned)(surface->w * surface->h * (signed)sizeof(uint32_t));
+      m.texture_size_bytes =
+          (unsigned)(surface->w * surface->h * sizeof(uint32_t));
 
       SDL_FreeSurface(surface);
 
-      metrics.buffered_texture_data += m->texture_size_bytes;
+      metrics.buffered_texture_data += m.texture_size_bytes;
 
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     }
-    // dynp_foreach_all(&o->ranges, _foreach_material_upload_);
 
     metrics.buffered_vertex_data += o->vtxbuf.size() * sizeof(float);
   }
@@ -275,11 +274,11 @@ inline static void glo_render(glo *o, const mat4 mtxmw) {
   glVertexAttribPointer(shader_atex, 2, GL_FLOAT, GL_FALSE, sizeof(vertex),
                         (GLvoid *)((3 + 4 + 3) * sizeof(float)));
   for (const mtlrng &mr : o->ranges) {
-    objmtl *m = objmtls_get(&materials, mr.material_ix);
-    if (m->texture_id) {
+    const objmtl &m = materials.at(mr.material_ix);
+    if (m.texture_id) {
       glUniform1i(shader_utex, 0);
       glActiveTexture(GL_TEXTURE0);
-      glBindTexture(GL_TEXTURE_2D, m->texture_id);
+      glBindTexture(GL_TEXTURE_2D, m.texture_id);
       glEnableVertexAttribArray(shader_atex);
     } else {
       glActiveTexture(GL_TEXTURE0);
@@ -288,7 +287,7 @@ inline static void glo_render(glo *o, const mat4 mtxmw) {
     }
     glDrawArrays(GL_TRIANGLES, (signed)mr.begin, (signed)mr.count);
     metrics.triangles_rendered_prv_frame += mr.count / 3;
-    if (m->texture_id) {
+    if (m.texture_id) {
       glBindTexture(GL_TEXTURE_2D, 0);
     }
   }
