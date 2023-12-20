@@ -47,7 +47,7 @@ inline static objmtl *objmtl_alloc() {
 }
 
 inline static void objmtls_load_from_file(const char *path) {
-  str file = str_from_file(path);
+  str file = /*takes*/ str_from_file(path);
   objmtl *o = NULL;
   const char *p = file.data;
   while (*p) {
@@ -120,4 +120,5 @@ inline static void objmtls_load_from_file(const char *path) {
       continue;
     }
   }
+  str_free(&file);
 }

@@ -105,8 +105,9 @@ static inline void metrics__at__frame_end(FILE *f) {
   Uint32 t1 = SDL_GetTicks();
   Uint32 dt = t1 - metrics.fps._time_at_start_of_intervall_in_ms;
 
-  if (dt < metrics.fps.calculation_intervall_ms)
+  if (dt < metrics.fps.calculation_intervall_ms) {
     return;
+  }
 
   if (dt != 0) {
     metrics.fps.average_during_last_intervall =

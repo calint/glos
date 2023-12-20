@@ -1,3 +1,6 @@
+git reset --hard HEAD
+
+
 		fprintf(stderr,"\n%s:%u: could not connect\n",__FILE__,__LINE__);
 		fprintf(stderr,"    server: %s  port: %d\n\n",host,port);
 		stacktrace_print(stderr);

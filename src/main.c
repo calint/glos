@@ -137,8 +137,9 @@ int main(int argc, char *argv[]) {
   puts("");
 
   unsigned gloid = 0, mingloid = 0, maxgloid = 10;
-  if (use_net)
+  if (use_net) {
     net_init();
+  }
   metrics_init();
   sdl_init();
   window_init();
@@ -403,8 +404,9 @@ int main(int argc, char *argv[]) {
   shader_free();
   window_free();
   sdl_free();
-  if (use_net)
+  if (use_net) {
     net_free();
+  }
   metrics_print(stderr);
   metrics_free();
   puts(" * clean exit");
