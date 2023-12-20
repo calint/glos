@@ -14,7 +14,7 @@
 // illum 2
 // map_Kd /home/c/w/glos/logo.jpeg
 
-class objmtl {
+class material {
 public:
   std::string name = "";
   float Ns = 0;
@@ -29,7 +29,7 @@ public:
   unsigned texture_size_bytes = 0;
 };
 
-static std::vector<objmtl> materials{};
+static std::vector<material> materials{};
 
 inline static void objmtls_load_from_file(const char *path) {
   str file = /*takes*/ str_from_file(path);

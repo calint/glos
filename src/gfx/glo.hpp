@@ -1,10 +1,10 @@
 #pragma once
-#include "objmtl.h"
+#include "material.hpp"
 #include <stdio.h>
 #include <string>
 #include <vector>
 
-class mtlrng {
+class material_range {
 public:
   unsigned begin = 0;
   unsigned count = 0;
@@ -14,7 +14,7 @@ public:
 class glo {
 public:
   std::vector<float> vtxbuf{};
-  std::vector<mtlrng> ranges{};
+  std::vector<material_range> ranges{};
   id vtxbuf_id = 0;
   std::string name = "";
 };
@@ -27,9 +27,9 @@ inline static /*gives*/ glo *glo_alloc_zeroed() {
 inline static void glo_free(glo *o) {
   glDeleteBuffers(1, &o->vtxbuf_id);
   metrics.buffered_vertex_data -= o->vtxbuf.size() * sizeof(float);
-  for (mtlrng &mr : o->ranges) {
+  for (material_range &mr : o->ranges) {
     //! free all materials in materials_free()
-    const objmtl &m = materials.at(mr.material_ix);
+    const material &m = materials.at(mr.material_ix);
     if (m.texture_id) {
       glDeleteTextures(1, &m.texture_id);
       metrics.buffered_texture_data -= m.texture_size_bytes;
@@ -49,7 +49,7 @@ static /*gives*/ glo *glo_make_from_string(const char **ptr_p) {
   std::vector<vec4> texuv{};
 
   std::vector<float> vertex_buffer{};
-  std::vector<mtlrng> mtlrngs{};
+  std::vector<material_range> mtlrngs{};
 
   unsigned current_objmtl_ix = 0;
   const char *basedir = "obj/";
@@ -92,7 +92,7 @@ static /*gives*/ glo *glo_make_from_string(const char **ptr_p) {
       str_add(&name, 0);
       bool found = false;
       for (unsigned i = 0; i < materials.size(); i++) {
-        objmtl &mm = materials.at(i);
+        material &mm = materials.at(i);
         if (!strcmp(mm.name.c_str(), name.data)) {
           current_objmtl_ix = i;
           found = true;
@@ -155,7 +155,7 @@ static /*gives*/ glo *glo_make_from_string(const char **ptr_p) {
     }
 
     if (token_equals(&t, "f")) {
-      const objmtl &current_objmtl = materials.at(current_objmtl_ix);
+      const material &current_objmtl = materials.at(current_objmtl_ix);
       for (int i = 0; i < 3; i++) {
         // position
         token vert1 = token_from_string_additional_delim(p, '/');
@@ -203,9 +203,10 @@ static /*gives*/ glo *glo_make_from_string(const char **ptr_p) {
          mtlrngs.size() == 1 ? ' ' : 's', vertex_buffer.size() / sizeof(vertex),
          vertex_buffer.size() * sizeof(float));
 
-  glo *g = /*takes*/ glo_alloc_zeroed();
+  glo *g = new glo();
+  metrics.glos_allocated++;
   *g = (glo){std::move(vertex_buffer), std::move(mtlrngs), 0,
-             /*gives*/ object_name};
+             std::move(object_name)};
   *ptr_p = p;
 
   return g;
@@ -229,8 +230,8 @@ inline static void glo_upload_to_opengl(glo *o) {
   glBufferData(GL_ARRAY_BUFFER, (signed)(o->vtxbuf.size() * sizeof(float)),
                o->vtxbuf.data(), GL_STATIC_DRAW);
 
-  for (const mtlrng &mr : o->ranges) {
-    objmtl &m = materials.at(mr.material_ix);
+  for (const material_range &mr : o->ranges) {
+    material &m = materials.at(mr.material_ix);
     if (not m.map_Kd.empty()) { // load texture
       glGenTextures(1, &m.texture_id);
 
@@ -273,8 +274,8 @@ inline static void glo_render(glo *o, const mat4 mtxmw) {
                         (GLvoid *)((3 + 4) * sizeof(float)));
   glVertexAttribPointer(shader_atex, 2, GL_FLOAT, GL_FALSE, sizeof(vertex),
                         (GLvoid *)((3 + 4 + 3) * sizeof(float)));
-  for (const mtlrng &mr : o->ranges) {
-    const objmtl &m = materials.at(mr.material_ix);
+  for (const material_range &mr : o->ranges) {
+    const material &m = materials.at(mr.material_ix);
     if (m.texture_id) {
       glUniform1i(shader_utex, 0);
       glActiveTexture(GL_TEXTURE0);
