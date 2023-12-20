@@ -381,7 +381,6 @@ inline static void shader_free() {
 
   dynp_foa(&programs, {
     program *p = o;
-    //		program_free(&programs.data[i]);
     glDeleteShader(p->attached_vtxshdr_id);
     glDeleteShader(p->attached_frgshdr_id);
     glDeleteProgram(p->id);
