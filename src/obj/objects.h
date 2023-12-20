@@ -2,7 +2,7 @@
 //-----------------------------------------------------------------------------
 // object allocator generated from template ... do not modify
 //-----------------------------------------------------------------------------
-#include"object.h"
+#include"object.hpp"
 #include"part.h"
 #define object_cap 32768
 #define object_assert_free

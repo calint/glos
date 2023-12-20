@@ -74,12 +74,11 @@ static object object_def = {
     .name = "",
 };
 //----------------------------------------------------------------------------
-
 inline static void _object_render_glo_(object *o, framectx *fc) {
-  if (!o->node.glo)
+  if (!o->node.glo) {
     return;
-
-  const float *f = o->get_updated_Mmw();
-  glo_render(o->node.glo, f);
+  }
+  const float *mtx = o->get_updated_Mmw();
+  glo_render(o->node.glo, mtx);
 }
 //----------------------------------------------------------------------------

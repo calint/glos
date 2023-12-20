@@ -2,7 +2,7 @@
 //-----------------------------------------------------------------------------
 // ${name} allocator generated from template ... do not modify
 //-----------------------------------------------------------------------------
-#include"${name}.h"
+#include"${name}.hpp"
 #include"part.h"
 #define ${name}_cap ${cap}
 #define ${name}_assert_free
