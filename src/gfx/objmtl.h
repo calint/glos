@@ -22,12 +22,10 @@ public:
   vec4 Ke{0, 0, 0, 0};
   float Ni = 0;
   float d = 0;
-  str map_Kd = str_def;
+  std::string map_Kd = "";
   id texture_id = 0;
   unsigned texture_size_bytes = 0;
 };
-
-inline static void objmtl_free(objmtl *o) { str_free(&o->map_Kd); }
 
 #include "objmtls.h"
 
@@ -100,10 +98,9 @@ inline static void objmtls_load_from_file(const char *path) {
     }
 
     if (token_equals(&t, "map_Kd")) {
-      token t = token_next(&p);
-      unsigned n = token_size(&t);
-      str_add_list(&o->map_Kd, t.content, n);
-      str_add(&o->map_Kd, 0);
+      const token t = token_next(&p);
+      const unsigned n = token_size(&t);
+      o->map_Kd = std::string{t.content, t.content + n};
       continue;
     }
   }

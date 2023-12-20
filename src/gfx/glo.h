@@ -231,15 +231,15 @@ inline static void glo_upload_to_opengl(glo *o) {
 
   for (const mtlrng &mr : o->ranges) {
     objmtl *m = objmtls_get(&materials, mr.material_ix);
-    if (m->map_Kd.count) { // load texture
+    if (not m->map_Kd.empty()) { // load texture
       glGenTextures(1, &m->texture_id);
 
       printf(" * loading texture %u from '%s'\n", m->texture_id,
-             m->map_Kd.data);
+             m->map_Kd.c_str());
 
       glBindTexture(GL_TEXTURE_2D, m->texture_id);
 
-      SDL_Surface *surface = IMG_Load(m->map_Kd.data);
+      SDL_Surface *surface = IMG_Load(m->map_Kd.c_str());
       if (!surface) {
         exit(-1);
       }

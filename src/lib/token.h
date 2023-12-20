@@ -27,7 +27,7 @@ inline static void token_print(token *t) {
   printf("%.*s", (int)token_size_including_whitespace(t), t->begin);
 }
 
-inline static unsigned token_size(token *t) {
+inline static unsigned token_size(const token *t) {
   return (unsigned)(t->content_end - t->content);
 }
 
