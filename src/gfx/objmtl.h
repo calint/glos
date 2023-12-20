@@ -11,16 +11,20 @@
 // illum 2
 // map_Kd /home/c/w/glos/logo.jpeg
 
-typedef struct objmtl {
-  str name;
-  float Ns;
-  vec4 Ka, Kd, Ks, Ke;
-  float Ni, d;
-  str map_Kd;
-
-  id texture_id;
-  unsigned texture_size_bytes;
-} objmtl;
+class objmtl {
+public:
+  str name = str_def;
+  float Ns = 0;
+  vec4 Ka{0, 0, 0, 0};
+  vec4 Kd{0, 0, 0, 0};
+  vec4 Ks{0, 0, 0, 0};
+  vec4 Ke{0, 0, 0, 0};
+  float Ni = 0;
+  float d = 0;
+  str map_Kd = str_def;
+  id texture_id = 0;
+  unsigned texture_size_bytes = 0;
+};
 #define objmtl_def                                                             \
   (objmtl) {                                                                   \
     str_def, 0, vec4_def, vec4_def, vec4_def, vec4_def, 0, 0, str_def, 0, 0    \
