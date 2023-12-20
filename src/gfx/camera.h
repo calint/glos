@@ -33,7 +33,8 @@ inline static void camera_update_matrix_wvp() {
     mat4_set_translation(Mt, &Pt);
 
     mat4 Ml;
-    mat4_set_look_at(Ml, &camera.eye, &camera.lookat, &(vec4){0, 1, 0, 0});
+    vec4 vec_up = (vec4){0, 1, 0, 0};
+    mat4_set_look_at(Ml, &camera.eye, &camera.lookat, &vec_up);
 
     mat4 Mlt;
     mat4_multiply(Mlt, Ml, Mt);
@@ -56,7 +57,8 @@ inline static void camera_update_matrix_wvp() {
     //		mat4_set_identity(Mt);
 
     mat4 Ml;
-    mat4_set_look_at(Ml, &camera.eye, &camera.lookat, &(vec4){0, 1, 0, 0});
+    vec4 vec_up = (vec4){0, 1, 0, 0};
+    mat4_set_look_at(Ml, &camera.eye, &camera.lookat, &vec_up);
 
     mat4 Mtl;
     mat4_multiply(Mtl, Ml, Mt);

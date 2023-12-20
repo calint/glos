@@ -18,7 +18,7 @@ inline static void cell_update(cell *o, framectx *fc) {
 
   //	object*oi=*(object**)(o->objrefs.data);
   while (i--) {
-    object *oi = dynp_get(&o->objrefs, i);
+    object *oi = (object *)dynp_get(&o->objrefs, i);
     if (oi->update_tick == fc->tick) {
       //			printf("[ grid ] skipped updated %s
       //%p\n",oi->n.glo_ptr->name.data,(void*)oi);
@@ -40,7 +40,7 @@ inline static void cell_update(cell *o, framectx *fc) {
     for (int i = 0; i < object_part_cap; i++) {
       if (!oi->part[i])
         continue;
-      part *p = oi->part[i];
+      part *p = (part *)oi->part[i];
       if (p->update) {
         p->update(oi, p, fc);
         metrics.parts_updated_prv_frame++;
@@ -58,7 +58,7 @@ inline static void cell_render(cell *o, framectx *fc) {
 
   //	object*oi=*(object**)(o->objrefs.data);
   while (i--) {
-    object *oi = dynp_get(&o->objrefs, i);
+    object *oi = (object *)dynp_get(&o->objrefs, i);
     if (oi->draw_tick == fc->tick) {
       //			printf("[ grid ] skipped rendered
       //%s\n",oi->n.glo_ptr->name.data); 			printf("[ grid
@@ -76,15 +76,17 @@ inline static void cell_render(cell *o, framectx *fc) {
       glo_render(oi->node.glo, Mmw);
     }
 
-    if (oi->vtbl.render)
+    if (oi->vtbl.render) {
       oi->vtbl.render(oi, fc);
+    }
 
     metrics.objects_rendered_prv_frame++;
 
     for (int i = 0; i < object_part_cap; i++) {
-      if (!oi->part[i])
+      if (!oi->part[i]) {
         continue;
-      part *p = oi->part[i];
+      }
+      part *p = (part *)oi->part[i];
       if (p->render) {
         p->render(oi, p, fc);
         metrics.parts_rendered_prv_frame++;
@@ -169,17 +171,18 @@ _cell_detect_and_resolve_collision_for_spheres1(object *o1, object *o2,
   return 1;
 }
 
-inline static int
-_cell_detect_and_resolve_collision_for_spheres(object *o1, object *o2,
-                                               framectx *fc) {
+inline static int _cell_detect_and_resolve_collision_for_spheres(object *o1,
+                                                                 object *o2,
+                                                                 framectx *fc) {
 
   vec4 v;
   vec3_minus(&v, &o2->physics.position, &o1->physics.position);
-  const float d = o1->bounding_volume.radius + o2->bounding_volume.radius; // minimum distance
-  const float dsq = d * d;                 //  squared
-  const float vsq = vec3_dot(&v, &v);      // distance of vector squared
-  const float diff = vsq - dsq;            //
-  if (diff >= 0) {                         //
+  const float d = o1->bounding_volume.radius +
+                  o2->bounding_volume.radius; // minimum distance
+  const float dsq = d * d;                    //  squared
+  const float vsq = vec3_dot(&v, &v);         // distance of vector squared
+  const float diff = vsq - dsq;               //
+  if (diff >= 0) {                            //
     return 0;
   }
   //
@@ -272,7 +275,7 @@ _cell_detect_and_resolve_collision_for_spheres(object *o1, object *o2,
 }
 
 inline static int _cell_checked_collisions(object *o1, object *o2,
-                                            framectx *fc) {
+                                           framectx *fc) {
 
   metrics.collision_grid_overlap_check++;
 
@@ -298,8 +301,8 @@ inline static void cell_resolve_collisions(cell *o, framectx *fc) {
     for (unsigned j = i + 1; j < ls->count; j++) {
       metrics.collision_detections_possible_prv_frame++;
 
-      object *Oi = dynp_get(ls, i);
-      object *Oj = dynp_get(ls, j);
+      object *Oi = (object *)dynp_get(ls, i);
+      object *Oj = (object *)dynp_get(ls, j);
       // printf("%s vs %s\n",Oi->name.data,Oj->name.data);
 
       if (!((Oi->grid_ifc.collide_mask & Oj->grid_ifc.collide_bits) ||

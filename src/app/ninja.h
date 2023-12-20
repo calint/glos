@@ -21,8 +21,8 @@ static object ninja_def = {
             .free = NULL,
         },
     .type = {type_ninja},
-    .part = {NULL, NULL, NULL, NULL},
     .alloc_bits_ptr = NULL,
+    .part = {NULL, NULL, NULL, NULL},
 };
 //------------------------------------------------------------------ extension
 typedef struct ninja_ext {
@@ -56,7 +56,7 @@ static void _ninja_part_free(object *po, part *o) {}
 //----------------------------------------------------------------- alloc/free
 inline static /*gives*/ object *ninja_alloc_def() {
   object *o = object_alloc(&ninja_def);
-  ninja_ext *p = malloc(sizeof(ninja_ext));
+  ninja_ext *p = (ninja_ext *)malloc(sizeof(ninja_ext));
   *p = ninja_part_def;
   o->part[0] = (part *)p;
   return o;

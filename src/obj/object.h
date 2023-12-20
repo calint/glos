@@ -16,9 +16,9 @@ typedef struct object {
   unsigned draw_tick;
   node node;
   bounding_volume bounding_volume;
-  physics physics;
   physics physics_prv; // physics state from previous frame
   physics physics_nxt; // physics state for next frame
+  physics physics;
   grid_ifc grid_ifc;
   vtbl vtbl;
   type type;
@@ -32,14 +32,14 @@ static object object_def = {
     .draw_tick = 0,
     .node = node_def,
     .bounding_volume = bounding_volume_def,
-    .physics = physics_def,
     .physics_prv = physics_def,
     .physics_nxt = physics_def,
+    .physics = physics_def,
     .grid_ifc = grid_ifc_def,
     .vtbl = vtbl_def,
     .type = type_def,
-    .part = parts_def,
     .alloc_bits_ptr = 0,
+    .part = parts_def,
     .name = str_def,
 };
 //----------------------------------------------------------------------------

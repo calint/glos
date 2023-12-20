@@ -114,18 +114,18 @@ inline static void grid_print() {
   printf("\n------------------------\n");
 }
 
-inline static void grid_print_list() {
-  cell *p = &cells[0][0];
-  unsigned i = grid_ncells;
-  while (i--) {
-    printf(" cell[%p]:\n", (void *)p);
-    dynp_foa(&p->objrefs, {
-      object *oo = o;
-      printf("   %s\n", oo->name.data);
-    });
-    p++;
-  }
-}
+// inline static void grid_print_list() {
+//   cell *p = &cells[0][0];
+//   unsigned i = grid_ncells;
+//   while (i--) {
+//     printf(" cell[%p]:\n", (void *)p);
+//     dynp_foa(&p->objrefs, {
+//       object *oo = o;
+//       printf("   %s\n", oo->name.data);
+//     });
+//     p++;
+//   }
+// }
 
 inline static void grid_free() {
   cell *p = &cells[0][0];

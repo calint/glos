@@ -26,9 +26,9 @@ typedef struct objmtl {
     str_def, 0, vec4_def, vec4_def, vec4_def, vec4_def, 0, 0, str_def, 0, 0    \
   }
 
-inline static void objmtl_free(objmtl *this) {
-  str_free(&this->name);
-  str_free(&this->map_Kd);
+inline static void objmtl_free(objmtl *o) {
+  str_free(&o->name);
+  str_free(&o->map_Kd);
 }
 
 #include "objmtls.h"
@@ -36,7 +36,7 @@ inline static void objmtl_free(objmtl *this) {
 static objmtls materials;
 
 inline static objmtl *objmtl_alloc() {
-  objmtl *o = malloc(sizeof(objmtl));
+  objmtl *o = (objmtl *)malloc(sizeof(objmtl));
   if (!o) {
     perror("\nout of memory while allocating a objmtl\n");
     fprintf(stderr, "\n     %s %d\n", __FILE__, __LINE__);

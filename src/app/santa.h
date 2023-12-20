@@ -20,8 +20,8 @@ static object santa_obj_def = {
             .free = NULL,
         },
     .type = {type_santa},
-    .part = {NULL, NULL, NULL, NULL},
     .alloc_bits_ptr = NULL,
+    .part = {NULL, NULL, NULL, NULL},
 };
 //------------------------------------------------------------------ extension
 typedef struct santa {
@@ -84,7 +84,7 @@ static void _santa_free(object *po, part *o) {}
 //----------------------------------------------------------------- alloc/free
 inline static /*gives*/ object *santa_alloc_def() {
   object *o = object_alloc(&santa_obj_def);
-  santa *p = malloc(sizeof(santa));
+  santa *p = (santa *)malloc(sizeof(santa));
   *p = santa_def;
   o->part[0] = (part *)p;
   return o;

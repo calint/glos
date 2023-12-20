@@ -1,8 +1,8 @@
 #!/bin/sh
 set -e
 
-CC="gcc -std=gnu11"
-#CC="clang++ -std=c++20"
+#CC="gcc -std=gnu11"
+CC="clang++ -std=c++20"
 SRC=src/main.c
 BIN=glos
 CFLAGS="$(sdl2-config --cflags)"

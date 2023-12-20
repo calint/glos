@@ -5,8 +5,8 @@ struct cell;
 typedef struct grid_ifc {
   struct cell *main_cell;
   bits bits; // 1: overlaps
-  bits collide_mask;
-  bits collide_bits;
+  unsigned collide_mask;
+  unsigned collide_bits;
   unsigned tick;
   dynp checked_collisions_list;
 } grid_ifc;

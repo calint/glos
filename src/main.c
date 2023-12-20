@@ -100,15 +100,21 @@ inline static void main_render(framectx *fc) {
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  if (draw_objects)
+  if (draw_objects) {
     grid_render(fc);
-  if (draw_glos)
+  }
+  if (draw_glos) {
     glos_render();
-  if (draw_default)
+  }
+  if (draw_default) {
     shader_render();
+  }
 
   SDL_GL_SwapWindow(window.ref);
 }
+
+static inline void _foreach_object_add_to_grid_(object *o) { grid_add(o); }
+
 //------------------------------------------------------------------------ main
 int main(int argc, char *argv[]) {
   if (argc > 1 && *argv[1] == 's') {
@@ -151,7 +157,7 @@ int main(int argc, char *argv[]) {
 
   {
     puts("");
-    program *p = dynp_get(&programs, shader.active_program_ix);
+    program *p = (program *)dynp_get(&programs, shader.active_program_ix);
     gid progid = p->id;
     glUseProgram(progid);
     dyni *enable = &p->attributes;
@@ -168,7 +174,7 @@ int main(int argc, char *argv[]) {
   const float rad_over_degree = 2.0f * PI / 360.0f;
   float rad_over_mouse_pixels = rad_over_degree * .02f;
   float mouse_sensitivity = 1.5f;
-  int mouse_mode = 0;
+  SDL_bool mouse_mode = SDL_FALSE;
   //	printf("   * \n");
   //	printf("   * press space to grab and ungrab mouse\n");
   //	printf("   * \n");
@@ -233,9 +239,8 @@ int main(int argc, char *argv[]) {
       case SDL_KEYDOWN:
         switch (event.key.keysym.sym) {
         case SDLK_ESCAPE:
-          mouse_mode = !mouse_mode;
+          mouse_mode = mouse_mode ? SDL_FALSE : SDL_TRUE;
           SDL_SetRelativeMouseMode(mouse_mode);
-          //						running=0;
           break;
         case SDLK_w:
           net_state_to_send.keybits |= 1;
@@ -287,7 +292,7 @@ int main(int argc, char *argv[]) {
           net_state_to_send.keybits &= ~64;
           break;
         case SDLK_SPACE:
-          mouse_mode = !mouse_mode;
+          mouse_mode = mouse_mode ? SDL_FALSE : SDL_TRUE;
           SDL_SetRelativeMouseMode(mouse_mode);
           break;
         case SDLK_1:
@@ -346,7 +351,7 @@ int main(int argc, char *argv[]) {
     if (previous_active_program_ix != shader.active_program_ix) {
       printf(" * switching to program at index %u\n", shader.active_program_ix);
 
-      program *pp = dynp_get(&programs, previous_active_program_ix);
+      program *pp = (program *)dynp_get(&programs, previous_active_program_ix);
       dyni disable = pp->attributes;
 
       for (unsigned i = 0; i < disable.count; i++) {
@@ -355,7 +360,7 @@ int main(int argc, char *argv[]) {
         glDisableVertexAttribArray(ix);
       }
 
-      program *ap = dynp_get(&programs, shader.active_program_ix);
+      program *ap = (program *)dynp_get(&programs, shader.active_program_ix);
       //			const unsigned progid=ap->gid;
 
       glUseProgram(ap->id);
@@ -375,7 +380,8 @@ int main(int argc, char *argv[]) {
     frameno++;
 
     grid_clear();
-    objects_foa({ grid_add(o); });
+    // objects_foa({ grid_add(o); });
+    objects_foreach_allocated_all(_foreach_object_add_to_grid_);
     grid_update(&fc);
     //		grid_print();
     grid_resolve_collisions(&fc);

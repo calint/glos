@@ -7,6 +7,9 @@
         "token.h": "c",
         "types.h": "c",
         "gfx.h": "c",
-        "scene0.h": "c"
+        "scene0.h": "c",
+        "array": "c",
+        "string": "c",
+        "string_view": "c"
     }
 }

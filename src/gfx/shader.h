@@ -369,6 +369,14 @@ inline static void shader_render() {
 //	glBindTexture(GL_TEXTURE_2D,0);
 //}
 //
+
+inline static void _del_program_(void *o) {
+  program *p = (program *)o;
+  glDeleteShader(p->attached_vtxshdr_id);
+  glDeleteShader(p->attached_frgshdr_id);
+  glDeleteProgram(p->id);
+}
+
 inline static void shader_free() {
   glDeleteBuffers(1, &shader_def_ixbuf_id);
   metrics.buffered_vertex_data -= shader_def_ixbuf_nbytes;
@@ -379,12 +387,14 @@ inline static void shader_free() {
   glDeleteBuffers(1, &shader_def_texbuf_id);
   metrics.buffered_texture_data -= shader_def_texbuf_nbytes;
 
-  dynp_foa(&programs, {
-    program *p = o;
-    glDeleteShader(p->attached_vtxshdr_id);
-    glDeleteShader(p->attached_frgshdr_id);
-    glDeleteProgram(p->id);
-  });
+  // dynp_foa(&programs, {
+  //   program *p = o;
+  //   glDeleteShader(p->attached_vtxshdr_id);
+  //   glDeleteShader(p->attached_frgshdr_id);
+  //   glDeleteProgram(p->id);
+  // });
+
+  dynp_foreach_all(&programs, _del_program_);
 }
 
 inline static void shader_init() {
