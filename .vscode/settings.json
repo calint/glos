@@ -10,6 +10,10 @@
         "scene0.h": "c",
         "array": "c",
         "string": "c",
-        "string_view": "c"
+        "string_view": "c",
+        "objmtls.h": "c",
+        "*.tcc": "c",
+        "deque": "c",
+        "vector": "c"
     }
 }

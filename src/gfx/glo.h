@@ -8,7 +8,7 @@ class mtlrng {
 public:
   unsigned begin = 0;
   unsigned count = 0;
-  objmtl *material_ptr = nullptr;
+  unsigned material_ix = 0;
 };
 
 class glo {
@@ -28,7 +28,8 @@ inline static void glo_free(glo *o) {
   glDeleteBuffers(1, &o->vtxbuf_id);
   metrics.buffered_vertex_data -= o->vtxbuf.size() * sizeof(float);
   for (mtlrng &mr : o->ranges) {
-    objmtl *m = (objmtl *)mr.material_ptr;
+    //! free all materials in materials_free()
+    const objmtl *m = objmtls_get(&materials, mr.material_ix);
     if (m->texture_id) {
       glDeleteTextures(1, &m->texture_id);
       metrics.buffered_texture_data -= m->texture_size_bytes;
@@ -50,7 +51,7 @@ static /*gives*/ glo *glo_make_from_string(const char **ptr_p) {
   std::vector<float> vertex_buffer{};
   std::vector<mtlrng> mtlrngs{};
 
-  objmtl *current_objmtl = NULL;
+  unsigned current_objmtl_ix = 0;
   const char *basedir = "obj/";
   unsigned vtxbufix = 0;
   unsigned prev_vtxbufix = 0;
@@ -89,15 +90,16 @@ static /*gives*/ glo *glo_make_from_string(const char **ptr_p) {
       str name = str_def;
       str_add_list(&name, t.content, token_size(&t));
       str_add(&name, 0);
-      objmtl *m = NULL;
+      bool found = false;
       for (unsigned i = 0; i < materials.count; i++) {
         objmtl *mm = objmtls_get(&materials, i);
         if (!strcmp(mm->name.data, name.data)) {
-          m = mm;
+          current_objmtl_ix = i;
+          found = true;
           break;
         }
       }
-      if (!m) {
+      if (not found) {
         fprintf(stderr, "\n%s:%u: could not find material\n", __FILE__,
                 __LINE__);
         fprintf(stderr, "        name: '%s'\n\n", name.data);
@@ -107,10 +109,9 @@ static /*gives*/ glo *glo_make_from_string(const char **ptr_p) {
       }
       str_free(&name);
       if (prev_vtxbufix != vtxbufix) {
-        mtlrngs.emplace_back(prev_vtxbufix, vtxbufix, current_objmtl);
+        mtlrngs.emplace_back(prev_vtxbufix, vtxbufix, current_objmtl_ix);
         prev_vtxbufix = vtxbufix;
       }
-      current_objmtl = m;
     }
     if (token_equals(&t, "s")) {
       p = scan_to_including_newline(p);
@@ -154,6 +155,7 @@ static /*gives*/ glo *glo_make_from_string(const char **ptr_p) {
     }
 
     if (token_equals(&t, "f")) {
+      objmtl *current_objmtl = objmtls_get(&materials, current_objmtl_ix);
       for (int i = 0; i < 3; i++) {
         // position
         token vert1 = token_from_string_additional_delim(p, '/');
@@ -195,7 +197,7 @@ static /*gives*/ glo *glo_make_from_string(const char **ptr_p) {
     }
   }
 
-  mtlrngs.emplace_back(prev_vtxbufix, vtxbufix, current_objmtl);
+  mtlrngs.emplace_back(prev_vtxbufix, vtxbufix, current_objmtl_ix);
 
   printf("    %zu range%c   %lu vertices   %zu B\n", mtlrngs.size(),
          mtlrngs.size() == 1 ? ' ' : 's', vertex_buffer.size() / sizeof(vertex),
@@ -220,36 +222,6 @@ inline static void str_base_dir(str *o) {
   }
 }
 
-inline static void _foreach_material_upload_(void *o) {
-  mtlrng *mr = (mtlrng *)o;
-  objmtl *m = mr->material_ptr;
-  if (m->map_Kd.count) { // load texture
-    glGenTextures(1, &m->texture_id);
-
-    printf(" * loading texture %u from '%s'\n", m->texture_id, m->map_Kd.data);
-
-    glBindTexture(GL_TEXTURE_2D, m->texture_id);
-
-    SDL_Surface *surface = IMG_Load(m->map_Kd.data);
-    if (!surface)
-      exit(-1);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface->w, surface->h, 0, GL_RGB,
-                 GL_UNSIGNED_BYTE, surface->pixels);
-
-    m->texture_size_bytes =
-        (unsigned)(surface->w * surface->h * (signed)sizeof(uint32_t));
-
-    SDL_FreeSurface(surface);
-
-    metrics.buffered_texture_data += m->texture_size_bytes;
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-  }
-}
-
 inline static void glo_upload_to_opengl(glo *o) {
   // upload vertex buffer
   glGenBuffers(1, &o->vtxbuf_id);
@@ -258,7 +230,7 @@ inline static void glo_upload_to_opengl(glo *o) {
                o->vtxbuf.data(), GL_STATIC_DRAW);
 
   for (const mtlrng &mr : o->ranges) {
-    objmtl *m = mr.material_ptr;
+    objmtl *m = objmtls_get(&materials, mr.material_ix);
     if (m->map_Kd.count) { // load texture
       glGenTextures(1, &m->texture_id);
 
@@ -291,39 +263,10 @@ inline static void glo_upload_to_opengl(glo *o) {
     metrics.buffered_vertex_data += o->vtxbuf.size() * sizeof(float);
   }
 }
-//-----------------------------------------------------------------------
-// calls
-
-inline static void _foreach_render_(void *o) {
-  mtlrng *mr = (mtlrng *)o;
-  objmtl *m = mr->material_ptr;
-
-  if (m->texture_id) {
-    glUniform1i(shader_utex, 0);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, m->texture_id);
-    glEnableVertexAttribArray(shader_atex);
-  } else {
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, 0);
-    glDisableVertexAttribArray(shader_atex);
-  }
-
-  glDrawArrays(GL_TRIANGLES, (signed)mr->begin, (signed)mr->count);
-  metrics.triangles_rendered_prv_frame += mr->count / 3;
-
-  if (m->texture_id) {
-    glBindTexture(GL_TEXTURE_2D, 0);
-    //			glDisableVertexAttribArray(shader_atex);
-  }
-}
 
 inline static void glo_render(glo *o, const mat4 mtxmw) {
-
   glUniformMatrix4fv(shader_umtx_mw, 1, 0, mtxmw);
-
   glBindBuffer(GL_ARRAY_BUFFER, o->vtxbuf_id);
-
   glVertexAttribPointer(shader_apos, 3, GL_FLOAT, GL_FALSE, sizeof(vertex), 0);
   glVertexAttribPointer(shader_argba, 4, GL_FLOAT, GL_FALSE, sizeof(vertex),
                         (GLvoid *)(3 * sizeof(float)));
@@ -331,9 +274,8 @@ inline static void glo_render(glo *o, const mat4 mtxmw) {
                         (GLvoid *)((3 + 4) * sizeof(float)));
   glVertexAttribPointer(shader_atex, 2, GL_FLOAT, GL_FALSE, sizeof(vertex),
                         (GLvoid *)((3 + 4 + 3) * sizeof(float)));
-
   for (const mtlrng &mr : o->ranges) {
-    objmtl *m = mr.material_ptr;
+    objmtl *m = objmtls_get(&materials, mr.material_ix);
     if (m->texture_id) {
       glUniform1i(shader_utex, 0);
       glActiveTexture(GL_TEXTURE0);
