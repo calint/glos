@@ -1,5 +1,0 @@
-class player:object,santa{
-	void main(){
-		p("hello world");
-	}
-}
