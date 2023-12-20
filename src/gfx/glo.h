@@ -93,7 +93,7 @@ static /*gives*/ glo *glo_make_from_string(const char **ptr_p) {
       bool found = false;
       for (unsigned i = 0; i < materials.count; i++) {
         objmtl *mm = objmtls_get(&materials, i);
-        if (!strcmp(mm->name.data, name.data)) {
+        if (!strcmp(mm->name.c_str(), name.data)) {
           current_objmtl_ix = i;
           found = true;
           break;

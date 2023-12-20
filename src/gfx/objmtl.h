@@ -1,5 +1,6 @@
 #pragma once
 #include "../lib.h"
+#include <string>
 // newmtl texture
 // Ns 96.078431
 // Ka 1.000000 1.000000 1.000000
@@ -13,7 +14,7 @@
 
 class objmtl {
 public:
-  str name = str_def;
+  std::string name = "";
   float Ns = 0;
   vec4 Ka{0, 0, 0, 0};
   vec4 Kd{0, 0, 0, 0};
@@ -25,30 +26,12 @@ public:
   id texture_id = 0;
   unsigned texture_size_bytes = 0;
 };
-#define objmtl_def                                                             \
-  (objmtl) {                                                                   \
-    str_def, 0, vec4_def, vec4_def, vec4_def, vec4_def, 0, 0, str_def, 0, 0    \
-  }
 
-inline static void objmtl_free(objmtl *o) {
-  str_free(&o->name);
-  str_free(&o->map_Kd);
-}
+inline static void objmtl_free(objmtl *o) { str_free(&o->map_Kd); }
 
 #include "objmtls.h"
 
 static objmtls materials;
-
-inline static objmtl *objmtl_alloc() {
-  objmtl *o = (objmtl *)malloc(sizeof(objmtl));
-  if (!o) {
-    perror("\nout of memory while allocating a objmtl\n");
-    fprintf(stderr, "\n     %s %d\n", __FILE__, __LINE__);
-    exit(-1);
-  }
-  *o = objmtl_def;
-  return o;
-}
 
 inline static void objmtls_load_from_file(const char *path) {
   str file = /*takes*/ str_from_file(path);
@@ -61,11 +44,11 @@ inline static void objmtls_load_from_file(const char *path) {
       continue;
     }
     if (token_starts_with(&t, "newmtl")) {
-      o = objmtl_alloc();
+      o = new objmtl{};
       token t = token_next(&p);
-      unsigned n = token_size(&t);
-      str_add_list(&o->name, t.content, n);
-      str_add(&o->name, 0);
+      const unsigned n = token_size(&t);
+      o->name = std::string{t.content, t.content + n};
+
       objmtls_add(&materials, o);
       continue;
     }
