@@ -11,7 +11,7 @@
 #define object_part_cap 5
 #define parts_def                                                              \
   { 0, 0, 0, 0, 0 }
-typedef struct part part;
+class part;
 class object {
 public:
   unsigned update_tick = 0;

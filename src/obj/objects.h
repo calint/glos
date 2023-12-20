@@ -3,7 +3,7 @@
 // object allocator generated from template ... do not modify
 //-----------------------------------------------------------------------------
 #include"object.hpp"
-#include"part.h"
+#include"part.hpp"
 #define object_cap 32768
 #define object_assert_free
 #define object_assert_bounds

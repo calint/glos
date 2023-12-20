@@ -1,7 +1,7 @@
 #pragma once
 #include "../lib.h"
 #include "../obj/object.hpp"
-#include "../obj/part.h"
+#include "../obj/part.hpp"
 #include "cell.h"
 
 #define grid_cell_size 20

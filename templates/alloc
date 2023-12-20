@@ -3,7 +3,7 @@
 // ${name} allocator generated from template ... do not modify
 //-----------------------------------------------------------------------------
 #include"${name}.hpp"
-#include"part.h"
+#include"part.hpp"
 #define ${name}_cap ${cap}
 #define ${name}_assert_free
 #define ${name}_assert_bounds
