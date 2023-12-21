@@ -9,21 +9,23 @@ inline static void main_init_scene_do() {
 
   o = new object{};
   objects.push_back(o);
-  // o->name = "skydome";
+  o->name = "skydome";
   o->node.glo = glos_find_by_name("skydome");
   o->volume.scale = {15, 15, 15};
   o->volume.radius = 10 * 15;
+  // o->physics.angular_velocity = {0, 0.5f, 0};
+  // o->physics_nxt = o->physics;
 
   o = new object{};
   objects.push_back(o);
-  // o->name = "grid";
+  o->name = "grid";
   o->node.glo = glos_find_by_name("grid");
   o->volume.scale = {10, 10, 10};
   o->volume.radius = 2 * 10;
 
   o = new santa{};
   objects.push_back(o);
-  // o->name = "santa2";
+  o->name = "santa2";
   o->node.glo = glos_find_by_name("santa");
   o->volume.scale = {10, 10, 10};
   o->volume.radius = .5f;
@@ -33,7 +35,7 @@ inline static void main_init_scene_do() {
 
   o = new santa{};
   objects.push_back(o);
-  // o->name = "santa1";
+  o->name = "santa1";
   o->node.glo = glos_find_by_name("santa");
   o->volume.scale = {10, 10, 10};
   o->physics.position = {30, 2, 30};

@@ -32,10 +32,10 @@ public:
 
   inline void render(const frame_ctx &fc) {
     for (object *oi : objects) {
-      if (oi->draw_tick == fc.tick) {
+      if (oi->render_tick == fc.tick) {
         continue;
       }
-      oi->draw_tick = fc.tick;
+      oi->render_tick = fc.tick;
       oi->render(fc);
       metrics.objects_rendered_prv_frame++;
     }

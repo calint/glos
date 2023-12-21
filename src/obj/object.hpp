@@ -12,12 +12,9 @@
 //------------------------------------------------------------------------ def
 class object {
 public:
-  // char const *name = "";//?? using char const* degrades performance by 40%
-  // how? std::string name{}; //?? using std::string degrades performance by 20%
-  // how? str name = str_def; char pad; //?? uncommenting degrades performance
-  // by 30% how?
+  std::string name{};
   unsigned update_tick = 0;
-  unsigned draw_tick = 0;
+  unsigned render_tick = 0;
   node node{};
   volume volume{};
   physics physics_prv{}; // physics state from previous frame
@@ -31,8 +28,6 @@ public:
   inline virtual ~object() {}
 
   inline virtual auto update(const frame_ctx &fc) -> bool {
-    // if matrix is flagged valid and position or angle changed invalidate
-    // matrix
     if (node.Mmw_is_valid and (physics_prv.position != physics.position or
                                physics_prv.angle != physics.angle)) {
       node.Mmw_is_valid = false;
@@ -60,14 +55,11 @@ public:
     if (node.Mmw_is_valid) {
       return node.Mmw;
     }
-    glm::mat4 mtx_rot =
+    glm::mat4 Ms = glm::scale(glm::mat4(1), volume.scale);
+    glm::mat4 Mr =
         glm::eulerAngleXYZ(physics.angle.x, physics.angle.y, physics.angle.z);
-    glm::mat4 mtx_scl = glm::scale(glm::mat4(1), volume.scale);
-    glm::mat4 mtx_trns = glm::translate(glm::mat4(1), physics.position);
-    node.Mmw = mtx_trns * mtx_rot * mtx_scl;
-
-    // std::cout << glm::to_string(node.Mmw) << std::endl;
-
+    glm::mat4 Mt = glm::translate(glm::mat4(1), physics.position);
+    node.Mmw = Mt * Mr * Ms;
     node.Mmw_is_valid = true;
     return node.Mmw;
   }
