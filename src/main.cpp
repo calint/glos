@@ -2,7 +2,7 @@
 
 #include "metrics.h"
 
-#include "gfx.h"
+#include "gfx.hpp"
 
 #include "net.h"
 
