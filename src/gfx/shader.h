@@ -2,7 +2,7 @@
 #include "../lib.h"
 #include "../metrics.h"
 #include <vector>
-//----------------------------------------------------------------------------
+
 class vertex {
 public:
   float position[3];
@@ -10,45 +10,6 @@ public:
   float normal[3];
   float texture[2];
 };
-
-static vertex shader_def_vtxbuf[] = {
-    {{.5, -.5, 0}, {1, 0, 0, 1}, {0, 0, 1}, {1, -1}},
-    {{.5, .5, 0}, {0, 1, 0, 1}, {0, 0, 1}, {1, 1}},
-    {{-.5, .5, 0}, {0, 0, 1, 1}, {0, 0, 1}, {-1, 1}},
-    {{-.5, -.5, 0}, {0, 0, 0, 1}, {0, 0, 1}, {-1, -1}},
-};
-
-static unsigned shader_def_vtxbuf_nbytes = sizeof(shader_def_vtxbuf);
-
-static unsigned shader_def_vtxbuf_nelems =
-    sizeof(shader_def_vtxbuf) / sizeof(vertex);
-
-static unsigned shader_def_vtxbuf_id;
-
-static GLubyte shader_def_ixbuf[] = {0, 1, 2, 2, 3, 0};
-
-static unsigned shader_def_ixbuf_nbytes = sizeof(shader_def_ixbuf);
-
-static unsigned shader_def_ixbuf_nelems =
-    sizeof(shader_def_ixbuf) / sizeof(GLubyte);
-
-static unsigned shader_def_ixbuf_id;
-
-static unsigned shader_def_texbuf_wi = 2;
-
-static unsigned shader_def_texbuf_hi = 2;
-
-static GLfloat shader_def_texbuf[] = {
-    1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1,
-};
-
-static unsigned shader_def_texbuf_nbytes = sizeof(shader_def_texbuf);
-
-static unsigned shader_def_texbuf_id;
-
-static unsigned shader_def_program_id;
-
-//----------------------------------------------------------------------------
 
 static const char *shader_vertex_source = R"(
   #version 130
@@ -89,9 +50,7 @@ static const char *shader_fragment_source = R"(
 #define shader_umtx_mw 0
 #define shader_umtx_wvp 1
 #define shader_utex 2
-//----------------------------------------------------------------------------
 
-#define programs_cap 8
 class program {
 public:
   GLuint id = 0;
@@ -102,9 +61,52 @@ public:
 
 static std::vector<program> programs{};
 
-inline static const char *shader_name_for_type(GLenum shader_type);
+inline static const program &
+shader_load_program_from_source(const char *vert_src, const char *frag_src,
+                                std::vector<int> attrs);
 inline static void gl_check_error(const char *op);
 inline static void gl_print_string(const char *name, const GLenum s);
+inline static const char *shader_name_for_type(GLenum shader_type);
+
+inline static void shader_init() {
+  gl_check_error("shader_init");
+
+  puts("");
+  gl_print_string("GL_VENDOR", GL_VENDOR);
+  gl_print_string("GL_RENDERER", GL_RENDERER);
+  gl_print_string("GL_VERSION", GL_VERSION);
+  gl_print_string("GL_SHADING_LANGUAGE_VERSION", GL_SHADING_LANGUAGE_VERSION);
+  puts("");
+
+  glEnable(GL_DEPTH_TEST);
+  glEnable(GL_CULL_FACE);
+  glFrontFace(GL_CW);
+
+  printf(":-%10s-:-%7s-:\n", "----------", "-------");
+  printf(": %10s : %-7s :\n", "feature", "y/n");
+  printf(":-%10s-:-%7s-:\n", "----------", "-------");
+  printf(": %10s : %-7s :\n", "cull face",
+         glIsEnabled(GL_CULL_FACE) ? "yes" : "no");
+  printf(": %10s : %-7s :\n", "zbuffer",
+         glIsEnabled(GL_DEPTH_TEST) ? "yes" : "no");
+  printf(": %10s : %-7s :\n", "blend", glIsEnabled(GL_BLEND) ? "yes" : "no");
+  printf(":-%10s-:-%7s-:\n", "----------", "-------");
+  puts("");
+
+  std::vector<int> attrs{shader_apos, shader_argba, shader_anorm, shader_atex};
+  shader_load_program_from_source(shader_vertex_source, shader_fragment_source,
+                                  attrs);
+
+  gl_check_error("after shader_init");
+}
+
+inline static void shader_free() {
+  for (const program &p : programs) {
+    glDeleteShader(p.attached_vtxshdr_id);
+    glDeleteShader(p.attached_frgshdr_id);
+    glDeleteProgram(p.id);
+  }
+}
 
 inline static GLuint shader_compile(GLenum shaderType, const char *code) {
   GLuint id = glCreateShader(shaderType);
@@ -128,28 +130,26 @@ shader_load_program_from_source(const char *vert_src, const char *frag_src,
                                 std::vector<int> attrs) {
   gl_check_error("enter shader_program_load");
 
-  shader_def_program_id = glCreateProgram();
-  unsigned gid = shader_def_program_id;
-
-  programs.push_back({gid, shader_compile(GL_VERTEX_SHADER, vert_src),
+  unsigned pid = glCreateProgram();
+  programs.push_back({pid, shader_compile(GL_VERTEX_SHADER, vert_src),
                       shader_compile(GL_FRAGMENT_SHADER, frag_src),
                       std::move(attrs)});
 
-  glAttachShader(gid, programs.back().attached_vtxshdr_id);
-  glAttachShader(gid, programs.back().attached_frgshdr_id);
-  glLinkProgram(gid);
+  glAttachShader(pid, programs.back().attached_vtxshdr_id);
+  glAttachShader(pid, programs.back().attached_frgshdr_id);
+  glLinkProgram(pid);
 
   GLint ok;
-  glGetProgramiv(gid, GL_LINK_STATUS, &ok);
+  glGetProgramiv(pid, GL_LINK_STATUS, &ok);
   if (!ok) {
     GLint len;
-    glGetProgramiv(gid, GL_INFO_LOG_LENGTH, &len);
+    glGetProgramiv(pid, GL_INFO_LOG_LENGTH, &len);
 
     GLchar msg[1024];
     if (len > (signed)sizeof msg) {
       len = sizeof msg;
     }
-    glGetProgramInfoLog(gid, len, NULL, &msg[0]);
+    glGetProgramInfoLog(pid, len, NULL, &msg[0]);
     printf("program linking error: %s\n", msg);
     exit(8);
   }
@@ -222,144 +222,4 @@ inline static const char *shader_name_for_type(GLenum shader_type) {
   default:
     return "unknown";
   }
-}
-
-//--------------------------------------------------------------------- shader
-struct shader {
-  gid active_program_ix;
-} shader = {0};
-
-inline static void shader_load() {
-  gl_check_error("enter shader_load");
-  glGenBuffers(1, &shader_def_vtxbuf_id);
-  glBindBuffer(GL_ARRAY_BUFFER, shader_def_vtxbuf_id);
-  glBufferData(GL_ARRAY_BUFFER, shader_def_vtxbuf_nbytes, shader_def_vtxbuf,
-               GL_STATIC_DRAW);
-  metrics.buffered_vertex_data += shader_def_vtxbuf_nbytes;
-
-  glGenBuffers(1, &shader_def_ixbuf_id);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, shader_def_ixbuf_id);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, shader_def_ixbuf_nbytes,
-               shader_def_ixbuf, GL_STATIC_DRAW);
-  metrics.buffered_vertex_data += shader_def_ixbuf_nbytes;
-
-  //	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
-  glGenTextures(1, &shader_def_texbuf_id);
-  glBindTexture(GL_TEXTURE_2D, shader_def_texbuf_id);
-
-  //	//----------------------------------------------
-  //	SDL_Surface*surface=IMG_Load("logo.jpg");
-  //	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,
-  //			surface->w,surface->h,
-  //			0,GL_RGB,GL_UNSIGNED_BYTE,
-  //			surface->pixels);
-  //	SDL_FreeSurface(surface);
-  //	//----------------------------------------------
-
-  //----------------------------------------------
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, (signed)shader_def_texbuf_wi,
-               (signed)shader_def_texbuf_hi, 0, GL_RGB, GL_FLOAT,
-               shader_def_texbuf);
-  metrics.buffered_texture_data += shader_def_texbuf_nbytes;
-  //----------------------------------------------
-
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-  //	glGenerateMipmap(GL_TEXTURE_2D);
-  //	glPixelStorei(GL_UNPACK_ALIGNMENT,4);
-  gl_check_error("exit shader_load");
-}
-
-inline static void shader_render_triangle_elements(GLuint vbufid, size_t vbufn,
-                                                   GLuint ixbufid,
-                                                   size_t ixbufn, GLuint texid,
-                                                   const float *mtx_mw) {
-  glUniformMatrix4fv(shader_umtx_mw, 1, 0, mtx_mw);
-
-  glUniform1i(shader_utex, 0);
-  //	glActiveTexture(GL_TEXTURE0);
-  glBindTexture(GL_TEXTURE_2D, texid);
-  glEnableVertexAttribArray(shader_atex);
-
-  glBindBuffer(GL_ARRAY_BUFFER, vbufid);
-  glVertexAttribPointer(shader_apos, 3, GL_FLOAT, GL_FALSE, sizeof(vertex), 0);
-  glVertexAttribPointer(shader_argba, 4, GL_FLOAT, GL_FALSE, sizeof(vertex),
-                        (GLvoid *)(3 * sizeof(float)));
-  glVertexAttribPointer(shader_anorm, 3, GL_FLOAT, GL_FALSE, sizeof(vertex),
-                        (GLvoid *)((3 + 4) * sizeof(float)));
-  glVertexAttribPointer(shader_atex, 2, GL_FLOAT, GL_FALSE, sizeof(vertex),
-                        (GLvoid *)((3 + 4 + 3) * sizeof(float)));
-
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ixbufid);
-  glDrawElements(GL_TRIANGLES, (signed)ixbufn, GL_UNSIGNED_BYTE, 0);
-
-  glBindTexture(GL_TEXTURE_2D, 0);
-  glDisableVertexAttribArray(shader_atex);
-}
-
-inline static void shader_render() {
-  const float mtx_wvp[] = {
-      1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1,
-  };
-  glDisable(GL_DEPTH_TEST);
-  shader_render_triangle_elements(
-      shader_def_vtxbuf_id, shader_def_vtxbuf_nelems, shader_def_ixbuf_id,
-      shader_def_ixbuf_nelems, shader_def_texbuf_id, mtx_wvp);
-  glEnable(GL_DEPTH_TEST);
-}
-
-inline static void shader_free() {
-  glDeleteBuffers(1, &shader_def_ixbuf_id);
-  metrics.buffered_vertex_data -= shader_def_ixbuf_nbytes;
-
-  glDeleteBuffers(1, &shader_def_vtxbuf_id);
-  metrics.buffered_vertex_data -= shader_def_vtxbuf_nbytes;
-
-  glDeleteBuffers(1, &shader_def_texbuf_id);
-  metrics.buffered_texture_data -= shader_def_texbuf_nbytes;
-
-  for (const program &p : programs) {
-    glDeleteShader(p.attached_vtxshdr_id);
-    glDeleteShader(p.attached_frgshdr_id);
-    glDeleteProgram(p.id);
-  }
-}
-
-inline static void shader_init() {
-  gl_check_error("shader_init");
-
-  puts("");
-  gl_print_string("GL_VENDOR", GL_VENDOR);
-  gl_print_string("GL_RENDERER", GL_RENDERER);
-  gl_print_string("GL_VERSION", GL_VERSION);
-  gl_print_string("GL_SHADING_LANGUAGE_VERSION", GL_SHADING_LANGUAGE_VERSION);
-  puts("");
-
-  glEnable(GL_DEPTH_TEST);
-  //	glDepthFunc(GL_GREATER);
-  //	glClearDepthf(-1);
-
-  glEnable(GL_CULL_FACE);
-  glFrontFace(GL_CW);
-
-  printf(":-%10s-:-%7s-:\n", "----------", "-------");
-  printf(": %10s : %-7s :\n", "feature", "y/n");
-  printf(":-%10s-:-%7s-:\n", "----------", "-------");
-  printf(": %10s : %-7s :\n", "cull face",
-         glIsEnabled(GL_CULL_FACE) ? "yes" : "no");
-  printf(": %10s : %-7s :\n", "zbuffer",
-         glIsEnabled(GL_DEPTH_TEST) ? "yes" : "no");
-  printf(": %10s : %-7s :\n", "blend", glIsEnabled(GL_BLEND) ? "yes" : "no");
-  printf(":-%10s-:-%7s-:\n", "----------", "-------");
-  puts("");
-
-  std::vector<int> attrs{shader_apos, shader_argba, shader_anorm, shader_atex};
-  shader_load_program_from_source(shader_vertex_source, shader_fragment_source,
-                                  attrs);
-
-  shader_load();
-
-  gl_check_error("after shader_init");
 }

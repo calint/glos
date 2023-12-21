@@ -72,10 +72,11 @@ void main(){
   }
 }
 
+static unsigned shader_program_ix = 0;
+
 inline static void main_init() {
   main_init_programs();
   main_init_scene();
-  shader.active_program_ix = 0;
 }
 
 static bool do_main_render = true;
@@ -144,15 +145,15 @@ int main(int argc, char *argv[]) {
 
   {
     puts("");
-    const program &p = programs.at(shader.active_program_ix);
+    const program &p = programs.at(shader_program_ix);
     glUseProgram(p.id);
-    printf(" * using program at index %u\n", shader.active_program_ix);
+    printf(" * using program at index %u\n", shader_program_ix);
     for (int ix : p.attributes) {
       glEnableVertexAttribArray(ix);
     }
     puts("");
   }
-  gid previous_active_program_ix = shader.active_program_ix;
+  unsigned previous_active_program_ix = shader_program_ix;
   const float rad_over_degree = 2.0f * PI / 360.0f;
   float rad_over_mouse_pixels = rad_over_degree * .02f;
   float mouse_sensitivity = 1.5f;
@@ -285,9 +286,9 @@ int main(int argc, char *argv[]) {
           break;
         }
         case SDLK_3: {
-          shader.active_program_ix++;
-          if (shader.active_program_ix >= programs.size()) {
-            shader.active_program_ix = 0;
+          shader_program_ix++;
+          if (shader_program_ix >= programs.size()) {
+            shader_program_ix = 0;
           }
           break;
         }
@@ -315,8 +316,8 @@ int main(int argc, char *argv[]) {
       camera.lookat = game.follow_ptr->physics.position;
     }
 
-    if (previous_active_program_ix != shader.active_program_ix) {
-      printf(" * switching to program at index %u\n", shader.active_program_ix);
+    if (previous_active_program_ix != shader_program_ix) {
+      printf(" * switching to program at index %u\n", shader_program_ix);
       {
         const program &p = programs.at(previous_active_program_ix);
         for (int ix : p.attributes) {
@@ -325,14 +326,14 @@ int main(int argc, char *argv[]) {
         }
       }
       {
-        const program &p = programs.at(shader.active_program_ix);
+        const program &p = programs.at(shader_program_ix);
         glUseProgram(p.id);
         for (int ix : p.attributes) {
           printf("   * enable vertex attrib array %d\n", ix);
           glEnableVertexAttribArray(ix);
         }
       }
-      previous_active_program_ix = shader.active_program_ix;
+      previous_active_program_ix = shader_program_ix;
     }
 
     fc.dt = use_net ? net_dt : metrics.fps.dt;
