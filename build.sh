@@ -9,7 +9,7 @@ CFLAGS="$(sdl2-config --cflags)"
 WARNINGS="-Wall -Wextra -Wfatal-errors -Wno-unused-function -Wno-unused-parameter"
 LIBS="$(sdl2-config --libs) -lGL -lm -lSDL2_gfx -lSDL2_image -lSDL2_ttf -lSDL2_mixer"
 #OPTIMIZATION=-O3
-OPTIMIZATION="-O0 -g"
+OPTIMIZATION="-O3 -g"
 #REMARKS=-Rpass=inline
 REMARKS=
 #PROFILE=-pg

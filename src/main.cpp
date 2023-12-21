@@ -1,6 +1,6 @@
 #include "lib.h"
 
-#include "metrics.h"
+#include "metrics.hpp"
 
 #include "gfx.hpp"
 
@@ -91,15 +91,10 @@ inline static void main_init() {
 
 inline static void main_render(framectx *fc) {
   camera.update_matrix_wvp();
-
   glUniformMatrix4fv(shader_umtx_wvp, 1, 0, camera.mxwvp);
-
   glClearColor(bg.red, bg.green, bg.blue, 1.0);
-
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
   grid_render(fc);
-
   SDL_GL_SwapWindow(window.ref);
 }
 
@@ -136,7 +131,7 @@ int main(int argc, char *argv[]) {
   if (use_net) {
     net_init();
   }
-  metrics_init();
+  metrics.init();
   sdl_init();
   window_init();
   shader_init();
@@ -166,8 +161,8 @@ int main(int argc, char *argv[]) {
   SDL_SetRelativeMouseMode(mouse_mode);
 
   metrics.fps.calculation_intervall_ms = 1000;
-  metrics_reset_timer();
-  metrics_print_headers(stderr);
+  metrics.reset_timer();
+  metrics.print_headers(stderr);
   unsigned frameno = 1;
 
   framectx fc = {
@@ -179,7 +174,7 @@ int main(int argc, char *argv[]) {
   // grid_update(&fc);
 
   for (int running = 1; running;) {
-    metrics__at__frame_begin();
+    metrics.at_frame_begin();
 
     if (use_net) {
       net_state_to_send.lookangle_y = camera_lookangle_y;
@@ -360,7 +355,7 @@ int main(int argc, char *argv[]) {
 
     metrics.objects_allocated = object_metrics_allocated;
 
-    metrics__at__frame_end(stderr);
+    metrics.at_frame_end(stderr);
   }
   //---------------------------------------------------------------------free
   //? early-hangup
@@ -374,8 +369,7 @@ int main(int argc, char *argv[]) {
   if (use_net) {
     net_free();
   }
-  metrics_print(stderr);
-  metrics_free();
+  metrics.free();
   puts(" * clean exit");
   return 0;
 }
