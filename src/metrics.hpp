@@ -1,5 +1,5 @@
 #pragma once
-#include "sdl.h"
+#include "sdl.hpp"
 
 class metrics final {
 public:

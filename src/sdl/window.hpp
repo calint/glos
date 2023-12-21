@@ -1,6 +1,5 @@
 #pragma once
-#include "sdl.h"
-//------------------------------------------------------------------------ lib
+
 inline static void gl_request_profile_and_version(SDL_GLprofile prof, int major,
                                                   int minor) {
   if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, prof)) {
@@ -60,52 +59,53 @@ inline static void gl_print_context_profile_and_version() {
 #define window_width 512
 #define window_height 512
 
-struct {
-  SDL_Window *ref;
-  SDL_Renderer *renderer;
-  SDL_GLContext glcontext;
-  //	SDL_Surface*surface;
-} window;
-static inline void window_init() {
-  gl_request_profile_and_version(SDL_GL_CONTEXT_PROFILE_ES, 3, 2);
+class window final {
+public:
+  SDL_Window *ref = nullptr;
+  SDL_Renderer *renderer = nullptr;
+  SDL_GLContext glcontext = 0;
 
-  window.ref =
-      SDL_CreateWindow("glos", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                       window_width, window_height,
-                       SDL_WINDOW_OPENGL); // | SDL_WINDOW_FULLSCREEN_DESKTOP
-  if (!window.ref) {
-    printf("%s %d: %s", __FILE__, __LINE__, SDL_GetError());
-    exit(2);
-  }
-  window.glcontext = SDL_GL_CreateContext(window.ref);
-  if (!window.glcontext) {
-    printf("%s %d: %s", __FILE__, __LINE__, SDL_GetError());
-    exit(14);
-  }
-  if (SDL_GL_SetSwapInterval(1)) {
-    printf("%s %d: %s", __FILE__, __LINE__, SDL_GetError());
-    exit(29);
-  }
-  if (SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1)) {
-    printf("%s %d: %s", __FILE__, __LINE__, SDL_GetError());
-    exit(30);
-  }
-  if (SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24)) {
-    printf("%s %d: %s", __FILE__, __LINE__, SDL_GetError());
-    exit(31);
-  }
-  window.renderer = SDL_CreateRenderer(window.ref, -1, SDL_WINDOW_OPENGL);
-  if (!window.renderer) {
-    printf("%s %d: %s", __FILE__, __LINE__, SDL_GetError());
-    exit(3);
+  inline void init() {
+    gl_request_profile_and_version(SDL_GL_CONTEXT_PROFILE_ES, 3, 2);
+
+    ref =
+        SDL_CreateWindow("glos", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                         window_width, window_height,
+                         SDL_WINDOW_OPENGL); // | SDL_WINDOW_FULLSCREEN_DESKTOP
+    if (!ref) {
+      printf("%s %d: %s", __FILE__, __LINE__, SDL_GetError());
+      exit(2);
+    }
+    glcontext = SDL_GL_CreateContext(ref);
+    if (!glcontext) {
+      printf("%s %d: %s", __FILE__, __LINE__, SDL_GetError());
+      exit(14);
+    }
+    if (SDL_GL_SetSwapInterval(1)) {
+      printf("%s %d: %s", __FILE__, __LINE__, SDL_GetError());
+      exit(29);
+    }
+    if (SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1)) {
+      printf("%s %d: %s", __FILE__, __LINE__, SDL_GetError());
+      exit(30);
+    }
+    if (SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24)) {
+      printf("%s %d: %s", __FILE__, __LINE__, SDL_GetError());
+      exit(31);
+    }
+    renderer = SDL_CreateRenderer(ref, -1, SDL_WINDOW_OPENGL);
+    if (!renderer) {
+      printf("%s %d: %s", __FILE__, __LINE__, SDL_GetError());
+      exit(3);
+    }
+
+    gl_print_context_profile_and_version();
   }
 
-  gl_print_context_profile_and_version();
-}
-
-static inline void window_free() {
-  SDL_DestroyRenderer(window.renderer);
-  SDL_GL_DeleteContext(window.glcontext);
-  SDL_DestroyWindow(window.ref);
-}
+  inline void free() {
+    SDL_DestroyRenderer(renderer);
+    SDL_GL_DeleteContext(glcontext);
+    SDL_DestroyWindow(ref);
+  }
+};
 //------------------------------------------------------------------ window

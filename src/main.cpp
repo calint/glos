@@ -6,7 +6,7 @@
 
 #include "net.h"
 
-#include "grid.h"
+#include "grid.hpp"
 
 #include "obj/objects.h"
 
@@ -19,7 +19,11 @@ static unsigned shader_program_ix = 0;
 static bool do_main_render = true;
 static float camera_lookangle_y = 0;
 static float camera_lookangle_x = 0;
-static camera camera;
+
+static sdl sdl{};
+static window window{};
+static camera camera{};
+
 static struct color {
   GLclampf red;
   GLclampf green;
@@ -131,8 +135,8 @@ int main(int argc, char *argv[]) {
     net_init();
   }
   metrics.init();
-  sdl_init();
-  window_init();
+  sdl.init();
+  window.init();
   shader_init();
   //	objects_init();
   glos_init();
@@ -337,8 +341,8 @@ int main(int argc, char *argv[]) {
   objects_free();
   materials_free();
   shader_free();
-  window_free();
-  sdl_free();
+  window.free();
+  sdl.free();
   if (use_net) {
     net_free();
   }
