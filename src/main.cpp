@@ -4,8 +4,6 @@ public:
   unsigned tick;
 };
 
-#include "lib.h"
-
 #include "metrics.hpp"
 
 #include "gfx.hpp"

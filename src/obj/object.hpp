@@ -1,7 +1,6 @@
 #pragma once
 //--------------------------------------------------------------------- object
 #include "../grid/grid-ifc.hpp"
-#include "../lib.h"
 #include "node.hpp"
 #include "physics.hpp"
 #include "volume.hpp"

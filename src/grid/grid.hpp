@@ -1,5 +1,4 @@
 #pragma once
-#include "../lib.h"
 #include "../obj/object.hpp"
 #include "cell.hpp"
 

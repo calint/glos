@@ -1,5 +1,8 @@
 #pragma once
+#include "../misc/token.h"
+
 #include <fstream>
+#include <glm/glm.hpp>
 #include <sstream>
 #include <string>
 #include <vector>

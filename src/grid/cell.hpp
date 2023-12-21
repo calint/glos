@@ -1,7 +1,19 @@
 #pragma once
-#include "../lib.h"
 #include "../obj/object.hpp"
 #include <algorithm>
+
+inline static bool is_bit_set(const unsigned &bits,
+                              int bit_number_starting_at_zero) {
+  return bits & (1 << bit_number_starting_at_zero);
+}
+
+inline static void set_bit(unsigned &bits, int bit_number_starting_at_zero) {
+  bits |= (1 << bit_number_starting_at_zero);
+}
+
+inline static void clear_bit(unsigned &bits, int bit_number_starting_at_zero) {
+  bits &= ~(1 << bit_number_starting_at_zero);
+}
 
 class cell {
 public:
