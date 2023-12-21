@@ -5,20 +5,21 @@
 #include <stdlib.h>
 //----------------------------------------------------------------------------
 
-inline static bool is_bit_set(unsigned *bits, int bit_number_starting_at_zero) {
-  return *bits & (1 << bit_number_starting_at_zero);
+inline static bool is_bit_set(const unsigned &bits,
+                              int bit_number_starting_at_zero) {
+  return bits & (1 << bit_number_starting_at_zero);
 }
 
 //----------------------------------------------------------------------------
 
-inline static void set_bit(unsigned *bits, int bit_number_starting_at_zero) {
-  *bits |= (1 << bit_number_starting_at_zero);
+inline static void set_bit(unsigned &bits, int bit_number_starting_at_zero) {
+  bits |= (1 << bit_number_starting_at_zero);
 }
 
 //----------------------------------------------------------------------------
 
-inline static void clear_bit(unsigned *bits, int bit_number_starting_at_zero) {
-  *bits &= ~(1 << bit_number_starting_at_zero);
+inline static void clear_bit(unsigned &bits, int bit_number_starting_at_zero) {
+  bits &= ~(1 << bit_number_starting_at_zero);
 }
 
 //----------------------------------------------------------------------------

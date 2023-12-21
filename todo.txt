@@ -4,7 +4,7 @@
  [ ] namespaces
  [ ] hpp files included by main.cpp
  [ ] convert structs to classes
- [ ] use glm library for math
+ [x] use glm library for math
  ------------------------------
  [x] dynamic pointer vector
  [x] texturing

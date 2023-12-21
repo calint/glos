@@ -91,9 +91,9 @@ public:
     }
 
     if (xil == xir && zil == zir) {
-      clear_bit(&o->grid_ifc.bits, grid_ifc_overlaps);
+      clear_bit(o->grid_ifc.bits, grid_ifc_overlaps);
     } else {
-      set_bit(&o->grid_ifc.bits, grid_ifc_overlaps);
+      set_bit(o->grid_ifc.bits, grid_ifc_overlaps);
     }
   }
 

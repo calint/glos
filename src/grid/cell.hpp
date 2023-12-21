@@ -50,8 +50,8 @@ public:
           continue;
         }
 
-        if (is_bit_set(&Oi->grid_ifc.bits, grid_ifc_overlaps) &&
-            is_bit_set(&Oj->grid_ifc.bits, grid_ifc_overlaps)) {
+        if (is_bit_set(Oi->grid_ifc.bits, grid_ifc_overlaps) and
+            is_bit_set(Oj->grid_ifc.bits, grid_ifc_overlaps)) {
           // both overlap grids, this detection might have been tried
           if (is_collision_checked(Oi, Oj, fc)) {
             continue;

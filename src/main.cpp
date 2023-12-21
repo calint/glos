@@ -17,7 +17,7 @@ public:
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-static struct _game {
+static struct game {
   int *keys_ptr;
   const object *follow_object;
 } game;
