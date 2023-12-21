@@ -42,7 +42,7 @@ public:
             " %6s  %6s  %4s  %7s  %6s  %5s  %5s  %5s  %5s  %6s  %6s  %6s  %6s  "
             "%8s  %5s  %8s  %8s\n",
             "ms", "dt", "fps", "netlag", "nobj", "colp", "colc", "colf",
-            "olchk", "upd", "rend", "pupd", "prend", "gtri", "nglo", "arrbufs",
+            "olchk", "upd", "rend", "pupd", "prend", "gtri", "nglo", "vtxbufs",
             "texbufs");
   }
   inline void print(FILE *f) {

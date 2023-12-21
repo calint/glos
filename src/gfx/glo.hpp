@@ -213,38 +213,29 @@ inline static void glo_upload_to_opengl(glo *o) {
   glBindBuffer(GL_ARRAY_BUFFER, o->vtxbuf_id);
   glBufferData(GL_ARRAY_BUFFER, (signed)(o->vtxbuf.size() * sizeof(float)),
                o->vtxbuf.data(), GL_STATIC_DRAW);
-
+  metrics.buffered_vertex_data += o->vtxbuf.size() * sizeof(float);
   for (const material_range &mr : o->ranges) {
     material &m = materials.at(mr.material_ix);
     if (not m.map_Kd.empty()) { // load texture
       glGenTextures(1, &m.texture_id);
-
       printf(" * loading texture %u from '%s'\n", m.texture_id,
              m.map_Kd.c_str());
-
       glBindTexture(GL_TEXTURE_2D, m.texture_id);
-
       SDL_Surface *surface = IMG_Load(m.map_Kd.c_str());
       if (!surface) {
         exit(-1);
       }
       glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface->w, surface->h, 0, GL_RGB,
                    GL_UNSIGNED_BYTE, surface->pixels);
-
       m.texture_size_bytes =
           (unsigned)(surface->w * surface->h * sizeof(uint32_t));
-
       SDL_FreeSurface(surface);
-
       metrics.buffered_texture_data += m.texture_size_bytes;
-
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     }
-
-    metrics.buffered_vertex_data += o->vtxbuf.size() * sizeof(float);
   }
 }
 

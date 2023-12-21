@@ -363,6 +363,7 @@ int main(int argc, char *argv[]) {
   if (use_net) {
     net_free();
   }
+  metrics.print(stderr);
   metrics.free();
   puts(" * clean exit");
   return 0;
