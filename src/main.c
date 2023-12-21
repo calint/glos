@@ -15,7 +15,19 @@ static struct _game {
   const object *follow_ptr;
 } game;
 
+static unsigned shader_program_ix = 0;
+static bool do_main_render = true;
+static float camera_lookangle_y = 0;
+static float camera_lookangle_x = 0;
+static camera camera;
+static struct color {
+  GLclampf red;
+  GLclampf green;
+  GLclampf blue;
+} bg = {.1f, .1f, 0};
+
 #include "app/init.h"
+
 //----------------------------------------------------------------------- init
 inline static void main_init_programs() {
   {
@@ -72,23 +84,13 @@ void main(){
   }
 }
 
-static unsigned shader_program_ix = 0;
-
 inline static void main_init() {
   main_init_programs();
   main_init_scene();
 }
 
-static bool do_main_render = true;
-
-static struct color {
-  GLclampf red;
-  GLclampf green;
-  GLclampf blue;
-} bg = {.1f, .1f, 0};
-
 inline static void main_render(framectx *fc) {
-  camera_update_matrix_wvp();
+  camera.update_matrix_wvp();
 
   glUniformMatrix4fv(shader_umtx_wvp, 1, 0, camera.mxwvp);
 
