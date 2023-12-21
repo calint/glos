@@ -102,19 +102,17 @@ private:
     return it != src->grid_ifc.checked_collisions_list.end();
   }
 
-  inline static int
+  inline static bool
   detect_and_resolve_collision_for_spheres(object *o1, object *o2,
                                            const frame_ctx &fc) {
 
-    vec4 v;
-    vec3_minus(&v, &o2->physics.position, &o1->physics.position);
-    const float d = o1->volume.radius +
-                    o2->volume.radius; // minimum distance
-    const float dsq = d * d;                    //  squared
-    const float vsq = vec3_dot(&v, &v);         // distance of vector squared
-    const float diff = vsq - dsq;               //
-    if (diff >= 0) {                            //
-      return 0;
+    glm::vec3 v = o2->physics.position - o1->physics.position;
+    const float d = o1->volume.radius + o2->volume.radius;
+    const float dsq = d * d;
+    const float vsq = glm::dot(v, v);
+    const float diff = vsq - dsq;
+    if (diff >= 0) {
+      return false;
     }
     //
     //	if(fabs(diff)<.01f){
@@ -165,10 +163,8 @@ private:
     }
 
     // move objects to moment off collision
-    vec3_inc_with_vec3_over_dt(&o1->physics_nxt.position,
-                               &o1->physics_nxt.velocity, t);
-    vec3_inc_with_vec3_over_dt(&o2->physics_nxt.position,
-                               &o2->physics_nxt.velocity, t);
+    o1->physics_nxt.position += o1->physics_nxt.velocity * t;
+    o2->physics_nxt.position += o2->physics_nxt.velocity * t;
 
     //	{
     //		// validate
@@ -188,21 +184,19 @@ private:
 
     // swap velocities
     if (o1->grid_ifc.collision_mask == 0) { // o1 is a bouncer
-      vec3_negate(&o2->physics_nxt.velocity);
+      o2->physics_nxt.velocity = -o2->physics_nxt.velocity;
     } else if (o2->grid_ifc.collision_mask == 0) { // o2 is a bouncer
-      vec3_negate(&o1->physics_nxt.velocity);
+      o1->physics_nxt.velocity = -o1->physics_nxt.velocity;
     } else { // swap velocities
-      vec4 swap_from_o1 = o1->physics_nxt.velocity;
-      vec4 swap_from_o2 = o2->physics_nxt.velocity;
+      glm::vec3 swap_from_o1 = o1->physics_nxt.velocity;
+      glm::vec3 swap_from_o2 = o2->physics_nxt.velocity;
       o1->physics_nxt.velocity = swap_from_o2;
       o2->physics_nxt.velocity = swap_from_o1;
     }
     // rest of t
-    vec3_inc_with_vec3_over_dt(&o1->physics_nxt.position,
-                               &o1->physics_nxt.velocity, -t);
-    vec3_inc_with_vec3_over_dt(&o2->physics_nxt.position,
-                               &o2->physics_nxt.velocity, -t);
+    o1->physics_nxt.position += o1->physics_nxt.velocity * -t;
+    o2->physics_nxt.position += o2->physics_nxt.velocity * -t;
 
-    return 1;
+    return true;
   }
 };

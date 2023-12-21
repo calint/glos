@@ -1,36 +1,24 @@
 #pragma once
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 class camera final {
 public:
-  position eye{0, .5f, 30, 0};
-  float mxwvp[16]{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
-  position lookat{0, 0, 0, 0};
-  vec4 up{0, 1, 0, 0};
-  float znear = -1;
-  float zfar = -2;
+  glm::vec3 pos{0, 100, 100};
+  glm::mat4 mtx_vp{};
+  glm::vec3 target{0, 0, 0};
+  glm::vec3 up{0, 1, 0};
+  float near_plane = 0.1;
+  float far_plane = 1000;
+  float fov = 60.0f;
   float wi = 1024;
   float hi = 1024;
-  int type = 1;
 
   inline void update_matrix_wvp() {
-    mat4 Mt;
-    position Pt = eye;
-    vec3_negate(&Pt);
-    mat4_set_translation(Mt, &Pt);
-
-    mat4 Ml;
-    vec4 vec_up = (vec4){0, 1, 0, 0};
-    mat4_set_look_at(Ml, &eye, &lookat, &vec_up);
-
-    mat4 Mtl;
-    mat4_multiply(Mtl, Ml, Mt);
-
-    mat4 Mp;
-    perspective_vertical(Mp, 40, wi / hi, .6f, 3);
-
-    mat4 Mplt;
-    mat4_multiply(Mplt, Mp, Mtl);
-
-    mat4_assign(mxwvp, Mplt);
+    float aspect_ratio = wi / hi;
+    glm::mat4 mtx_v = glm::lookAt(pos, target, up);
+    glm::mat4 mtx_p = glm::perspective(glm::radians(fov), aspect_ratio,
+                                       near_plane, far_plane);
+    mtx_vp = mtx_p * mtx_v;
   }
 };

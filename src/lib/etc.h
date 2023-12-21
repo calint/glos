@@ -1,5 +1,6 @@
 #pragma once
 
+#include <glm/glm.hpp>
 #include <math.h>
 #include <stdlib.h>
 //----------------------------------------------------------------------------
@@ -32,7 +33,7 @@ inline static float random_range(float low, float high) {
 
 //----------------------------------------------------------------------------
 
-inline static float bounding_radius_for_scale(scale *s) {
+inline static float bounding_radius_for_scale(glm::vec3 *s) {
   return sqrtf(s->x * s->x + s->y * s->y + s->z * s->z); //?
 }
 

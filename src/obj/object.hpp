@@ -2,9 +2,13 @@
 //--------------------------------------------------------------------- object
 #include "../grid/grid-ifc.hpp"
 #include "../lib.h"
-#include "volume.hpp"
 #include "node.hpp"
 #include "physics.hpp"
+#include "volume.hpp"
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/euler_angles.hpp>
+#include <glm/gtx/string_cast.hpp>
+#include <iostream>
 #include <string>
 //------------------------------------------------------------------------ def
 class object {
@@ -30,9 +34,8 @@ public:
   inline virtual auto update(const frame_ctx &fc) -> bool {
     // if matrix is flagged valid and position or angle changed invalidate
     // matrix
-    if (node.Mmw_is_valid and
-        (!vec3_equals(&physics_prv.position, &physics.position) or
-         !vec3_equals(&physics_prv.angle, &physics.angle))) {
+    if (node.Mmw_is_valid and (physics_prv.position != physics.position or
+                               physics_prv.angle != physics.angle)) {
       node.Mmw_is_valid = false;
     }
 
@@ -40,10 +43,8 @@ public:
     physics = physics_nxt;
 
     const float dt = fc.dt;
-    vec3_inc_with_vec3_over_dt(&physics_nxt.position, &physics_nxt.velocity,
-                               dt);
-    vec3_inc_with_vec3_over_dt(&physics_nxt.angle,
-                               &physics_nxt.angular_velocity, dt);
+    physics_nxt.position += physics_nxt.velocity * dt;
+    physics_nxt.angle += physics_nxt.angular_velocity * dt;
     return false;
   }
 
@@ -51,19 +52,23 @@ public:
     if (!node.glo) {
       return;
     }
-    const float *mtx = get_updated_Mmw();
-    glo_render(node.glo, mtx);
+    glo_render(node.glo, get_updated_Mmw());
   }
 
   inline virtual void on_collision(object *obj, const frame_ctx &fc) {}
 
-  inline const float *get_updated_Mmw() {
+  inline const glm::mat4 &get_updated_Mmw() {
     if (node.Mmw_is_valid) {
       return node.Mmw;
     }
-    mat4_set_translation(node.Mmw, &physics.position);
-    mat4_append_rotation_about_z_axis(node.Mmw, physics.angle.z);
-    mat3_scale(node.Mmw, &volume.scale);
+    glm::mat4 mtx_rot =
+        glm::eulerAngleXYZ(physics.angle.x, physics.angle.y, physics.angle.z);
+    glm::mat4 mtx_scl = glm::scale(glm::mat4(1), volume.scale);
+    glm::mat4 mtx_trns = glm::translate(glm::mat4(1), physics.position);
+    node.Mmw = mtx_trns * mtx_rot * mtx_scl;
+
+    // std::cout << glm::to_string(node.Mmw) << std::endl;
+
     node.Mmw_is_valid = true;
     return node.Mmw;
   }

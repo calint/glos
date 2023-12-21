@@ -1,9 +1,9 @@
 #pragma once
 #include "material.hpp"
+#include <glm/gtc/type_ptr.hpp>
 #include <stdio.h>
 #include <string>
 #include <vector>
-
 class material_range {
 public:
   unsigned begin = 0;
@@ -28,9 +28,9 @@ inline static void glo_free(glo *o) {
 static /*gives*/ glo *glo_make_from_string(const char **ptr_p) {
   const char *p = *ptr_p;
 
-  std::vector<vec4> vertices{};
-  std::vector<vec4> normals{};
-  std::vector<vec4> texuv{};
+  std::vector<glm::vec3> vertices{};
+  std::vector<glm::vec3> normals{};
+  std::vector<glm::vec2> texuv{};
 
   std::vector<float> vertex_buffer{};
   std::vector<material_range> mtlrngs{};
@@ -105,7 +105,7 @@ static /*gives*/ glo *glo_make_from_string(const char **ptr_p) {
       token tz = token_next(&p);
       float z = token_get_float(&tz);
 
-      vertices.emplace_back(x, y, z, 0);
+      vertices.emplace_back(x, y, z);
       continue;
     }
     if (token_equals(&t, "vt")) {
@@ -115,7 +115,7 @@ static /*gives*/ glo *glo_make_from_string(const char **ptr_p) {
       token tv = token_next(&p);
       float v = token_get_float(&tv);
 
-      texuv.emplace_back(u, v, 0, 0);
+      texuv.emplace_back(u, v);
       continue;
     }
     if (token_equals(&t, "vn")) {
@@ -128,7 +128,7 @@ static /*gives*/ glo *glo_make_from_string(const char **ptr_p) {
       token tz = token_next(&p);
       float z = token_get_float(&tz);
 
-      normals.emplace_back(x, y, z, 0);
+      normals.emplace_back(x, y, z);
       continue;
     }
 
@@ -139,18 +139,18 @@ static /*gives*/ glo *glo_make_from_string(const char **ptr_p) {
         token vert1 = token_from_string_additional_delim(p, '/');
         p = vert1.end;
         unsigned ix1 = token_get_uint(&vert1);
-        const vec4 &vtx = vertices.at(ix1 - 1);
+        const glm::vec3 &vtx = vertices.at(ix1 - 1);
 
         // texture index
         token vert2 = token_from_string_additional_delim(p, '/');
         p = vert2.end;
         const unsigned ix2 = token_get_uint(&vert2);
-        const vec4 tex = ix2 ? texuv.at(ix2 - 1) : (vec4){0, 0, 0, 0};
+        const glm::vec2 tex = ix2 ? texuv.at(ix2 - 1) : glm::vec2{0, 0};
         // normal
         token vert3 = token_from_string_additional_delim(p, '/');
         p = vert3.end;
         unsigned ix3 = token_get_uint(&vert3);
-        const vec4 &norm = normals.at(ix3 - 1);
+        const glm::vec3 &norm = normals.at(ix3 - 1);
 
         // buffer
         vertex_buffer.push_back(vtx.x);
@@ -222,8 +222,8 @@ inline static void glo_upload_to_opengl(glo *o) {
   }
 }
 
-inline static void glo_render(glo *o, const mat4 mtxmw) {
-  glUniformMatrix4fv(shader_umtx_mw, 1, 0, mtxmw);
+inline static void glo_render(glo *o, const glm::mat4 &mtx_mw) {
+  glUniformMatrix4fv(shader_umtx_mw, 1, 0, glm::value_ptr(mtx_mw));
   glBindBuffer(GL_ARRAY_BUFFER, o->vtxbuf_id);
   glVertexAttribPointer(shader_apos, 3, GL_FLOAT, GL_FALSE, sizeof(vertex), 0);
   glVertexAttribPointer(shader_argba, 4, GL_FLOAT, GL_FALSE, sizeof(vertex),
@@ -265,13 +265,13 @@ inline static void glos_free() {
   }
 }
 
-inline static void glos_render() {
-  for (glo &g : glos) {
-    if (not g.ranges.empty()) {
-      glo_render(&g, mat4_identity);
-    }
-  }
-}
+// inline static void glos_render() {
+//   for (glo &g : glos) {
+//     if (not g.ranges.empty()) {
+//       glo_render(&g, mat4_identity);
+//     }
+//   }
+// }
 
 inline static void glos_load_from_file(const char *path) {
   printf(" * loading object from '%s'\n", path);

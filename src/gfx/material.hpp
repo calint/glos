@@ -19,10 +19,10 @@ class material {
 public:
   std::string name = "";
   float Ns = 0;
-  vec4 Ka{0, 0, 0, 0};
-  vec4 Kd{0, 0, 0, 0};
-  vec4 Ks{0, 0, 0, 0};
-  vec4 Ke{0, 0, 0, 0};
+  glm::vec4 Ka{0, 0, 0, 0};
+  glm::vec4 Kd{0, 0, 0, 0};
+  glm::vec4 Ks{0, 0, 0, 0};
+  glm::vec4 Ke{0, 0, 0, 0};
   float Ni = 0;
   float d = 0;
   std::string map_Kd = "";
@@ -63,7 +63,7 @@ inline static void objmtls_load_from_file(const char *path) {
     }
     if (token_equals(&t, "Ka") || token_equals(&t, "Kd") ||
         token_equals(&t, "Ks") || token_equals(&t, "Ke")) {
-      vec4 v;
+      glm::vec4 v;
 
       token x = token_next(&p);
       v.x = token_get_float(&x);
@@ -73,8 +73,6 @@ inline static void objmtls_load_from_file(const char *path) {
 
       token z = token_next(&p);
       v.z = token_get_float(&z);
-
-      v.w = 0;
 
       if (token_equals(&t, "Ka")) {
         materials.back().Ka = v;

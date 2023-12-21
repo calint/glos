@@ -11,24 +11,23 @@ inline static void main_init_scene_do() {
   objects.push_back(o);
   // o->name = "skydome";
   o->node.glo = glos_find_by_name("skydome");
-  o->volume.scale = {15, 15, 15, 0};
+  o->volume.scale = {15, 15, 15};
   o->volume.radius = 10 * 15;
 
   o = new object{};
   objects.push_back(o);
   // o->name = "grid";
   o->node.glo = glos_find_by_name("grid");
-  o->volume.scale = {10, 10, 10, 0};
-  o->physics.position = {0, 0, 0, 0};
+  o->volume.scale = {10, 10, 10};
   o->volume.radius = 2 * 10;
 
   o = new santa{};
   objects.push_back(o);
   // o->name = "santa2";
   o->node.glo = glos_find_by_name("santa");
-  o->volume.scale = {10, 10, 10, 0};
+  o->volume.scale = {10, 10, 10};
   o->volume.radius = .5f;
-  o->physics.position = {-30, 2, -30, 0};
+  o->physics.position = {-30, 2, -30};
   o->physics_nxt = o->physics;
   o->keys_ptr = &net_state_current[2].keys;
 
@@ -36,15 +35,15 @@ inline static void main_init_scene_do() {
   objects.push_back(o);
   // o->name = "santa1";
   o->node.glo = glos_find_by_name("santa");
-  o->volume.scale = {10, 10, 10, 0};
-  o->physics.position = {30, 2, 30, 0};
+  o->volume.scale = {10, 10, 10};
+  o->physics.position = {30, 2, 30};
   o->physics_nxt = o->physics;
   o->volume.radius = .5f;
   o->keys_ptr = &net_state_current[1].keys;
 
   game.follow_object = o;
-  camera.eye = {30, 120, -140, 0};
-  camera.lookat = {0, 0, 0, 0};
+  camera.pos = {30, 120, 140};
+  camera.target = {0, 0, 0};
 
   //
   //	for(float y=0;y<5;y++){

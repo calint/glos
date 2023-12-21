@@ -17,15 +17,15 @@ inline static size_t token_size_including_whitespace(token *t) {
   return (size_t)(t->end - t->begin);
 }
 
-inline static void token_print_including_whitespace(token *t) {
-  //	write(1,t->begin,(unsigned)(t->end-t->begin));
-  printf("%.*s", (int)token_size_including_whitespace(t), t->begin);
-}
+// inline static void token_print_including_whitespace(token *t) {
+//   //	write(1,t->begin,(unsigned)(t->end-t->begin));
+//   printf("%.*s", (int)token_size_including_whitespace(t), t->begin);
+// }
 
-inline static void token_print(token *t) {
-  //	write(1,t->content,(unsigned)(t->content_end-t->content));
-  printf("%.*s", (int)token_size_including_whitespace(t), t->begin);
-}
+// inline static void token_print(token *t) {
+//   //	write(1,t->content,(unsigned)(t->content_end-t->content));
+//   printf("%.*s", (int)token_size_including_whitespace(t), t->begin);
+// }
 
 inline static unsigned token_size(const token *t) {
   return (unsigned)(t->content_end - t->content);

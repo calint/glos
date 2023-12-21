@@ -1,3 +1,9 @@
+class frame_ctx {
+public:
+  float dt;
+  unsigned tick;
+};
+
 #include "lib.h"
 
 #include "metrics.hpp"
@@ -7,6 +13,9 @@
 #include "net.h"
 
 #include "grid.hpp"
+
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 static struct _game {
   int *keys_ptr;
@@ -101,7 +110,7 @@ inline static void main_init() {
 
 inline static void main_render(const frame_ctx &fc) {
   camera.update_matrix_wvp();
-  glUniformMatrix4fv(shader_umtx_wvp, 1, 0, camera.mxwvp);
+  glUniformMatrix4fv(shader_umtx_wvp, 1, 0, glm::value_ptr(camera.mtx_vp));
   glClearColor(bg.red, bg.green, bg.blue, 1.0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   grid.render(fc);
@@ -157,7 +166,7 @@ int main(int argc, char *argv[]) {
     puts("");
   }
   unsigned shader_program_ix_prev = shader_program_ix;
-  const float rad_over_degree = 2.0f * PI / 360.0f;
+  const float rad_over_degree = 2.0f * glm::pi<float>() / 360.0f;
   float rad_over_mouse_pixels = rad_over_degree * .02f;
   float mouse_sensitivity = 1.5f;
   bool mouse_mode = false;
@@ -285,7 +294,7 @@ int main(int argc, char *argv[]) {
       *game.keys_ptr = net_state_current[net_active_player_index].keys;
     }
     if (game.follow_object) {
-      camera.lookat = game.follow_object->physics.position;
+      camera.target = game.follow_object->physics.position;
     }
 
     if (shader_program_ix_prev != shader_program_ix) {

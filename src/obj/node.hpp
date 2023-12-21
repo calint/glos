@@ -2,8 +2,8 @@
 #include "../lib.h"
 class node final {
 public:
-  mat4 Mmw{};
-  mat3 Mnmw{};
+  glm::mat4 Mmw{};
+  glm::mat3 Mnmw{};
   bool Mmw_is_valid = false;
   glo *glo{};
 };

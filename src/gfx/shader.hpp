@@ -80,7 +80,7 @@ inline static void shader_init() {
 
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_CULL_FACE);
-  glFrontFace(GL_CW);
+  glFrontFace(GL_CCW);
 
   printf(":-%10s-:-%7s-:\n", "----------", "-------");
   printf(": %10s : %-7s :\n", "feature", "y/n");

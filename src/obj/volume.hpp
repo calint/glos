@@ -3,8 +3,8 @@
 
 class volume final {
 public:
-  radius radius = 0;
-  scale scale{};
+  float radius = 0;
+  glm::vec3 scale{};
 
   inline void update_radius_using_scale() {
     radius = sqrtf(scale.x * scale.x + scale.y * scale.y);
