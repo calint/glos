@@ -1,14 +1,15 @@
 #pragma once
 #include "../lib.h"
 #include "../metrics.h"
-
+#include <vector>
 //----------------------------------------------------------------------------
-typedef struct vertex {
+class vertex {
+public:
   float position[3];
   float color[4];
   float normal[3];
   float texture[2];
-} vertex;
+};
 
 static vertex shader_def_vtxbuf[] = {
     {{.5, -.5, 0}, {1, 0, 0, 1}, {0, 0, 1}, {1, -1}},
@@ -49,36 +50,38 @@ static unsigned shader_def_program_id;
 
 //----------------------------------------------------------------------------
 
-static const char *shader_vertex_source =
-    "#version 130                                              \n\
-uniform mat4 umtx_mw; // model-to-world-matrix              \n\
-uniform mat4 umtx_wvp;// world-to-view-to-projection         \n\
-in vec3 apos;                                                 \n\
-in vec4 argba;                                                 \n\
-in vec3 anorm;                                                  \n\
-in vec2 atex;                                                    \n\
-out vec4 vrgba;                                                   \n\
-out vec3 vnorm;                                                    \n\
-out vec2 vtex;                                                      \n\
-void main(){                                                         \n\
-	gl_Position=umtx_wvp*umtx_mw*vec4(apos,1);            \n\
-	vrgba=argba;                                           \n\
-	vnorm=anorm;                                            \n\
-	vtex=atex;                                               \n\
-}\n";
-static const char *shader_fragment_source = "#version 130             \n\
-uniform sampler2D utex;                    \n\
-uniform vec4 solid_color;         \n\
-in vec4 vrgba;                              \n\
-in vec3 vnorm;                          \n\
-in vec2 vtex;                            \n\
-out vec4 rgba;                            \n\
-void main(){                          \n\
-//	rgba=vec4(1,0,0,1);            \n\
-//	rgba=vrgba;                     \n\
-	float ambient_light=dot(vnorm,normalize(vec3(0,15,-15)));                     \n\
-	rgba=texture2D(utex,vtex)+vrgba*ambient_light; \n\
-}\n";
+static const char *shader_vertex_source = R"(
+  #version 130
+  uniform mat4 umtx_mw; // model-to-world-matrix
+  uniform mat4 umtx_wvp;// world-to-view-to-projection
+  in vec3 apos;
+  in vec4 argba;
+  in vec3 anorm;
+  in vec2 atex;
+  out vec4 vrgba;
+  out vec3 vnorm;
+  out vec2 vtex;
+  void main(){
+	  gl_Position=umtx_wvp*umtx_mw*vec4(apos,1);
+	  vrgba=argba;
+	  vnorm=anorm;
+	  vtex=atex;
+  }
+)";
+
+static const char *shader_fragment_source = R"(
+  #version 130
+  uniform sampler2D utex;
+  in vec4 vrgba;
+  in vec3 vnorm;
+  in vec2 vtex;
+  out vec4 rgba;
+  void main(){
+    float ambient_light=dot(vnorm,normalize(vec3(0,15,-15)));
+    rgba=texture2D(utex,vtex)+vrgba*ambient_light;
+  }
+)";
+
 #define shader_apos 0
 #define shader_argba 1
 #define shader_anorm 2
@@ -89,26 +92,21 @@ void main(){                          \n\
 //----------------------------------------------------------------------------
 
 #define programs_cap 8
-typedef struct program {
-  GLuint id;
-  unsigned attached_vtxshdr_id;
-  unsigned attached_frgshdr_id;
-  dyni attributes;
-} program;
-#define program_def                                                            \
-  (program) { 0, 0, 0, dyni_def }
+class program {
+public:
+  GLuint id = 0;
+  unsigned attached_vtxshdr_id = 0;
+  unsigned attached_frgshdr_id = 0;
+  std::vector<int> attributes{};
+};
 
-static dynp programs = dynp_def;
-// static program programs[programs_cap];
+static std::vector<program> programs{};
 
 inline static const char *shader_name_for_type(GLenum shader_type);
 inline static void gl_check_error(const char *op);
 inline static void gl_print_string(const char *name, const GLenum s);
 
 inline static GLuint shader_compile(GLenum shaderType, const char *code) {
-  //	printf("\n ___| %s shader |__________________\n%s\n",
-  //			get_shader_name_for_type(shaderType),
-  //			code);
   GLuint id = glCreateShader(shaderType);
   size_t length = strlen(code);
   glShaderSource(id, 1, (const GLchar **)&code, (GLint *)&length);
@@ -125,27 +123,20 @@ inline static GLuint shader_compile(GLenum shaderType, const char *code) {
   return id;
 }
 
-inline static program *shader_load_program_from_source(const char *vert_src,
-                                                       const char *frag_src,
-                                                       /*takes*/ dyni attrs) {
+inline static const program &
+shader_load_program_from_source(const char *vert_src, const char *frag_src,
+                                std::vector<int> attrs) {
   gl_check_error("enter shader_program_load");
 
   shader_def_program_id = glCreateProgram();
   unsigned gid = shader_def_program_id;
 
-  program *p = (program *)malloc(sizeof(program));
-  *p = program_def;
+  programs.push_back({gid, shader_compile(GL_VERTEX_SHADER, vert_src),
+                      shader_compile(GL_FRAGMENT_SHADER, frag_src),
+                      std::move(attrs)});
 
-  p->id = gid;
-
-  p->attributes = /*gives*/ attrs;
-
-  p->attached_vtxshdr_id = shader_compile(GL_VERTEX_SHADER, vert_src);
-
-  p->attached_frgshdr_id = shader_compile(GL_FRAGMENT_SHADER, frag_src);
-
-  glAttachShader(gid, p->attached_vtxshdr_id);
-  glAttachShader(gid, p->attached_frgshdr_id);
+  glAttachShader(gid, programs.back().attached_vtxshdr_id);
+  glAttachShader(gid, programs.back().attached_frgshdr_id);
   glLinkProgram(gid);
 
   GLint ok;
@@ -162,9 +153,8 @@ inline static program *shader_load_program_from_source(const char *vert_src,
     printf("program linking error: %s\n", msg);
     exit(8);
   }
-  dynp_add(&programs, p);
   gl_check_error("exit shader_program_load");
-  return p;
+  return programs.back();
 }
 
 inline static const char *gl_get_error_string(const GLenum error) {
@@ -222,6 +212,7 @@ inline static void gl_check_error(const char *op) {
   if (err)
     exit(11);
 }
+
 inline static const char *shader_name_for_type(GLenum shader_type) {
   switch (shader_type) {
   case GL_VERTEX_SHADER:
@@ -238,7 +229,6 @@ struct shader {
   gid active_program_ix;
 } shader = {0};
 
-static void shader_render();
 inline static void shader_load() {
   gl_check_error("enter shader_load");
   glGenBuffers(1, &shader_def_vtxbuf_id);
@@ -280,47 +270,6 @@ inline static void shader_load() {
   //	glGenerateMipmap(GL_TEXTURE_2D);
   //	glPixelStorei(GL_UNPACK_ALIGNMENT,4);
   gl_check_error("exit shader_load");
-
-  //
-  //	GLuint frameBuffer;
-  //	glGenFramebuffers(1, &frameBuffer);
-  //	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
-  //	GLuint texColorBuffer;
-  //	glGenTextures(1, &texColorBuffer);
-  //	glBindTexture(GL_TEXTURE_2D, texColorBuffer);
-  //
-  //	glTexImage2D(
-  //	    GL_TEXTURE_2D, 0, GL_RGB, 800, 600, 0, GL_RGB, GL_UNSIGNED_BYTE,
-  // NULL
-  //	);
-  //
-  //	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  //	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  //	glFramebufferTexture2D(
-  //	    GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texColorBuffer,
-  // 0
-  //	);
-  //	gl_check_error("exit shader_load  render to frame buffer 1");
-  //	GLuint rboDepthStencil;
-  //	glGenRenderbuffers(1, &rboDepthStencil);
-  //	gl_check_error("exit shader_load  render to frame buffer 4");
-  //
-  //	glBindRenderbuffer(GL_RENDERBUFFER, rboDepthStencil);
-  //	gl_check_error("exit shader_load  render to frame buffer 3");
-  //
-  //	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 800, 600);
-  //	gl_check_error("exit shader_load  render to frame buffer 2");
-  //
-  //	glFramebufferRenderbuffer(
-  //	    GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER,
-  // rboDepthStencil
-  //	);
-  //	gl_check_error("exit shader_load  render to frame buffer 5");
-  //	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
-  //	gl_check_error("exit shader_load  render to frame buffer 6");
-  //	shader_render();
-  //	glBindFramebuffer(GL_FRAMEBUFFER,0);
-  //	gl_check_error("exit shader_load  render to frame buffer");
 }
 
 inline static void shader_render_triangle_elements(GLuint vbufid, size_t vbufn,
@@ -360,22 +309,6 @@ inline static void shader_render() {
       shader_def_ixbuf_nelems, shader_def_texbuf_id, mtx_wvp);
   glEnable(GL_DEPTH_TEST);
 }
-//
-// inline static void shader_render_triangle_array(
-//		GLuint vbufid,size_t vbufn,GLuint texid,const float*mtx_mw
-//){
-//	shader_prepare_for_render(vbufid,texid,mtx_mw);
-//	glDrawArrays(GL_TRIANGLES,0,(int)vbufn);
-//	glBindTexture(GL_TEXTURE_2D,0);
-//}
-//
-
-inline static void _del_program_(void *o) {
-  program *p = (program *)o;
-  glDeleteShader(p->attached_vtxshdr_id);
-  glDeleteShader(p->attached_frgshdr_id);
-  glDeleteProgram(p->id);
-}
 
 inline static void shader_free() {
   glDeleteBuffers(1, &shader_def_ixbuf_id);
@@ -387,14 +320,11 @@ inline static void shader_free() {
   glDeleteBuffers(1, &shader_def_texbuf_id);
   metrics.buffered_texture_data -= shader_def_texbuf_nbytes;
 
-  // dynp_foa(&programs, {
-  //   program *p = o;
-  //   glDeleteShader(p->attached_vtxshdr_id);
-  //   glDeleteShader(p->attached_frgshdr_id);
-  //   glDeleteProgram(p->id);
-  // });
-
-  dynp_foreach_all(&programs, _del_program_);
+  for (const program &p : programs) {
+    glDeleteShader(p.attached_vtxshdr_id);
+    glDeleteShader(p.attached_frgshdr_id);
+    glDeleteProgram(p.id);
+  }
 }
 
 inline static void shader_init() {
@@ -425,15 +355,11 @@ inline static void shader_init() {
   printf(":-%10s-:-%7s-:\n", "----------", "-------");
   puts("");
 
-  dyni attrs = dyni_def;
-  int e[] = {shader_apos, shader_argba, shader_anorm, shader_atex};
-  dyni_add_list(&attrs, e, 4);
+  std::vector<int> attrs{shader_apos, shader_argba, shader_anorm, shader_atex};
   shader_load_program_from_source(shader_vertex_source, shader_fragment_source,
-                                  /*gives*/ attrs);
+                                  attrs);
 
   shader_load();
 
   gl_check_error("after shader_init");
-
-  ///----------------------------------------------
 }

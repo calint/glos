@@ -18,63 +18,59 @@ static struct _game {
 #include "app/init.h"
 //----------------------------------------------------------------------- init
 inline static void main_init_programs() {
-  const char *vtx = "#version 130\n"
-                    "uniform mat4 umtx_mw;\n"
-                    "in vec3 apos;\n"
-                    "void main(){\n"
-                    "    gl_Position=umtx_mw*vec4(apos,1);\n"
-                    "}\n";
-
-  const char *frag =
-      "#version 130\n"
-      "void main(){\n"
-      "    gl_FragColor=vec4(gl_FragCoord.z,gl_FragCoord.z,gl_FragCoord.z,1);\n"
-      "}";
-
-  dyni attrs = dyni_def;
-  dyni_add(&attrs, shader_apos);
-  shader_load_program_from_source(vtx, frag, /*gives*/ attrs);
-
-  vtx = "#version 130\n"
-        "uniform mat4 umtx_mw;\n"
-        "in vec3 apos;\n"
-        "in vec4 argba;\n"
-        "out vec4 color;\n"
-        "void main(){\n"
-        "   gl_Position=umtx_mw*vec4(apos,1);\n"
-        "   color=argba;\n"
-        "}\n";
-
-  frag = "#version 130\n"
-         "in vec4 color;\n"
-         "void main(){\n"
-         "   gl_FragColor=color;\n"
-         "}";
-
-  attrs = dyni_def;
-  dyni_add(&attrs, shader_apos);
-  dyni_add(&attrs, shader_argba);
-  shader_load_program_from_source(vtx, frag, /*gives*/ attrs);
+  {
+    const char *vtx = R"(
+#version 130
+uniform mat4 umtx_mw; // model-to-world-matrix
+uniform mat4 umtx_wvp;// world-to-view-to-projection
+in vec3 apos;
+out float depth;
+void main(){
+  gl_Position=umtx_wvp*umtx_mw*vec4(apos,1);
+//  depth=gl_Position.z/2000.0;
+  depth=gl_Position.z/gl_Position.w;
 }
+    )";
 
-// static float ground_base_y=.25f;
-//
-// inline static void main_init_scene(){
-//	glos_load_scene_from_file("obj/skydome.obj");
-//	glos_load_scene_from_file("obj/board.obj");
-//	glos_load_scene_from_file("obj/blip.obj");
-//
-//	for(float y=0;y<5;y++){
-//		for(float z=-10;z<=10;z++){
-//			for(float x=-10;x<=10;x+=1){
-//				object*o=object_alloc(&ninja_def);
-//				o->n.glo=glo_at(2);
-//				o->p.p=(position){x,y+ground_base_y,z,0};
-//				bvol_update_radius_using_scale(&o->b);
-//			}
-//		}
-//	}
-// }
+    const char *frag = R"(
+#version 130
+in float depth;
+out vec4 rgba;
+void main(){
+  rgba=vec4(vec3(depth),1.0);
+}
+    )";
+
+    std::vector<int> attrs{shader_apos};
+    shader_load_program_from_source(vtx, frag, attrs);
+  }
+  {
+    const char *vtx = R"(
+#version 130
+uniform mat4 umtx_mw; // model-to-world-matrix
+uniform mat4 umtx_wvp;// world-to-view-to-projection
+in vec3 apos;
+in vec4 argba;
+out vec4 vrgba;
+void main(){
+  gl_Position=umtx_wvp*umtx_mw*vec4(apos,1);
+  vrgba=argba;
+}
+    )";
+
+    const char *frag = R"(
+#version 130
+in vec4 vrgba;
+out vec4 rgba;
+void main(){
+  rgba=vrgba;
+}
+    )";
+
+    std::vector<int> attrs{shader_apos, shader_argba};
+    shader_load_program_from_source(vtx, frag, attrs);
+  }
+}
 
 inline static void main_init() {
   main_init_programs();
@@ -82,8 +78,7 @@ inline static void main_init() {
   shader.active_program_ix = 0;
 }
 
-static int draw_default = 0, draw_objects = 1, draw_glos = 0,
-           do_main_render = 1;
+static bool do_main_render = true;
 
 static struct color {
   GLclampf red;
@@ -100,15 +95,7 @@ inline static void main_render(framectx *fc) {
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  if (draw_objects) {
-    grid_render(fc);
-  }
-  if (draw_glos) {
-    glos_render();
-  }
-  if (draw_default) {
-    shader_render();
-  }
+  grid_render(fc);
 
   SDL_GL_SwapWindow(window.ref);
 }
@@ -139,7 +126,7 @@ int main(int argc, char *argv[]) {
   printf(": %15s : %-9ld :\n", "part", sizeof(part));
   printf(": %15s : %-9ld :\n", "object", sizeof(object));
   printf(": %15s : %-9ld :\n", "glo", sizeof(glo));
-  printf(":-%15s-:-%-9s-:\n", "---------------", "--------");
+  printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
   puts("");
 
   unsigned gloid = 0;
@@ -157,15 +144,10 @@ int main(int argc, char *argv[]) {
 
   {
     puts("");
-    program *p = (program *)dynp_get(&programs, shader.active_program_ix);
-    gid progid = p->id;
-    glUseProgram(progid);
-    dyni *enable = &p->attributes;
+    const program &p = programs.at(shader.active_program_ix);
+    glUseProgram(p.id);
     printf(" * using program at index %u\n", shader.active_program_ix);
-    for (unsigned i = 0; i < enable->count; i++) {
-      const unsigned ix = (unsigned)dyni_get(enable, i);
-      //			printf("   * disable vertex attrib array
-      //%d\n",ix);
+    for (int ix : p.attributes) {
       glEnableVertexAttribArray(ix);
     }
     puts("");
@@ -195,6 +177,7 @@ int main(int argc, char *argv[]) {
 
   for (int running = 1; running;) {
     metrics__at__frame_begin();
+
     if (use_net) {
       net_state_to_send.lookangle_y = camera_lookangle_y;
       net_state_to_send.lookangle_x = camera_lookangle_x;
@@ -263,9 +246,6 @@ int main(int argc, char *argv[]) {
         case SDLK_o:
           net_state_to_send.keybits |= 64;
           break;
-        case SDLK_1:
-          draw_default = 1;
-          break;
         }
         break;
       case SDL_KEYUP:
@@ -295,9 +275,6 @@ int main(int argc, char *argv[]) {
           mouse_mode = mouse_mode ? SDL_FALSE : SDL_TRUE;
           SDL_SetRelativeMouseMode(mouse_mode);
           break;
-        case SDLK_1:
-          draw_default = 0;
-          break;
         case SDLK_2: {
           gloid++;
           if (gloid == glos.size()) {
@@ -309,7 +286,7 @@ int main(int argc, char *argv[]) {
         }
         case SDLK_3: {
           shader.active_program_ix++;
-          if (shader.active_program_ix >= programs.count) {
+          if (shader.active_program_ix >= programs.size()) {
             shader.active_program_ix = 0;
           }
           break;
@@ -338,39 +315,22 @@ int main(int argc, char *argv[]) {
       camera.lookat = game.follow_ptr->physics.position;
     }
 
-    //		printf("   camera: %f  %f  %f   angle: %f\n",
-    //				camera.eye.x,camera.eye.y,camera.eye.z,look_angle_z_axis*180/PI);
-
-    //		vec4 lookvector=vec4_def;
-    //		const float a=camera_lookangle_y;
-    ////		printf(" look angle z=%f\n",a);
-    //		const float move_vector_scale=10;
-    //		lookvector.x=move_vector_scale*sinf(a);
-    //		lookvector.y=0;
-    //		lookvector.z=-move_vector_scale*cosf(a);
-
     if (previous_active_program_ix != shader.active_program_ix) {
       printf(" * switching to program at index %u\n", shader.active_program_ix);
-
-      program *pp = (program *)dynp_get(&programs, previous_active_program_ix);
-      dyni disable = pp->attributes;
-
-      for (unsigned i = 0; i < disable.count; i++) {
-        const unsigned ix = (unsigned)dyni_get(&disable, i);
-        printf("   * disable vertex attrib array %d\n", ix);
-        glDisableVertexAttribArray(ix);
+      {
+        const program &p = programs.at(previous_active_program_ix);
+        for (int ix : p.attributes) {
+          printf("   * disable vertex attrib array %d\n", ix);
+          glDisableVertexAttribArray(ix);
+        }
       }
-
-      program *ap = (program *)dynp_get(&programs, shader.active_program_ix);
-      //			const unsigned progid=ap->gid;
-
-      glUseProgram(ap->id);
-
-      dyni *enable = &ap->attributes;
-      for (unsigned i = 0; i < enable->count; i++) {
-        const unsigned ix = (unsigned)dyni_get(enable, i);
-        printf("   * enable vertex attrib array %d\n", ix);
-        glEnableVertexAttribArray(ix);
+      {
+        const program &p = programs.at(shader.active_program_ix);
+        glUseProgram(p.id);
+        for (int ix : p.attributes) {
+          printf("   * enable vertex attrib array %d\n", ix);
+          glEnableVertexAttribArray(ix);
+        }
       }
       previous_active_program_ix = shader.active_program_ix;
     }

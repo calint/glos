@@ -1,3 +1,11 @@
+ [ ] c++ conversion
+ [ ]   replace dynp, dyni, dynf with vector
+ [ ]   replace str with string
+ [ ] namespaces
+ [ ] hpp files included by main.cpp
+ [ ] convert structs to classes
+ 
+ ------------------------------
  [x] dynamic pointer vector
  [x] texturing
  [x] obj format
