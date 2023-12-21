@@ -30,7 +30,7 @@ inline static void main_init_scene_do() {
   o->volume.radius = .5f;
   o->physics.position = {-30, 2, -30, 0};
   o->physics_nxt = o->physics;
-  o->keys_ptr = &net_state_current[2].keybits;
+  o->keys_ptr = &net_state_current[2].keys;
 
   o = new santa{};
   objects.push_back(o);
@@ -40,9 +40,9 @@ inline static void main_init_scene_do() {
   o->physics.position = {30, 2, 30, 0};
   o->physics_nxt = o->physics;
   o->volume.radius = .5f;
-  o->keys_ptr = &net_state_current[1].keybits;
+  o->keys_ptr = &net_state_current[1].keys;
 
-  game.follow_ptr = o;
+  game.follow_object = o;
   camera.eye = {30, 120, -140, 0};
   camera.lookat = {0, 0, 0, 0};
 

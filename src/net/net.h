@@ -7,7 +7,7 @@
 #include <sys/types.h>
 
 typedef struct net_state {
-  unsigned keybits;
+  unsigned keys;
   float lookangle_y;
   float lookangle_x;
 } net_state;

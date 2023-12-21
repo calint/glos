@@ -27,7 +27,7 @@ public:
 
   inline virtual ~object() {}
 
-  inline virtual auto update(const framectx &fc) -> bool {
+  inline virtual auto update(const frame_ctx &fc) -> bool {
     // if matrix is flagged valid and position or angle changed invalidate
     // matrix
     if (node.Mmw_is_valid and
@@ -47,7 +47,7 @@ public:
     return false;
   }
 
-  inline virtual void render(const framectx &fc) {
+  inline virtual void render(const frame_ctx &fc) {
     if (!node.glo) {
       return;
     }
@@ -55,7 +55,7 @@ public:
     glo_render(node.glo, mtx);
   }
 
-  inline virtual void on_collision(object *obj, const framectx &fc) {}
+  inline virtual void on_collision(object *obj, const frame_ctx &fc) {}
 
   inline const float *get_updated_Mmw() {
     if (node.Mmw_is_valid) {

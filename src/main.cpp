@@ -9,8 +9,8 @@
 #include "grid.hpp"
 
 static struct _game {
-  int *keybits_ptr;
-  const object *follow_ptr;
+  int *keys_ptr;
+  const object *follow_object;
 } game;
 
 static unsigned shader_program_ix = 0;
@@ -99,7 +99,7 @@ inline static void main_init() {
   main_init_scene();
 }
 
-inline static void main_render(const framectx &fc) {
+inline static void main_render(const frame_ctx &fc) {
   camera.update_matrix_wvp();
   glUniformMatrix4fv(shader_umtx_wvp, 1, 0, camera.mxwvp);
   glClearColor(bg.red, bg.green, bg.blue, 1.0);
@@ -156,29 +156,23 @@ int main(int argc, char *argv[]) {
     }
     puts("");
   }
-  unsigned previous_active_program_ix = shader_program_ix;
+  unsigned shader_program_ix_prev = shader_program_ix;
   const float rad_over_degree = 2.0f * PI / 360.0f;
   float rad_over_mouse_pixels = rad_over_degree * .02f;
   float mouse_sensitivity = 1.5f;
   SDL_bool mouse_mode = SDL_FALSE;
-  //	printf("   * \n");
-  //	printf("   * press space to grab and ungrab mouse\n");
-  //	printf("   * \n");
   SDL_SetRelativeMouseMode(mouse_mode);
 
   metrics.fps.calculation_intervall_ms = 1000;
   metrics.reset_timer();
   metrics.print_headers(stderr);
-  unsigned frameno = 1;
+  unsigned frame_num = 1;
 
-  framectx fc = {
+  frame_ctx fc = {
       .dt = 0.1f,
       .tick = 0,
   };
-  // grid_clear();
-  // objects_foa({ grid_add(o); });
-  // grid_update(&fc);
-
+  
   for (int running = 1; running;) {
     metrics.at_frame_begin();
 
@@ -228,50 +222,50 @@ int main(int argc, char *argv[]) {
           SDL_SetRelativeMouseMode(mouse_mode);
           break;
         case SDLK_w:
-          net_state_to_send.keybits |= 1;
+          net_state_to_send.keys |= 1;
           break;
         case SDLK_a:
-          net_state_to_send.keybits |= 2;
+          net_state_to_send.keys |= 2;
           break;
         case SDLK_s:
-          net_state_to_send.keybits |= 4;
+          net_state_to_send.keys |= 4;
           break;
         case SDLK_d:
-          net_state_to_send.keybits |= 8;
+          net_state_to_send.keys |= 8;
           break;
         case SDLK_q:
-          net_state_to_send.keybits |= 16;
+          net_state_to_send.keys |= 16;
           break;
         case SDLK_e:
-          net_state_to_send.keybits |= 32;
+          net_state_to_send.keys |= 32;
           break;
         case SDLK_o:
-          net_state_to_send.keybits |= 64;
+          net_state_to_send.keys |= 64;
           break;
         }
         break;
       case SDL_KEYUP:
         switch (event.key.keysym.sym) {
         case SDLK_w:
-          net_state_to_send.keybits &= ~1;
+          net_state_to_send.keys &= ~1;
           break;
         case SDLK_a:
-          net_state_to_send.keybits &= ~2;
+          net_state_to_send.keys &= ~2;
           break;
         case SDLK_s:
-          net_state_to_send.keybits &= ~4;
+          net_state_to_send.keys &= ~4;
           break;
         case SDLK_d:
-          net_state_to_send.keybits &= ~8;
+          net_state_to_send.keys &= ~8;
           break;
         case SDLK_q:
-          net_state_to_send.keybits &= ~16;
+          net_state_to_send.keys &= ~16;
           break;
         case SDLK_e:
-          net_state_to_send.keybits &= ~32;
+          net_state_to_send.keys &= ~32;
           break;
         case SDLK_o:
-          net_state_to_send.keybits &= ~64;
+          net_state_to_send.keys &= ~64;
           break;
         case SDLK_SPACE:
           mouse_mode = mouse_mode ? SDL_FALSE : SDL_TRUE;
@@ -289,20 +283,20 @@ int main(int argc, char *argv[]) {
     }
 
     if (!use_net) {
-      net_state_current[net_active_player_index].keybits =
-          net_state_to_send.keybits;
+      net_state_current[net_active_player_index].keys =
+          net_state_to_send.keys;
     }
-    if (game.keybits_ptr) {
-      *game.keybits_ptr = net_state_current[net_active_player_index].keybits;
+    if (game.keys_ptr) {
+      *game.keys_ptr = net_state_current[net_active_player_index].keys;
     }
-    if (game.follow_ptr) {
-      camera.lookat = game.follow_ptr->physics.position;
+    if (game.follow_object) {
+      camera.lookat = game.follow_object->physics.position;
     }
 
-    if (previous_active_program_ix != shader_program_ix) {
+    if (shader_program_ix_prev != shader_program_ix) {
       printf(" * switching to program at index %u\n", shader_program_ix);
       {
-        const program &p = programs.at(previous_active_program_ix);
+        const program &p = programs.at(shader_program_ix_prev);
         for (int ix : p.attributes) {
           printf("   * disable vertex attrib array %d\n", ix);
           glDisableVertexAttribArray(ix);
@@ -316,13 +310,13 @@ int main(int argc, char *argv[]) {
           glEnableVertexAttribArray(ix);
         }
       }
-      previous_active_program_ix = shader_program_ix;
+      shader_program_ix_prev = shader_program_ix;
     }
 
     fc.dt = use_net ? net_dt : metrics.fps.dt;
-    fc.tick = frameno;
+    fc.tick = frame_num;
 
-    frameno++;
+    frame_num++;
 
     grid.clear();
     // objects_foa({ grid_add(o); });

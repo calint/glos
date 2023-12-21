@@ -7,7 +7,7 @@ class cell {
 public:
   std::vector<object *> objects{};
 
-  inline void update(const framectx &fc) {
+  inline void update(const frame_ctx &fc) {
     for (object *oi : objects) {
       if (oi->update_tick == fc.tick) {
         continue;
@@ -18,7 +18,7 @@ public:
     }
   }
 
-  inline void render(const framectx &fc) {
+  inline void render(const frame_ctx &fc) {
     for (object *oi : objects) {
       if (oi->draw_tick == fc.tick) {
         continue;
@@ -35,7 +35,7 @@ public:
 
   inline void add(object *o) { objects.push_back(o); }
 
-  inline void resolve_collisions(const framectx &fc) {
+  inline void resolve_collisions(const frame_ctx &fc) {
     //	printf("[ cell %p ] detect collisions\n",(void*)o);
     const unsigned len = objects.size();
     for (unsigned i = 0; i < len - 1; i++) {
@@ -80,7 +80,7 @@ public:
 
 private:
   inline static bool is_collision_checked(object *o1, object *o2,
-                                          const framectx &fc) {
+                                          const frame_ctx &fc) {
     metrics.collision_grid_overlap_check++;
 
     if (o1->grid_ifc.tick != fc.tick) { // list out of date
@@ -104,7 +104,7 @@ private:
 
   inline static int
   detect_and_resolve_collision_for_spheres(object *o1, object *o2,
-                                           const framectx &fc) {
+                                           const frame_ctx &fc) {
 
     vec4 v;
     vec3_minus(&v, &o2->physics.position, &o1->physics.position);

@@ -33,7 +33,8 @@ typedef vec4 angular_velocity;
 typedef float radius;
 typedef const char *path;
 
-typedef struct framectx {
+class frame_ctx {
+public:
   float dt;
   unsigned tick;
-} framectx;
+};

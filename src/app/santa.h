@@ -3,7 +3,7 @@ class santa : public object {
 public:
   inline santa() { volume = {.radius = 1.4f, .scale = {1, 1, 1, 0}}; }
 
-  inline virtual auto update(const framectx &fc) -> bool override {
+  inline virtual auto update(const frame_ctx &fc) -> bool override {
     if (object::update(fc)) {
       return true;
     }

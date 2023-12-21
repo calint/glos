@@ -16,7 +16,7 @@ public:
 
   inline void free() {}
 
-  inline void update(const framectx &fc) {
+  inline void update(const frame_ctx &fc) {
     cell *p = &cells[0][0];
     unsigned i = grid_ncells;
     while (i--) {
@@ -25,7 +25,7 @@ public:
     }
   }
 
-  inline void resolve_collisions(const framectx &fc) {
+  inline void resolve_collisions(const frame_ctx &fc) {
     cell *p = &cells[0][0];
     unsigned i = grid_ncells;
     while (i--) {
@@ -34,7 +34,7 @@ public:
     }
   }
 
-  inline void render(const framectx &fc) {
+  inline void render(const frame_ctx &fc) {
     cell *p = &cells[0][0];
     unsigned i = grid_ncells;
     while (i--) {
