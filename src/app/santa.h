@@ -1,92 +1,30 @@
 #pragma once
-//--------------------------------------------------------------- santa
-//------------------------------------------------------------------------ def
-static object santa_obj_def = {
-    .node{},
-    .bounding_volume = {.radius = 1.4f, .scale = {1, 1, 1, 0}},
-    .physics =
-        {
-            .position = {0, 0, 0, 0},
-            .velocity = {0, 0, 0, 0},
-            .angle = {0, 0, 0, 0},
-            .angular_velocity = {0, 0, 0, 0},
-        },
-    .vtbl =
-        {
-            .init = NULL,
-            .update = NULL,
-            .collision = NULL,
-            .render = _object_render_glo_,
-            .free = NULL,
-        },
-    .type = {type_santa},
-    .alloc_bits_ptr = NULL,
-    .part = {NULL, NULL, NULL, NULL},
-};
-//------------------------------------------------------------------ extension
-typedef struct santa {
-  part part;
-  int32_t *keybits_ptr;
-  glo *bounding_glo_ptr;
-} santa;
-//------------------------------------------------------------------ overrides
-static void _santa_init(object *, part *);
-static void _santa_update(object *, part *, const framectx *fc);
-static void _santa_render(object *, part *, const framectx *fc);
-static void _santa_free(object *, part *);
-//----------------------------------------------------------------------- init
-static santa santa_def = {
-    .part =
-        (part){
-            .init = NULL,
-            .update = _santa_update,
-            .render = _santa_render,
-            .free = NULL,
-        },
-    .keybits_ptr = 0,
-    .bounding_glo_ptr = NULL,
-};
-//----------------------------------------------------------------------- impl
-static void _santa_update(object *po, part *o, const framectx *fc) {
-  //	printf("%s:%u  [ %p %p ]\n",__FILE__,__LINE__,(void*)po,(void*)o);
-  santa *p = (santa *)o;
-  if (!p->keybits_ptr)
-    return;
-  int n = *p->keybits_ptr;
-  // printf("santa: %s  keybits=%u\n",po->name,n);
-  velocity *v = &po->physics_nxt.velocity;
-  *v = vec4_def;
-  if (n != 0) {
-    // wasd keys
-    if (n & 1)
-      v->z = +1;
-    if (n & 2)
-      v->x = -1;
-    if (n & 4)
-      v->z = -1;
-    if (n & 8)
-      v->x = +1;
-    vec3_scale(v, 10);
-    po->node.Mmw_is_valid = 0;
-  }
-}
-static void _santa_render(object *o, part *po, const framectx *fc) {
-  santa *p = (santa *)po;
-  if (!p->bounding_glo_ptr)
-    return;
-  const float *f = o->get_updated_Mmw();
-  glo_render(p->bounding_glo_ptr, f);
-}
-static void _santa_free(object *po, part *o) {}
-// printf("%s:%u  [ %p %p ]\n",__FILE__,__LINE__,(void*)po,(void*)o);
-//----------------------------------------------------------------------------
+class santa : public object {
+public:
+  inline santa() { volume = {.radius = 1.4f, .scale = {1, 1, 1, 0}}; }
 
-//----------------------------------------------------------------- alloc/free
-inline static /*gives*/ object *santa_alloc_def() {
-  object *o = object_alloc(&santa_obj_def);
-  santa *p = (santa *)malloc(sizeof(santa));
-  *p = santa_def;
-  o->part[0] = (part *)p;
-  return o;
-}
-//----------------------------------------------------------------------------
+  inline virtual auto update(const framectx &fc) -> bool override {
+    if (object::update(fc)) {
+      return true;
+    }
+    if (!keys_ptr) {
+      return false;
+    }
+    int n = *keys_ptr;
+    velocity *v = &physics_nxt.velocity;
+    *v = vec4_def;
+    if (n != 0) {
+      // wasd keys
+      if (n & 1)
+        v->z = +1;
+      if (n & 2)
+        v->x = -1;
+      if (n & 4)
+        v->z = -1;
+      if (n & 8)
+        v->x = +1;
+      vec3_scale(v, 10);
+    }
+    return false;
+  }
+};

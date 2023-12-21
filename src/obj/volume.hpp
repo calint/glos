@@ -1,7 +1,7 @@
 #pragma once
 #include "../lib.h"
 
-class bounding_volume final {
+class volume final {
 public:
   radius radius = 0;
   scale scale{};

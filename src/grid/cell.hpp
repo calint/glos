@@ -1,66 +1,31 @@
 #pragma once
 #include "../lib.h"
 #include "../obj/object.hpp"
-#include "../obj/part.hpp"
 #include <algorithm>
 
 class cell {
 public:
   std::vector<object *> objects{};
 
-  inline void update(framectx *fc) {
+  inline void update(const framectx &fc) {
     for (object *oi : objects) {
-      if (oi->update_tick == fc->tick) {
+      if (oi->update_tick == fc.tick) {
         continue;
       }
-      oi->update_tick = fc->tick;
-      if (oi->vtbl.update) {
-        oi->vtbl.update(oi, fc);
-      } else {
-        oi->update(fc);
-      }
+      oi->update_tick = fc.tick;
+      oi->update(fc);
       metrics.objects_updated_prv_frame++;
-
-      for (int i = 0; i < object_part_cap; i++) {
-        if (!oi->part[i])
-          continue;
-        part *p = (part *)oi->part[i];
-        if (p->update) {
-          p->update(oi, p, fc);
-          metrics.parts_updated_prv_frame++;
-        }
-      }
     }
   }
 
-  inline void render(const framectx *fc) {
+  inline void render(const framectx &fc) {
     for (object *oi : objects) {
-      if (oi->draw_tick == fc->tick) {
+      if (oi->draw_tick == fc.tick) {
         continue;
       }
-      oi->draw_tick = fc->tick;
-
-      if (oi->node.glo) {
-        const float *Mmw = oi->get_updated_Mmw();
-        glo_render(oi->node.glo, Mmw);
-      }
-
-      if (oi->vtbl.render) {
-        oi->vtbl.render(oi, fc);
-      }
-
+      oi->draw_tick = fc.tick;
+      oi->render(fc);
       metrics.objects_rendered_prv_frame++;
-
-      for (int i = 0; i < object_part_cap; i++) {
-        if (!oi->part[i]) {
-          continue;
-        }
-        part *p = (part *)oi->part[i];
-        if (p->render) {
-          p->render(oi, p, fc);
-          metrics.parts_rendered_prv_frame++;
-        }
-      }
     }
   }
 
@@ -70,7 +35,7 @@ public:
 
   inline void add(object *o) { objects.push_back(o); }
 
-  inline void resolve_collisions(framectx *fc) {
+  inline void resolve_collisions(const framectx &fc) {
     //	printf("[ cell %p ] detect collisions\n",(void*)o);
     const unsigned len = objects.size();
     for (unsigned i = 0; i < len - 1; i++) {
@@ -103,13 +68,11 @@ public:
         metrics.collision_detections_prv_frame++;
 
         if (Oi->grid_ifc.collision_mask & Oj->grid_ifc.collision_bits) {
-          if (Oi->vtbl.collision)
-            Oi->vtbl.collision(Oi, Oj, fc);
+          Oi->on_collision(Oj, fc);
         }
 
         if (Oj->grid_ifc.collision_mask & Oi->grid_ifc.collision_bits) {
-          if (Oj->vtbl.collision)
-            Oj->vtbl.collision(Oj, Oi, fc);
+          Oj->on_collision(Oi, fc);
         }
       }
     }
@@ -117,16 +80,16 @@ public:
 
 private:
   inline static bool is_collision_checked(object *o1, object *o2,
-                                          framectx *fc) {
+                                          const framectx &fc) {
     metrics.collision_grid_overlap_check++;
 
-    if (o1->grid_ifc.tick != fc->tick) { // list out of date
+    if (o1->grid_ifc.tick != fc.tick) { // list out of date
       o1->grid_ifc.checked_collisions_list.clear();
-      o1->grid_ifc.tick = fc->tick;
+      o1->grid_ifc.tick = fc.tick;
     }
-    if (o2->grid_ifc.tick != fc->tick) { // list out of date
+    if (o2->grid_ifc.tick != fc.tick) { // list out of date
       o2->grid_ifc.checked_collisions_list.clear();
-      o2->grid_ifc.tick = fc->tick;
+      o2->grid_ifc.tick = fc.tick;
     }
 
     return is_in_checked_collision_list(o1, o2) or
@@ -139,14 +102,14 @@ private:
     return it != src->grid_ifc.checked_collisions_list.end();
   }
 
-  inline static int detect_and_resolve_collision_for_spheres(object *o1,
-                                                             object *o2,
-                                                             framectx *fc) {
+  inline static int
+  detect_and_resolve_collision_for_spheres(object *o1, object *o2,
+                                           const framectx &fc) {
 
     vec4 v;
     vec3_minus(&v, &o2->physics.position, &o1->physics.position);
-    const float d = o1->bounding_volume.radius +
-                    o2->bounding_volume.radius; // minimum distance
+    const float d = o1->volume.radius +
+                    o2->volume.radius; // minimum distance
     const float dsq = d * d;                    //  squared
     const float vsq = vec3_dot(&v, &v);         // distance of vector squared
     const float diff = vsq - dsq;               //
@@ -162,10 +125,10 @@ private:
     // partial dt to collision
     const float x1 = o1->physics.position.x;
     const float u1 = o1->physics.velocity.x;
-    const float r1 = o1->bounding_volume.radius;
+    const float r1 = o1->volume.radius;
     const float x2 = o2->physics.position.x;
     const float u2 = o2->physics.velocity.x;
-    const float r2 = o1->bounding_volume.radius;
+    const float r2 = o1->volume.radius;
     // if x1<x2
     //   x1+u1*t+r1=x2+u2*t-r2
     // else if x1>x2

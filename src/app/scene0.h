@@ -1,5 +1,4 @@
 #pragma once
-#include "ninja.h"
 #include "santa.h"
 
 inline static void main_init_scene_do() {
@@ -8,42 +7,40 @@ inline static void main_init_scene_do() {
   glos_load_from_file("obj/grid.obj");
   glos_load_from_file("obj/santa.obj");
 
-  o = object_alloc(&object_def);
+  o = new object{};
+  objects.push_back(o);
   // o->name = "skydome";
   o->node.glo = glos_find_by_name("skydome");
-  o->vtbl.render = _object_render_glo_;
-  o->bounding_volume.scale = {15, 15, 15, 0};
-  o->bounding_volume.radius = 10 * 15;
+  o->volume.scale = {15, 15, 15, 0};
+  o->volume.radius = 10 * 15;
 
-  o = object_alloc(&object_def);
+  o = new object{};
+  objects.push_back(o);
   // o->name = "grid";
   o->node.glo = glos_find_by_name("grid");
-  o->vtbl.render = _object_render_glo_;
-  o->bounding_volume.scale = {10, 10, 10, 0};
+  o->volume.scale = {10, 10, 10, 0};
   o->physics.position = {0, 0, 0, 0};
-  o->bounding_volume.radius = 2 * 10;
+  o->volume.radius = 2 * 10;
 
-  santa *p;
-
-  o = santa_alloc_def();
+  o = new santa{};
+  objects.push_back(o);
   // o->name = "santa2";
   o->node.glo = glos_find_by_name("santa");
-  o->bounding_volume.scale = {10, 10, 10, 0};
-  o->bounding_volume.radius = .5f;
+  o->volume.scale = {10, 10, 10, 0};
+  o->volume.radius = .5f;
   o->physics.position = {-30, 2, -30, 0};
   o->physics_nxt = o->physics;
-  p = (santa *)o->part[0];
-  p->keybits_ptr = &net_state_current[2].keybits;
+  o->keys_ptr = &net_state_current[2].keybits;
 
-  o = santa_alloc_def();
+  o = new santa{};
+  objects.push_back(o);
   // o->name = "santa1";
   o->node.glo = glos_find_by_name("santa");
-  o->bounding_volume.scale = {10, 10, 10, 0};
+  o->volume.scale = {10, 10, 10, 0};
   o->physics.position = {30, 2, 30, 0};
   o->physics_nxt = o->physics;
-  o->bounding_volume.radius = .5f;
-  p = (santa *)o->part[0];
-  p->keybits_ptr = &net_state_current[1].keybits;
+  o->volume.radius = .5f;
+  o->keys_ptr = &net_state_current[1].keybits;
 
   game.follow_ptr = o;
   camera.eye = {30, 120, -140, 0};

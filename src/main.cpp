@@ -8,8 +8,6 @@
 
 #include "grid.hpp"
 
-#include "obj/objects.h"
-
 static struct _game {
   int *keybits_ptr;
   const object *follow_ptr;
@@ -29,6 +27,14 @@ static struct color {
   GLclampf green;
   GLclampf blue;
 } bg = {.1f, .1f, 0};
+
+std::vector<object *> objects{};
+static void objects_init() {}
+static void objects_free() {
+  for (object *o : objects) {
+    delete o;
+  }
+}
 
 #include "app/init.h"
 
@@ -93,7 +99,7 @@ inline static void main_init() {
   main_init_scene();
 }
 
-inline static void main_render(framectx *fc) {
+inline static void main_render(const framectx &fc) {
   camera.update_matrix_wvp();
   glUniformMatrix4fv(shader_umtx_wvp, 1, 0, camera.mxwvp);
   glClearColor(bg.red, bg.green, bg.blue, 1.0);
@@ -101,8 +107,6 @@ inline static void main_render(framectx *fc) {
   grid.render(fc);
   SDL_GL_SwapWindow(window.ref);
 }
-
-static inline void _foreach_object_add_to_grid_(object *o) { grid.add(o); }
 
 //------------------------------------------------------------------------ main
 int main(int argc, char *argv[]) {
@@ -125,7 +129,6 @@ int main(int argc, char *argv[]) {
   printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
   printf(": %15s : %-9s :\n", "type", "bytes");
   printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
-  printf(": %15s : %-9ld :\n", "part", sizeof(part));
   printf(": %15s : %-9ld :\n", "object", sizeof(object));
   printf(": %15s : %-9ld :\n", "glo", sizeof(glo));
   printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
@@ -138,7 +141,7 @@ int main(int argc, char *argv[]) {
   sdl.init();
   window.init();
   shader_init();
-  //	objects_init();
+  objects_init();
   glos_init();
   grid.init();
   main_init();
@@ -323,16 +326,18 @@ int main(int argc, char *argv[]) {
 
     grid.clear();
     // objects_foa({ grid_add(o); });
-    objects_foreach_allocated_all(_foreach_object_add_to_grid_);
-    grid.update(&fc);
-    grid.resolve_collisions(&fc);
+    for (object *o : objects) {
+      grid.add(o);
+    }
+    grid.update(fc);
+    grid.resolve_collisions(fc);
     if (do_main_render) {
-      main_render(&fc);
+      main_render(fc);
     }
     if (use_net) {
       net__at__frame_end();
     }
-    metrics.objects_allocated = object_metrics_allocated;
+    metrics.objects_allocated = objects.size();
     metrics.at_frame_end(stderr);
   }
   //---------------------------------------------------------------------free

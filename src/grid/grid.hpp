@@ -1,7 +1,6 @@
 #pragma once
 #include "../lib.h"
 #include "../obj/object.hpp"
-#include "../obj/part.hpp"
 #include "cell.hpp"
 
 #define grid_cell_size 20
@@ -17,7 +16,7 @@ public:
 
   inline void free() {}
 
-  inline void update(framectx *fc) {
+  inline void update(const framectx &fc) {
     cell *p = &cells[0][0];
     unsigned i = grid_ncells;
     while (i--) {
@@ -26,7 +25,7 @@ public:
     }
   }
 
-  inline void resolve_collisions(framectx *fc) {
+  inline void resolve_collisions(const framectx &fc) {
     cell *p = &cells[0][0];
     unsigned i = grid_ncells;
     while (i--) {
@@ -35,7 +34,7 @@ public:
     }
   }
 
-  inline void render(framectx *fc) {
+  inline void render(const framectx &fc) {
     cell *p = &cells[0][0];
     unsigned i = grid_ncells;
     while (i--) {
@@ -63,7 +62,7 @@ public:
     const float gw = grid_cell_size * grid_ncells_wide;
     const float gh = grid_cell_size * grid_ncells_high;
 
-    const float r = o->bounding_volume.radius;
+    const float r = o->volume.radius;
 
     const float xl = gw / 2 + o->physics.position.x - r;
     const float xr = gw / 2 + o->physics.position.x + r;
