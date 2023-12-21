@@ -94,11 +94,11 @@ inline static void main_render(framectx *fc) {
   glUniformMatrix4fv(shader_umtx_wvp, 1, 0, camera.mxwvp);
   glClearColor(bg.red, bg.green, bg.blue, 1.0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  grid_render(fc);
+  grid.render(fc);
   SDL_GL_SwapWindow(window.ref);
 }
 
-static inline void _foreach_object_add_to_grid_(object *o) { grid_add(o); }
+static inline void _foreach_object_add_to_grid_(object *o) { grid.add(o); }
 
 //------------------------------------------------------------------------ main
 int main(int argc, char *argv[]) {
@@ -136,7 +136,7 @@ int main(int argc, char *argv[]) {
   shader_init();
   //	objects_init();
   glos_init();
-  grid_init();
+  grid.init();
   main_init();
 
   {
@@ -317,11 +317,11 @@ int main(int argc, char *argv[]) {
 
     frameno++;
 
-    grid_clear();
+    grid.clear();
     // objects_foa({ grid_add(o); });
     objects_foreach_allocated_all(_foreach_object_add_to_grid_);
-    grid_update(&fc);
-    grid_resolve_collisions(&fc);
+    grid.update(&fc);
+    grid.resolve_collisions(&fc);
     if (do_main_render) {
       main_render(&fc);
     }
@@ -332,7 +332,7 @@ int main(int argc, char *argv[]) {
     metrics.at_frame_end(stderr);
   }
   //---------------------------------------------------------------------free
-  grid_free();
+  grid.free();
   glos_free();
   objects_free();
   materials_free();

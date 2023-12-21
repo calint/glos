@@ -1,6 +1,6 @@
 #pragma once
 //--------------------------------------------------------------------- object
-#include "../grid/grid-ifc.h"
+#include "../grid/grid-ifc.hpp"
 #include "../lib.h"
 #include "bounding_volume.hpp"
 #include "node.hpp"
@@ -73,7 +73,7 @@ static object object_def = {
     .physics_prv{},
     .physics_nxt{},
     .physics{},
-    .grid_ifc = grid_ifc_def,
+    .grid_ifc{},
     .vtbl{},
     .type = type_def,
     .alloc_bits_ptr = 0,
