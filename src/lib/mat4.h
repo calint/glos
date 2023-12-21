@@ -3,20 +3,10 @@
 #include <math.h>
 #include <string.h>
 
-// #define mat4_identity (float[4*4]){1,0,0,0,  0,1,0,0,  0,0,1,0,  0,0,0,1}
-// #define mat3_identity (float[3*3]){1,0,0, 0,1,0, 0,0,1}
-
-// #define mat4_identity (float[16]){1,0,0,0,  0,1,0,0,  0,0,1,0,  0,0,0,1}
-// #define mat3_identity (float[9]){1,0,0, 0,1,0, 0,0,1}
-
 #define mat4_identity                                                          \
   (mat4) { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 }
-#define mat4_identity_                                                         \
-  { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 }
 #define mat3_identity                                                          \
   (mat3) { 1, 0, 0, 0, 1, 0, 0, 0, 1 }
-#define mat3_identity_                                                         \
-  { 1, 0, 0, 0, 1, 0, 0, 0, 1 }
 
 inline static void mat4_assign(mat4 o, mat4 src) {
   memcpy(o, src, 16 * sizeof(float));
@@ -64,27 +54,6 @@ inline static void mat4_set_look_at(mat4 o, const position *eye,
   vec4 yaxis;
   vec3_cross(&yaxis, &zaxis, &xaxis);
 
-  //	// X
-  //	o[0]=xaxis.x;
-  //	o[1]=xaxis.y;
-  //	o[2]=xaxis.z;
-  //	o[3]=0;
-  //	// Y
-  //	o[4]=yaxis.x;
-  //	o[5]=yaxis.y;
-  //	o[6]=yaxis.z;
-  //	o[7]=0;
-  //	// Z
-  //	o[8]=-zaxis.x;
-  //	o[9]=-zaxis.y;
-  //	o[10]=-zaxis.z;
-  //	o[11]=0;
-  //	// T
-  //	o[12]=eye->x;
-  //	o[13]=eye->y;
-  //	o[14]=eye->z;
-  //	o[15]=1;
-
   // invert by transposing orthonorm mat3
   //	 X
   o[0] = xaxis.x;
@@ -106,95 +75,7 @@ inline static void mat4_set_look_at(mat4 o, const position *eye,
   o[13] = 0;
   o[14] = 0;
   o[15] = 1;
-
-  //	o[0]=xaxis.x;
-  //	o[1]=yaxis.x;
-  //	o[2]=zaxis.x;
-  //	o[3]=0;
-  //	// Y
-  //	o[4]=xaxis.y;
-  //	o[5]=yaxis.y;
-  //	o[6]=-zaxis.y;
-  //	o[7]=0;
-  //	// Z
-  //	o[8]=xaxis.z;
-  //	o[9]=yaxis.z;
-  //	o[10]=-zaxis.z;
-  //	o[11]=0;
-  //	// T
-  //	o[12]=0;
-  //	o[13]=0;
-  //	o[14]=0;
-  //	o[15]=1;
 }
-
-// inline static void mat4_set_perpective_projection(float*c,
-//		const float nearz,const float farz,
-//		const float fov_rad,const float aspect
-//){
-//
-////
-////	const float frustrum_depth=farz-nearz;
-////	const float one_over_frustrum_depth=1/frustrum_depth;
-////	const float a=1/tanf(0.5f*fov_rad);
-////
-////	// X
-////	c[0]=a/aspect;
-////	c[1]=0;
-////	c[2]=0;
-////	c[3]=0;
-////
-////	// Y
-////	c[4]=0;
-////	c[5]=a;
-////	c[6]=0;
-////	c[7]=0;
-////
-////	// Z
-////	c[8]=0;
-////	c[9]=0;
-////	c[10]=farz*one_over_frustrum_depth;
-////	c[11]=-farz*nearz*one_over_frustrum_depth;
-////
-////	// T
-////	c[12]=0;
-////	c[13]=0;
-////	c[14]=1;
-////	c[15]=0;
-////
-//
-//	const float d=1.0f/tanf(0.5f*fov_rad);
-//
-//	c[ 0]=d*aspect;
-//	c[ 1]=0;
-//	c[ 2]=0;
-//	c[ 3]=0;
-//
-////		c[0]=1;c[1]=0;c[2]=0;c[3]=0;
-//
-//	c[ 4]=0;
-//	c[ 5]=d;
-//	c[ 6]=0;
-//	c[ 7]=0;
-//
-////		c[4]=0;c[5]=1;c[6]=0;c[7]=0;
-//
-//
-//	const float rangez=farz-nearz;
-//	c[ 8]=0;
-//	c[ 9]=0;
-//	c[10]=-(farz-nearz)/rangez;
-//	c[11]=-2.0f*farz*nearz/rangez;
-//
-////		c[ 8]=0;c[ 9]=0;c[10]=1;c[11]=0;
-//
-//	c[12]=0;
-//	c[13]=0;
-//	c[14]=1;
-//	c[15]=0;
-//
-////	c[12]=0;c[13]=0;c[14]=0;c[15]=1;
-//}
 
 inline static void mat4_get_axis_x(mat4 o, vec4 *result) {
   result->x = o[0];
@@ -216,14 +97,6 @@ inline static void mat4_get_axis_z(mat4 o, vec4 *result) {
   result->z = o[10];
   result->w = 0;
 }
-//
-// inline static void mat4_get_axis_t(float*this,vec4*result){
-//	result->x=this[12];
-//	result->y=this[13];
-//	result->z=this[14];
-//	result->w=this[15];
-//}
-//
 
 // from mesa
 static void mat4_glFrustum(mat4 o, float left, float right, float bottom,
@@ -232,9 +105,6 @@ static void mat4_glFrustum(mat4 o, float left, float right, float bottom,
   float TsubB = top - bottom;
   float FsubN = far - near;
   float Nmul2 = 2.0f * near;
-
-  //	float m[16];
-  //	memcpy(mat4_identity,m,16);
 
   o[0] = Nmul2 / RsubL;
   o[1] = 0;
@@ -271,7 +141,7 @@ static void mat4_gluPerspective(mat4 o, float fov, float aspect, float near,
 // #define 180_OVER_PI 57.2957795130823208767981548141f
 
 #define DEG_TO_RAD(x) (x * PI_OVER_180)
-#define RAD_TO_DEG(x) (x * 180_OVER_PI)
+// #define RAD_TO_DEG(x) (x * 180_OVER_PI)
 
 // from stackoverflow
 
@@ -490,75 +360,3 @@ inline static /*gives*/ float *mat4_multiply(mat4 ret, const mat4 lhs,
             lhs[15] * rhs[15];
   return ret;
 }
-/*
-                m4&set_translation(const p3&p){
-                        // [ 0 4  8  x ]
-                        // [ 1 5  9  y ]
-                        // [ 2 6 10  z ]
-                        // [ 3 7 11 15 ]
-                        c[12]=p.x;
-                        c[13]=p.y;
-                        c[14]=p.z;
-                        return*this;
-                }
-                m4&append_scaling(const p3&scale){
-                        // [ 0 4  8 12 ]   [ x 0 0 0 ]
-                        // [ 1 5  9 13 ] x [ 0 y 0 0 ]
-                        // [ 2 6 10 14 ]   [ 0 0 z 0 ]
-                        // [ 3 7 11 15 ]   [ 0 0 0 1 ]
-                        c[ 0]*=scale.x;
-                        c[ 4]*=scale.y;
-                        c[ 8]*=scale.z;
-
-                        c[ 1]*=scale.x;
-                        c[ 5]*=scale.y;
-                        c[ 9]*=scale.z;
-
-                        c[ 2]*=scale.x;
-                        c[ 6]*=scale.y;
-                        c[10]*=scale.z;
-
-                        c[ 3]*=scale.x;
-                        c[ 7]*=scale.y;
-                        c[11]*=scale.z;
-                        return*this;
-                }
-                //	inline p3 w_axis()const{return p3{c[3],c[7],c[11]};}
-        };
-        m4 operator*(const m4&lh,const m4&rh){
-                // [ 0 4  8 12 ]   [ 0 4  8 12 ]
-                // [ 1 5  9 13 ] x [ 1 5  9 13 ]
-                // [ 2 6 10 14 ]   [ 2 6 10 14 ]
-                // [ 3 7 11 15 ]   [ 3 7 11 15 ]
-                m4 m;
-                floato*ret=m.c;
-                const floato*lhs=lh.c;
-                const floato*rhs=rh.c;
-                ret[ 0] = lhs[ 0]*rhs[ 0] + lhs[ 4]*rhs[ 1] + lhs[ 8]*rhs[ 2] +
-lhs[12]*rhs[ 3]; ret[ 1] = lhs[ 1]*rhs[ 0] + lhs[ 5]*rhs[ 1] + lhs[ 9]*rhs[ 2] +
-lhs[13]*rhs[ 3]; ret[ 2] = lhs[ 2]*rhs[ 0] + lhs[ 6]*rhs[ 1] + lhs[10]*rhs[ 2] +
-lhs[14]*rhs[ 3]; ret[ 3] = lhs[ 3]*rhs[ 0] + lhs[ 7]*rhs[ 1] + lhs[11]*rhs[ 2] +
-lhs[15]*rhs[ 3];
-
-                ret[ 4] = lhs[ 0]*rhs[ 4] + lhs[ 4]*rhs[ 5] + lhs[ 8]*rhs[ 6] +
-lhs[12]*rhs[ 7]; ret[ 5] = lhs[ 1]*rhs[ 4] + lhs[ 5]*rhs[ 5] + lhs[ 9]*rhs[ 6] +
-lhs[13]*rhs[ 7]; ret[ 6] = lhs[ 2]*rhs[ 4] + lhs[ 6]*rhs[ 5] + lhs[10]*rhs[ 6] +
-lhs[14]*rhs[ 7]; ret[ 7] = lhs[ 3]*rhs[ 4] + lhs[ 7]*rhs[ 5] + lhs[11]*rhs[ 6] +
-lhs[15]*rhs[ 7];
-
-                ret[ 8] = lhs[ 0]*rhs[ 8] + lhs[ 4]*rhs[ 9] + lhs[ 8]*rhs[10] +
-lhs[12]*rhs[11]; ret[ 9] = lhs[ 1]*rhs[ 8] + lhs[ 5]*rhs[ 9] + lhs[ 9]*rhs[10] +
-lhs[13]*rhs[11]; ret[10] = lhs[ 2]*rhs[ 8] + lhs[ 6]*rhs[ 9] + lhs[10]*rhs[10] +
-lhs[14]*rhs[11]; ret[11] = lhs[ 3]*rhs[ 8] + lhs[ 7]*rhs[ 9] + lhs[11]*rhs[10] +
-lhs[15]*rhs[11];
-
-                ret[12] = lhs[ 0]*rhs[12] + lhs[ 4]*rhs[13] + lhs[ 8]*rhs[14] +
-lhs[12]*rhs[15]; ret[13] = lhs[ 1]*rhs[12] + lhs[ 5]*rhs[13] + lhs[ 9]*rhs[14] +
-lhs[13]*rhs[15]; ret[14] = lhs[ 2]*rhs[12] + lhs[ 6]*rhs[13] + lhs[10]*rhs[14] +
-lhs[14]*rhs[15]; ret[15] = lhs[ 3]*rhs[12] + lhs[ 7]*rhs[13] + lhs[11]*rhs[14] +
-lhs[15]*rhs[15]; return m;//? std::move
-        }
-        // - - - -------- - - - - - - -    - - --- - - - - - --- -- - - - - -
-        // forked from apple examples
-}
-*/

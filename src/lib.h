@@ -2,8 +2,6 @@
 #include"lib/consts.h"
 #include"lib/types.h"
 #include"lib/str.h"
-#include"lib/dyni.h"
-#include"lib/dynp.h"
 #include"lib/vec3.h"
 #include"lib/mat4.h"
 #include"lib/token.h"

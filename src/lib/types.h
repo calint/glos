@@ -1,16 +1,6 @@
 #pragma once
 #include "consts.h"
 #include <inttypes.h>
-typedef uint8_t bits;
-typedef uint32_t gid;
-typedef void *ref;
-typedef struct type {
-  char path[8];
-} type;
-#define type_def                                                               \
-  (type) {                                                                     \
-    { 0, 0, 0, 0, 0, 0, 0, 0 }                                                 \
-  }
 typedef struct vec2 {
   float x, y;
 } vec2;
