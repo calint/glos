@@ -127,7 +127,6 @@ int main(int argc, char *argv[]) {
   printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
   puts("");
 
-  unsigned gloid = 0;
   if (use_net) {
     net_init();
   }
@@ -273,29 +272,11 @@ int main(int argc, char *argv[]) {
           mouse_mode = mouse_mode ? SDL_FALSE : SDL_TRUE;
           SDL_SetRelativeMouseMode(mouse_mode);
           break;
-        case SDLK_2: {
-          gloid++;
-          if (gloid == glos.size()) {
-            gloid = 0;
-          }
-          //? getting pointer to volatile memory
-          object_at(0)->node.glo = &glos.at(gloid);
-          break;
-        }
-        case SDLK_3: {
+        case SDLK_3:
           shader_program_ix++;
           if (shader_program_ix >= programs.size()) {
             shader_program_ix = 0;
           }
-          break;
-        }
-        case SDLK_4:
-          camera.type = !camera.type;
-          break;
-        case SDLK_5:
-          printf("   camera: %f  %f  %f", camera.eye.x, camera.eye.y,
-                 camera.eye.z);
-          //						camera.ortho=!camera.ortho;
           break;
         }
         break;

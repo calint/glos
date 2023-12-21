@@ -40,7 +40,7 @@ public:
     physics_prv = physics;
     physics = physics_nxt;
 
-    const dt dt = fc->dt;
+    const float dt = fc->dt;
     vec3_inc_with_vec3_over_dt(&physics.position, &physics.velocity, dt);
     vec3_inc_with_vec3_over_dt(&physics.angle, &physics.angular_velocity, dt);
     physics_nxt = physics;

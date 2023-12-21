@@ -31,10 +31,9 @@ typedef vec4 angle;
 typedef vec4 scale;
 typedef vec4 angular_velocity;
 typedef float radius;
-typedef float dt;
 typedef const char *path;
 
 typedef struct framectx {
-  dt dt;
+  float dt;
   unsigned tick;
 } framectx;

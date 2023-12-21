@@ -10,10 +10,10 @@ WARNINGS="-Wall -Wextra -Wfatal-errors -Wno-unused-function -Wno-unused-paramete
 LIBS="$(sdl2-config --libs) -lGL -lm -lSDL2_gfx -lSDL2_image -lSDL2_ttf -lSDL2_mixer"
 #OPTIMIZATION=-O3
 OPTIMIZATION="-O3 -g"
-#REMARKS=-Rpass=inline
 REMARKS=
-#PROFILE=-pg
+#REMARKS=-Rpass=inline
 PROFILE=
+#PROFILE=-pg
 
 $CC $PROFILE $SRC -o $BIN $OPTIMIZATION $CFLAGS $LIBS $WARNINGS
 

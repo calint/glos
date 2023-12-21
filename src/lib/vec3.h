@@ -44,7 +44,7 @@ inline static float vec3_dot(const vec4 *lh, const vec4 *rh) {
   return lh->x * rh->x + lh->y * rh->y + lh->z * rh->z;
 }
 
-inline static void vec3_inc_with_vec3_over_dt(vec4 *o, vec4 *other, dt dt) {
+inline static void vec3_inc_with_vec3_over_dt(vec4 *o, vec4 *other, float dt) {
   o->x += other->x * dt;
   o->y += other->y * dt;
   o->z += other->z * dt;
