@@ -1,4 +1,5 @@
 #pragma once
+#include "shader.hpp"
 #include "material.hpp"
 #include <glm/gtc/type_ptr.hpp>
 #include <stdio.h>
