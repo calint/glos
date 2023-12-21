@@ -20,7 +20,6 @@ public:
   inline void update(framectx *fc) {
     cell *p = &cells[0][0];
     unsigned i = grid_ncells;
-    //	printf("-------------------------\n");
     while (i--) {
       p->update(fc);
       p++;
@@ -28,7 +27,6 @@ public:
   }
 
   inline void resolve_collisions(framectx *fc) {
-    // printf("-------------------------------\n");
     cell *p = &cells[0][0];
     unsigned i = grid_ncells;
     while (i--) {
@@ -104,7 +102,6 @@ public:
     cell *p = &cells[0][0];
     unsigned i = grid_ncells;
     while (i--) {
-      //		cell_print(p++);
       printf(" %zu ", p->objects.size());
       if (!(i % grid_ncells_wide)) {
         printf("\n");
@@ -114,18 +111,6 @@ public:
     printf("\n------------------------\n");
   }
 
-  // inline static void grid_print_list() {
-  //   cell *p = &cells[0][0];
-  //   unsigned i = grid_ncells;
-  //   while (i--) {
-  //     printf(" cell[%p]:\n", (void *)p);
-  //     dynp_foa(&p->objrefs, {
-  //       object *oo = o;
-  //       printf("   %s\n", oo->name.data);
-  //     });
-  //     p++;
-  //   }
-  // }
 private:
   inline static int clamp(int i, int min, int max_plus_one) {
     if (i < min)
