@@ -49,12 +49,10 @@ static /*gives*/ glo *glo_make_from_string(const char **ptr_p) {
     }
     if (token_equals(&t, "mtllib")) {
       token t = token_next(&p);
-      str s = str_def;
-      str_add_string(&s, basedir);
-      str_add_list(&s, t.content, token_size(&t));
-      str_add(&s, 0);
-      objmtls_load_from_file(s.data);
-      str_free(&s);
+      std::string base{basedir};
+      std::string file_name{t.content, t.content + token_size(&t)};
+      std::string path = base + file_name;
+      objmtls_load_from_file(path.c_str());
       continue;
     }
     if (token_equals(&t, "o")) {
@@ -71,13 +69,11 @@ static /*gives*/ glo *glo_make_from_string(const char **ptr_p) {
     }
     if (token_equals(&t, "usemtl")) {
       token t = token_next(&p);
-      str name = str_def;
-      str_add_list(&name, t.content, token_size(&t));
-      str_add(&name, 0);
+      std::string name{t.content, t.content + token_size(&t)};
       bool found = false;
       for (unsigned i = 0; i < materials.size(); i++) {
         material &mm = materials.at(i);
-        if (!strcmp(mm.name.c_str(), name.data)) {
+        if (mm.name == name) {
           current_objmtl_ix = i;
           found = true;
           break;
@@ -86,12 +82,10 @@ static /*gives*/ glo *glo_make_from_string(const char **ptr_p) {
       if (not found) {
         fprintf(stderr, "\n%s:%u: could not find material\n", __FILE__,
                 __LINE__);
-        fprintf(stderr, "        name: '%s'\n\n", name.data);
-        stacktrace_print(stderr);
+        fprintf(stderr, "        name: '%s'\n\n", name.c_str());
         fprintf(stderr, "\n\n");
         exit(-1);
       }
-      str_free(&name);
       if (prev_vtxbufix != vtxbufix) {
         mtlrngs.emplace_back(prev_vtxbufix, vtxbufix, current_objmtl_ix);
         prev_vtxbufix = vtxbufix;
@@ -196,17 +190,6 @@ static /*gives*/ glo *glo_make_from_string(const char **ptr_p) {
   return g;
 }
 
-inline static void str_base_dir(str *o) {
-  while (1) {
-    const char *p = o->data + o->count - 1;
-    if (*p == '/')
-      break;
-    if (o->count == 0)
-      break;
-    o->count--;
-  }
-}
-
 inline static void glo_upload_to_opengl(glo *o) {
   // upload vertex buffer
   glGenBuffers(1, &o->vtxbuf_id);
@@ -292,10 +275,16 @@ inline static void glos_render() {
 
 inline static void glos_load_from_file(const char *path) {
   printf(" * loading object from '%s'\n", path);
-  str file = /*takes*/ str_from_file(path);
-  const char *p = file.data;
+  std::ifstream file(path);
+  if (!file) {
+    printf("*** cannot open file '%s'\n", path);
+    exit(1);
+  }
+  std::stringstream buffer;
+  buffer << file.rdbuf();
+  std::string content = buffer.str();
+  const char *p = content.c_str();
   glo *g = /*takes*/ glo_make_from_string(&p);
-  str_free(&file);
   glo_upload_to_opengl(g);
   glos.push_back(std::move(*g));
   delete g;
@@ -309,7 +298,6 @@ inline static glo *glos_find_by_name(const char *name) {
   }
   fprintf(stderr, "\n%s:%u: could not find glo '%s' \n", __FILE__, __LINE__,
           name);
-  stacktrace_print(stderr);
   fprintf(stderr, "\n\n");
   exit(-1);
   return NULL;

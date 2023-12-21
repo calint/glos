@@ -1,6 +1,6 @@
- [ ] c++ conversion
- [ ]   replace dynp, dyni, dynf with vector
- [ ]   replace str with string
+ [x] c++ conversion
+ [x]   replace dynp, dyni, dynf with vector
+ [x]   replace str with string
  [ ] namespaces
  [ ] hpp files included by main.cpp
  [ ] convert structs to classes

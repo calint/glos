@@ -10,7 +10,6 @@ inline static void netsrv_init() {
   netsrv_fd = socket(AF_INET, SOCK_STREAM, 0);
   if (netsrv_fd == -1) {
     fprintf(stderr, "\n%s:%u: create socket failed\n", __FILE__, __LINE__);
-    stacktrace_print(stderr);
     fprintf(stderr, "\n\n");
     exit(-1);
   }
@@ -20,7 +19,6 @@ inline static void netsrv_init() {
                           sizeof(int));
   if (result < 0) {
     fprintf(stderr, "\n%s:%u: set TCP_NODELAY failed\n", __FILE__, __LINE__);
-    stacktrace_print(stderr);
     fprintf(stderr, "\n\n");
     exit(-1);
   }
@@ -32,7 +30,6 @@ inline static void netsrv_init() {
 
   if (bind(netsrv_fd, (struct sockaddr *)&server, sizeof(server)) < 0) {
     fprintf(stderr, "\n%s:%u: bind failed\n", __FILE__, __LINE__);
-    stacktrace_print(stderr);
     fprintf(stderr, "\n\n");
     exit(-1);
   }
@@ -40,7 +37,6 @@ inline static void netsrv_init() {
   if (listen(netsrv_fd, net_cap) == -1) {
     fprintf(stderr, "\n%s:%u\n", __FILE__, __LINE__);
     perror("cause");
-    stacktrace_print(stderr);
     fprintf(stderr, "\n\n");
     exit(-1);
   }
@@ -63,7 +59,6 @@ inline static void netsrv_init() {
                             (char *)&flag, sizeof(int));
     if (result < 0) {
       fprintf(stderr, "\n%s:%u: set TCP_NODELAY failed\n", __FILE__, __LINE__);
-      stacktrace_print(stderr);
       fprintf(stderr, "\n\n");
       exit(-1);
     }
@@ -71,7 +66,6 @@ inline static void netsrv_init() {
     if (netsrv_client_fd[i] < 0) {
       fprintf(stderr, "\n%s:%u\n", __FILE__, __LINE__);
       perror("cause");
-      stacktrace_print(stderr);
       fprintf(stderr, "\n\n");
       exit(-1);
     }
@@ -96,20 +90,17 @@ inline static void netsrv_loop() {
       if (n == -1) {
         fprintf(stderr, "\n%s:%u:\n", __FILE__, __LINE__);
         perror("cause");
-        stacktrace_print(stderr);
         fprintf(stderr, "\n\n");
         exit(-1);
       }
       if (n == 0) {
         fprintf(stderr, "\n%s:%u: player %u disconnected\n", __FILE__, __LINE__,
                 i);
-        stacktrace_print(stderr);
         fprintf(stderr, "\n\n");
         exit(-1);
       }
       if ((unsigned)n != fullreadsize) {
         fprintf(stderr, "\n%s:%u: not full read\n", __FILE__, __LINE__);
-        stacktrace_print(stderr);
         fprintf(stderr, "\n\n");
         exit(-1);
       }

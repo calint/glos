@@ -116,10 +116,10 @@ int main(int argc, char *argv[]) {
     netsrv_free();
   }
 
-  int use_net = 0;
+  bool use_net = false;
   if (argc > 1 && *argv[1] == 'c') {
     srand(0);
-    use_net = 1;
+    use_net = true;
     if (argc > 2) {
       net_host = argv[2];
     }
@@ -160,8 +160,8 @@ int main(int argc, char *argv[]) {
   const float rad_over_degree = 2.0f * PI / 360.0f;
   float rad_over_mouse_pixels = rad_over_degree * .02f;
   float mouse_sensitivity = 1.5f;
-  SDL_bool mouse_mode = SDL_FALSE;
-  SDL_SetRelativeMouseMode(mouse_mode);
+  bool mouse_mode = false;
+  SDL_SetRelativeMouseMode(mouse_mode ? SDL_TRUE : SDL_FALSE);
 
   metrics.fps.calculation_intervall_ms = 1000;
   metrics.reset_timer();
@@ -172,14 +172,14 @@ int main(int argc, char *argv[]) {
       .dt = 0.1f,
       .tick = 0,
   };
-  
-  for (int running = 1; running;) {
+
+  for (bool running = true; running;) {
     metrics.at_frame_begin();
 
     if (use_net) {
       net_state_to_send.lookangle_y = camera_lookangle_y;
       net_state_to_send.lookangle_x = camera_lookangle_x;
-      net__at__frame_begin();
+      net_at_frame_begin();
     }
 
     SDL_Event event;
@@ -202,7 +202,7 @@ int main(int argc, char *argv[]) {
         break;
       }
       case SDL_QUIT:
-        running = 0;
+        running = false;
         break;
       case SDL_MOUSEMOTION: {
         if (event.motion.xrel != 0) {
@@ -217,10 +217,6 @@ int main(int argc, char *argv[]) {
       }
       case SDL_KEYDOWN:
         switch (event.key.keysym.sym) {
-        case SDLK_ESCAPE:
-          mouse_mode = mouse_mode ? SDL_FALSE : SDL_TRUE;
-          SDL_SetRelativeMouseMode(mouse_mode);
-          break;
         case SDLK_w:
           net_state_to_send.keys |= 1;
           break;
@@ -269,7 +265,7 @@ int main(int argc, char *argv[]) {
           break;
         case SDLK_SPACE:
           mouse_mode = mouse_mode ? SDL_FALSE : SDL_TRUE;
-          SDL_SetRelativeMouseMode(mouse_mode);
+          SDL_SetRelativeMouseMode(mouse_mode ? SDL_TRUE : SDL_FALSE);
           break;
         case SDLK_3:
           shader_program_ix++;
@@ -283,8 +279,7 @@ int main(int argc, char *argv[]) {
     }
 
     if (!use_net) {
-      net_state_current[net_active_player_index].keys =
-          net_state_to_send.keys;
+      net_state_current[net_active_player_index].keys = net_state_to_send.keys;
     }
     if (game.keys_ptr) {
       *game.keys_ptr = net_state_current[net_active_player_index].keys;

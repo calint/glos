@@ -26,7 +26,6 @@ inline static void net_connect() {
   net_fd = socket(AF_INET, SOCK_STREAM, 0);
   if (net_fd == -1) {
     fprintf(stderr, "\n%s:%u: create socket failed\n", __FILE__, __LINE__);
-    stacktrace_print(stderr);
     fprintf(stderr, "\n\n");
     exit(-1);
   }
@@ -36,7 +35,6 @@ inline static void net_connect() {
       setsockopt(net_fd, IPPROTO_TCP, TCP_NODELAY, (char *)&flag, sizeof(int));
   if (result < 0) {
     fprintf(stderr, "\n%s:%u: set TCP_NODELAY failed\n", __FILE__, __LINE__);
-    stacktrace_print(stderr);
     fprintf(stderr, "\n\n");
     exit(-1);
   }
@@ -49,14 +47,12 @@ inline static void net_connect() {
   if (connect(net_fd, (struct sockaddr *)&server, sizeof(server)) < 0) {
     fprintf(stderr, "\n%s:%u: connect failed\n", __FILE__, __LINE__);
     fprintf(stderr, "    server: %s  port: %d\n\n", net_host, net_port);
-    stacktrace_print(stderr);
     fprintf(stderr, "\n\n");
     exit(-1);
   }
   if (recv(net_fd, &net_active_player_index, sizeof(net_active_player_index),
            0) < 0) {
     fprintf(stderr, "\n%s:%u: receive failed\n", __FILE__, __LINE__);
-    stacktrace_print(stderr);
     fprintf(stderr, "\n\n");
     exit(-1);
   }
@@ -64,11 +60,10 @@ inline static void net_connect() {
 
 inline static void net_init() { net_connect(); }
 
-inline static void net__at__frame_begin() {
+inline static void net_at_frame_begin() {
   // send next key state
   if (send(net_fd, &net_state_to_send, sizeof(net_state_to_send), 0) < 0) {
     fprintf(stderr, "\n%s:%u: send failed\n", __FILE__, __LINE__);
-    stacktrace_print(stderr);
     fprintf(stderr, "\n\n");
     exit(-1);
   }
@@ -79,7 +74,6 @@ inline static void net__at__frame_end() {
   // receive previous key states
   if (recv(net_fd, net_state_current, sizeof(net_state_current), 0) < 0) {
     fprintf(stderr, "\n%s:%u: receive failed\n", __FILE__, __LINE__);
-    stacktrace_print(stderr);
     fprintf(stderr, "\n\n");
     exit(-1);
   }

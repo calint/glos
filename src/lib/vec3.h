@@ -1,4 +1,5 @@
 #pragma once
+#include <cstdio>
 #include <math.h>
 
 inline static void vec3_minus(vec4 *ret, const vec4 *lh, const vec4 *rh) {

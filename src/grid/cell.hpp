@@ -160,7 +160,6 @@ private:
       t = (x1 - x2 - r1 - r2) / div;
     } else {
       fprintf(stderr, "\n%s:%u: x1==x2?\n", __FILE__, __LINE__);
-      stacktrace_print(stderr);
       fprintf(stderr, "\n\n");
       exit(-1);
     }

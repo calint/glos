@@ -1,4 +1,6 @@
 #pragma once
+#include <fstream>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -31,8 +33,15 @@ public:
 static std::vector<material> materials{};
 
 inline static void objmtls_load_from_file(const char *path) {
-  str file = /*takes*/ str_from_file(path);
-  const char *p = file.data;
+  std::ifstream file(path);
+  if (!file) {
+    printf("*** cannot open file '%s'\n", path);
+    exit(1);
+  }
+  std::stringstream buffer;
+  buffer << file.rdbuf();
+  std::string content = buffer.str();
+  const char *p = content.c_str();
   while (*p) {
     token t = token_next(&p);
     if (token_starts_with(&t, "#")) {
@@ -100,7 +109,6 @@ inline static void objmtls_load_from_file(const char *path) {
       continue;
     }
   }
-  str_free(&file);
 }
 
 static inline void materials_free() {
