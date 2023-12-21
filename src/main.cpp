@@ -190,13 +190,11 @@ int main(int argc, char *argv[]) {
           SDL_Log("Window %d size changed to %dx%d", event.window.windowID,
                   event.window.data1, event.window.data2);
           int w, h;
-          SDL_GetWindowSize(window.ref, &w, &h); // ? glGet
+          SDL_GetWindowSize(window.ref, &w, &h);
           camera.wi = (float)w;
           camera.hi = (float)h;
           printf(" * resize to  %u x %u\n", w, h);
           glViewport(0, 0, w, h);
-          //					SDL_Rect r={0,0,w,h};
-          //					SDL_RenderSetViewport(window.renderer,&r);
           break;
         }
         }

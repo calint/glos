@@ -149,8 +149,8 @@ _cell_detect_and_resolve_collision_for_spheres1(object *o1, object *o2,
   }
 
   // in collision
-  printf("frame: %u   %s vs %s\n", fc->tick, o1->name.c_str(),
-         o2->name.c_str());
+  // printf("frame: %u   %s vs %s\n", fc->tick, o1->name.c_str(),
+  //        o2->name.c_str());
   if (o1->grid_ifc.collide_mask == 0) { // o1 is a bouncer
     vec3_negate(&o2->physics.velocity);
   } else if (o2->grid_ifc.collide_mask == 0) { // o1 is a bouncer
@@ -216,9 +216,9 @@ inline static int _cell_detect_and_resolve_collision_for_spheres(object *o1,
   const float div = u2 - u1;
   if (div == 0) {
     //? number precision
-    printf(" *** du=0   diff=%f    dx=%f    %s x=%f    vs   %s x=%f\n", diff,
-           o2->physics.position.x - o1->physics.position.x, o1->name.c_str(),
-           o1->physics.position.x, o2->name.c_str(), o2->physics.position.x);
+    // printf(" *** du=0   diff=%f    dx=%f    %s x=%f    vs   %s x=%f\n", diff,
+    //        o2->physics.position.x - o1->physics.position.x, o1->name.c_str(),
+    //        o1->physics.position.x, o2->name.c_str(), o2->physics.position.x);
     return 0;
   }
   float t;

@@ -9,14 +9,14 @@ inline static void main_init_scene_do() {
   glos_load_from_file("obj/santa.obj");
 
   o = object_alloc(&object_def);
-  o->name = "skydome";
+  // o->name = "skydome";
   o->node.glo = glos_find_by_name("skydome");
   o->vtbl.render = _object_render_glo_;
   o->bounding_volume.scale = {15, 15, 15, 0};
   o->bounding_volume.radius = 10 * 15;
 
   o = object_alloc(&object_def);
-  o->name = "grid";
+  // o->name = "grid";
   o->node.glo = glos_find_by_name("grid");
   o->vtbl.render = _object_render_glo_;
   o->bounding_volume.scale = {10, 10, 10, 0};
@@ -26,7 +26,7 @@ inline static void main_init_scene_do() {
   santa *p;
 
   o = santa_alloc_def();
-  o->name = "santa2";
+  // o->name = "santa2";
   o->node.glo = glos_find_by_name("santa");
   o->bounding_volume.scale = {10, 10, 10, 0};
   o->bounding_volume.radius = .5f;
@@ -36,7 +36,7 @@ inline static void main_init_scene_do() {
   p->keybits_ptr = &net_state_current[2].keybits;
 
   o = santa_alloc_def();
-  o->name = "santa1";
+  // o->name = "santa1";
   o->node.glo = glos_find_by_name("santa");
   o->bounding_volume.scale = {10, 10, 10, 0};
   o->physics.position = {30, 2, 30, 0};

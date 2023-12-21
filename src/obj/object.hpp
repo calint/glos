@@ -14,6 +14,10 @@
 class part;
 class object {
 public:
+  // char const *name = "";//?? using char const* degrades performance by 40% how?
+  // std::string name{}; //?? using std::string degrades performance by 20% how?
+  // str name = str_def;
+  // char pad; //?? uncommenting degrade performance by 30% how?
   unsigned update_tick = 0;
   unsigned draw_tick = 0;
   node node{};
@@ -26,7 +30,6 @@ public:
   type type{};
   bits *alloc_bits_ptr{};
   void *part[object_part_cap]{};
-  std::string name = "";
 
   inline void update(framectx *fc) {
     // if matrix is flagged valid and position or angle changed invalidate
@@ -41,9 +44,10 @@ public:
     physics = physics_nxt;
 
     const float dt = fc->dt;
-    vec3_inc_with_vec3_over_dt(&physics.position, &physics.velocity, dt);
-    vec3_inc_with_vec3_over_dt(&physics.angle, &physics.angular_velocity, dt);
-    physics_nxt = physics;
+    vec3_inc_with_vec3_over_dt(&physics_nxt.position, &physics_nxt.velocity,
+                               dt);
+    vec3_inc_with_vec3_over_dt(&physics_nxt.angle,
+                               &physics_nxt.angular_velocity, dt);
   }
 
   inline const float *get_updated_Mmw() {
@@ -59,6 +63,9 @@ public:
 };
 //---------------------------------------------------------------------- -----
 static object object_def = {
+    // .name = "",
+    // .name{},
+    // .name = str_def,
     .update_tick = 0,
     .draw_tick = 0,
     .node{},
@@ -71,7 +78,6 @@ static object object_def = {
     .type = type_def,
     .alloc_bits_ptr = 0,
     .part = parts_def,
-    .name = "",
 };
 //----------------------------------------------------------------------------
 inline static void _object_render_glo_(object *o, framectx *fc) {

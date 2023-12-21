@@ -39,7 +39,7 @@ public:
   }
   inline void print_headers(FILE *f) {
     fprintf(f,
-            " %6s  %6s  %4s  %7s  %6s  %5s  %5s  %5s  %5s  %6s  %6s  %6s  %6s  "
+            " %6s  %7s  %4s  %7s  %6s  %5s  %5s  %5s  %5s  %6s  %6s  %6s  %6s  "
             "%8s  %5s  %8s  %8s\n",
             "ms", "dt", "fps", "netlag", "nobj", "colp", "colc", "colf",
             "olchk", "upd", "rend", "pupd", "prend", "gtri", "nglo", "vtxbufs",
@@ -48,7 +48,7 @@ public:
   inline void print(FILE *f) {
     fprintf(
         f,
-        " %06u  %0.4f  %04d  %0.5f  %06u  %05u  %05u  %05u  %05u  %06u  %06u "
+        " %06u  %0.5f  %04d  %0.5f  %06u  %05u  %05u  %05u  %05u  %06u  %06u "
         " %06u  %06u  %08u"
         "  %05u  %08lu  %08u\n",
         tick, fps.dt, average_fps, net_lag_prv_frame, objects_allocated,
