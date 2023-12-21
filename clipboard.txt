@@ -1,6 +1,11 @@
 git reset --hard HEAD
 
 
+# tag with date and time
+TAG=$(date "+%Y-%m-%d--%H-%M") && git tag $TAG && git push origin $TAG
+
+
+
 		fprintf(stderr,"\n%s:%u: could not connect\n",__FILE__,__LINE__);
 		fprintf(stderr,"    server: %s  port: %d\n\n",host,port);
 		stacktrace_print(stderr);
