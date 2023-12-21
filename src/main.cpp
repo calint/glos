@@ -342,23 +342,17 @@ int main(int argc, char *argv[]) {
     // objects_foa({ grid_add(o); });
     objects_foreach_allocated_all(_foreach_object_add_to_grid_);
     grid_update(&fc);
-    //		grid_print();
     grid_resolve_collisions(&fc);
-
     if (do_main_render) {
       main_render(&fc);
     }
-
     if (use_net) {
       net__at__frame_end();
     }
-
     metrics.objects_allocated = object_metrics_allocated;
-
     metrics.at_frame_end(stderr);
   }
   //---------------------------------------------------------------------free
-  //? early-hangup
   grid_free();
   glos_free();
   objects_free();

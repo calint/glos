@@ -8,7 +8,7 @@ public:
     uint32_t frame_count = 0;
     uint32_t calculation_intervall_ms = 0;
     uint32_t time_at_start_of_intervall_in_ms = 0;
-    dt dt = 0;
+    float dt = 0;
     uint64_t timer_frequency = 0;
     uint64_t timer_tick_at_start_of_frame = 0;
   } fps;
