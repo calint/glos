@@ -3,8 +3,8 @@ class object;
 class vtbl final {
 public:
   void (*init)(object *){};
-  void (*update)(object *, framectx *){};
-  void (*collision)(object *, object *, framectx *){};
-  void (*render)(object *, framectx *){};
+  void (*update)(object *, const framectx *){};
+  void (*collision)(object *, object *, const framectx *){};
+  void (*render)(object *, const framectx *){};
   void (*free)(object *){};
 };

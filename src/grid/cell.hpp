@@ -2,6 +2,7 @@
 #include "../lib.h"
 #include "../obj/object.hpp"
 #include "../obj/part.hpp"
+#include <algorithm>
 
 class cell {
 public:
@@ -32,7 +33,7 @@ public:
     }
   }
 
-  inline void render(framectx *fc) {
+  inline void render(const framectx *fc) {
     for (object *oi : objects) {
       if (oi->draw_tick == fc->tick) {
         continue;
@@ -67,7 +68,7 @@ public:
 
   inline void clear() { objects.clear(); }
 
-  inline void add_object(object *o) { objects.push_back(o); }
+  inline void add(object *o) { objects.push_back(o); }
 
   inline void resolve_collisions(framectx *fc) {
     //	printf("[ cell %p ] detect collisions\n",(void*)o);
@@ -79,34 +80,34 @@ public:
         object *Oi = objects.at(i);
         object *Oj = objects.at(j);
 
-        if (!((Oi->grid_ifc.collide_mask & Oj->grid_ifc.collide_bits) ||
-              (Oj->grid_ifc.collide_mask & Oi->grid_ifc.collide_bits))) {
+        if (!((Oi->grid_ifc.collision_mask & Oj->grid_ifc.collision_bits) ||
+              (Oj->grid_ifc.collision_mask & Oi->grid_ifc.collision_bits))) {
           continue;
         }
 
         if (is_bit_set(&Oi->grid_ifc.bits, grid_ifc_overlaps) &&
             is_bit_set(&Oj->grid_ifc.bits, grid_ifc_overlaps)) {
           // both overlap grids, this detection might have been tried
-          if (_cell_checked_collisions(Oi, Oj, fc)) {
+          if (is_collision_checked(Oi, Oj, fc)) {
             continue;
           }
         }
 
-        dynp_add(&Oi->grid_ifc.checked_collisions_list, Oj);
+        Oi->grid_ifc.checked_collisions_list.push_back(Oj);
         metrics.collision_detections_considered_prv_frame++;
 
-        if (!_cell_detect_and_resolve_collision_for_spheres(Oi, Oj, fc)) {
+        if (!detect_and_resolve_collision_for_spheres(Oi, Oj, fc)) {
           continue;
         }
 
         metrics.collision_detections_prv_frame++;
 
-        if (Oi->grid_ifc.collide_mask & Oj->grid_ifc.collide_bits) {
+        if (Oi->grid_ifc.collision_mask & Oj->grid_ifc.collision_bits) {
           if (Oi->vtbl.collision)
             Oi->vtbl.collision(Oi, Oj, fc);
         }
 
-        if (Oj->grid_ifc.collide_mask & Oi->grid_ifc.collide_bits) {
+        if (Oj->grid_ifc.collision_mask & Oi->grid_ifc.collision_bits) {
           if (Oj->vtbl.collision)
             Oj->vtbl.collision(Oj, Oi, fc);
         }
@@ -115,29 +116,32 @@ public:
   }
 
 private:
-  inline static int _cell_checked_collisions(object *o1, object *o2,
-                                             framectx *fc) {
-
+  inline static bool is_collision_checked(object *o1, object *o2,
+                                          framectx *fc) {
     metrics.collision_grid_overlap_check++;
 
     if (o1->grid_ifc.tick != fc->tick) { // list out of date
-      dynp_clear(&o1->grid_ifc.checked_collisions_list);
+      o1->grid_ifc.checked_collisions_list.clear();
       o1->grid_ifc.tick = fc->tick;
     }
     if (o2->grid_ifc.tick != fc->tick) { // list out of date
-      dynp_clear(&o2->grid_ifc.checked_collisions_list);
+      o2->grid_ifc.checked_collisions_list.clear();
       o2->grid_ifc.tick = fc->tick;
     }
-    if (dynp_has(&o1->grid_ifc.checked_collisions_list, o2) ||
-        dynp_has(&o2->grid_ifc.checked_collisions_list, o1)) {
-      return 1;
-    }
-    return 0;
+
+    return is_in_checked_collision_list(o1, o2) or
+           is_in_checked_collision_list(o2, o1);
   }
 
-  inline static int
-  _cell_detect_and_resolve_collision_for_spheres(object *o1, object *o2,
-                                                 framectx *fc) {
+  inline static bool is_in_checked_collision_list(object *src, object *trg) {
+    auto it = std::find(src->grid_ifc.checked_collisions_list.begin(),
+                        src->grid_ifc.checked_collisions_list.end(), trg);
+    return it != src->grid_ifc.checked_collisions_list.end();
+  }
+
+  inline static int detect_and_resolve_collision_for_spheres(object *o1,
+                                                             object *o2,
+                                                             framectx *fc) {
 
     vec4 v;
     vec3_minus(&v, &o2->physics.position, &o1->physics.position);
@@ -221,9 +225,9 @@ private:
     //	}
 
     // swap velocities
-    if (o1->grid_ifc.collide_mask == 0) { // o1 is a bouncer
+    if (o1->grid_ifc.collision_mask == 0) { // o1 is a bouncer
       vec3_negate(&o2->physics_nxt.velocity);
-    } else if (o2->grid_ifc.collide_mask == 0) { // o2 is a bouncer
+    } else if (o2->grid_ifc.collision_mask == 0) { // o2 is a bouncer
       vec3_negate(&o1->physics_nxt.velocity);
     } else { // swap velocities
       vec4 swap_from_o1 = o1->physics_nxt.velocity;
@@ -240,80 +244,3 @@ private:
     return 1;
   }
 };
-
-//
-// newton cradle cases:
-//
-//
-//   o : ball
-//   > : velocity
-//   . : no velocity
-//   * : magnitude vs vector
-//
-//     >.
-//     oo
-//     .>
-//     . >
-//
-//     ><
-//     oo
-//     <>
-//    <  >
-//
-//     .<<
-//     ooo
-//     <.<
-//    < <.
-//   < < .
-//
-//     ><<
-//     ooo
-//     *.<
-//    < <.
-//   < < .
-//
-//     >.<
-//     ooo
-//     .*.
-//     <.>
-//    < . >
-inline static int
-_cell_detect_and_resolve_collision_for_spheres1(object *o1, object *o2,
-                                                framectx *fc) {
-
-  vec4 v;
-  vec3_minus(&v, &o2->physics.position, &o1->physics.position);
-  const float d = o1->bounding_volume.radius + o2->bounding_volume.radius;
-  const float dsq = d * d;
-  const float vsq = vec3_dot(&v, &v);
-  if (!(vsq < dsq)) //?
-    return 0;
-
-  const float diff = fabs(dsq - vsq);
-  if (diff < .00001f) {
-    printf("   ... diff within error margin  %f\n", diff);
-  }
-
-  // in collision
-  // printf("frame: %u   %s vs %s\n", fc->tick, o1->name.c_str(),
-  //        o2->name.c_str());
-  if (o1->grid_ifc.collide_mask == 0) { // o1 is a bouncer
-    vec3_negate(&o2->physics.velocity);
-  } else if (o2->grid_ifc.collide_mask == 0) { // o1 is a bouncer
-    vec3_negate(&o1->physics.velocity);
-  } else { // swap velocities
-    const vec4 swap = o1->physics.velocity;
-    o1->physics.velocity = o2->physics.velocity;
-    o2->physics.velocity = swap;
-  }
-  //	vec4 swap=o1->p.v;
-  //	o1->p.v=o2->p.v;
-  //	o2->p.v=swap;
-  vec3_print(&o1->physics.position);
-  vec3_print(&o2->physics.position);
-  puts("");
-  vec3_print(&o1->physics.velocity);
-  vec3_print(&o2->physics.velocity);
-  puts("");
-  return 1;
-}

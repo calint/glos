@@ -17,7 +17,7 @@ public:
   // char const *name = "";//?? using char const* degrades performance by 40% how?
   // std::string name{}; //?? using std::string degrades performance by 20% how?
   // str name = str_def;
-  // char pad; //?? uncommenting degrade performance by 30% how?
+  // char pad; //?? uncommenting degrades performance by 30% how?
   unsigned update_tick = 0;
   unsigned draw_tick = 0;
   node node{};
@@ -80,7 +80,7 @@ static object object_def = {
     .part = parts_def,
 };
 //----------------------------------------------------------------------------
-inline static void _object_render_glo_(object *o, framectx *fc) {
+inline static void _object_render_glo_(object *o, const framectx *fc) {
   if (!o->node.glo) {
     return;
   }

@@ -31,8 +31,8 @@ typedef struct santa {
 } santa;
 //------------------------------------------------------------------ overrides
 static void _santa_init(object *, part *);
-static void _santa_update(object *, part *, framectx *fc);
-static void _santa_render(object *, part *, framectx *fc);
+static void _santa_update(object *, part *, const framectx *fc);
+static void _santa_render(object *, part *, const framectx *fc);
 static void _santa_free(object *, part *);
 //----------------------------------------------------------------------- init
 static santa santa_def = {
@@ -47,7 +47,7 @@ static santa santa_def = {
     .bounding_glo_ptr = NULL,
 };
 //----------------------------------------------------------------------- impl
-static void _santa_update(object *po, part *o, framectx *fc) {
+static void _santa_update(object *po, part *o, const framectx *fc) {
   //	printf("%s:%u  [ %p %p ]\n",__FILE__,__LINE__,(void*)po,(void*)o);
   santa *p = (santa *)o;
   if (!p->keybits_ptr)
@@ -70,7 +70,7 @@ static void _santa_update(object *po, part *o, framectx *fc) {
     po->node.Mmw_is_valid = 0;
   }
 }
-static void _santa_render(object *o, part *po, framectx *fc) {
+static void _santa_render(object *o, part *po, const framectx *fc) {
   santa *p = (santa *)po;
   if (!p->bounding_glo_ptr)
     return;

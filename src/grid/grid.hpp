@@ -55,7 +55,7 @@ public:
 
   inline void add(object *o) {
     if (grid_ncells == 1) {
-      cells[0][0].add_object(o);
+      cells[0][0].add(o);
       return;
     }
 
@@ -87,7 +87,7 @@ public:
     for (int z = zil; z <= zir; z++) {
       for (int x = xil; x <= xir; x++) {
         cell *c = &cells[z][x];
-        c->add_object(o);
+        c->add(o);
       }
     }
 

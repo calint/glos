@@ -16,64 +16,64 @@ inline static void main_init_scene_6() {
   str_setz(&o->name, "stopper left");
   o->physics_nxt.position.x = -10;
   o->node.glo = glos_find_by_name("sphere");
-  o->grid_ifc.collide_bits = 1;
+  o->grid_ifc.collision_bits = 1;
 
   o = object_alloc(&object_def);
   str_setz(&o->name, "S1");
   o->physics_nxt.position.x = -8;
   o->physics_nxt.velocity.x = 1;
   o->node.glo = glos_find_by_name("sphere");
-  o->grid_ifc.collide_bits = 1;
-  o->grid_ifc.collide_mask = 1;
+  o->grid_ifc.collision_bits = 1;
+  o->grid_ifc.collision_mask = 1;
 
   o = object_alloc(&object_def);
   str_setz(&o->name, "S2");
   o->physics_nxt.position.x = -6;
   o->physics_nxt.velocity.x = 1;
   o->node.glo = glos_find_by_name("sphere");
-  o->grid_ifc.collide_bits = 1;
-  o->grid_ifc.collide_mask = 1;
+  o->grid_ifc.collision_bits = 1;
+  o->grid_ifc.collision_mask = 1;
 
   o = object_alloc(&object_def);
   str_setz(&o->name, "S3");
   o->physics_nxt.position.x = -2;
   o->node.glo = glos_find_by_name("sphere");
-  o->grid_ifc.collide_bits = 1;
-  o->grid_ifc.collide_mask = 1;
+  o->grid_ifc.collision_bits = 1;
+  o->grid_ifc.collision_mask = 1;
 
   o = object_alloc(&object_def);
   str_setz(&o->name, "S4");
   o->physics_nxt.position.x = 0;
   o->node.glo = glos_find_by_name("sphere");
-  o->grid_ifc.collide_bits = 1;
-  o->grid_ifc.collide_mask = 1;
+  o->grid_ifc.collision_bits = 1;
+  o->grid_ifc.collision_mask = 1;
 
   o = object_alloc(&object_def);
   str_setz(&o->name, "S5");
   o->physics_nxt.position.x = 2;
   o->node.glo = glos_find_by_name("sphere");
-  o->grid_ifc.collide_bits = 1;
-  o->grid_ifc.collide_mask = 1;
+  o->grid_ifc.collision_bits = 1;
+  o->grid_ifc.collision_mask = 1;
 
   o = object_alloc(&object_def);
   str_setz(&o->name, "S6");
   o->physics_nxt.position.x = 6;
   o->physics_nxt.velocity.x = -1;
   o->node.glo = glos_find_by_name("sphere");
-  o->grid_ifc.collide_bits = 1;
-  o->grid_ifc.collide_mask = 1;
+  o->grid_ifc.collision_bits = 1;
+  o->grid_ifc.collision_mask = 1;
 
   o = object_alloc(&object_def);
   str_setz(&o->name, "S7");
   o->physics_nxt.position.x = 8;
   o->physics_nxt.velocity.x = -1;
   o->node.glo = glos_find_by_name("sphere");
-  o->grid_ifc.collide_bits = 1;
-  o->grid_ifc.collide_mask = 1;
+  o->grid_ifc.collision_bits = 1;
+  o->grid_ifc.collision_mask = 1;
 
   o = object_alloc(&object_def);
   str_setz(&o->name, "stopper right");
   o->physics_nxt.position.x = 10;
   o->node.glo = glos_find_by_name("sphere");
-  o->grid_ifc.collide_bits = 1;
+  o->grid_ifc.collision_bits = 1;
 }
