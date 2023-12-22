@@ -6,6 +6,27 @@ TAG=$(date "+%Y-%m-%d--%H-%M") && git tag $TAG && git push origin $TAG
 
 
 
+#pragma once
+// object
+//   |
+//   +--- actor
+//   |      |
+//   |      +--- ninja
+//   |      |
+//   |      +--- santa
+//   |
+//   +--- projectile
+//   |       |
+//   |       |
+//   |       |
+
+#define type_actor {'a',0,0,0,0,0,0,0}
+#define type_ninja {'a','a',0,0,0,0,0,0}
+#define type_santa {'a','b',0,0,0,0,0,0}
+#define type_bullet {'b',0,0,0,0,0,0,0}
+
+
+
 		fprintf(stderr,"\n%s:%u: could not connect\n",__FILE__,__LINE__);
 		fprintf(stderr,"    server: %s  port: %d\n\n",host,port);
 		stacktrace_print(stderr);

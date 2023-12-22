@@ -47,10 +47,10 @@ static struct color {
 } bg = {.1f, .1f, 0};
 
 //
-#include "app/init.h"
+#include "app/application.hpp"
 
 //----------------------------------------------------------------------- init
-inline static void main_init_programs() {
+inline static void main_init_shaders() {
   {
     const char *vtx = R"(
 #version 130
@@ -105,11 +105,6 @@ void main(){
   }
 }
 
-inline static void main_init() {
-  main_init_programs();
-  main_init_scene();
-}
-
 inline static void main_render(const frame_ctx &fc) {
   camera.update_matrix_wvp();
   glUniformMatrix4fv(shader_umtx_wvp, 1, 0, glm::value_ptr(camera.mtx_vp));
@@ -145,10 +140,10 @@ int main(int argc, char *argv[]) {
   printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
   puts("");
 
+  // initiate subsystems
   if (use_net) {
     net.init();
   }
-
   metrics.init();
   sdl.init();
   window.init();
@@ -157,7 +152,9 @@ int main(int argc, char *argv[]) {
   glos.init();
   objects.init();
   grid.init();
-  main_init();
+  application.init();
+
+  main_init_shaders();
 
   {
     puts("");
@@ -338,10 +335,12 @@ int main(int argc, char *argv[]) {
     if (use_net) {
       net.at_frame_end();
     }
+    application.at_frame_completed();
     metrics.objects_allocated = objects.store.size();
     metrics.at_frame_end(stderr);
   }
   //---------------------------------------------------------------------free
+  application.free();
   grid.free();
   objects.free();
   glos.free();
