@@ -85,9 +85,9 @@ public:
     }
 
     if (xil == xir and zil == zir) {
-      clear_bit(o->grid_ifc.bits, grid_ifc_overlaps);
+      cell::clear_bit(o->grid_ifc.bits, cell::bit_overlaps);
     } else {
-      set_bit(o->grid_ifc.bits, grid_ifc_overlaps);
+      cell::set_bit(o->grid_ifc.bits, cell::bit_overlaps);
     }
   }
 

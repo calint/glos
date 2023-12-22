@@ -4,21 +4,10 @@
 #include "../obj/object.hpp"
 #include <algorithm>
 
-inline static bool is_bit_set(const unsigned &bits,
-                              int bit_number_starting_at_zero) {
-  return bits & (1 << bit_number_starting_at_zero);
-}
-
-inline static void set_bit(unsigned &bits, int bit_number_starting_at_zero) {
-  bits |= (1 << bit_number_starting_at_zero);
-}
-
-inline static void clear_bit(unsigned &bits, int bit_number_starting_at_zero) {
-  bits &= ~(1 << bit_number_starting_at_zero);
-}
-
 class cell {
 public:
+  static constexpr unsigned bit_overlaps = 0;
+
   std::vector<object *> objects{};
 
   inline void update(const frame_ctx &fc) {
@@ -76,8 +65,8 @@ public:
           continue;
         }
 
-        if (is_bit_set(Oi->grid_ifc.bits, grid_ifc_overlaps) and
-            is_bit_set(Oj->grid_ifc.bits, grid_ifc_overlaps) and
+        if (is_bit_set(Oi->grid_ifc.bits, bit_overlaps) and
+            is_bit_set(Oj->grid_ifc.bits, bit_overlaps) and
             is_collision_checked(Oi, Oj, fc)) {
           // both overlap grids and collision has already been checked by a
           // different grid cell
@@ -221,5 +210,20 @@ private:
     o2->physics_nxt.position += o2->physics_nxt.velocity * -t;
 
     return true;
+  }
+
+public:
+  inline static bool is_bit_set(const unsigned &bits,
+                                int bit_number_starting_at_zero) {
+    return bits & (1 << bit_number_starting_at_zero);
+  }
+
+  inline static void set_bit(unsigned &bits, int bit_number_starting_at_zero) {
+    bits |= (1 << bit_number_starting_at_zero);
+  }
+
+  inline static void clear_bit(unsigned &bits,
+                               int bit_number_starting_at_zero) {
+    bits &= ~(1 << bit_number_starting_at_zero);
   }
 };

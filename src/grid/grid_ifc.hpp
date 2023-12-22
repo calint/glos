@@ -1,7 +1,5 @@
 #pragma once
 
-#define grid_ifc_overlaps 0
-
 class cell;
 class object;
 
