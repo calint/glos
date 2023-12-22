@@ -42,11 +42,6 @@ public:
 
 static player player{};
 
-static unsigned shader_program_ix = 0;
-static bool do_main_render = true;
-static float camera_lookangle_y = 0;
-static float camera_lookangle_x = 0;
-
 static struct color {
   GLclampf red;
   GLclampf green;
@@ -165,6 +160,18 @@ int main(int argc, char *argv[]) {
 
   // sdl.play_path("music/ambience.mp3");
 
+  unsigned shader_program_ix = 0;
+  unsigned shader_program_ix_prev = shader_program_ix;
+  bool do_main_render = true;
+  bool print_grid = false;
+  float camera_lookangle_y = 0;
+  float camera_lookangle_x = 0;
+  const float rad_over_degree = 2.0f * glm::pi<float>() / 360.0f;
+  float rad_over_mouse_pixels = rad_over_degree * .02f;
+  float mouse_sensitivity = 1.5f;
+  bool mouse_mode = false;
+  unsigned frame_num = 0;
+
   {
     puts("");
     const program &p = shaders.programs.at(shader_program_ix);
@@ -175,20 +182,12 @@ int main(int argc, char *argv[]) {
     }
     puts("");
   }
-  unsigned shader_program_ix_prev = shader_program_ix;
-  const float rad_over_degree = 2.0f * glm::pi<float>() / 360.0f;
-  float rad_over_mouse_pixels = rad_over_degree * .02f;
-  float mouse_sensitivity = 1.5f;
-  bool mouse_mode = false;
-  SDL_SetRelativeMouseMode(mouse_mode ? SDL_TRUE : SDL_FALSE);
 
-  bool print_grid = false;
+  SDL_SetRelativeMouseMode(mouse_mode ? SDL_TRUE : SDL_FALSE);
 
   metrics.fps.calculation_intervall_ms = 1000;
   metrics.reset_timer();
   metrics.print_headers(stderr);
-
-  unsigned frame_num = 0;
 
   frame_ctx fc = {
       .dt = 0.1f,
