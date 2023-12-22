@@ -18,7 +18,7 @@ public:
       }
       oi->update_tick = fc.tick;
       oi->update(fc);
-      metrics.objects_updated_prv_frame++;
+      metrics.objects_updated++;
     }
   }
 
@@ -29,7 +29,7 @@ public:
       }
       oi->render_tick = fc.tick;
       oi->render(fc);
-      metrics.objects_rendered_prv_frame++;
+      metrics.objects_rendered++;
     }
   }
 
@@ -55,7 +55,7 @@ public:
     }
     for (unsigned i = 0; i < len - 1; i++) {
       for (unsigned j = i + 1; j < len; j++) {
-        metrics.collision_detections_possible_prv_frame++;
+        metrics.collision_detections_possible++;
 
         object *Oi = objects.at(i);
         object *Oj = objects.at(j);
@@ -66,22 +66,22 @@ public:
         }
 
         if (is_bit_set(Oi->grid_ifc.bits, bit_overlaps) and
-            is_bit_set(Oj->grid_ifc.bits, bit_overlaps) and
-            is_collision_checked(Oi, Oj, fc)) {
-          // both overlap grids and collision has already been checked by a
-          // different grid cell
-          continue;
+            is_bit_set(Oj->grid_ifc.bits, bit_overlaps)) {
+          // both objects overlap grids
+          if (is_collision_checked(Oi, Oj, fc)) {
+            continue;
+          }
+          Oi->grid_ifc.checked_collisions.push_back(Oj);
+          // note. only entry in one of the objects necessary
         }
 
-        Oi->grid_ifc.checked_collisions.push_back(Oj);
-        // note. only entry in one of the objects necessary
-        metrics.collision_detections_considered_prv_frame++;
+        metrics.collision_detections_considered++;
 
         if (not detect_and_resolve_collision_for_spheres(Oi, Oj, fc)) {
           continue;
         }
 
-        metrics.collision_detections_prv_frame++;
+        metrics.collision_detections++;
 
         if (Oi->grid_ifc.collision_mask & Oj->grid_ifc.collision_bits) {
           Oi->on_collision(Oj, fc);
@@ -131,6 +131,7 @@ private:
     if (diff >= 0) {
       return false;
     }
+    return true;
 
     // partial dt to collision
     const float x1 = o1->physics.position.x;

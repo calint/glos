@@ -32,10 +32,13 @@ public:
 #include "net/net.hpp"
 #include "net/net_server.hpp"
 
-static struct game {
-  unsigned *keys_ptr;
-  const object *follow_object;
-} game;
+class player {
+public:
+  unsigned *keys_ptr = nullptr;
+  const object *object = nullptr;
+};
+
+static player player{};
 
 static unsigned shader_program_ix = 0;
 static bool do_main_render = true;
@@ -294,11 +297,11 @@ int main(int argc, char *argv[]) {
     if (!use_net) {
       net.state_current[net.active_player_index].keys = net.state_to_send.keys;
     }
-    if (game.keys_ptr) {
-      *game.keys_ptr = net.state_current[net.active_player_index].keys;
+    if (player.keys_ptr) {
+      *player.keys_ptr = net.state_current[net.active_player_index].keys;
     }
-    if (game.follow_object) {
-      camera.look_at = game.follow_object->physics.position;
+    if (player.object) {
+      camera.look_at = player.object->physics.position;
     }
 
     if (shader_program_ix_prev != shader_program_ix) {

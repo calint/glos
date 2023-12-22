@@ -3,7 +3,7 @@ class santa : public object {
 public:
   inline santa() { volume = {.radius = 1.4f, .scale = {1, 1, 1}}; }
 
-  inline virtual auto update(const frame_ctx &fc) -> bool override {
+  inline auto update(const frame_ctx &fc) -> bool override {
     if (object::update(fc)) {
       return true;
     }
@@ -30,5 +30,9 @@ public:
       *v *= 10.0f;
     }
     return false;
+  }
+
+  inline void on_collision(object *o, const frame_ctx &fc) override {
+    printf("%s collision with %s\n", name.c_str(), o->name.c_str());
   }
 };

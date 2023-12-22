@@ -90,7 +90,7 @@ public:
     dt = state_current[0].lookangle_x;
     const uint64_t t1 = SDL_GetPerformanceCounter();
     const float dt = (float)(t1 - t0) / (float)SDL_GetPerformanceFrequency();
-    metrics.net_lag_prv_frame = dt;
+    metrics.net_lag = dt;
   }
 };
 

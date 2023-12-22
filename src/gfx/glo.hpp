@@ -87,7 +87,7 @@ public:
         glDisableVertexAttribArray(shaders::atex);
       }
       glDrawArrays(GL_TRIANGLES, (signed)mr.begin, (signed)mr.count);
-      metrics.triangles_rendered_prv_frame += mr.count / 3;
+      metrics.triangles_rendered += mr.count / 3;
       if (m.texture_id) {
         glBindTexture(GL_TEXTURE_2D, 0);
       }
