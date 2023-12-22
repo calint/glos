@@ -49,6 +49,8 @@ public:
     SDL_DestroyWindow(sdl_window);
   }
 
+  inline void swap_buffers() { SDL_GL_SwapWindow(sdl_window); }
+
   inline static void gl_request_profile_and_version(SDL_GLprofile prof,
                                                     int major, int minor) {
     if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, prof)) {

@@ -113,11 +113,12 @@ void main(){
 
 inline static void main_render(const frame_ctx &fc) {
   camera.update_matrix_wvp();
-  glUniformMatrix4fv(shaders::umtx_wvp, 1, 0, glm::value_ptr(camera.Mvp));
+  glUniformMatrix4fv(shaders::umtx_wvp, 1, GL_FALSE,
+                     glm::value_ptr(camera.Mvp));
   glClearColor(bg.red, bg.green, bg.blue, 1.0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   grid.render(fc);
-  SDL_GL_SwapWindow(window.sdl_window);
+  window.swap_buffers();
 }
 
 //------------------------------------------------------------------------ main
@@ -300,7 +301,7 @@ int main(int argc, char *argv[]) {
     if (!use_net) {
       net.state_current[net.active_player_index].keys = net.state_to_send.keys;
     }
-    
+
     if (player.keys_ptr) {
       *player.keys_ptr = net.state_current[net.active_player_index].keys;
     }
