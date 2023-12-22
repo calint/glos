@@ -46,7 +46,7 @@ public:
     if (!node.glo) {
       return;
     }
-    glo_render(node.glo, get_updated_Mmw());
+    node.glo->render(get_updated_Mmw());
   }
 
   inline virtual void on_collision(object *obj, const frame_ctx &fc) {}
@@ -64,3 +64,17 @@ public:
     return node.Mmw;
   }
 };
+
+class objects final {
+public:
+  std::vector<object *> store{};
+
+  inline void init() {}
+  inline void free() {
+    for (object *o : store) {
+      delete o;
+    }
+  }
+};
+
+static objects objects{};

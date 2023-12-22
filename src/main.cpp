@@ -1,14 +1,14 @@
-class frame_ctx {
-public:
-  float dt;
-  unsigned tick;
-};
-
 #include "metrics.hpp"
 
 #include "gfx.hpp"
 
 #include "net.h"
+
+class frame_ctx {
+public:
+  float dt;
+  unsigned tick;
+};
 
 #include "grid.hpp"
 
@@ -16,7 +16,7 @@ public:
 #include <glm/gtc/type_ptr.hpp>
 
 static struct game {
-  int *keys_ptr;
+  unsigned *keys_ptr;
   const object *follow_object;
 } game;
 
@@ -25,23 +25,11 @@ static bool do_main_render = true;
 static float camera_lookangle_y = 0;
 static float camera_lookangle_x = 0;
 
-static sdl sdl{};
-static window window{};
-static camera camera{};
-
 static struct color {
   GLclampf red;
   GLclampf green;
   GLclampf blue;
 } bg = {.1f, .1f, 0};
-
-std::vector<object *> objects{};
-static void objects_init() {}
-static void objects_free() {
-  for (object *o : objects) {
-    delete o;
-  }
-}
 
 #include "app/init.h"
 
@@ -71,7 +59,7 @@ void main(){
     )";
 
     std::vector<int> attrs{shader_apos};
-    shader_load_program_from_source(vtx, frag, attrs);
+    shaders.load_program_from_source(vtx, frag, attrs);
   }
   {
     const char *vtx = R"(
@@ -97,7 +85,7 @@ void main(){
     )";
 
     std::vector<int> attrs{shader_apos, shader_argba};
-    shader_load_program_from_source(vtx, frag, attrs);
+    shaders.load_program_from_source(vtx, frag, attrs);
   }
 }
 
@@ -144,18 +132,20 @@ int main(int argc, char *argv[]) {
   if (use_net) {
     net_init();
   }
+
   metrics.init();
   sdl.init();
   window.init();
-  shader_init();
-  objects_init();
-  glos_init();
+  shaders.init();
+  materials.init();
+  glos.init();
+  objects.init();
   grid.init();
   main_init();
 
   {
     puts("");
-    const program &p = programs.at(shader_program_ix);
+    const program &p = shaders.programs.at(shader_program_ix);
     glUseProgram(p.id);
     printf(" * using program at index %u\n", shader_program_ix);
     for (int ix : p.attributes) {
@@ -276,7 +266,7 @@ int main(int argc, char *argv[]) {
           break;
         case SDLK_3:
           shader_program_ix++;
-          if (shader_program_ix >= programs.size()) {
+          if (shader_program_ix >= shaders.programs.size()) {
             shader_program_ix = 0;
           }
           break;
@@ -298,14 +288,14 @@ int main(int argc, char *argv[]) {
     if (shader_program_ix_prev != shader_program_ix) {
       printf(" * switching to program at index %u\n", shader_program_ix);
       {
-        const program &p = programs.at(shader_program_ix_prev);
+        const program &p = shaders.programs.at(shader_program_ix_prev);
         for (int ix : p.attributes) {
           printf("   * disable vertex attrib array %d\n", ix);
           glDisableVertexAttribArray(ix);
         }
       }
       {
-        const program &p = programs.at(shader_program_ix);
+        const program &p = shaders.programs.at(shader_program_ix);
         glUseProgram(p.id);
         for (int ix : p.attributes) {
           printf("   * enable vertex attrib array %d\n", ix);
@@ -321,8 +311,7 @@ int main(int argc, char *argv[]) {
     frame_num++;
 
     grid.clear();
-    // objects_foa({ grid_add(o); });
-    for (object *o : objects) {
+    for (object *o : objects.store) {
       grid.add(o);
     }
     grid.update(fc);
@@ -333,15 +322,15 @@ int main(int argc, char *argv[]) {
     if (use_net) {
       net__at__frame_end();
     }
-    metrics.objects_allocated = objects.size();
+    metrics.objects_allocated = objects.store.size();
     metrics.at_frame_end(stderr);
   }
   //---------------------------------------------------------------------free
   grid.free();
-  glos_free();
-  objects_free();
-  materials_free();
-  shader_free();
+  objects.free();
+  glos.free();
+  materials.free();
+  shaders.free();
   window.free();
   sdl.free();
   if (use_net) {

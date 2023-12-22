@@ -22,3 +22,5 @@ public:
     mtx_vp = mtx_p * mtx_v;
   }
 };
+
+static camera camera{};

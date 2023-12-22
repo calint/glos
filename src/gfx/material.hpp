@@ -33,90 +33,96 @@ public:
   unsigned texture_size_bytes = 0;
 };
 
-static std::vector<material> materials{};
+class materials final {
+public:
+  std::vector<material> store{};
 
-inline static void objmtls_load_from_file(const char *path) {
-  std::ifstream file(path);
-  if (!file) {
-    printf("*** cannot open file '%s'\n", path);
-    exit(1);
-  }
-  std::stringstream buffer;
-  buffer << file.rdbuf();
-  std::string content = buffer.str();
-  const char *p = content.c_str();
-  while (*p) {
-    token t = token_next(&p);
-    if (token_starts_with(&t, "#")) {
-      p = scan_to_including_newline(p);
-      continue;
-    }
-    if (token_starts_with(&t, "newmtl")) {
-      materials.push_back({});
-      token t = token_next(&p);
-      const unsigned n = token_size(&t);
-      materials.back().name = std::string{t.content, t.content + n};
-      continue;
-    }
-    if (token_equals(&t, "Ns")) {
-      token t = token_next(&p);
-      float f = token_get_float(&t);
-      materials.back().Ns = f;
-      continue;
-    }
-    if (token_equals(&t, "Ka") || token_equals(&t, "Kd") ||
-        token_equals(&t, "Ks") || token_equals(&t, "Ke")) {
-      glm::vec4 v;
-
-      token x = token_next(&p);
-      v.x = token_get_float(&x);
-
-      token y = token_next(&p);
-      v.y = token_get_float(&y);
-
-      token z = token_next(&p);
-      v.z = token_get_float(&z);
-
-      if (token_equals(&t, "Ka")) {
-        materials.back().Ka = v;
-      } else if (token_equals(&t, "Kd")) {
-        materials.back().Kd = v;
-      } else if (token_equals(&t, "Ks")) {
-        materials.back().Ks = v;
-      } else if (token_equals(&t, "Ke")) {
-        materials.back().Ke = v;
+  inline void init() {}
+  inline void free() {
+    for (const material &m : store) {
+      if (m.texture_id) {
+        glDeleteTextures(1, &m.texture_id);
+        metrics.buffered_texture_data -= m.texture_size_bytes;
       }
-      continue;
-    }
-
-    if (token_equals(&t, "Ni")) {
-      token t = token_next(&p);
-      float f = token_get_float(&t);
-      materials.back().Ni = f;
-      continue;
-    }
-
-    if (token_equals(&t, "d")) {
-      token t = token_next(&p);
-      float f = token_get_float(&t);
-      materials.back().d = f;
-      continue;
-    }
-
-    if (token_equals(&t, "map_Kd")) {
-      const token t = token_next(&p);
-      const unsigned n = token_size(&t);
-      materials.back().map_Kd = std::string{t.content, t.content + n};
-      continue;
     }
   }
-}
 
-static inline void materials_free() {
-  for (const material &m : materials) {
-    if (m.texture_id) {
-      glDeleteTextures(1, &m.texture_id);
-      metrics.buffered_texture_data -= m.texture_size_bytes;
+  inline void load_from_file(const char *path) {
+    std::ifstream file(path);
+    if (!file) {
+      printf("*** cannot open file '%s'\n", path);
+      exit(1);
+    }
+    std::stringstream buffer;
+    buffer << file.rdbuf();
+    std::string content = buffer.str();
+    const char *p = content.c_str();
+    while (*p) {
+      token t = token_next(&p);
+      if (token_starts_with(&t, "#")) {
+        p = scan_to_including_newline(p);
+        continue;
+      }
+      if (token_starts_with(&t, "newmtl")) {
+        store.push_back({});
+        token t = token_next(&p);
+        const unsigned n = token_size(&t);
+        store.back().name = std::string{t.content, t.content + n};
+        continue;
+      }
+      if (token_equals(&t, "Ns")) {
+        token t = token_next(&p);
+        float f = token_get_float(&t);
+        store.back().Ns = f;
+        continue;
+      }
+      if (token_equals(&t, "Ka") || token_equals(&t, "Kd") ||
+          token_equals(&t, "Ks") || token_equals(&t, "Ke")) {
+        glm::vec4 v;
+
+        token x = token_next(&p);
+        v.x = token_get_float(&x);
+
+        token y = token_next(&p);
+        v.y = token_get_float(&y);
+
+        token z = token_next(&p);
+        v.z = token_get_float(&z);
+
+        if (token_equals(&t, "Ka")) {
+          store.back().Ka = v;
+        } else if (token_equals(&t, "Kd")) {
+          store.back().Kd = v;
+        } else if (token_equals(&t, "Ks")) {
+          store.back().Ks = v;
+        } else if (token_equals(&t, "Ke")) {
+          store.back().Ke = v;
+        }
+        continue;
+      }
+
+      if (token_equals(&t, "Ni")) {
+        token t = token_next(&p);
+        float f = token_get_float(&t);
+        store.back().Ni = f;
+        continue;
+      }
+
+      if (token_equals(&t, "d")) {
+        token t = token_next(&p);
+        float f = token_get_float(&t);
+        store.back().d = f;
+        continue;
+      }
+
+      if (token_equals(&t, "map_Kd")) {
+        const token t = token_next(&p);
+        const unsigned n = token_size(&t);
+        store.back().map_Kd = std::string{t.content, t.content + n};
+        continue;
+      }
     }
   }
-}
+};
+
+static materials materials{};

@@ -108,4 +108,5 @@ public:
     SDL_DestroyWindow(ref);
   }
 };
-//------------------------------------------------------------------ window
+
+static window window{};

@@ -71,3 +71,5 @@ public:
     //	Mix_FreeMusic(music);
   }
 };
+
+static sdl sdl{};

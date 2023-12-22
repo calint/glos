@@ -5,6 +5,7 @@
  [ ] hpp files included by main.cpp
  [ ] convert structs to classes
  [x] use glm library for math
+ [ ] multithreaded gride update
  ------------------------------
  [x] dynamic pointer vector
  [x] texturing
