@@ -1,13 +1,12 @@
 #pragma once
+// reviewed: 2023-12-22
+
 #include "../obj/object.hpp"
 #include "cell.hpp"
 
-#define grid_cell_size 20
-#define grid_ncells_wide 8
-#define grid_ncells_high 8
-#define grid_ncells grid_ncells_wide *grid_ncells_high
-
 class grid final {
+  static constexpr unsigned ncells = grid_ncells_wide * grid_ncells_high;
+
 public:
   cell cells[grid_ncells_high][grid_ncells_wide];
 
@@ -16,8 +15,8 @@ public:
   inline void free() {}
 
   inline void update(const frame_ctx &fc) {
-    cell *p = &cells[0][0];
-    unsigned i = grid_ncells;
+    cell *p = cells[0];
+    unsigned i = ncells;
     while (i--) {
       p->update(fc);
       p++;
@@ -25,8 +24,8 @@ public:
   }
 
   inline void resolve_collisions(const frame_ctx &fc) {
-    cell *p = &cells[0][0];
-    unsigned i = grid_ncells;
+    cell *p = cells[0];
+    unsigned i = ncells;
     while (i--) {
       p->resolve_collisions(fc);
       p++;
@@ -34,8 +33,8 @@ public:
   }
 
   inline void render(const frame_ctx &fc) {
-    cell *p = &cells[0][0];
-    unsigned i = grid_ncells;
+    cell *p = cells[0];
+    unsigned i = ncells;
     while (i--) {
       p->render(fc);
       p++;
@@ -43,8 +42,8 @@ public:
   }
 
   inline void clear() {
-    cell *p = &cells[0][0];
-    unsigned i = grid_ncells;
+    cell *p = cells[0];
+    unsigned i = ncells;
     while (i--) {
       p->clear();
       p++;
@@ -52,7 +51,7 @@ public:
   }
 
   inline void add(object *o) {
-    if (grid_ncells == 1) {
+    if (ncells == 1) {
       cells[0][0].add(o);
       return;
     }
@@ -73,10 +72,6 @@ public:
     int zil = (int)(zl / grid_cell_size);
     int zir = (int)((zr) / grid_cell_size);
 
-    // printf("%s  zil=%d  zir=%d  xil=%d  xir=%d\n", o->name.data, zil, zir,
-    // xil,
-    //        xir);
-
     xil = clamp(xil, 0, grid_ncells_wide);
     xir = clamp(xir, 0, grid_ncells_wide);
     zil = clamp(zil, 0, grid_ncells_high);
@@ -89,7 +84,7 @@ public:
       }
     }
 
-    if (xil == xir && zil == zir) {
+    if (xil == xir and zil == zir) {
       clear_bit(o->grid_ifc.bits, grid_ifc_overlaps);
     } else {
       set_bit(o->grid_ifc.bits, grid_ifc_overlaps);
@@ -97,8 +92,8 @@ public:
   }
 
   inline void print() {
-    cell *p = &cells[0][0];
-    unsigned i = grid_ncells;
+    cell *p = cells[0];
+    unsigned i = ncells;
     while (i--) {
       printf(" %zu ", p->objects.size());
       if (!(i % grid_ncells_wide)) {
@@ -106,13 +101,14 @@ public:
       }
       p++;
     }
-    printf("\n------------------------\n");
+    printf("------------------------\n");
   }
 
 private:
   inline static int clamp(int i, int min, int max_plus_one) {
-    if (i < min)
+    if (i < min) {
       return min;
+    }
 
     if (i >= max_plus_one)
       return max_plus_one - 1;

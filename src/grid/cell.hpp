@@ -1,4 +1,6 @@
 #pragma once
+// reviewed: 2023-12-22
+
 #include "../obj/object.hpp"
 #include <algorithm>
 
@@ -21,6 +23,7 @@ public:
 
   inline void update(const frame_ctx &fc) {
     for (object *oi : objects) {
+      //? if object overlaps grid in multithreaded use atomic int
       if (oi->update_tick == fc.tick) {
         continue;
       }
@@ -41,15 +44,26 @@ public:
     }
   }
 
-  inline void print() { printf("cell{%zu}", objects.size()); }
-
   inline void clear() { objects.clear(); }
 
   inline void add(object *o) { objects.push_back(o); }
 
+  inline void print() {
+    int i = 0;
+    for (object *o : objects) {
+      if (i++) {
+        printf(", ");
+      }
+      printf("%s", o->name.c_str());
+    }
+    printf("\n");
+  }
+
   inline void resolve_collisions(const frame_ctx &fc) {
-    //	printf("[ cell %p ] detect collisions\n",(void*)o);
     const unsigned len = objects.size();
+    if (len == 0) {
+      return;
+    }
     for (unsigned i = 0; i < len - 1; i++) {
       for (unsigned j = i + 1; j < len; j++) {
         metrics.collision_detections_possible_prv_frame++;
@@ -57,23 +71,24 @@ public:
         object *Oi = objects.at(i);
         object *Oj = objects.at(j);
 
-        if (!((Oi->grid_ifc.collision_mask & Oj->grid_ifc.collision_bits) ||
+        if (!((Oi->grid_ifc.collision_mask & Oj->grid_ifc.collision_bits) or
               (Oj->grid_ifc.collision_mask & Oi->grid_ifc.collision_bits))) {
           continue;
         }
 
         if (is_bit_set(Oi->grid_ifc.bits, grid_ifc_overlaps) and
-            is_bit_set(Oj->grid_ifc.bits, grid_ifc_overlaps)) {
-          // both overlap grids, this detection might have been tried
-          if (is_collision_checked(Oi, Oj, fc)) {
-            continue;
-          }
+            is_bit_set(Oj->grid_ifc.bits, grid_ifc_overlaps) and
+            is_collision_checked(Oi, Oj, fc)) {
+          // both overlap grids and collision has already been checked by a
+          // different grid cell
+          continue;
         }
 
-        Oi->grid_ifc.checked_collisions_list.push_back(Oj);
+        Oi->grid_ifc.checked_collisions.push_back(Oj);
+        // note. only entry in one of the objects necessary
         metrics.collision_detections_considered_prv_frame++;
 
-        if (!detect_and_resolve_collision_for_spheres(Oi, Oj, fc)) {
+        if (not detect_and_resolve_collision_for_spheres(Oi, Oj, fc)) {
           continue;
         }
 
@@ -96,11 +111,11 @@ private:
     metrics.collision_grid_overlap_check++;
 
     if (o1->grid_ifc.tick != fc.tick) { // list out of date
-      o1->grid_ifc.checked_collisions_list.clear();
+      o1->grid_ifc.checked_collisions.clear();
       o1->grid_ifc.tick = fc.tick;
     }
     if (o2->grid_ifc.tick != fc.tick) { // list out of date
-      o2->grid_ifc.checked_collisions_list.clear();
+      o2->grid_ifc.checked_collisions.clear();
       o2->grid_ifc.tick = fc.tick;
     }
 
@@ -109,11 +124,12 @@ private:
   }
 
   inline static bool is_in_checked_collision_list(object *src, object *trg) {
-    auto it = std::find(src->grid_ifc.checked_collisions_list.begin(),
-                        src->grid_ifc.checked_collisions_list.end(), trg);
-    return it != src->grid_ifc.checked_collisions_list.end();
+    auto it = std::find(src->grid_ifc.checked_collisions.begin(),
+                        src->grid_ifc.checked_collisions.end(), trg);
+    return it != src->grid_ifc.checked_collisions.end();
   }
 
+  //? works only in 1D with equal masses
   inline static bool
   detect_and_resolve_collision_for_spheres(object *o1, object *o2,
                                            const frame_ctx &fc) {
@@ -126,11 +142,6 @@ private:
     if (diff >= 0) {
       return false;
     }
-    //
-    //	if(fabs(diff)<.01f){
-    //		printf("   ... diff within error margin  %f\n",diff);
-    //		return false;
-    //	}
 
     // partial dt to collision
     const float x1 = o1->physics.position.x;

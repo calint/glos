@@ -2,6 +2,8 @@
 #include <glm/gtc/type_ptr.hpp>
 
 // include order of subsystems relevant
+#include "app/defs.hpp"
+//
 #include "metrics.hpp"
 //
 #include "net/net.hpp"
@@ -44,7 +46,7 @@ static struct color {
   GLclampf red;
   GLclampf green;
   GLclampf blue;
-} bg = {.1f, .1f, 0};
+} bg = {0, 0, .3f};
 
 //
 #include "app/application.hpp"
@@ -171,6 +173,8 @@ int main(int argc, char *argv[]) {
   float mouse_sensitivity = 1.5f;
   bool mouse_mode = false;
   SDL_SetRelativeMouseMode(mouse_mode ? SDL_TRUE : SDL_FALSE);
+
+  bool print_grid = false;
 
   metrics.fps.calculation_intervall_ms = 1000;
   metrics.reset_timer();
@@ -325,6 +329,9 @@ int main(int argc, char *argv[]) {
     grid.clear();
     for (object *o : objects.store) {
       grid.add(o);
+    }
+    if (print_grid) {
+      grid.print();
     }
     grid.update(fc);
     grid.resolve_collisions(fc);

@@ -4,26 +4,30 @@
 class application final {
 public:
   void init() {
-    object *o;
     glos.load_from_file("obj/skydome.obj");
     glos.load_from_file("obj/grid.obj");
     glos.load_from_file("obj/santa.obj");
 
+    constexpr float world_size = grid_cell_size * grid_ncells_wide / 2;
+
+    object *o;
     o = new object{};
     objects.store.push_back(o);
     o->name = "skydome";
     o->node.glo = glos.find_by_name("skydome");
-    o->volume.scale = {15, 15, 15};
-    o->volume.radius = 10 * 15;
-    // o->physics.angular_velocity = {0, 0.5f, 0};
-    // o->physics_nxt = o->physics;
+    constexpr float skydome_size = 10;
+    constexpr float skydome_scale = world_size / skydome_size;
+    o->volume.scale = {skydome_scale, skydome_scale, skydome_scale};
+    o->volume.radius = sqrtf(world_size * world_size * 2);
 
     o = new object{};
     objects.store.push_back(o);
     o->name = "grid";
     o->node.glo = glos.find_by_name("grid");
-    o->volume.scale = {10, 10, 10};
-    o->volume.radius = 2 * 10;
+    constexpr float grid_size = 8;
+    constexpr float grid_scale = world_size / grid_size;
+    o->volume.scale = {grid_scale, grid_scale, grid_scale};
+    o->volume.radius = sqrtf(world_size * world_size * 2);
 
     o = new santa{};
     objects.store.push_back(o);
@@ -47,8 +51,7 @@ public:
     o->keys_ptr = &net.state_current[1].keys;
 
     game.follow_object = o;
-    // camera.position = {30, 120, 140};
-    camera.position = {0, 10, 100};
+    camera.position = {30, 50, 50};
 
     //
     //	for(float y=0;y<5;y++){

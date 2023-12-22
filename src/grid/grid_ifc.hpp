@@ -11,6 +11,6 @@ public:
   unsigned tick = 0;
   unsigned collision_bits = 0;
   unsigned collision_mask = 0;
-  std::vector<const object *> checked_collisions_list{};
+  std::vector<const object *> checked_collisions{};
   unsigned bits = 0; // 1: overlaps
 };
