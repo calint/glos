@@ -6,6 +6,12 @@ TAG=$(date "+%Y-%m-%d--%H-%M") && git tag $TAG && git push origin $TAG
 
 
 
+cat stacktrace | awk '{print $2}'|cut -c 2-9 | while read addr; do
+	addr2line -e glos $addr
+done
+
+
+
 #pragma once
 // object
 //   |
