@@ -1,19 +1,34 @@
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+// include order of subsystems relevant
 #include "metrics.hpp"
-
-#include "gfx.hpp"
-
-#include "net.h"
-
+//
+#include "net/net.hpp"
+//
+#include "sdl/sdl.hpp"
+//
+#include "sdl/window.hpp"
+//
+#include "gfx/shader.hpp"
+//
+#include "gfx/camera.hpp"
+//
+#include "gfx/material.hpp"
+//
+#include "gfx/glo.hpp"
+//
 class frame_ctx {
 public:
   float dt;
   unsigned tick;
 };
-
-#include "grid.hpp"
-
-#include <glm/glm.hpp>
-#include <glm/gtc/type_ptr.hpp>
+#include "obj/object.hpp"
+//
+#include "grid/grid.hpp"
+//
+#include "net/net.hpp"
+#include "net/net_server.hpp"
 
 static struct game {
   unsigned *keys_ptr;
@@ -31,6 +46,7 @@ static struct color {
   GLclampf blue;
 } bg = {.1f, .1f, 0};
 
+//
 #include "app/init.h"
 
 //----------------------------------------------------------------------- init
@@ -106,9 +122,9 @@ inline static void main_render(const frame_ctx &fc) {
 //------------------------------------------------------------------------ main
 int main(int argc, char *argv[]) {
   if (argc > 1 && *argv[1] == 's') {
-    netsrv_init();
-    netsrv_loop();
-    netsrv_free();
+    net_server_init();
+    net_server_loop();
+    net_server_free();
   }
 
   bool use_net = false;
@@ -163,7 +179,7 @@ int main(int argc, char *argv[]) {
   metrics.fps.calculation_intervall_ms = 1000;
   metrics.reset_timer();
   metrics.print_headers(stderr);
-  unsigned frame_num = 1;
+  unsigned frame_num = 0;
 
   frame_ctx fc = {
       .dt = 0.1f,

@@ -14,6 +14,10 @@ public:
   float wi = 1024;
   float hi = 1024;
 
+  inline void init() {}
+
+  inline void free() {}
+
   inline void update_matrix_wvp() {
     float aspect_ratio = wi / hi;
     glm::mat4 mtx_v = glm::lookAt(pos, target, up);

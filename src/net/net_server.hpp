@@ -1,12 +1,12 @@
 #pragma once
-#include "net.h"
+#include "net.hpp"
 
 static int net_port = 8085;
 static int netsrv_fd;
 static int netsrv_client_fd[net_cap];
 static net_state netsrv_state[net_cap];
 
-inline static void netsrv_init() {
+inline static void net_server_init() {
 
   netsrv_fd = socket(AF_INET, SOCK_STREAM, 0);
   if (netsrv_fd == -1) {
@@ -73,7 +73,7 @@ inline static void netsrv_init() {
   }
 }
 
-inline static void netsrv_loop() {
+inline static void net_server_loop() {
   printf(" * entering loop\n");
   const size_t state_read_size = sizeof(net_state);
   uint64_t t0 = SDL_GetPerformanceCounter();
@@ -110,7 +110,7 @@ inline static void netsrv_loop() {
   }
 }
 
-inline static void netsrv_free() {
+inline static void net_server_free() {
   close(netsrv_fd);
   netsrv_fd = 0;
 }

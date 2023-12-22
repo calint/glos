@@ -1,10 +1,10 @@
 #pragma once
-// #include<ctype.h>
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <netinet/tcp.h>
 #include <sys/socket.h>
 #include <sys/types.h>
+#include <unistd.h>
 
 class net_state {
 public:
