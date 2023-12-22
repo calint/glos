@@ -2,10 +2,12 @@
  [x]   replace dynp, dyni, dynf with vector
  [x]   replace str with string
  [ ] namespaces
- [ ] hpp files included by main.cpp
- [ ] convert structs to classes
+ [x] hpp files included by main.cpp
+ [x] convert structs to classes
  [x] use glm library for math
- [ ] multithreaded gride update
+ [ ] multithreaded grid update
+ [ ] deleted objects list created during 'update'
+ [ ] shader: mtx_wvp * mtx_mw   is it better with mtx_mwvp?
  ------------------------------
  [x] dynamic pointer vector
  [x] texturing
@@ -19,7 +21,7 @@
  [x]   scene
  [x]     to objects
  [ ]     center/scale/position
- [ ]   faces to ccw
+ [x]   faces to ccw
  [ ] draw bounding volume
  [x]   sphere
  [ ]   box

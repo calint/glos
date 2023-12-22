@@ -74,8 +74,7 @@ void main(){
 }
     )";
 
-    std::vector<int> attrs{shader_apos};
-    shaders.load_program_from_source(vtx, frag, attrs);
+    shaders.load_program_from_source(vtx, frag, {shaders::apos});
   }
   {
     const char *vtx = R"(
@@ -100,14 +99,14 @@ void main(){
 }
     )";
 
-    std::vector<int> attrs{shader_apos, shader_argba};
-    shaders.load_program_from_source(vtx, frag, attrs);
+    shaders.load_program_from_source(vtx, frag,
+                                     {shaders::apos, shaders::argba});
   }
 }
 
 inline static void main_render(const frame_ctx &fc) {
   camera.update_matrix_wvp();
-  glUniformMatrix4fv(shader_umtx_wvp, 1, 0, glm::value_ptr(camera.mtx_vp));
+  glUniformMatrix4fv(shaders::umtx_wvp, 1, 0, glm::value_ptr(camera.mtx_vp));
   glClearColor(bg.red, bg.green, bg.blue, 1.0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   grid.render(fc);
@@ -161,7 +160,7 @@ int main(int argc, char *argv[]) {
     const program &p = shaders.programs.at(shader_program_ix);
     glUseProgram(p.id);
     printf(" * using program at index %u\n", shader_program_ix);
-    for (int ix : p.attributes) {
+    for (int ix : p.enabled_attributes) {
       glEnableVertexAttribArray(ix);
     }
     puts("");
@@ -302,7 +301,7 @@ int main(int argc, char *argv[]) {
       printf(" * switching to program at index %u\n", shader_program_ix);
       {
         const program &p = shaders.programs.at(shader_program_ix_prev);
-        for (int ix : p.attributes) {
+        for (int ix : p.enabled_attributes) {
           printf("   * disable vertex attrib array %d\n", ix);
           glDisableVertexAttribArray(ix);
         }
@@ -310,7 +309,7 @@ int main(int argc, char *argv[]) {
       {
         const program &p = shaders.programs.at(shader_program_ix);
         glUseProgram(p.id);
-        for (int ix : p.attributes) {
+        for (int ix : p.enabled_attributes) {
           printf("   * enable vertex attrib array %d\n", ix);
           glEnableVertexAttribArray(ix);
         }

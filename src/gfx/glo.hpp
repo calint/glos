@@ -60,27 +60,27 @@ public:
   }
 
   inline void render(const glm::mat4 &mtx_mw) {
-    glUniformMatrix4fv(shader_umtx_mw, 1, 0, glm::value_ptr(mtx_mw));
+    glUniformMatrix4fv(shaders::umtx_mw, 1, 0, glm::value_ptr(mtx_mw));
     glBindBuffer(GL_ARRAY_BUFFER, vtxbuf_id);
-    glVertexAttribPointer(shader_apos, 3, GL_FLOAT, GL_FALSE, sizeof(vertex),
+    glVertexAttribPointer(shaders::apos, 3, GL_FLOAT, GL_FALSE, sizeof(vertex),
                           0);
-    glVertexAttribPointer(shader_argba, 4, GL_FLOAT, GL_FALSE, sizeof(vertex),
+    glVertexAttribPointer(shaders::argba, 4, GL_FLOAT, GL_FALSE, sizeof(vertex),
                           (GLvoid *)(3 * sizeof(float)));
-    glVertexAttribPointer(shader_anorm, 3, GL_FLOAT, GL_FALSE, sizeof(vertex),
+    glVertexAttribPointer(shaders::anorm, 3, GL_FLOAT, GL_FALSE, sizeof(vertex),
                           (GLvoid *)((3 + 4) * sizeof(float)));
-    glVertexAttribPointer(shader_atex, 2, GL_FLOAT, GL_FALSE, sizeof(vertex),
+    glVertexAttribPointer(shaders::atex, 2, GL_FLOAT, GL_FALSE, sizeof(vertex),
                           (GLvoid *)((3 + 4 + 3) * sizeof(float)));
     for (const range &mr : ranges) {
       const material &m = materials.store.at(mr.material_ix);
       if (m.texture_id) {
-        glUniform1i(shader_utex, 0);
+        glUniform1i(shaders::utex, 0);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, m.texture_id);
-        glEnableVertexAttribArray(shader_atex);
+        glEnableVertexAttribArray(shaders::atex);
       } else {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, 0);
-        glDisableVertexAttribArray(shader_atex);
+        glDisableVertexAttribArray(shaders::atex);
       }
       glDrawArrays(GL_TRIANGLES, (signed)mr.begin, (signed)mr.count);
       metrics.triangles_rendered_prv_frame += mr.count / 3;

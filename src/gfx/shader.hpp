@@ -2,15 +2,7 @@
 #include "../metrics.hpp"
 #include <vector>
 
-class vertex {
-public:
-  float position[3];
-  float color[4];
-  float normal[3];
-  float texture[2];
-};
-
-static const char *shader_vertex_source = R"(
+static const char *vertex_shader_source = R"(
   #version 130
   uniform mat4 umtx_mw; // model-to-world-matrix
   uniform mat4 umtx_wvp;// world-to-view-to-projection
@@ -29,7 +21,7 @@ static const char *shader_vertex_source = R"(
   }
 )";
 
-static const char *shader_fragment_source = R"(
+static const char *fragment_shader_source = R"(
   #version 130
   uniform sampler2D utex;
   in vec4 vrgba;
@@ -42,24 +34,35 @@ static const char *shader_fragment_source = R"(
   }
 )";
 
-#define shader_apos 0
-#define shader_argba 1
-#define shader_anorm 2
-#define shader_atex 3
-#define shader_umtx_mw 0
-#define shader_umtx_wvp 1
-#define shader_utex 2
+class vertex {
+public:
+  float position[3];
+  float color[4];
+  float normal[3];
+  float texture[2];
+};
 
 class program {
 public:
   GLuint id = 0;
-  unsigned attached_vtxshdr_id = 0;
-  unsigned attached_frgshdr_id = 0;
-  std::vector<int> attributes{};
+  GLuint vertex_shader_id = 0;
+  GLuint fragment_shader_id = 0;
+  std::vector<int> enabled_attributes{};
 };
 
 class shaders final {
 public:
+  // enabled_attributes layout in shaders
+  static constexpr unsigned apos = 0;
+  static constexpr unsigned argba = 1;
+  static constexpr unsigned anorm = 2;
+  static constexpr unsigned atex = 3;
+  // uniform matrixes
+  static constexpr unsigned umtx_mw = 0;
+  static constexpr unsigned umtx_wvp = 1;
+  // uniform textures
+  static constexpr unsigned utex = 2;
+
   std::vector<program> programs{};
 
   inline void init() {
@@ -87,18 +90,17 @@ public:
     printf(":-%10s-:-%7s-:\n", "----------", "-------");
     puts("");
 
-    std::vector<int> attrs{shader_apos, shader_argba, shader_anorm,
-                           shader_atex};
-    load_program_from_source(shader_vertex_source, shader_fragment_source,
-                             attrs);
+    load_program_from_source(
+        vertex_shader_source, fragment_shader_source,
+        {shaders::apos, shaders::argba, shaders::anorm, shaders::atex});
 
     gl_check_error("after shader_init");
   }
 
   inline void free() {
     for (const program &p : programs) {
-      glDeleteShader(p.attached_vtxshdr_id);
-      glDeleteShader(p.attached_frgshdr_id);
+      glDeleteShader(p.vertex_shader_id);
+      glDeleteShader(p.fragment_shader_id);
       glDeleteProgram(p.id);
     }
   }
@@ -107,26 +109,26 @@ public:
                                 std::vector<int> attrs) -> int {
     gl_check_error("enter shader_program_load");
 
-    unsigned pid = glCreateProgram();
-    programs.push_back({pid, compile(GL_VERTEX_SHADER, vert_src),
+    const GLuint id = glCreateProgram();
+    programs.push_back({id, compile(GL_VERTEX_SHADER, vert_src),
                         compile(GL_FRAGMENT_SHADER, frag_src),
                         std::move(attrs)});
 
-    glAttachShader(pid, programs.back().attached_vtxshdr_id);
-    glAttachShader(pid, programs.back().attached_frgshdr_id);
-    glLinkProgram(pid);
+    glAttachShader(id, programs.back().vertex_shader_id);
+    glAttachShader(id, programs.back().fragment_shader_id);
+    glLinkProgram(id);
 
-    GLint ok;
-    glGetProgramiv(pid, GL_LINK_STATUS, &ok);
+    GLint ok = 0;
+    glGetProgramiv(id, GL_LINK_STATUS, &ok);
     if (!ok) {
-      GLint len;
-      glGetProgramiv(pid, GL_INFO_LOG_LENGTH, &len);
+      GLint len = 0;
+      glGetProgramiv(id, GL_INFO_LOG_LENGTH, &len);
 
       GLchar msg[1024];
-      if (len > (signed)sizeof msg) {
-        len = sizeof msg;
+      if (len > (signed)sizeof(msg)) {
+        len = sizeof(msg);
       }
-      glGetProgramInfoLog(pid, len, NULL, &msg[0]);
+      glGetProgramInfoLog(id, len, NULL, msg);
       printf("program linking error: %s\n", msg);
       exit(8);
     }
@@ -135,26 +137,26 @@ public:
   }
 
 private:
-  inline static GLuint compile(GLenum shaderType, const char *code) {
-    GLuint id = glCreateShader(shaderType);
-    size_t length = strlen(code);
-    glShaderSource(id, 1, (const GLchar **)&code, (GLint *)&length);
+  inline static GLuint compile(GLenum shader_type, const char *src) {
+    const GLuint id = glCreateShader(shader_type);
+    const size_t length = strlen(src);
+    glShaderSource(id, 1, (const GLchar **)&src, (GLint *)&length);
     glCompileShader(id);
-    GLint ok;
+    GLint ok = 0;
     glGetShaderiv(id, GL_COMPILE_STATUS, &ok);
     if (!ok) {
-      GLchar messages[1024];
-      glGetShaderInfoLog(id, sizeof(messages), NULL, &messages[0]);
+      GLchar msg[1024];
+      glGetShaderInfoLog(id, sizeof(msg), NULL, msg);
       printf("compiler error in %s shader:\n%s\n",
-             shader_name_for_type(shaderType), messages);
+             shader_name_for_type(shader_type), msg);
       exit(7);
     }
     return id;
   }
 
-  inline static const char *gl_get_error_string(const GLenum error) {
-    const char *str;
-    switch (error) {
+  inline static const char *gl_get_error_string(const GLenum gl_error) {
+    const char *str = nullptr;
+    switch (gl_error) {
     case GL_NO_ERROR:
       str = "GL_NO_ERROR";
       break;
@@ -192,9 +194,10 @@ private:
     }
     return str;
   }
-  inline static void gl_print_string(const char *name, const GLenum s) {
-    const char *v = (const char *)glGetString(s);
-    printf("%s=%s\n", name, v);
+
+  inline static void gl_print_string(const char *name, const GLenum gl_str) {
+    const char *str = (const char *)glGetString(gl_str);
+    printf("%s=%s\n", name, str);
   }
 
   inline static void gl_check_error(const char *op) {
@@ -204,11 +207,12 @@ private:
              gl_get_error_string(error));
       err = 1;
     }
-    if (err)
+    if (err) {
       exit(11);
+    }
   }
 
-  inline static const char *shader_name_for_type(GLenum shader_type) {
+  inline static const char *shader_name_for_type(const GLenum shader_type) {
     switch (shader_type) {
     case GL_VERTEX_SHADER:
       return "vertex";

@@ -47,8 +47,8 @@ public:
     o->keys_ptr = &net.state_current[1].keys;
 
     game.follow_object = o;
-    camera.pos = {30, 120, 140};
-    camera.target = {0, 0, 0};
+    // camera.pos = {30, 120, 140};
+    camera.pos = {0, 10, 100};
 
     //
     //	for(float y=0;y<5;y++){
