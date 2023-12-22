@@ -34,19 +34,11 @@ public:
 #include "net/net.hpp"
 #include "net/net_server.hpp"
 
-class player {
-public:
-  unsigned *keys_ptr = nullptr;
-  const object *object = nullptr;
-};
-
-static player player{};
-
 static struct color {
   GLclampf red;
   GLclampf green;
   GLclampf blue;
-} bg = {0, 0, .3f};
+} background_color = {0, 0, .3f};
 
 //
 #include "app/application.hpp"
@@ -110,7 +102,8 @@ inline static void main_render(const frame_ctx &fc) {
   camera.update_matrix_wvp();
   glUniformMatrix4fv(shaders::umtx_wvp, 1, GL_FALSE,
                      glm::value_ptr(camera.Mvp));
-  glClearColor(bg.red, bg.green, bg.blue, 1.0);
+  glClearColor(background_color.red, background_color.green,
+               background_color.blue, 1.0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   grid.render(fc);
   window.swap_buffers();
@@ -299,14 +292,6 @@ int main(int argc, char *argv[]) {
 
     if (!use_net) {
       net.state_current[net.active_player_index].keys = net.state_to_send.keys;
-    }
-
-    if (player.keys_ptr) {
-      *player.keys_ptr = net.state_current[net.active_player_index].keys;
-    }
-
-    if (player.object) {
-      camera.look_at = player.object->physics.position;
     }
 
     if (shader_program_ix_prev != shader_program_ix) {
