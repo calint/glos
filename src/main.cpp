@@ -1,3 +1,5 @@
+// reviewed: 2023-12-22
+
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
@@ -184,6 +186,7 @@ int main(int argc, char *argv[]) {
   metrics.fps.calculation_intervall_ms = 1000;
   metrics.reset_timer();
   metrics.print_headers(stderr);
+
   unsigned frame_num = 0;
 
   frame_ctx fc = {
@@ -206,14 +209,12 @@ int main(int argc, char *argv[]) {
       case SDL_WINDOWEVENT: {
         switch (event.window.event) {
         case SDL_WINDOWEVENT_SIZE_CHANGED: {
-          SDL_Log("Window %d size changed to %dx%d", event.window.windowID,
-                  event.window.data1, event.window.data2);
-          int w, h;
+          int w = 0, h = 0;
           SDL_GetWindowSize(window.sdl_window, &w, &h);
           camera.width = (float)w;
           camera.height = (float)h;
-          printf(" * resize to  %u x %u\n", w, h);
           glViewport(0, 0, w, h);
+          printf(" * window resize to  %u x %u\n", w, h);
           break;
         }
         }
@@ -299,9 +300,11 @@ int main(int argc, char *argv[]) {
     if (!use_net) {
       net.state_current[net.active_player_index].keys = net.state_to_send.keys;
     }
+    
     if (player.keys_ptr) {
       *player.keys_ptr = net.state_current[net.active_player_index].keys;
     }
+
     if (player.object) {
       camera.look_at = player.object->physics.position;
     }
@@ -326,10 +329,10 @@ int main(int argc, char *argv[]) {
       shader_program_ix_prev = shader_program_ix;
     }
 
+    frame_num++;
+
     fc.dt = use_net ? net.dt : metrics.fps.dt;
     fc.tick = frame_num;
-
-    frame_num++;
 
     grid.clear();
     for (object *o : objects.store) {
@@ -367,4 +370,3 @@ int main(int argc, char *argv[]) {
   puts(" * clean exit");
   return 0;
 }
-//----------------------------------------------------------------------------
