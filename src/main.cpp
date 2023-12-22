@@ -115,7 +115,7 @@ inline static void main_render(const frame_ctx &fc) {
   glClearColor(bg.red, bg.green, bg.blue, 1.0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   grid.render(fc);
-  SDL_GL_SwapWindow(window.ref);
+  SDL_GL_SwapWindow(window.sdl_window);
 }
 
 //------------------------------------------------------------------------ main
@@ -159,6 +159,8 @@ int main(int argc, char *argv[]) {
   application.init();
 
   main_init_shaders();
+
+  // sdl.play_path("music/ambience.mp3");
 
   {
     puts("");
@@ -207,7 +209,7 @@ int main(int argc, char *argv[]) {
           SDL_Log("Window %d size changed to %dx%d", event.window.windowID,
                   event.window.data1, event.window.data2);
           int w, h;
-          SDL_GetWindowSize(window.ref, &w, &h);
+          SDL_GetWindowSize(window.sdl_window, &w, &h);
           camera.width = (float)w;
           camera.height = (float)h;
           printf(" * resize to  %u x %u\n", w, h);
