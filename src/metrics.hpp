@@ -1,4 +1,6 @@
 #pragma once
+// reviewed: 2023-12-22
+
 #include <SDL2/SDL.h>
 
 class metrics final {
@@ -7,7 +9,7 @@ public:
     uint32_t average_during_last_intervall = 0;
     uint32_t frame_count = 0;
     uint32_t calculation_intervall_ms = 0;
-    uint32_t time_at_start_of_intervall_in_ms = 0;
+    uint32_t time_at_start_of_intervall_ms = 0;
     float dt = 0;
     uint64_t timer_frequency = 0;
     uint64_t timer_tick_at_start_of_frame = 0;
@@ -29,12 +31,15 @@ public:
   unsigned collision_grid_overlap_check = 0;
 
   inline void init() {}
+
   inline void free() {}
+
   inline void reset_timer() {
-    fps.time_at_start_of_intervall_in_ms = SDL_GetTicks();
+    fps.time_at_start_of_intervall_ms = SDL_GetTicks();
     fps.timer_tick_at_start_of_frame = SDL_GetPerformanceCounter();
     fps.timer_frequency = SDL_GetPerformanceFrequency();
   }
+
   inline void print_headers(FILE *f) {
     fprintf(f,
             " %6s  %7s  %4s  %7s  %6s  %5s  %5s  %5s  %5s  %6s  %6s  %8s  %5s  "
@@ -42,6 +47,7 @@ public:
             "ms", "dt", "fps", "netlag", "nobj", "colp", "colc", "colf",
             "olchk", "upd", "rend", "gtri", "nglo", "vtxbufs", "texbufs");
   }
+
   inline void print(FILE *f) {
     fprintf(
         f,
@@ -72,20 +78,22 @@ public:
 
   inline void at_frame_end(FILE *f) {
     {
-      Uint64 t1 = SDL_GetPerformanceCounter();
-      Uint64 dt_ticks = t1 - fps.timer_tick_at_start_of_frame;
+      const Uint64 t1 = SDL_GetPerformanceCounter();
+      const Uint64 dt_ticks = t1 - fps.timer_tick_at_start_of_frame;
       fps.timer_tick_at_start_of_frame = t1;
       fps.dt = (float)dt_ticks / (float)fps.timer_frequency;
 
-      if (fps.dt > .1)
-        fps.dt = .1f; //? magicnumber
+      if (fps.dt > .1) {
+        fps.dt = .1f; // minimum 10 fps
+      }
 
-      if (fps.dt == 0)
-        fps.dt = .00001f; //? magicnumber
+      if (fps.dt == 0) {
+        fps.dt = .00001f; // maximum 100000 fps
+      }
     }
 
-    Uint32 t1 = SDL_GetTicks();
-    Uint32 dt = t1 - fps.time_at_start_of_intervall_in_ms;
+    const Uint32 t1 = SDL_GetTicks();
+    const Uint32 dt = t1 - fps.time_at_start_of_intervall_ms;
 
     if (dt < fps.calculation_intervall_ms) {
       return;
@@ -98,7 +106,7 @@ public:
     }
 
     average_fps = fps.average_during_last_intervall;
-    fps.time_at_start_of_intervall_in_ms = t1;
+    fps.time_at_start_of_intervall_ms = t1;
     fps.frame_count = 0;
 
     print(f);
