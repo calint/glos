@@ -1,4 +1,6 @@
 #pragma once
+// reviewed: 2023-12-22
+
 #include "material.hpp"
 #include "shader.hpp"
 #include <glm/gtc/type_ptr.hpp>
@@ -15,42 +17,44 @@ public:
 
 class glo {
 public:
-  std::vector<float> vtxbuf{};
-  std::vector<range> ranges{};
-  unsigned vtxbuf_id = 0;
   std::string name = "";
+  std::vector<float> vertex_buffer{};
+  std::vector<range> ranges{};
+  GLuint vertex_buffer_id = 0;
 
   inline void free() {
-    glDeleteBuffers(1, &vtxbuf_id);
-    metrics.buffered_vertex_data -= vtxbuf.size() * sizeof(float);
+    glDeleteBuffers(1, &vertex_buffer_id);
+    metrics.buffered_vertex_data -= vertex_buffer.size() * sizeof(float);
     metrics.glos_allocated--;
   }
 
   inline void upload_to_opengl() {
     // upload vertex buffer
-    glGenBuffers(1, &vtxbuf_id);
-    glBindBuffer(GL_ARRAY_BUFFER, vtxbuf_id);
-    glBufferData(GL_ARRAY_BUFFER, (signed)(vtxbuf.size() * sizeof(float)),
-                 vtxbuf.data(), GL_STATIC_DRAW);
-    metrics.buffered_vertex_data += vtxbuf.size() * sizeof(float);
-    for (const range &mr : ranges) {
-      material &m = materials.store.at(mr.material_ix);
-      if (not m.map_Kd.empty()) { // load texture
-        glGenTextures(1, &m.texture_id);
-        printf(" * loading texture %u from '%s'\n", m.texture_id,
-               m.map_Kd.c_str());
-        glBindTexture(GL_TEXTURE_2D, m.texture_id);
-        SDL_Surface *surface = IMG_Load(m.map_Kd.c_str());
+    glGenBuffers(1, &vertex_buffer_id);
+    glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_id);
+    glBufferData(GL_ARRAY_BUFFER,
+                 (signed)(vertex_buffer.size() * sizeof(float)),
+                 vertex_buffer.data(), GL_STATIC_DRAW);
+    metrics.buffered_vertex_data += vertex_buffer.size() * sizeof(float);
+    for (const range &mtlrng : ranges) {
+      material &mtl = materials.store.at(mtlrng.material_ix);
+      if (not mtl.map_Kd.empty()) {
+        // load texture
+        glGenTextures(1, &mtl.texture_id);
+        printf(" * loading texture %u from '%s'\n", mtl.texture_id,
+               mtl.map_Kd.c_str());
+        glBindTexture(GL_TEXTURE_2D, mtl.texture_id);
+        SDL_Surface *surface = IMG_Load(mtl.map_Kd.c_str());
         if (!surface) {
-          printf("!!! could not load image from '%s'\n", m.map_Kd.c_str());
+          printf("!!! could not load image from '%s'\n", mtl.map_Kd.c_str());
           exit(-1);
         }
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface->w, surface->h, 0,
                      GL_RGB, GL_UNSIGNED_BYTE, surface->pixels);
-        m.texture_size_bytes =
+        mtl.texture_size_bytes =
             (unsigned)(surface->w * surface->h * sizeof(uint32_t));
         SDL_FreeSurface(surface);
-        metrics.buffered_texture_data += m.texture_size_bytes;
+        metrics.buffered_texture_data += mtl.texture_size_bytes;
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -60,8 +64,8 @@ public:
   }
 
   inline void render(const glm::mat4 &mtx_mw) {
-    glUniformMatrix4fv(shaders::umtx_mw, 1, 0, glm::value_ptr(mtx_mw));
-    glBindBuffer(GL_ARRAY_BUFFER, vtxbuf_id);
+    glUniformMatrix4fv(shaders::umtx_mw, 1, GL_FALSE, glm::value_ptr(mtx_mw));
+    glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_id);
     glVertexAttribPointer(shaders::apos, 3, GL_FLOAT, GL_FALSE, sizeof(vertex),
                           0);
     glVertexAttribPointer(shaders::argba, 4, GL_FLOAT, GL_FALSE, sizeof(vertex),
@@ -95,15 +99,15 @@ public:
 
     std::vector<glm::vec3> vertices{};
     std::vector<glm::vec3> normals{};
-    std::vector<glm::vec2> texuv{};
+    std::vector<glm::vec2> texture_uv{};
 
     std::vector<float> vertex_buffer{};
-    std::vector<range> mtlrngs{};
+    std::vector<range> material_ranges{};
 
-    unsigned current_objmtl_ix = 0;
+    unsigned current_object_material_ix = 0;
     const char *basedir = "obj/";
-    unsigned vtxbufix = 0;
-    unsigned prev_vtxbufix = 0;
+    unsigned vertex_buffer_ix = 0;
+    unsigned prev_vertex_buffer_ix = 0;
     int first_o = 1;
     std::string object_name = "";
     while (*p) {
@@ -121,25 +125,25 @@ public:
         continue;
       }
       if (token_equals(&t, "o")) {
-        if (first_o) {
-          first_o = 0;
-          token t = token_next(&p);
-          const unsigned n = token_size(&t);
-          object_name = std::string{t.content, t.content + n};
-          puts(object_name.c_str());
-          continue;
+        if (not first_o) {
+          printf("!!! only one object per file supported\n");
+          exit(-1);
         }
-        p = t.begin;
-        break;
+        first_o = false;
+        token t = token_next(&p);
+        const unsigned n = token_size(&t);
+        object_name = std::string{t.content, t.content + n};
+        printf("   %s\n", object_name.c_str());
+        continue;
       }
       if (token_equals(&t, "usemtl")) {
         token t = token_next(&p);
         std::string name{t.content, t.content + token_size(&t)};
         bool found = false;
         for (unsigned i = 0; i < materials.store.size(); i++) {
-          material &mm = materials.store.at(i);
-          if (mm.name == name) {
-            current_objmtl_ix = i;
+          material &mtl = materials.store.at(i);
+          if (mtl.name == name) {
+            current_object_material_ix = i;
             found = true;
             break;
           }
@@ -151,9 +155,10 @@ public:
           fprintf(stderr, "\n\n");
           exit(-1);
         }
-        if (prev_vtxbufix != vtxbufix) {
-          mtlrngs.emplace_back(prev_vtxbufix, vtxbufix, current_objmtl_ix);
-          prev_vtxbufix = vtxbufix;
+        if (prev_vertex_buffer_ix != vertex_buffer_ix) {
+          material_ranges.emplace_back(prev_vertex_buffer_ix, vertex_buffer_ix,
+                                       current_object_material_ix);
+          prev_vertex_buffer_ix = vertex_buffer_ix;
         }
       }
       if (token_equals(&t, "s")) {
@@ -163,96 +168,90 @@ public:
       if (token_equals(&t, "v")) {
         token tx = token_next(&p);
         float x = token_get_float(&tx);
-
         token ty = token_next(&p);
         float y = token_get_float(&ty);
-
         token tz = token_next(&p);
         float z = token_get_float(&tz);
-
         vertices.emplace_back(x, y, z);
         continue;
       }
       if (token_equals(&t, "vt")) {
         token tu = token_next(&p);
         float u = token_get_float(&tu);
-
         token tv = token_next(&p);
         float v = token_get_float(&tv);
-
-        texuv.emplace_back(u, v);
+        texture_uv.emplace_back(u, v);
         continue;
       }
       if (token_equals(&t, "vn")) {
         token tx = token_next(&p);
         float x = token_get_float(&tx);
-
         token ty = token_next(&p);
         float y = token_get_float(&ty);
-
         token tz = token_next(&p);
         float z = token_get_float(&tz);
-
         normals.emplace_back(x, y, z);
         continue;
       }
 
       if (token_equals(&t, "f")) {
-        const material &current_objmtl = materials.store.at(current_objmtl_ix);
-        for (int i = 0; i < 3; i++) {
+        const material &current_object_material =
+            materials.store.at(current_object_material_ix);
+        for (unsigned i = 0; i < 3; i++) {
           // position
-          token vert1 = token_from_string_additional_delim(p, '/');
-          p = vert1.end;
-          unsigned ix1 = token_get_uint(&vert1);
-          const glm::vec3 &vtx = vertices.at(ix1 - 1);
+          token ix1_tkn = token_from_string_additional_delim(p, '/');
+          p = ix1_tkn.end;
+          const unsigned ix1 = token_get_uint(&ix1_tkn);
+          const glm::vec3 &vertex = vertices.at(ix1 - 1);
 
-          // texture index
-          token vert2 = token_from_string_additional_delim(p, '/');
-          p = vert2.end;
-          const unsigned ix2 = token_get_uint(&vert2);
-          const glm::vec2 tex = ix2 ? texuv.at(ix2 - 1) : glm::vec2{0, 0};
+          // texture
+          token ix2_tkn = token_from_string_additional_delim(p, '/');
+          p = ix2_tkn.end;
+          const unsigned ix2 = token_get_uint(&ix2_tkn);
+          const glm::vec2 &texture =
+              ix2 ? texture_uv.at(ix2 - 1) : glm::vec2{0, 0};
+
           // normal
-          token vert3 = token_from_string_additional_delim(p, '/');
-          p = vert3.end;
-          unsigned ix3 = token_get_uint(&vert3);
-          const glm::vec3 &norm = normals.at(ix3 - 1);
+          token ix3_tkn = token_from_string_additional_delim(p, '/');
+          p = ix3_tkn.end;
+          const unsigned ix3 = token_get_uint(&ix3_tkn);
+          const glm::vec3 &normal = normals.at(ix3 - 1);
 
-          // buffer
-          vertex_buffer.push_back(vtx.x);
-          vertex_buffer.push_back(vtx.y);
-          vertex_buffer.push_back(vtx.z);
-
-          vertex_buffer.push_back(current_objmtl.Kd.x);
-          vertex_buffer.push_back(current_objmtl.Kd.y);
-          vertex_buffer.push_back(current_objmtl.Kd.z);
+          // add to buffer
+          // vertex
+          vertex_buffer.push_back(vertex.x);
+          vertex_buffer.push_back(vertex.y);
+          vertex_buffer.push_back(vertex.z);
+          // color
+          vertex_buffer.push_back(current_object_material.Kd.x);
+          vertex_buffer.push_back(current_object_material.Kd.y);
+          vertex_buffer.push_back(current_object_material.Kd.z);
           vertex_buffer.push_back(1);
+          // normal
+          vertex_buffer.push_back(normal.x);
+          vertex_buffer.push_back(normal.y);
+          vertex_buffer.push_back(normal.z);
+          // texture
+          vertex_buffer.push_back(texture.x);
+          vertex_buffer.push_back(texture.y);
 
-          vertex_buffer.push_back(norm.x);
-          vertex_buffer.push_back(norm.y);
-          vertex_buffer.push_back(norm.z);
-
-          vertex_buffer.push_back(tex.x);
-          vertex_buffer.push_back(tex.y);
-
-          vtxbufix++;
+          vertex_buffer_ix++;
         }
         continue;
       }
     }
+    // add the last material range
+    material_ranges.emplace_back(prev_vertex_buffer_ix, vertex_buffer_ix,
+                                 current_object_material_ix);
 
-    mtlrngs.emplace_back(prev_vtxbufix, vtxbufix, current_objmtl_ix);
-
-    printf("    %zu range%c   %lu vertices   %zu B\n", mtlrngs.size(),
-           mtlrngs.size() == 1 ? ' ' : 's',
+    printf("   %zu range%c  %lu vertices  %zu B\n", material_ranges.size(),
+           material_ranges.size() == 1 ? ' ' : 's',
            vertex_buffer.size() / sizeof(vertex),
            vertex_buffer.size() * sizeof(float));
 
-    glo *g = new glo();
+    glo *g = new glo{std::move(object_name), std::move(vertex_buffer),
+                     std::move(material_ranges)};
     metrics.glos_allocated++;
-    *g = (glo){std::move(vertex_buffer), std::move(mtlrngs), 0,
-               std::move(object_name)};
-    *ptr_p = p;
-
     return g;
   }
 };
@@ -273,7 +272,7 @@ public:
     printf(" * loading object from '%s'\n", path);
     std::ifstream file(path);
     if (!file) {
-      printf("*** cannot open file '%s'\n", path);
+      printf("!!! cannot open file '%s'\n", path);
       exit(1);
     }
     std::stringstream buffer;

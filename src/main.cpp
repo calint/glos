@@ -106,7 +106,7 @@ void main(){
 
 inline static void main_render(const frame_ctx &fc) {
   camera.update_matrix_wvp();
-  glUniformMatrix4fv(shaders::umtx_wvp, 1, 0, glm::value_ptr(camera.mtx_vp));
+  glUniformMatrix4fv(shaders::umtx_wvp, 1, 0, glm::value_ptr(camera.Mvp));
   glClearColor(bg.red, bg.green, bg.blue, 1.0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   grid.render(fc);
@@ -201,8 +201,8 @@ int main(int argc, char *argv[]) {
                   event.window.data1, event.window.data2);
           int w, h;
           SDL_GetWindowSize(window.ref, &w, &h);
-          camera.wi = (float)w;
-          camera.hi = (float)h;
+          camera.width = (float)w;
+          camera.height = (float)h;
           printf(" * resize to  %u x %u\n", w, h);
           glViewport(0, 0, w, h);
           break;
@@ -294,7 +294,7 @@ int main(int argc, char *argv[]) {
       *game.keys_ptr = net.state_current[net.active_player_index].keys;
     }
     if (game.follow_object) {
-      camera.target = game.follow_object->physics.position;
+      camera.look_at = game.follow_object->physics.position;
     }
 
     if (shader_program_ix_prev != shader_program_ix) {

@@ -1,4 +1,6 @@
 #pragma once
+// reviewed: 2023-12-22
+
 #include "../misc/token.h"
 
 #include <fstream>
@@ -29,7 +31,7 @@ public:
   float Ni = 0;
   float d = 0;
   std::string map_Kd = "";
-  unsigned texture_id = 0;
+  GLuint texture_id = 0;
   unsigned texture_size_bytes = 0;
 };
 
@@ -78,17 +80,13 @@ public:
       }
       if (token_equals(&t, "Ka") || token_equals(&t, "Kd") ||
           token_equals(&t, "Ks") || token_equals(&t, "Ke")) {
-        glm::vec4 v;
-
+        glm::vec4 v{};
         token x = token_next(&p);
         v.x = token_get_float(&x);
-
         token y = token_next(&p);
         v.y = token_get_float(&y);
-
         token z = token_next(&p);
         v.z = token_get_float(&z);
-
         if (token_equals(&t, "Ka")) {
           store.back().Ka = v;
         } else if (token_equals(&t, "Kd")) {

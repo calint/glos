@@ -1,4 +1,6 @@
 #pragma once
+// reviewed: 2023-12-22
+
 #include "../metrics.hpp"
 #include <vector>
 
@@ -137,7 +139,7 @@ public:
   }
 
 private:
-  inline static GLuint compile(GLenum shader_type, const char *src) {
+  inline static auto compile(GLenum shader_type, const char *src) -> GLuint {
     const GLuint id = glCreateShader(shader_type);
     const size_t length = strlen(src);
     glShaderSource(id, 1, (const GLchar **)&src, (GLint *)&length);
@@ -154,7 +156,8 @@ private:
     return id;
   }
 
-  inline static const char *gl_get_error_string(const GLenum gl_error) {
+  inline static auto gl_get_error_string(const GLenum gl_error) -> const
+      char * {
     const char *str = nullptr;
     switch (gl_error) {
     case GL_NO_ERROR:
@@ -212,7 +215,8 @@ private:
     }
   }
 
-  inline static const char *shader_name_for_type(const GLenum shader_type) {
+  inline static auto shader_name_for_type(const GLenum shader_type) -> const
+      char * {
     switch (shader_type) {
     case GL_VERTEX_SHADER:
       return "vertex";
