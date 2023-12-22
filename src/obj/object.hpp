@@ -1,5 +1,6 @@
 #pragma once
-//--------------------------------------------------------------------- object
+// reviewed: 2023-12-22
+
 #include "../grid/grid_ifc.hpp"
 #include "node.hpp"
 #include "physics.hpp"
@@ -9,7 +10,7 @@
 #include <glm/gtx/string_cast.hpp>
 #include <iostream>
 #include <string>
-//------------------------------------------------------------------------ def
+
 class object {
 public:
   std::string name{};

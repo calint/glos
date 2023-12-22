@@ -1,4 +1,5 @@
 #pragma once
+// reviewed: 2023-12-22
 
 class volume final {
 public:
@@ -10,38 +11,6 @@ public:
   }
 };
 
-//
-// typedef vec3 vector;
-//
-// typedef struct line{
-//	point p0;
-//	point p1;
-//}line;
-//
-// typedef float radius;
-//
-// typedef struct sphere{
-//	point p;
-//	float r;
-//}sphere;
-//
-// typedef dynp planes;
-//
-// typedef struct plane{
-//	point p;
-//	vector np;
-//}plane;
-//
-// typedef dynp planes;
-//
-// typedef vector box;
-//
-////typedef struct bvol{
-////	sphere sr;
-////	box bx;
-////	planes ps;
-////}bvol;
-//
 // inline static line  make_line_from_2_points(point p0,point p1);
 // inline static plane make_plane_from_3_points(point p0,point p1,point p2);
 // inline static float solve_3d_spheres_intersect(sphere s1,sphere s2);
