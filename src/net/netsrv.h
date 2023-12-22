@@ -1,6 +1,7 @@
 #pragma once
 #include "net.h"
 
+static int net_port = 8085;
 static int netsrv_fd;
 static int netsrv_client_fd[net_cap];
 static net_state netsrv_state[net_cap];
@@ -41,7 +42,7 @@ inline static void netsrv_init() {
     exit(-1);
   }
 
-  printf(" * waiting for %d players to connect on port %d\n", net_cap,
+  printf(" * waiting for %d players to connect on port %d\n", net_cap - 1,
          net_port);
 
   for (int i = 1; i < net_cap; i++) {
@@ -50,7 +51,7 @@ inline static void netsrv_init() {
     //
     //		netsrv_client_sock_fd[i]=
     //				accept(netsrv_sockfd,(struct
-    //sockaddr*)&client,&c);
+    // sockaddr*)&client,&c);
     //
     netsrv_client_fd[i] = accept(netsrv_fd, NULL, NULL);
 
@@ -69,7 +70,7 @@ inline static void netsrv_init() {
       fprintf(stderr, "\n\n");
       exit(-1);
     }
-    printf(" * player %d of %d connected\n", i + 1, net_cap);
+    printf(" * player %d of %d connected\n", i, net_cap - 1);
   }
 
   printf(" * sending start\n");

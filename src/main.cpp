@@ -116,7 +116,7 @@ int main(int argc, char *argv[]) {
     srand(0);
     use_net = true;
     if (argc > 2) {
-      net_host = argv[2];
+      net.host = argv[2];
     }
   }
 
@@ -130,7 +130,7 @@ int main(int argc, char *argv[]) {
   puts("");
 
   if (use_net) {
-    net_init();
+    net.init();
   }
 
   metrics.init();
@@ -174,9 +174,9 @@ int main(int argc, char *argv[]) {
     metrics.at_frame_begin();
 
     if (use_net) {
-      net_state_to_send.lookangle_y = camera_lookangle_y;
-      net_state_to_send.lookangle_x = camera_lookangle_x;
-      net_at_frame_begin();
+      net.state_to_send.lookangle_y = camera_lookangle_y;
+      net.state_to_send.lookangle_x = camera_lookangle_x;
+      net.at_frame_begin();
     }
 
     SDL_Event event;
@@ -215,50 +215,50 @@ int main(int argc, char *argv[]) {
       case SDL_KEYDOWN:
         switch (event.key.keysym.sym) {
         case SDLK_w:
-          net_state_to_send.keys |= 1;
+          net.state_to_send.keys |= 1;
           break;
         case SDLK_a:
-          net_state_to_send.keys |= 2;
+          net.state_to_send.keys |= 2;
           break;
         case SDLK_s:
-          net_state_to_send.keys |= 4;
+          net.state_to_send.keys |= 4;
           break;
         case SDLK_d:
-          net_state_to_send.keys |= 8;
+          net.state_to_send.keys |= 8;
           break;
         case SDLK_q:
-          net_state_to_send.keys |= 16;
+          net.state_to_send.keys |= 16;
           break;
         case SDLK_e:
-          net_state_to_send.keys |= 32;
+          net.state_to_send.keys |= 32;
           break;
         case SDLK_o:
-          net_state_to_send.keys |= 64;
+          net.state_to_send.keys |= 64;
           break;
         }
         break;
       case SDL_KEYUP:
         switch (event.key.keysym.sym) {
         case SDLK_w:
-          net_state_to_send.keys &= ~1;
+          net.state_to_send.keys &= ~1;
           break;
         case SDLK_a:
-          net_state_to_send.keys &= ~2;
+          net.state_to_send.keys &= ~2;
           break;
         case SDLK_s:
-          net_state_to_send.keys &= ~4;
+          net.state_to_send.keys &= ~4;
           break;
         case SDLK_d:
-          net_state_to_send.keys &= ~8;
+          net.state_to_send.keys &= ~8;
           break;
         case SDLK_q:
-          net_state_to_send.keys &= ~16;
+          net.state_to_send.keys &= ~16;
           break;
         case SDLK_e:
-          net_state_to_send.keys &= ~32;
+          net.state_to_send.keys &= ~32;
           break;
         case SDLK_o:
-          net_state_to_send.keys &= ~64;
+          net.state_to_send.keys &= ~64;
           break;
         case SDLK_SPACE:
           mouse_mode = mouse_mode ? SDL_FALSE : SDL_TRUE;
@@ -276,10 +276,10 @@ int main(int argc, char *argv[]) {
     }
 
     if (!use_net) {
-      net_state_current[net_active_player_index].keys = net_state_to_send.keys;
+      net.state_current[net.active_player_index].keys = net.state_to_send.keys;
     }
     if (game.keys_ptr) {
-      *game.keys_ptr = net_state_current[net_active_player_index].keys;
+      *game.keys_ptr = net.state_current[net.active_player_index].keys;
     }
     if (game.follow_object) {
       camera.target = game.follow_object->physics.position;
@@ -305,7 +305,7 @@ int main(int argc, char *argv[]) {
       shader_program_ix_prev = shader_program_ix;
     }
 
-    fc.dt = use_net ? net_dt : metrics.fps.dt;
+    fc.dt = use_net ? net.dt : metrics.fps.dt;
     fc.tick = frame_num;
 
     frame_num++;
@@ -320,7 +320,7 @@ int main(int argc, char *argv[]) {
       main_render(fc);
     }
     if (use_net) {
-      net__at__frame_end();
+      net.at_frame_end();
     }
     metrics.objects_allocated = objects.store.size();
     metrics.at_frame_end(stderr);
@@ -334,7 +334,7 @@ int main(int argc, char *argv[]) {
   window.free();
   sdl.free();
   if (use_net) {
-    net_free();
+    net.free();
   }
   metrics.print(stderr);
   metrics.free();
