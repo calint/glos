@@ -46,13 +46,6 @@ inline static void netsrv_init() {
          net_port);
 
   for (int i = 1; i < net_cap; i++) {
-    //		struct sockaddr_in client;
-    //		const socklen_t c=sizeof(struct sockaddr_in);
-    //
-    //		netsrv_client_sock_fd[i]=
-    //				accept(netsrv_sockfd,(struct
-    // sockaddr*)&client,&c);
-    //
     netsrv_client_fd[i] = accept(netsrv_fd, NULL, NULL);
 
     int flag = 1;
@@ -82,12 +75,12 @@ inline static void netsrv_init() {
 
 inline static void netsrv_loop() {
   printf(" * entering loop\n");
-  const size_t fullreadsize = sizeof(net_state);
+  const size_t state_read_size = sizeof(net_state);
   uint64_t t0 = SDL_GetPerformanceCounter();
   while (1) {
     for (unsigned i = 1; i < net_cap; i++) {
       const ssize_t n =
-          recv(netsrv_client_fd[i], &netsrv_state[i], fullreadsize, 0);
+          recv(netsrv_client_fd[i], &netsrv_state[i], state_read_size, 0);
       if (n == -1) {
         fprintf(stderr, "\n%s:%u:\n", __FILE__, __LINE__);
         perror("cause");
@@ -100,7 +93,7 @@ inline static void netsrv_loop() {
         fprintf(stderr, "\n\n");
         exit(-1);
       }
-      if ((unsigned)n != fullreadsize) {
+      if ((unsigned)n != state_read_size) {
         fprintf(stderr, "\n%s:%u: not full read\n", __FILE__, __LINE__);
         fprintf(stderr, "\n\n");
         exit(-1);
@@ -109,6 +102,7 @@ inline static void netsrv_loop() {
     const uint64_t t1 = SDL_GetPerformanceCounter();
     const float dt = (float)(t1 - t0) / (float)SDL_GetPerformanceFrequency();
     t0 = t1;
+    // using state[0] to send info from server to all players, such as dt
     netsrv_state[0].lookangle_x = dt;
     for (int i = 1; i < net_cap; i++) {
       write(netsrv_client_fd[i], netsrv_state, sizeof(netsrv_state));
