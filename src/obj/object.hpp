@@ -19,20 +19,26 @@ public:
   volume volume{};
   physics physics_prv{}; // physics state from previous frame
   physics physics_nxt{}; // physics state for next frame
-  physics physics{};
+  physics physics{};     // physics state of current frame
   grid_ifc grid_ifc{};
   unsigned *keys_ptr{};
 
+private:
+  glm::vec3 Mmw_pos{};
+  glm::vec3 Mmw_agl{};
+  glm::vec3 Mmw_scl{};
+
+public:
   inline object() {}
 
   inline virtual ~object() {}
 
-  inline virtual auto update(const frame_ctx &fc) -> bool {
-    if (node.Mmw_is_valid and (physics_prv.position != physics.position or
-                               physics_prv.angle != physics.angle)) {
-      node.Mmw_is_valid = false;
-    }
+  inline auto is_Mmw_valid() -> bool {
+    return physics.position == Mmw_pos and physics.angle == Mmw_agl and
+           volume.scale == Mmw_scl;
+  }
 
+  inline virtual auto update(const frame_ctx &fc) -> bool {
     physics_prv = physics;
     physics = physics_nxt;
 
@@ -52,15 +58,18 @@ public:
   inline virtual void on_collision(object *obj, const frame_ctx &fc) {}
 
   inline const glm::mat4 &get_updated_Mmw() {
-    if (node.Mmw_is_valid) {
+    if (is_Mmw_valid()) {
       return node.Mmw;
     }
-    glm::mat4 Ms = glm::scale(glm::mat4(1), volume.scale);
-    glm::mat4 Mr =
-        glm::eulerAngleXYZ(physics.angle.x, physics.angle.y, physics.angle.z);
-    glm::mat4 Mt = glm::translate(glm::mat4(1), physics.position);
+    // save the state of the matrix
+    Mmw_pos = physics.position;
+    Mmw_agl = physics.angle;
+    Mmw_scl = volume.scale;
+    // make a new matrix
+    glm::mat4 Ms = glm::scale(glm::mat4(1), Mmw_scl);
+    glm::mat4 Mr = glm::eulerAngleXYZ(Mmw_agl.x, Mmw_agl.y, Mmw_agl.z);
+    glm::mat4 Mt = glm::translate(glm::mat4(1), Mmw_pos);
     node.Mmw = Mt * Mr * Ms;
-    node.Mmw_is_valid = true;
     return node.Mmw;
   }
 };

@@ -3,7 +3,6 @@
 class node final {
 public:
   glm::mat4 Mmw{};
-  glm::mat3 Mnmw{};
-  bool Mmw_is_valid = false;
+  glm::mat3 Nmw{};
   glo *glo{};
 };

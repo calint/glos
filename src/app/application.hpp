@@ -51,7 +51,7 @@ public:
     o->volume.scale = {5, 5, 5};
     o->volume.radius = o->node.glo->bounding_radius * 5;
     o->physics_nxt.position = {-20, o->volume.radius, 20};
-    o->physics_nxt.angular_velocity = {0, 0.2f, 0};
+    // o->physics_nxt.angular_velocity = {0, 0.2f, 0};
     o->physics = o->physics_nxt;
     o->keys_ptr = &net.state_current[1].keys;
     o->grid_ifc.collision_bits = cb_hero;
