@@ -20,6 +20,7 @@ public:
   std::string name = "";
   std::vector<float> vertex_buffer{};
   std::vector<range> ranges{};
+  float bounding_radius = 0;
   GLuint vertex_buffer_id = 0;
 
   inline void free() {
@@ -110,6 +111,8 @@ public:
     unsigned prev_vertex_buffer_ix = 0;
     int first_o = 1;
     std::string object_name = "";
+    float bounding_radius = 0;
+
     while (*p) {
       token t = token_next(&p);
       if (token_starts_with(&t, "#")) {
@@ -173,6 +176,11 @@ public:
         token tz = token_next(&p);
         float z = token_get_float(&tz);
         vertices.emplace_back(x, y, z);
+
+        const float r = glm::length(vertices.back());
+        if (r > bounding_radius) {
+          bounding_radius = r;
+        }
         continue;
       }
       if (token_equals(&t, "vt")) {
@@ -244,13 +252,13 @@ public:
     material_ranges.emplace_back(prev_vertex_buffer_ix, vertex_buffer_ix,
                                  current_object_material_ix);
 
-    printf("   %zu range%c  %lu vertices  %zu B\n", material_ranges.size(),
-           material_ranges.size() == 1 ? ' ' : 's',
+    printf("   %zu range%c  %lu vertices   %zu B   radius: %0.3f\n",
+           material_ranges.size(), material_ranges.size() == 1 ? ' ' : 's',
            vertex_buffer.size() / sizeof(vertex),
-           vertex_buffer.size() * sizeof(float));
+           vertex_buffer.size() * sizeof(float), bounding_radius);
 
     glo *g = new glo{std::move(object_name), std::move(vertex_buffer),
-                     std::move(material_ranges)};
+                     std::move(material_ranges), bounding_radius};
     metrics.glos_allocated++;
     return g;
   }

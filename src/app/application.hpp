@@ -9,6 +9,7 @@ public:
     glos.load_from_file("obj/skydome.obj");
     glos.load_from_file("obj/grid.obj");
     glos.load_from_file("obj/santa.obj");
+    glos.load_from_file("obj/sphere.obj");
 
     constexpr float world_size = grid_cell_size * grid_ncells_wide / 2;
 
@@ -34,9 +35,9 @@ public:
     o = new santa{};
     objects.store.push_back(o);
     o->name = "santa2";
-    o->node.glo = glos.find_by_name("santa");
-    o->volume.scale = {10, 10, 10};
-    o->volume.radius = 0.21f * 10; // max vertex position * scale
+    o->node.glo = glos.find_by_name("sphere");
+    o->volume.scale = {5, 5, 5};
+    o->volume.radius = o->node.glo->bounding_radius * 5; // r * scale
     o->physics_nxt.position = {10, o->volume.radius, 10};
     o->physics = o->physics_nxt;
     o->keys_ptr = &net.state_current[2].keys;
@@ -46,9 +47,9 @@ public:
     o = new santa{};
     objects.store.push_back(o);
     o->name = "santa1";
-    o->node.glo = glos.find_by_name("santa");
-    o->volume.scale = {10, 10, 10};
-    o->volume.radius = 0.21f * 10;
+    o->node.glo = glos.find_by_name("sphere");
+    o->volume.scale = {5, 5, 5};
+    o->volume.radius = o->node.glo->bounding_radius * 5;
     o->physics_nxt.position = {-20, o->volume.radius, 20};
     o->physics_nxt.angular_velocity = {0, 0.2f, 0};
     o->physics = o->physics_nxt;
