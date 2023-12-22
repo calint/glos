@@ -24,16 +24,16 @@ public:
   unsigned *keys_ptr{};
 
 private:
-  glm::vec3 Mmw_pos{};
-  glm::vec3 Mmw_agl{};
-  glm::vec3 Mmw_scl{};
+  glm::vec3 Mmw_pos{}; // position of current Mmw matrix
+  glm::vec3 Mmw_agl{}; // angle of current Mmw matrix
+  glm::vec3 Mmw_scl{}; // scale of current Mmw matrix
 
 public:
   inline object() {}
 
   inline virtual ~object() {}
 
-  inline auto is_Mmw_valid() -> bool {
+  inline auto is_Mmw_valid() const -> bool {
     return physics.position == Mmw_pos and physics.angle == Mmw_agl and
            volume.scale == Mmw_scl;
   }
