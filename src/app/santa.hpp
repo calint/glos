@@ -1,7 +1,13 @@
 #pragma once
 class santa : public object {
 public:
-  inline santa() { volume = {.radius = 1.4f, .scale = {1, 1, 1}}; }
+  inline santa() {
+    node.glo = glos.find_by_name("icosphere");
+    volume.scale = {2, 2, 2};
+    volume.radius = node.glo->bounding_radius * 2; // r * scale
+    grid_ifc.collision_bits = cb_hero;
+    grid_ifc.collision_mask = cb_hero;
+  }
 
   inline ~santa() { printf("%s destructor\n", name.c_str()); }
 
@@ -15,7 +21,7 @@ public:
     // update using signals state
     glm::vec3 &v = physics_nxt.velocity;
     v = {0, 0, 0};
-    int keys = state->keys;
+    unsigned keys = state->keys;
     if (keys != 0) {
       // wasd keys
       if (keys & 1) {

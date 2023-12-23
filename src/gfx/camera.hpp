@@ -12,7 +12,7 @@ public:
   glm::vec3 position{0, 100, 100};
   glm::vec3 look_at{0, 0, 0};
   glm::vec3 angle{0, 0, 0};
-  float near_plane = 0.1;
+  float near_plane = 0.1f;
   float far_plane = 1000;
   // field of view
   float fov = 60.0f;

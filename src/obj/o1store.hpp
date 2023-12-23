@@ -106,7 +106,9 @@ public:
   inline auto allocated_list() -> Type ** { return alloc_bgn_; }
 
   // returns length of list of allocated instances
-  inline auto allocated_list_len() -> int { return alloc_ptr_ - alloc_bgn_; }
+  inline auto allocated_list_len() -> int {
+    return int(alloc_ptr_ - alloc_bgn_);
+  }
 
   // returns one past the end of allocated instances list
   inline auto allocated_list_end() -> Type ** { return alloc_ptr_; }

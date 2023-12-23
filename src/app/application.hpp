@@ -5,7 +5,7 @@ class application final {
 public:
   void init() {
     printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
-    printf(": %15s : %-9s :\n", "type", "bytes");
+    printf(": %15s : %-9s :\n", "class", "bytes");
     printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
     printf(": %15s : %-9ld :\n", "santa", sizeof(santa));
     printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
@@ -15,7 +15,7 @@ public:
     glos.load_from_file("obj/skydome.obj");
     glos.load_from_file("obj/grid.obj");
     glos.load_from_file("obj/santa.obj");
-    glos.load_from_file("obj/sphere.obj");
+    glos.load_from_file("obj/icosphere.obj");
 
     constexpr float world_size = grid_cell_size * grid_ncells_wide;
     {
@@ -39,41 +39,33 @@ public:
     }
     {
       object *o = new (objects.alloc()) santa{};
-      o->name = "santa2";
-      o->node.glo = glos.find_by_name("sphere");
-      o->volume.scale = {2, 2, 2};
-      o->volume.radius = o->node.glo->bounding_radius * 2; // r * scale
-      o->physics_nxt.position = {10, o->volume.radius, 10};
+      o->name = "santa1";
+      o->physics_nxt.position = {-20, o->volume.radius, 20};
       o->physics = o->physics_nxt;
-      o->state = &net.states[2];
-      o->grid_ifc.collision_bits = cb_hero;
-      o->grid_ifc.collision_mask = cb_hero;
+      o->state = &net.states[1];
+
+      // camera.type = LOOK_AT;
+      // camera.position = {0, 40, 50};
+      // camera_follow_object = o;
     }
     {
       object *o = new (objects.alloc()) santa{};
-      o->name = "santa1";
-      o->node.glo = glos.find_by_name("sphere");
-      o->volume.scale = {2, 2, 2};
-      o->volume.radius = o->node.glo->bounding_radius * 2;
-      o->physics_nxt.position = {-20, o->volume.radius, 20};
-      // o->physics_nxt.angular_velocity = {0, 0.2f, 0};
+      o->name = "santa2";
+      o->physics_nxt.position = {10, o->volume.radius, 10};
       o->physics = o->physics_nxt;
-      o->state = &net.states[1];
-      o->grid_ifc.collision_bits = cb_hero;
-      o->grid_ifc.collision_mask = cb_hero;
-
-      camera.type = LOOK_AT;
-      camera.position = {0, 40, 50};
-      camera_follow_object = o;
+      o->state = &net.states[2];
     }
 
-    // camera.type = ORTHO;
-    // camera.position = {0, 50, 0};
-    // camera.look_at = {0, 0, -0.1f};
-    // camera.ortho_min_x = -90;
-    // camera.ortho_min_y = -90;
-    // camera.ortho_max_x = 90;
-    // camera.ortho_max_y = 90;
+    camera.type = ORTHO;
+    camera.position = {0, 50, 0};
+    camera.look_at = {0, 0, -0.0001f};
+    // note. -0.0001f because of the math of 'look at'
+
+    // fit the 'grid' size
+    camera.ortho_min_x = -80;
+    camera.ortho_min_y = -80;
+    camera.ortho_max_x = 80;
+    camera.ortho_max_y = 80;
   }
 
   void free() {}

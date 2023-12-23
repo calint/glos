@@ -6,9 +6,9 @@
 class metrics final {
 public:
   struct fps {
-    uint32_t average_during_last_intervall = 0;
-    uint32_t frame_count = 0;
-    uint32_t calculation_intervall_ms = 0;
+    int average_during_last_intervall = 0;
+    int frame_count = 0;
+    int calculation_intervall_ms = 0;
     uint32_t time_at_start_of_intervall_ms = 0;
     float dt = 0;
     uint64_t timer_frequency = 0;
@@ -17,18 +17,18 @@ public:
 
   unsigned tick = 0;
   size_t buffered_vertex_data = 0;
-  unsigned buffered_texture_data = 0;
-  unsigned objects_allocated = 0;
-  unsigned glos_allocated = 0;
-  unsigned objects_updated = 0;
-  unsigned objects_rendered = 0;
-  unsigned average_fps = 0;
-  unsigned triangles_rendered = 0;
+  int buffered_texture_data = 0;
+  int objects_allocated = 0;
+  int glos_allocated = 0;
+  int objects_updated = 0;
+  int objects_rendered = 0;
+  int average_fps = 0;
+  int triangles_rendered = 0;
   float net_lag = 0;
-  unsigned collision_detections = 0;
-  unsigned collision_detections_possible = 0;
-  unsigned collision_detections_considered = 0;
-  unsigned collision_grid_overlap_check = 0;
+  int collision_detections = 0;
+  int collision_detections_possible = 0;
+  int collision_detections_considered = 0;
+  int collision_grid_overlap_check = 0;
 
   inline void init() {}
 
@@ -93,7 +93,7 @@ public:
     }
 
     const Uint32 t1 = SDL_GetTicks();
-    const Uint32 dt = t1 - fps.time_at_start_of_intervall_ms;
+    const int dt = int(t1 - fps.time_at_start_of_intervall_ms);
 
     if (dt < fps.calculation_intervall_ms) {
       return;

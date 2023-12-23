@@ -32,7 +32,7 @@ public:
   float d = 0;
   std::string map_Kd = "";
   GLuint texture_id = 0;
-  unsigned texture_size_bytes = 0;
+  int texture_size_bytes = 0;
 };
 
 class materials final {

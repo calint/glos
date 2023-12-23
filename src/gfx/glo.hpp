@@ -53,7 +53,7 @@ public:
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface->w, surface->h, 0,
                      GL_RGB, GL_UNSIGNED_BYTE, surface->pixels);
         mtl.texture_size_bytes =
-            (unsigned)(surface->w * surface->h * sizeof(uint32_t));
+            surface->w * surface->h * int(sizeof(uint32_t));
         SDL_FreeSurface(surface);
         metrics.buffered_texture_data += mtl.texture_size_bytes;
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -277,7 +277,7 @@ public:
   }
 
   inline void load_from_file(const char *path) {
-    printf(" * loading object from '%s'\n", path);
+    printf(" * loading glo from '%s'\n", path);
     std::ifstream file(path);
     if (!file) {
       printf("!!! cannot open file '%s'\n", path);

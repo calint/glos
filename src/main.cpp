@@ -140,7 +140,7 @@ int main(int argc, char *argv[]) {
 
   puts("");
   printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
-  printf(": %15s : %-9s :\n", "type", "bytes");
+  printf(": %15s : %-9s :\n", "class", "bytes");
   printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
   printf(": %15s : %-9ld :\n", "object", sizeof(object));
   printf(": %15s : %-9ld :\n", "glo", sizeof(glo));
@@ -180,7 +180,7 @@ int main(int argc, char *argv[]) {
     const program &p = shaders.programs.at(shader_program_ix);
     glUseProgram(p.id);
     printf(" * using program at index %u\n", shader_program_ix);
-    for (int ix : p.enabled_attributes) {
+    for (GLuint ix : p.enabled_attributes) {
       glEnableVertexAttribArray(ix);
     }
     puts("");
@@ -267,25 +267,25 @@ int main(int argc, char *argv[]) {
       case SDL_KEYUP:
         switch (event.key.keysym.sym) {
         case SDLK_w:
-          net.next_state.keys &= ~1;
+          net.next_state.keys &= ~1u;
           break;
         case SDLK_a:
-          net.next_state.keys &= ~2;
+          net.next_state.keys &= ~2u;
           break;
         case SDLK_s:
-          net.next_state.keys &= ~4;
+          net.next_state.keys &= ~4u;
           break;
         case SDLK_d:
-          net.next_state.keys &= ~8;
+          net.next_state.keys &= ~8u;
           break;
         case SDLK_q:
-          net.next_state.keys &= ~16;
+          net.next_state.keys &= ~16u;
           break;
         case SDLK_e:
-          net.next_state.keys &= ~32;
+          net.next_state.keys &= ~32u;
           break;
         case SDLK_o:
-          net.next_state.keys &= ~64;
+          net.next_state.keys &= ~64u;
           break;
         case SDLK_SPACE:
           mouse_mode = mouse_mode ? SDL_FALSE : SDL_TRUE;
@@ -300,6 +300,9 @@ int main(int argc, char *argv[]) {
         case SDLK_4:
           print_grid = not print_grid;
           break;
+        case SDLK_5:
+          do_main_render = not do_main_render;
+          break;
         }
         break;
       }
@@ -310,7 +313,7 @@ int main(int argc, char *argv[]) {
       printf(" * switching to program at index %u\n", shader_program_ix);
       {
         const program &p = shaders.programs.at(shader_program_ix_prev);
-        for (int ix : p.enabled_attributes) {
+        for (GLuint ix : p.enabled_attributes) {
           printf("   * disable vertex attrib array %d\n", ix);
           glDisableVertexAttribArray(ix);
         }
@@ -318,7 +321,7 @@ int main(int argc, char *argv[]) {
       {
         const program &p = shaders.programs.at(shader_program_ix);
         glUseProgram(p.id);
-        for (int ix : p.enabled_attributes) {
+        for (GLuint ix : p.enabled_attributes) {
           printf("   * enable vertex attrib array %d\n", ix);
           glEnableVertexAttribArray(ix);
         }

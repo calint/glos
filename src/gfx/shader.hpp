@@ -49,7 +49,7 @@ public:
   GLuint id = 0;
   GLuint vertex_shader_id = 0;
   GLuint fragment_shader_id = 0;
-  std::vector<int> enabled_attributes{};
+  std::vector<GLuint> enabled_attributes{};
 };
 
 class shaders final {
@@ -108,7 +108,7 @@ public:
   }
 
   auto load_program_from_source(const char *vert_src, const char *frag_src,
-                                std::vector<int> attrs) -> int {
+                                std::vector<GLuint> attrs) -> int {
     gl_check_error("enter shader_program_load");
 
     const GLuint id = glCreateProgram();
@@ -135,7 +135,7 @@ public:
       exit(8);
     }
     gl_check_error("exit shader_program_load");
-    return programs.size() - 1;
+    return int(programs.size() - 1);
   }
 
 private:

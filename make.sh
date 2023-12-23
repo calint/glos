@@ -5,8 +5,10 @@ set -e
 CC="clang++ -std=c++20"
 SRC="src/main.cpp"
 BIN="glos"
-CFLAGS="$(sdl2-config --cflags)"
-WARNINGS="-Wall -Wextra -Wpedantic -Wfatal-errors -Wno-unsafe-buffer-usage -Wno-unused-function -Wno-unused-parameter"
+CFLAGS="$(sdl2-config --cflags) -fno-exceptions -fno-rtti"
+WARNINGS="-Wall -Wextra -Wpedantic -Wfatal-errors \
+    -Wno-unsafe-buffer-usage -Wconversion -Wsign-conversion \
+    -Wno-unused-function -Wno-unused-parameter"
 LIBS="$(sdl2-config --libs) -lGL -lm -lSDL2_gfx -lSDL2_image -lSDL2_ttf -lSDL2_mixer"
 #OPTIMIZATION=-O3
 OPTIMIZATION="-O3 -g"

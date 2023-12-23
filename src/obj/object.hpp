@@ -22,7 +22,7 @@ public:
   physics physics{};          // physics state of current frame
   grid_ifc grid_ifc{};        // interface to 'grid'
   net_state *state = nullptr; // pointer to signals used by this object
-  object **alloc_ptr;         // initiated at allocate in 'o1store'
+  object **alloc_ptr;         // initiated at allocate by 'o1store'
 
 private:
   glm::vec3 Mmw_pos{}; // position of current Mmw matrix
@@ -33,6 +33,9 @@ public:
   inline object() {}
 
   inline virtual ~object() {}
+  // note. 'delete obj' may not be used
+  //       destructor invoked in the 'objects.apply_free'
+  //       override only to free resources
 
   inline virtual void render(const frame_ctx &fc) {
     if (!node.glo) {

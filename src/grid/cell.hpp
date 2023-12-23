@@ -53,7 +53,7 @@ public:
   }
 
   inline void resolve_collisions(const frame_ctx &fc) {
-    const unsigned len = ols.size();
+    const size_t len = ols.size();
     if (len == 0) {
       return;
     }
