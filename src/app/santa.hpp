@@ -7,30 +7,32 @@ public:
     if (object::update(fc)) {
       return true;
     }
-    if (!keys_ptr) {
+    if (!state) {
       return false;
     }
-    int n = *keys_ptr;
-    glm::vec3 *v = &physics_nxt.velocity;
-    *v = {0, 0, 0};
-    if (n != 0) {
+    // update using signals state
+    glm::vec3 &v = physics_nxt.velocity;
+    v = {0, 0, 0};
+    int keys = state->keys;
+    if (keys != 0) {
       // wasd keys
-      if (n & 1) {
-        v->z = -1;
+      if (keys & 1) {
+        v.z = -1;
       }
-      if (n & 2) {
-        v->x = -1;
+      if (keys & 2) {
+        v.x = -1;
       }
-      if (n & 4) {
-        v->z = +1;
+      if (keys & 4) {
+        v.z = +1;
       }
-      if (n & 8) {
-        v->x = +1;
+      if (keys & 8) {
+        v.x = +1;
       }
-      *v *= 10.0f;
+      v *= 10.0f;
     }
 
-    // std::cout << name << " pos: " << glm::to_string(physics.position) << "\n";
+    // std::cout << name << " pos: " << glm::to_string(physics.position) <<
+    // "\n";
     return false;
   }
 

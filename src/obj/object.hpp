@@ -22,7 +22,7 @@ public:
   physics physics_nxt{}; // physics state for next frame
   physics physics{};     // physics state of current frame
   grid_ifc grid_ifc{};
-  unsigned *keys_ptr{};
+  net_state *state{};
 
 private:
   glm::vec3 Mmw_pos{}; // position of current Mmw matrix
