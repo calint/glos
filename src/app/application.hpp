@@ -42,12 +42,13 @@ public:
       object *o = new (objects.alloc()) santa{};
       o->name = "santa1";
       o->physics_nxt.position = {-20, o->volume.radius, 20};
+      o->physics_nxt.angular_velocity = glm::vec3(0, glm::radians(20.0f), 0);
       o->physics = o->physics_nxt;
       o->state = &net.states[1];
 
-      // camera.type = LOOK_AT;
-      // camera.position = {0, 40, 50};
-      // camera_follow_object = o;
+      camera.type = LOOK_AT;
+      camera.position = {0, 40, 50};
+      camera_follow_object = o;
     }
     {
       object *o = new (objects.alloc()) santa{};
@@ -57,16 +58,16 @@ public:
       o->state = &net.states[2];
     }
 
-    camera.type = ORTHO;
-    camera.position = {0, 50, 0};
-    camera.look_at = {0, 0, -0.0001f};
-    // note. -0.0001f because of the math of 'look at'
+    // camera.type = ORTHO;
+    // camera.position = {0, 50, 0};
+    // camera.look_at = {0, 0, -0.0001f};
+    // // note. -0.0001f because of the math of 'look at'
 
-    // fit the 'grid' size
-    camera.ortho_min_x = -80;
-    camera.ortho_min_y = -80;
-    camera.ortho_max_x = 80;
-    camera.ortho_max_y = 80;
+    // // fit the 'grid' size
+    // camera.ortho_min_x = -80;
+    // camera.ortho_min_y = -80;
+    // camera.ortho_max_x = 80;
+    // camera.ortho_max_y = 80;
 
     // for (float y = -80; y <= 80; y += 1) {
     //   for (float x = -80; x <= 80; x += 1) {

@@ -80,6 +80,7 @@ public:
     node.Mmw = Mt * Mr * Ms;
     return node.Mmw;
   }
+
 };
 
 class objects final {

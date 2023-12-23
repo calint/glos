@@ -40,6 +40,8 @@ static struct color {
   GLclampf blue;
 } background_color = {0, 0, .3f};
 
+static glm::vec3 ambient_light=glm::normalize(glm::vec3{0, 1, 1});
+
 static object *camera_follow_object = nullptr;
 
 //
@@ -104,10 +106,10 @@ inline static void main_render(const frame_ctx &fc) {
   if (camera_follow_object) {
     camera.look_at = camera_follow_object->physics.position;
   }
-
   camera.update_matrix_wvp();
   glUniformMatrix4fv(shaders::umtx_wvp, 1, GL_FALSE,
                      glm::value_ptr(camera.Mvp));
+  glUniform3fv(shaders::ulht, 1, glm::value_ptr(ambient_light));
   glClearColor(background_color.red, background_color.green,
                background_color.blue, 1.0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

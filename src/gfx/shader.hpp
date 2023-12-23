@@ -5,9 +5,9 @@
 #include <vector>
 
 static const char *vertex_shader_source = R"(
-  #version 130
-  uniform mat4 umtx_mw; // model-to-world-matrix
-  uniform mat4 umtx_wvp;// world-to-view-to-projection
+  #version 330 core
+  uniform mat4 umtx_mw;  // model-to-world-matrix
+  uniform mat4 umtx_wvp; // world-to-view-to-projection
   in vec3 apos;
   in vec4 argba;
   in vec3 anorm;
@@ -16,23 +16,25 @@ static const char *vertex_shader_source = R"(
   out vec3 vnorm;
   out vec2 vtex;
   void main(){
-	  gl_Position=umtx_wvp*umtx_mw*vec4(apos,1);
-	  vrgba=argba;
-	  vnorm=anorm;
-	  vtex=atex;
+	  gl_Position = umtx_wvp * umtx_mw * vec4(apos,1);
+	  vrgba = argba;
+	  vnorm = normalize(transpose(inverse(mat3(umtx_mw))) * anorm);
+//	  vnorm = anorm;
+	  vtex = atex;
   }
 )";
 
 static const char *fragment_shader_source = R"(
-  #version 130
+  #version 330 core
   uniform sampler2D utex;
+  uniform vec3 ulht;
   in vec4 vrgba;
   in vec3 vnorm;
   in vec2 vtex;
   out vec4 rgba;
   void main(){
-    float ambient_light=dot(vnorm,normalize(vec3(0,15,-15)));
-    rgba=texture2D(utex,vtex)+vrgba*ambient_light;
+    float diff = max(dot(vnorm, ulht), 0);
+    rgba = texture2D(utex, vtex) + diff * vrgba;
   }
 )";
 
@@ -60,10 +62,11 @@ public:
   static constexpr unsigned anorm = 2;
   static constexpr unsigned atex = 3;
   // uniform matrixes
-  static constexpr unsigned umtx_mw = 0;
-  static constexpr unsigned umtx_wvp = 1;
+  static constexpr unsigned umtx_mw = 0;  // model->world matrix
+  static constexpr unsigned umtx_wvp = 1; // world->view->projection matrix
   // uniform textures
-  static constexpr unsigned utex = 2;
+  static constexpr unsigned utex = 2; // texture mapper
+  static constexpr unsigned ulht = 3; // light vector
 
   std::vector<program> programs{};
 
@@ -97,6 +100,19 @@ public:
         {shaders::apos, shaders::argba, shaders::anorm, shaders::atex});
 
     gl_check_error("after shader_init");
+
+    printf("shader uniform locations:\n");
+    printf(":-%10s-:-%7s-:\n", "----------", "-------");
+    printf(": %10s : %-7d :\n", "umtx_mw",
+           glGetUniformLocation(programs.at(0).id, "umtx_mw"));
+    printf(": %10s : %-7d :\n", "umtx_wvp",
+           glGetUniformLocation(programs.at(0).id, "umtx_wvp"));
+    printf(": %10s : %-7d :\n", "utex",
+           glGetUniformLocation(programs.at(0).id, "utex"));
+    printf(": %10s : %-7d :\n", "ulht",
+           glGetUniformLocation(programs.at(0).id, "ulht"));
+    printf(":-%10s-:-%7s-:\n", "----------", "-------");
+    puts("");
   }
 
   inline void free() {
