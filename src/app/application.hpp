@@ -84,7 +84,7 @@ public:
 
   void free() {}
 
-  void at_frame_completed() {}
+  void at_frame_end() {}
 };
 
 static application application{};

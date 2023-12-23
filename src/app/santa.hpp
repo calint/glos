@@ -29,6 +29,8 @@ public:
       }
       *v *= 10.0f;
     }
+
+    // std::cout << name << " pos: " << glm::to_string(physics.position) << "\n";
     return false;
   }
 

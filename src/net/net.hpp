@@ -70,27 +70,33 @@ public:
     }
   }
 
-  inline void at_frame_begin() {
-    // send next key state
-    if (send(fd, &state_to_send, sizeof(state_to_send), 0) < 0) {
-      fprintf(stderr, "\n%s:%u: send failed\n", __FILE__, __LINE__);
-      fprintf(stderr, "\n\n");
-      exit(-1);
-    }
-  }
+  inline void begin() { send_state(); }
 
   inline void at_frame_end() {
     const uint64_t t0 = SDL_GetPerformanceCounter();
-    // receive previous key states
+    // receive signals from previous frame
     if (recv(fd, state_current, sizeof(state_current), 0) < 0) {
       fprintf(stderr, "\n%s:%u: receive failed\n", __FILE__, __LINE__);
       fprintf(stderr, "\n\n");
       exit(-1);
     }
+    // send current frame signals
+    send_state();
+    // get server dt from server state (using a float value)
     dt = state_current[0].lookangle_x;
+    // calculate network used lag
     const uint64_t t1 = SDL_GetPerformanceCounter();
     const float dt = (float)(t1 - t0) / (float)SDL_GetPerformanceFrequency();
     metrics.net_lag = dt;
+  }
+
+private:
+  inline void send_state() {
+    if (send(fd, &state_to_send, sizeof(state_to_send), 0) < 0) {
+      fprintf(stderr, "\n%s:%u: send failed\n", __FILE__, __LINE__);
+      fprintf(stderr, "\n\n");
+      exit(-1);
+    }
   }
 };
 

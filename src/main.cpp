@@ -157,8 +157,6 @@ int main(int argc, char *argv[]) {
   unsigned shader_program_ix_prev = shader_program_ix;
   bool do_main_render = true;
   bool print_grid = false;
-  float camera_lookangle_y = 0;
-  float camera_lookangle_x = 0;
   const float rad_over_degree = 2.0f * glm::pi<float>() / 360.0f;
   float rad_over_mouse_pixels = rad_over_degree * .02f;
   float mouse_sensitivity = 1.5f;
@@ -187,14 +185,13 @@ int main(int argc, char *argv[]) {
       .tick = 0,
   };
 
+  if (use_net) {
+    // send initial signals
+    net.begin();
+  }
+
   for (bool running = true; running;) {
     metrics.at_frame_begin();
-
-    if (use_net) {
-      net.state_to_send.lookangle_y = camera_lookangle_y;
-      net.state_to_send.lookangle_x = camera_lookangle_x;
-      net.at_frame_begin();
-    }
 
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
@@ -218,12 +215,14 @@ int main(int argc, char *argv[]) {
         break;
       case SDL_MOUSEMOTION: {
         if (event.motion.xrel != 0) {
-          camera_lookangle_y += (float)event.motion.xrel *
-                                rad_over_mouse_pixels * mouse_sensitivity;
+          net.state_to_send.lookangle_y += (float)event.motion.xrel *
+                                           rad_over_mouse_pixels *
+                                           mouse_sensitivity;
         }
         if (event.motion.yrel != 0) {
-          camera_lookangle_x += (float)event.motion.yrel *
-                                rad_over_mouse_pixels * mouse_sensitivity;
+          net.state_to_send.lookangle_x += (float)event.motion.yrel *
+                                           rad_over_mouse_pixels *
+                                           mouse_sensitivity;
         }
         break;
       }
@@ -290,10 +289,6 @@ int main(int argc, char *argv[]) {
       }
     }
 
-    if (!use_net) {
-      net.state_current[net.active_player_index].keys = net.state_to_send.keys;
-    }
-
     if (shader_program_ix_prev != shader_program_ix) {
       printf(" * switching to program at index %u\n", shader_program_ix);
       {
@@ -332,9 +327,10 @@ int main(int argc, char *argv[]) {
       main_render(fc);
     }
     if (use_net) {
+      // receive signals from previous frame and send signals of current frame
       net.at_frame_end();
     }
-    application.at_frame_completed();
+    application.at_frame_end();
     metrics.objects_allocated = objects.store.size();
     metrics.at_frame_end(stderr);
   }
