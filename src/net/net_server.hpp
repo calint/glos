@@ -1,4 +1,6 @@
 #pragma once
+// reviewed: 2023-12-23
+
 #include "net.hpp"
 
 class net_server final {
@@ -17,7 +19,6 @@ public:
     server_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (server_fd == -1) {
       fprintf(stderr, "\n%s:%u: create socket failed\n", __FILE__, __LINE__);
-      fprintf(stderr, "\n\n");
       exit(-1);
     }
 
@@ -26,7 +27,6 @@ public:
         setsockopt(server_fd, IPPROTO_TCP, TCP_NODELAY, &flag, sizeof(int));
     if (result < 0) {
       fprintf(stderr, "\n%s:%u: set TCP_NODELAY failed\n", __FILE__, __LINE__);
-      fprintf(stderr, "\n\n");
       exit(-1);
     }
 
@@ -37,14 +37,12 @@ public:
 
     if (bind(server_fd, (struct sockaddr *)&server, sizeof(server)) < 0) {
       fprintf(stderr, "\n%s:%u: bind failed\n", __FILE__, __LINE__);
-      fprintf(stderr, "\n\n");
       exit(-1);
     }
 
     if (listen(server_fd, net_players + 1) == -1) {
-      fprintf(stderr, "\n%s:%u\n", __FILE__, __LINE__);
-      perror("cause");
-      fprintf(stderr, "\n\n");
+      fprintf(stderr, "\n%s:%u: ", __FILE__, __LINE__);
+      perror("");
       exit(-1);
     }
 
@@ -54,27 +52,27 @@ public:
     for (unsigned i = 1; i < net_players + 1; i++) {
       clients_fd[i] = accept(server_fd, NULL, NULL);
 
-      int flag = 1;
-      int result = setsockopt(clients_fd[i], IPPROTO_TCP, TCP_NODELAY, &flag,
-                              sizeof(int));
-      if (result < 0) {
-        fprintf(stderr, "\n%s:%u: set TCP_NODELAY failed\n", __FILE__,
-                __LINE__);
-        fprintf(stderr, "\n\n");
+      if (clients_fd[i] == -1) {
+        fprintf(stderr, "\n%s:%u: ", __FILE__, __LINE__);
+        perror("");
         exit(-1);
       }
 
-      if (clients_fd[i] < 0) {
-        fprintf(stderr, "\n%s:%u\n", __FILE__, __LINE__);
-        perror("cause");
-        fprintf(stderr, "\n\n");
+      int flag = 1;
+      int result = setsockopt(clients_fd[i], IPPROTO_TCP, TCP_NODELAY, &flag,
+                              sizeof(int));
+      if (result == -1) {
+        fprintf(stderr, "\n%s:%u: ", __FILE__, __LINE__);
+        perror("");
         exit(-1);
       }
+
       printf(" * player %d of %d connected\n", i, net_players);
     }
 
     printf(" * sending start\n");
-    // send the player index to clients
+
+    // send the assigned player index to clients
     for (uint32_t i = 1; i < net_players + 1; i++) {
       write(clients_fd[i], &i, sizeof(uint32_t));
     }
@@ -84,31 +82,29 @@ public:
     printf(" * entering loop\n");
     constexpr size_t state_read_size = sizeof(net_state);
     uint64_t t0 = SDL_GetPerformanceCounter();
-    while (1) {
+    while (true) {
       for (unsigned i = 1; i < net_players + 1; i++) {
         const ssize_t n = recv(clients_fd[i], &state[i], state_read_size, 0);
         if (n == -1) {
-          fprintf(stderr, "\n%s:%u:\n", __FILE__, __LINE__);
-          perror("cause");
-          fprintf(stderr, "\n\n");
+          fprintf(stderr, "\n%s:%u: player %u: ", __FILE__, __LINE__, i);
+          perror("");
           exit(-1);
         }
         if (n == 0) {
-          fprintf(stderr, "\n%s:%u: player %u disconnected\n", __FILE__,
+          fprintf(stderr, "\n%s:%u: player %u: disconnected\n", __FILE__,
                   __LINE__, i);
-          fprintf(stderr, "\n\n");
           exit(-1);
         }
         if ((unsigned)n != state_read_size) {
-          fprintf(stderr, "\n%s:%u: not full read\n", __FILE__, __LINE__);
-          fprintf(stderr, "\n\n");
+          fprintf(stderr, "\n%s:%u: player %u: read was incomplete\n", __FILE__,
+                  __LINE__, i);
           exit(-1);
         }
       }
       const uint64_t t1 = SDL_GetPerformanceCounter();
       const float dt = (float)(t1 - t0) / (float)SDL_GetPerformanceFrequency();
       t0 = t1;
-      // using state[0] to send info from server to all players, such as dt
+      // using state[0] to broadcast data from server to all players, such as dt
       state[0].lookangle_x = dt;
       for (unsigned i = 1; i < net_players + 1; i++) {
         write(clients_fd[i], state, sizeof(state));

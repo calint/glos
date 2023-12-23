@@ -111,6 +111,7 @@ inline static void main_render(const frame_ctx &fc) {
 
 //------------------------------------------------------------------------ main
 int main(int argc, char *argv[]) {
+  // check if this instance is server
   if (argc > 1 && *argv[1] == 's') {
     net_server.init();
     net_server.loop();
@@ -118,9 +119,13 @@ int main(int argc, char *argv[]) {
     return 0;
   }
 
+  // set random number generator seed for deterministic behaviour
+  srand(0);
+
+  // this instance is client
   bool use_net = false;
   if (argc > 1 && *argv[1] == 'c') {
-    srand(0);
+    // connect to server
     use_net = true;
     if (argc > 2) {
       net.host = argv[2];
@@ -217,13 +222,13 @@ int main(int argc, char *argv[]) {
       case SDL_MOUSEMOTION: {
         if (event.motion.xrel != 0) {
           net.next_state.lookangle_y += (float)event.motion.xrel *
-                                           rad_over_mouse_pixels *
-                                           mouse_sensitivity;
+                                        rad_over_mouse_pixels *
+                                        mouse_sensitivity;
         }
         if (event.motion.yrel != 0) {
           net.next_state.lookangle_x += (float)event.motion.yrel *
-                                           rad_over_mouse_pixels *
-                                           mouse_sensitivity;
+                                        rad_over_mouse_pixels *
+                                        mouse_sensitivity;
         }
         break;
       }

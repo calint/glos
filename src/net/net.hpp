@@ -1,4 +1,6 @@
 #pragma once
+// reviewed: 2023-12-23
+
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <netinet/tcp.h>
@@ -27,8 +29,8 @@ public:
     struct sockaddr_in server;
     fd = socket(AF_INET, SOCK_STREAM, 0);
     if (fd == -1) {
-      fprintf(stderr, "\n%s:%u: create socket failed\n", __FILE__, __LINE__);
-      fprintf(stderr, "\n\n");
+      fprintf(stderr, "\n%s:%u: ", __FILE__, __LINE__);
+      perror("");
       exit(-1);
     }
 
@@ -37,7 +39,6 @@ public:
         setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, (char *)&flag, sizeof(int));
     if (result < 0) {
       fprintf(stderr, "\n%s:%u: set TCP_NODELAY failed\n", __FILE__, __LINE__);
-      fprintf(stderr, "\n\n");
       exit(-1);
     }
 
@@ -45,20 +46,24 @@ public:
     server.sin_family = AF_INET;
     server.sin_port = htons(port);
 
-    printf("[ net ] connecting to %s on port %u\n", host, port);
+    printf("[ net ] connecting to '%s' on port %u\n", host, port);
     if (connect(fd, (struct sockaddr *)&server, sizeof(server)) < 0) {
-      fprintf(stderr, "\n%s:%u: connect failed\n", __FILE__, __LINE__);
-      fprintf(stderr, "    server: %s  port: %d\n\n", host, port);
-      fprintf(stderr, "\n\n");
+      fprintf(stderr, "\n%s:%u: ", __FILE__, __LINE__);
+      perror("");
       exit(-1);
     }
     printf("[ net ] connected. waiting for go ahead\n");
-    if (recv(fd, &active_state_ix, sizeof(active_state_ix), 0) < 0) {
-      fprintf(stderr, "\n%s:%u: receive failed\n", __FILE__, __LINE__);
-      fprintf(stderr, "\n\n");
+    ssize_t n = recv(fd, &active_state_ix, sizeof(active_state_ix), 0);
+    if (n <= 0) {
+      fprintf(stderr, "\n%s:%u: ", __FILE__, __LINE__);
+      if (n == 0) {
+        fprintf(stderr, "server disconnected\n");
+      } else {
+        perror("");
+      }
       exit(-1);
     }
-    printf("[ net ] go\n");
+    printf("[ net ] playing player %u\n", active_state_ix);
   }
 
   inline void free() {
@@ -74,8 +79,8 @@ public:
     const uint64_t t0 = SDL_GetPerformanceCounter();
     // receive signals from previous frame
     if (recv(fd, states, sizeof(states), 0) < 0) {
-      fprintf(stderr, "\n%s:%u: receive failed\n", __FILE__, __LINE__);
-      fprintf(stderr, "\n\n");
+      fprintf(stderr, "\n%s:%u: ", __FILE__, __LINE__);
+      perror("");
       exit(-1);
     }
     // send current frame signals
@@ -91,8 +96,8 @@ public:
 private:
   inline void send_state() {
     if (send(fd, &next_state, sizeof(next_state), 0) < 0) {
-      fprintf(stderr, "\n%s:%u: send failed\n", __FILE__, __LINE__);
-      fprintf(stderr, "\n\n");
+      fprintf(stderr, "\n%s:%u: ", __FILE__, __LINE__);
+      perror("");
       exit(-1);
     }
   }
