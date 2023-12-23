@@ -11,6 +11,14 @@ cat stacktrace | awk '{print $2}'|cut -c 2-9 | while read addr; do
 done
 
 
+# to view a core dump
+ulimit -c unlimited
+# run the program to crash
+# on ubuntu dump is at 
+ll /var/lib/apport/coredump/
+# use gdb
+gdb glos /var/lib/apport/coredump/core._home_c_w_glos_glos.1000.a5eca36c-81b5-42ad-bcb0-6f602625ec20.3305893.268365950
+# type 'bt' for stacktrace
 
 #pragma once
 #include <execinfo.h>

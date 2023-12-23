@@ -7,39 +7,43 @@
 class cell {
 public:
   static constexpr unsigned bit_overlaps = 0;
+  static constexpr unsigned bit_is_dead = 1;
 
-  std::vector<object *> objects{};
+  std::vector<object *> ols{};
 
   inline void update(const frame_ctx &fc) {
-    for (object *oi : objects) {
+    for (object *o : ols) {
       //? if object overlaps grid in multithreaded use atomic int
-      if (oi->update_tick == fc.tick) {
+      if (o->update_tick == fc.tick) {
         continue;
       }
-      oi->update_tick = fc.tick;
-      oi->update(fc);
+      o->update_tick = fc.tick;
+      if (o->update(fc)) {
+        set_bit(o->grid_ifc.bits, bit_is_dead);
+        objects.free(o);
+      }
       metrics.objects_updated++;
     }
   }
 
   inline void render(const frame_ctx &fc) {
-    for (object *oi : objects) {
-      if (oi->render_tick == fc.tick) {
+    for (object *o : ols) {
+      if (o->render_tick == fc.tick) {
         continue;
       }
-      oi->render_tick = fc.tick;
-      oi->render(fc);
+      o->render_tick = fc.tick;
+      o->render(fc);
       metrics.objects_rendered++;
     }
   }
 
-  inline void clear() { objects.clear(); }
+  inline void clear() { ols.clear(); }
 
-  inline void add(object *o) { objects.push_back(o); }
+  inline void add(object *o) { ols.push_back(o); }
 
   inline void print() {
     int i = 0;
-    for (object *o : objects) {
+    for (object *o : ols) {
       if (i++) {
         printf(", ");
       }
@@ -49,7 +53,7 @@ public:
   }
 
   inline void resolve_collisions(const frame_ctx &fc) {
-    const unsigned len = objects.size();
+    const unsigned len = ols.size();
     if (len == 0) {
       return;
     }
@@ -57,20 +61,31 @@ public:
       for (unsigned j = i + 1; j < len; j++) {
         metrics.collision_detections_possible++;
 
-        object *Oi = objects.at(i);
-        object *Oj = objects.at(j);
+        object *Oi = ols.at(i);
+        object *Oj = ols.at(j);
 
-        if (!((Oi->grid_ifc.collision_mask & Oj->grid_ifc.collision_bits) or
-              (Oj->grid_ifc.collision_mask & Oi->grid_ifc.collision_bits))) {
+        // check if Oi and Oj have interest in collision with each other
+        if ((Oi->grid_ifc.collision_mask & Oj->grid_ifc.collision_bits) == 0 and
+            (Oj->grid_ifc.collision_mask & Oi->grid_ifc.collision_bits) == 0) {
           continue;
         }
 
+        // check if both objects are dead
+        if (is_bit_set(Oi->grid_ifc.bits, bit_is_dead) and
+            is_bit_set(Oj->grid_ifc.bits, bit_is_dead)) {
+          continue;
+        }
+
+        // check if both objects overlap grids in which case the collision
+        // detection might have been done by another cell
         if (is_bit_set(Oi->grid_ifc.bits, bit_overlaps) and
             is_bit_set(Oj->grid_ifc.bits, bit_overlaps)) {
           // both objects overlap grids
           if (is_collision_checked(Oi, Oj, fc)) {
+            // collision already checked by another cell
             continue;
           }
+          // add Oj to Oi checked collisions list
           Oi->grid_ifc.checked_collisions.push_back(Oj);
           // note. only entry in one of the objects necessary
         }
@@ -83,12 +98,20 @@ public:
 
         metrics.collision_detections++;
 
-        if (Oi->grid_ifc.collision_mask & Oj->grid_ifc.collision_bits) {
-          Oi->on_collision(Oj, fc);
+        if (not is_bit_set(Oi->grid_ifc.bits, bit_is_dead) and
+            Oi->grid_ifc.collision_mask & Oj->grid_ifc.collision_bits) {
+          if (Oi->on_collision(Oj, fc)) {
+            set_bit(Oi->grid_ifc.bits, bit_is_dead);
+            objects.free(Oi);
+          }
         }
 
-        if (Oj->grid_ifc.collision_mask & Oi->grid_ifc.collision_bits) {
-          Oj->on_collision(Oi, fc);
+        if (not is_bit_set(Oj->grid_ifc.bits, bit_is_dead) and
+            Oj->grid_ifc.collision_mask & Oi->grid_ifc.collision_bits) {
+          if (Oj->on_collision(Oi, fc)) {
+            set_bit(Oj->grid_ifc.bits, bit_is_dead);
+            objects.free(Oj);
+          }
         }
       }
     }

@@ -3,6 +3,7 @@
 
 #include "../grid/grid_ifc.hpp"
 #include "node.hpp"
+#include "o1store.hpp"
 #include "physics.hpp"
 #include "volume.hpp"
 #include <glm/gtc/type_ptr.hpp>
@@ -18,11 +19,12 @@ public:
   unsigned render_tick = 0;
   node node{};
   volume volume{};
-  physics physics_prv{}; // physics state from previous frame
-  physics physics_nxt{}; // physics state for next frame
-  physics physics{};     // physics state of current frame
-  grid_ifc grid_ifc{};
-  net_state *state{};
+  physics physics_prv{};      // physics state from previous frame
+  physics physics_nxt{};      // physics state for next frame
+  physics physics{};          // physics state of current frame
+  grid_ifc grid_ifc{};        // interface to 'grid'
+  net_state *state = nullptr; // pointer to signals used by this object
+  object **alloc_ptr;         // initiated at allocate in 'o1store'
 
 private:
   glm::vec3 Mmw_pos{}; // position of current Mmw matrix
@@ -34,11 +36,14 @@ public:
 
   inline virtual ~object() {}
 
-  inline auto is_Mmw_valid() const -> bool {
-    return physics.position == Mmw_pos and physics.angle == Mmw_agl and
-           volume.scale == Mmw_scl;
+  inline virtual void render(const frame_ctx &fc) {
+    if (!node.glo) {
+      return;
+    }
+    node.glo->render(get_updated_Mmw());
   }
 
+  // returns true if object has died
   inline virtual auto update(const frame_ctx &fc) -> bool {
     physics_prv = physics;
     physics = physics_nxt;
@@ -49,14 +54,15 @@ public:
     return false;
   }
 
-  inline virtual void render(const frame_ctx &fc) {
-    if (!node.glo) {
-      return;
-    }
-    node.glo->render(get_updated_Mmw());
+  // returns true if object has died
+  inline virtual auto on_collision(object *obj, const frame_ctx &fc) -> bool {
+    return false;
   }
 
-  inline virtual void on_collision(object *obj, const frame_ctx &fc) {}
+  inline auto is_Mmw_valid() const -> bool {
+    return physics.position == Mmw_pos and physics.angle == Mmw_agl and
+           volume.scale == Mmw_scl;
+  }
 
   inline const glm::mat4 &get_updated_Mmw() {
     if (is_Mmw_valid()) {
@@ -77,14 +83,28 @@ public:
 
 class objects final {
 public:
-  std::vector<object *> store{};
+  o1store<object, objects_count, 0, objects_instance_size_B> store{};
 
   inline void init() {}
+
   inline void free() {
-    for (object *o : store) {
-      delete o;
+    object **end = store.allocated_list_end();
+    // note. important to get the 'end' outside the loop because objects may
+    //       allocate new objects in the loop and that would change the 'end'
+    for (object **it = store.allocated_list(); it < end; it++) {
+      object *obj = *it;
+      obj->~object(); // note. the freeing of the memory is done by 'o1store'
     }
-    store.clear();
+  }
+
+  inline auto alloc() -> object * { return store.allocate_instance(); }
+
+  inline void free(object *o) { store.free_instance(o); }
+
+  inline void apply_free() { store.apply_free(); }
+
+  inline auto allocated_objects_count() -> int {
+    return store.allocated_list_len();
   }
 };
 

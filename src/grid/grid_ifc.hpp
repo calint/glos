@@ -11,5 +11,5 @@ public:
   unsigned collision_bits = 0;
   unsigned collision_mask = 0;
   std::vector<const object *> checked_collisions{};
-  unsigned bits = 0; // 1: overlaps
+  unsigned bits = 0; // 1: overlaps  2: dead
 };

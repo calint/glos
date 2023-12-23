@@ -320,30 +320,43 @@ int main(int argc, char *argv[]) {
     // start frame
     frame_num++;
 
-    // in multiplayer mode use dt from else previous frame
+    // in multiplayer mode use dt from server else previous frame
     fc.dt = use_net ? net.dt : metrics.fps.dt;
     fc.tick = frame_num;
 
+    // update grid
     grid.clear();
-    for (object *o : objects.store) {
-      grid.add(o);
+    // add all allocated objects to the grid
+    object **const end = objects.store.allocated_list_end();
+    for (object **it = objects.store.allocated_list(); it < end; it++) {
+      object *obj = *it;
+      grid.add(obj);
     }
     if (print_grid) {
       grid.print();
     }
     grid.update(fc);
     grid.resolve_collisions(fc);
+    // apply delete on objects that have died during 'update' and 'on_collision'
+    objects.apply_free();
+
     if (do_main_render) {
       main_render(fc);
     }
+
+    // update signals state
     if (use_net) {
       // receive signals from previous frame and send signals of current frame
       net.at_frame_end();
     } else {
       net.states[net.active_state_ix] = net.next_state;
     }
+
+    // callback
     application.at_frame_end();
-    metrics.objects_allocated = objects.store.size();
+
+    // metrics
+    metrics.objects_allocated = objects.allocated_objects_count();
     metrics.at_frame_end(stderr);
   }
   //---------------------------------------------------------------------free
