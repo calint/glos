@@ -112,9 +112,10 @@ inline static void main_render(const frame_ctx &fc) {
 //------------------------------------------------------------------------ main
 int main(int argc, char *argv[]) {
   if (argc > 1 && *argv[1] == 's') {
-    net_server_init();
-    net_server_loop();
-    net_server_free();
+    net_server.init();
+    net_server.loop();
+    net_server.free();
+    return 0;
   }
 
   bool use_net = false;

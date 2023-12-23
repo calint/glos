@@ -13,12 +13,10 @@ public:
   float lookangle_x;
 };
 
-#define net_cap 2 + 1
-
 class net {
 public:
   net_state next_state;
-  net_state states[net_cap];
+  net_state states[net_players + 1];
   uint32_t active_state_ix = 1;
   float dt;
   int fd;
