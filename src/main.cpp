@@ -40,7 +40,7 @@ static struct color {
   GLclampf blue;
 } background_color = {0, 0, .3f};
 
-static glm::vec3 ambient_light=glm::normalize(glm::vec3{0, 1, 1});
+static glm::vec3 ambient_light = glm::normalize(glm::vec3{0, 1, 1});
 
 static object *camera_follow_object = nullptr;
 
@@ -140,15 +140,6 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  puts("");
-  printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
-  printf(": %15s : %-9s :\n", "class", "bytes");
-  printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
-  printf(": %15s : %-9ld :\n", "object", sizeof(object));
-  printf(": %15s : %-9ld :\n", "glo", sizeof(glo));
-  printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
-  puts("");
-
   // initiate subsystems
   if (use_net) {
     net.init();
@@ -164,6 +155,15 @@ int main(int argc, char *argv[]) {
   application.init();
 
   main_init_shaders();
+
+  puts("");
+  printf("class sizes:\n");
+  printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
+  printf(": %15s : %-9s :\n", "class", "bytes");
+  printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
+  printf(": %15s : %-9ld :\n", "object", sizeof(object));
+  printf(": %15s : %-9ld :\n", "glo", sizeof(glo));
+  printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
 
   // sdl.play_path("music/ambience.mp3");
 

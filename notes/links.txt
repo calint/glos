@@ -1,0 +1,3 @@
+Normal Transformation
+how to transform transformation matrix Mmw to normals matrix Nmw
+https://paroj.github.io/gltut/Illumination/Tut09%20Normal%20Transformation.html

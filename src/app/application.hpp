@@ -4,12 +4,14 @@
 class application final {
 public:
   void init() {
+    printf("class sizes:\n");
     printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
     printf(": %15s : %-9s :\n", "class", "bytes");
     printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
     printf(": %15s : %-9ld :\n", "santa", sizeof(santa));
     printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
-
+    puts("");
+    
     static_assert(sizeof(santa) <= objects_instance_size_B, "");
 
     glos.load_from_file("obj/skydome.obj");

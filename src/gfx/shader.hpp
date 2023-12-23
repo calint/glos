@@ -113,6 +113,18 @@ public:
            glGetUniformLocation(programs.at(0).id, "ulht"));
     printf(":-%10s-:-%7s-:\n", "----------", "-------");
     puts("");
+    printf("shader attribute locations:\n");
+    printf(":-%10s-:-%7s-:\n", "----------", "-------");
+    printf(": %10s : %-7d :\n", "apos",
+           glGetAttribLocation(programs.at(0).id, "apos"));
+    printf(": %10s : %-7d :\n", "argba",
+           glGetAttribLocation(programs.at(0).id, "argba"));
+    printf(": %10s : %-7d :\n", "anorm",
+           glGetAttribLocation(programs.at(0).id, "anorm"));
+    printf(": %10s : %-7d :\n", "atex",
+           glGetAttribLocation(programs.at(0).id, "atex"));
+    printf(":-%10s-:-%7s-:\n", "----------", "-------");
+    puts("");
   }
 
   inline void free() {
