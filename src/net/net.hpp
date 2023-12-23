@@ -17,9 +17,9 @@ public:
 
 class net {
 public:
-  net_state state_to_send;
-  net_state state_current[net_cap];
-  uint32_t active_player_index = 1;
+  net_state next_state;
+  net_state states[net_cap];
+  uint32_t active_state_ix = 1;
   float dt;
   int fd;
   const char *host = "127.0.0.1";
@@ -55,7 +55,7 @@ public:
       exit(-1);
     }
     printf("[ net ] connected. waiting for go ahead\n");
-    if (recv(fd, &active_player_index, sizeof(active_player_index), 0) < 0) {
+    if (recv(fd, &active_state_ix, sizeof(active_state_ix), 0) < 0) {
       fprintf(stderr, "\n%s:%u: receive failed\n", __FILE__, __LINE__);
       fprintf(stderr, "\n\n");
       exit(-1);
@@ -75,7 +75,7 @@ public:
   inline void at_frame_end() {
     const uint64_t t0 = SDL_GetPerformanceCounter();
     // receive signals from previous frame
-    if (recv(fd, state_current, sizeof(state_current), 0) < 0) {
+    if (recv(fd, states, sizeof(states), 0) < 0) {
       fprintf(stderr, "\n%s:%u: receive failed\n", __FILE__, __LINE__);
       fprintf(stderr, "\n\n");
       exit(-1);
@@ -83,7 +83,7 @@ public:
     // send current frame signals
     send_state();
     // get server dt from server state (using a float value)
-    dt = state_current[0].lookangle_x;
+    dt = states[0].lookangle_x;
     // calculate network used lag
     const uint64_t t1 = SDL_GetPerformanceCounter();
     const float dt = (float)(t1 - t0) / (float)SDL_GetPerformanceFrequency();
@@ -92,7 +92,7 @@ public:
 
 private:
   inline void send_state() {
-    if (send(fd, &state_to_send, sizeof(state_to_send), 0) < 0) {
+    if (send(fd, &next_state, sizeof(next_state), 0) < 0) {
       fprintf(stderr, "\n%s:%u: send failed\n", __FILE__, __LINE__);
       fprintf(stderr, "\n\n");
       exit(-1);

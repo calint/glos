@@ -1,6 +1,6 @@
 # glos
 
-experimental 3d game framework using simple data layer 2 and opengl
+experimental 3d game framework using simple data layer 2 and opengl in c++
 
 intention:
 * multiplayer framework

@@ -215,12 +215,12 @@ int main(int argc, char *argv[]) {
         break;
       case SDL_MOUSEMOTION: {
         if (event.motion.xrel != 0) {
-          net.state_to_send.lookangle_y += (float)event.motion.xrel *
+          net.next_state.lookangle_y += (float)event.motion.xrel *
                                            rad_over_mouse_pixels *
                                            mouse_sensitivity;
         }
         if (event.motion.yrel != 0) {
-          net.state_to_send.lookangle_x += (float)event.motion.yrel *
+          net.next_state.lookangle_x += (float)event.motion.yrel *
                                            rad_over_mouse_pixels *
                                            mouse_sensitivity;
         }
@@ -229,50 +229,50 @@ int main(int argc, char *argv[]) {
       case SDL_KEYDOWN:
         switch (event.key.keysym.sym) {
         case SDLK_w:
-          net.state_to_send.keys |= 1;
+          net.next_state.keys |= 1;
           break;
         case SDLK_a:
-          net.state_to_send.keys |= 2;
+          net.next_state.keys |= 2;
           break;
         case SDLK_s:
-          net.state_to_send.keys |= 4;
+          net.next_state.keys |= 4;
           break;
         case SDLK_d:
-          net.state_to_send.keys |= 8;
+          net.next_state.keys |= 8;
           break;
         case SDLK_q:
-          net.state_to_send.keys |= 16;
+          net.next_state.keys |= 16;
           break;
         case SDLK_e:
-          net.state_to_send.keys |= 32;
+          net.next_state.keys |= 32;
           break;
         case SDLK_o:
-          net.state_to_send.keys |= 64;
+          net.next_state.keys |= 64;
           break;
         }
         break;
       case SDL_KEYUP:
         switch (event.key.keysym.sym) {
         case SDLK_w:
-          net.state_to_send.keys &= ~1;
+          net.next_state.keys &= ~1;
           break;
         case SDLK_a:
-          net.state_to_send.keys &= ~2;
+          net.next_state.keys &= ~2;
           break;
         case SDLK_s:
-          net.state_to_send.keys &= ~4;
+          net.next_state.keys &= ~4;
           break;
         case SDLK_d:
-          net.state_to_send.keys &= ~8;
+          net.next_state.keys &= ~8;
           break;
         case SDLK_q:
-          net.state_to_send.keys &= ~16;
+          net.next_state.keys &= ~16;
           break;
         case SDLK_e:
-          net.state_to_send.keys &= ~32;
+          net.next_state.keys &= ~32;
           break;
         case SDLK_o:
-          net.state_to_send.keys &= ~64;
+          net.next_state.keys &= ~64;
           break;
         case SDLK_SPACE:
           mouse_mode = mouse_mode ? SDL_FALSE : SDL_TRUE;
@@ -329,6 +329,8 @@ int main(int argc, char *argv[]) {
     if (use_net) {
       // receive signals from previous frame and send signals of current frame
       net.at_frame_end();
+    } else {
+      net.states[net.active_state_ix] = net.next_state;
     }
     application.at_frame_end();
     metrics.objects_allocated = objects.store.size();
