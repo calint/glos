@@ -5,18 +5,19 @@ set -e
 CC="clang++ -std=c++20"
 SRC="src/main.cpp"
 BIN="glos"
-CFLAGS="$(sdl2-config --cflags) -fno-exceptions -fno-rtti"
+CFLAGS="-fno-exceptions -fno-rtti $(sdl2-config --cflags)"
+LIBS="-lGL -lSDL2_image -lSDL2_ttf -lSDL2_mixer $(sdl2-config --libs)"
 WARNINGS="-Wall -Wextra -Wpedantic -Wfatal-errors \
     -Wconversion -Wsign-conversion \
     -Wno-unsafe-buffer-usage -Wno-unused-function -Wno-unused-parameter"
-LIBS="$(sdl2-config --libs) -lGL -lm -lSDL2_gfx -lSDL2_image -lSDL2_ttf -lSDL2_mixer"
-#OPTIMIZATION=-O3
 OPTIMIZATION="-O3 -g"
 REMARKS=
 #REMARKS=-Rpass=inline
 PROFILE=
 #PROFILE=-pg
 
-$CC $PROFILE $SRC -o $BIN $OPTIMIZATION $CFLAGS $LIBS $WARNINGS
-
+CMD="$CC -o $BIN $SRC $PROFILE $OPTIMIZATION $CFLAGS $LIBS $WARNINGS"
+echo $CMD
+$CMD
+echo
 ls -la --color $BIN
