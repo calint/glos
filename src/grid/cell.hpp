@@ -18,6 +18,7 @@ public:
         continue;
       }
       o->grid_ifc.updated_at_tick = fc.tick;
+      o->grid_ifc.checked_collisions.clear();
       if (o->update(fc)) {
         set_bit(o->grid_ifc.bits, bit_is_dead);
         objects.free(o);
@@ -121,18 +122,6 @@ private:
   inline static bool is_collision_checked(object *o1, object *o2,
                                           const frame_ctx &fc) {
     metrics.collision_grid_overlap_check++;
-
-    if (o1->grid_ifc.checked_collision_list_at_tick != fc.tick) {
-      // list out of date
-      o1->grid_ifc.checked_collisions.clear();
-      o1->grid_ifc.checked_collision_list_at_tick = fc.tick;
-    }
-    if (o2->grid_ifc.checked_collision_list_at_tick != fc.tick) {
-      // list out of date
-      o2->grid_ifc.checked_collisions.clear();
-      o2->grid_ifc.checked_collision_list_at_tick = fc.tick;
-    }
-
     return is_in_checked_collision_list(o1, o2) or
            is_in_checked_collision_list(o2, o1);
   }

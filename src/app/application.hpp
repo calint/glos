@@ -52,7 +52,7 @@ public:
     {
       object *o = new (objects.alloc()) santa{};
       o->name = "santa2";
-      o->physics_nxt.position = {10, o->volume.radius, 10};
+      o->physics_nxt.position = {20, o->volume.radius, 10};
       o->physics = o->physics_nxt;
       o->state = &net.states[2];
     }
