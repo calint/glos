@@ -67,6 +67,16 @@ public:
     camera.ortho_min_y = -80;
     camera.ortho_max_x = 80;
     camera.ortho_max_y = 80;
+
+    // for (float y = -80; y <= 80; y += 1) {
+    //   for (float x = -80; x <= 80; x += 1) {
+    //     object *o = new (objects.alloc()) santa{};
+    //     o->name = "santa1";
+    //     o->physics_nxt.position = {x, o->volume.radius, y};
+    //     o->physics = o->physics_nxt;
+    //     o->state = &net.states[1];
+    //   }
+    // }
   }
 
   void free() {}

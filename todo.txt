@@ -6,6 +6,7 @@
  [x] convert structs to classes
  [x] use glm library for math
  [ ] multithreaded grid update
+     => initial try with futures and async lambda degrades performance by 50%
  [ ] deleted objects list created during 'update'
  [ ] shader: mtx_wvp * mtx_mw   is it better with mtx_mwvp?
  [x] use unique_ptr instead of new and delete
