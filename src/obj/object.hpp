@@ -84,6 +84,7 @@ public:
     for (object *o : store) {
       delete o;
     }
+    store.clear();
   }
 };
 

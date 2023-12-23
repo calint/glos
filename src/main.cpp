@@ -24,8 +24,8 @@
 //
 class frame_ctx {
 public:
-  float dt;
-  unsigned tick;
+  float dt = 0;
+  unsigned tick = 0;
 };
 #include "obj/object.hpp"
 //
@@ -186,19 +186,20 @@ int main(int argc, char *argv[]) {
   metrics.reset_timer();
   metrics.print_headers(stderr);
 
-  frame_ctx fc = {
-      .dt = 0.1f,
-      .tick = 0,
-  };
-
   if (use_net) {
     // send initial signals
     net.begin();
   }
 
+  // information about dt (elapsed time in previous frame) and a unique frame
+  // number (rollover possible)
+  frame_ctx fc{};
+
+  // enter game loop
   for (bool running = true; running;) {
     metrics.at_frame_begin();
 
+    // poll events
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
       switch (event.type) {
@@ -295,6 +296,7 @@ int main(int argc, char *argv[]) {
       }
     }
 
+    // check if shader program has changed
     if (shader_program_ix_prev != shader_program_ix) {
       printf(" * switching to program at index %u\n", shader_program_ix);
       {
@@ -315,8 +317,10 @@ int main(int argc, char *argv[]) {
       shader_program_ix_prev = shader_program_ix;
     }
 
+    // start frame
     frame_num++;
 
+    // in multiplayer mode use dt from else previous frame
     fc.dt = use_net ? net.dt : metrics.fps.dt;
     fc.tick = frame_num;
 
