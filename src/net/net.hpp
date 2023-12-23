@@ -8,14 +8,14 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-class net_state {
+class net_state final {
 public:
   unsigned keys;
   float lookangle_y;
   float lookangle_x;
 };
 
-class net {
+class net final {
 public:
   net_state next_state;
   net_state states[net_players + 1];

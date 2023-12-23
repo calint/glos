@@ -8,7 +8,7 @@
 #include <iostream>
 #include <unistd.h>
 
-class sdl {
+class sdl final {
 public:
   Mix_Music *music = nullptr;
 

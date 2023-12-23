@@ -4,7 +4,7 @@
 class object;
 
 // decoupling circular reference between 'grid' and 'object'
-class grid_ifc {
+class grid_ifc final {
 public:
   unsigned collision_bits = 0;
   unsigned collision_mask = 0;

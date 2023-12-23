@@ -8,7 +8,8 @@
  [ ] multithreaded grid update
  [ ] deleted objects list created during 'update'
  [ ] shader: mtx_wvp * mtx_mw   is it better with mtx_mwvp?
- [ ] use unique_ptr instead of new and delete
+ [x] use unique_ptr instead of new and delete
+     => o1store for objects
  [ ] grid: static vs moving objects vs 'bullets'
  ------------------------------
  [x] dynamic pointer vector

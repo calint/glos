@@ -4,7 +4,7 @@
 #include "../obj/object.hpp"
 #include <algorithm>
 
-class cell {
+class cell final {
 public:
   static constexpr unsigned bit_overlaps = 0;
   static constexpr unsigned bit_is_dead = 1;

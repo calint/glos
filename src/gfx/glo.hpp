@@ -8,14 +8,14 @@
 #include <string>
 #include <vector>
 
-class range {
+class range final {
 public:
   unsigned begin = 0;
   unsigned count = 0;
   unsigned material_ix = 0;
 };
 
-class glo {
+class glo final {
 public:
   std::string name = "";
   std::vector<float> vertex_buffer{};

@@ -20,7 +20,7 @@
 // illum 2
 // map_Kd /home/c/w/glos/logo.jpeg
 
-class material {
+class material final {
 public:
   std::string name = "";
   float Ns = 0;
