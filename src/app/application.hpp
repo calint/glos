@@ -16,6 +16,7 @@ public:
     glos.load_from_file("obj/grid.obj");
     glos.load_from_file("obj/santa.obj");
     glos.load_from_file("obj/icosphere.obj");
+    // glos.load_from_file("obj/grouped.obj");
 
     constexpr float world_size = grid_cell_size * grid_ncells_wide;
     {

@@ -127,11 +127,7 @@ public:
         materials.load_from_file(path.c_str());
         continue;
       }
-      if (token_equals(&t, "o")) {
-        if (not first_o) {
-          printf("!!! only one object per file supported\n");
-          exit(-1);
-        }
+      if (token_equals(&t, "o") and first_o) {
         first_o = false;
         token t = token_next(&p);
         const unsigned n = token_size(&t);
