@@ -17,31 +17,32 @@ public:
     glos.load_from_file("obj/santa.obj");
     glos.load_from_file("obj/sphere.obj");
 
-    constexpr float world_size = grid_cell_size * grid_ncells_wide / 2;
+    constexpr float world_size = grid_cell_size * grid_ncells_wide;
     {
       object *o = new (objects.alloc()) object{};
       o->name = "skydome";
       o->node.glo = glos.find_by_name("skydome");
-      constexpr float skydome_size = 10;
-      constexpr float skydome_scale = world_size / skydome_size;
+      const float skydome_scale =
+          world_size / (2 * o->node.glo->bounding_radius);
       o->volume.scale = {skydome_scale, skydome_scale, skydome_scale};
-      o->volume.radius = sqrtf(world_size * world_size * 2);
+      o->volume.radius = o->node.glo->bounding_radius * skydome_scale;
+      // printf("skydome bounding radius: %0.3f\n", o->volume.radius);
     }
     {
       object *o = new (objects.alloc()) object{};
       o->name = "grid";
       o->node.glo = glos.find_by_name("grid");
-      constexpr float grid_size = 8;
-      constexpr float grid_scale = world_size / grid_size;
+      constexpr float grid_scale = world_size / 16;
+      // note. 16 is the model coordinates span from -8 to 8
       o->volume.scale = {grid_scale, grid_scale, grid_scale};
-      o->volume.radius = sqrtf(world_size * world_size * 2);
+      o->volume.radius = o->node.glo->bounding_radius * grid_scale;
     }
     {
       object *o = new (objects.alloc()) santa{};
       o->name = "santa2";
       o->node.glo = glos.find_by_name("sphere");
-      o->volume.scale = {5, 5, 5};
-      o->volume.radius = o->node.glo->bounding_radius * 5; // r * scale
+      o->volume.scale = {2, 2, 2};
+      o->volume.radius = o->node.glo->bounding_radius * 2; // r * scale
       o->physics_nxt.position = {10, o->volume.radius, 10};
       o->physics = o->physics_nxt;
       o->state = &net.states[2];
@@ -52,27 +53,27 @@ public:
       object *o = new (objects.alloc()) santa{};
       o->name = "santa1";
       o->node.glo = glos.find_by_name("sphere");
-      o->volume.scale = {5, 5, 5};
-      o->volume.radius = o->node.glo->bounding_radius * 5;
+      o->volume.scale = {2, 2, 2};
+      o->volume.radius = o->node.glo->bounding_radius * 2;
       o->physics_nxt.position = {-20, o->volume.radius, 20};
       // o->physics_nxt.angular_velocity = {0, 0.2f, 0};
       o->physics = o->physics_nxt;
       o->state = &net.states[1];
       o->grid_ifc.collision_bits = cb_hero;
       o->grid_ifc.collision_mask = cb_hero;
+
+      camera.type = LOOK_AT;
+      camera.position = {0, 40, 50};
+      camera_follow_object = o;
     }
 
-    // camera.type = LOOK_AT;
-    // camera.position = {30, 40, 30};
-    // player.object = o;
-
-    camera.type = ORTHO;
-    camera.position = {0, 50, 0};
-    camera.look_at = {0, 0, -0.1f};
-    camera.ortho_min_x = -90;
-    camera.ortho_min_y = -90;
-    camera.ortho_max_x = 90;
-    camera.ortho_max_y = 90;
+    // camera.type = ORTHO;
+    // camera.position = {0, 50, 0};
+    // camera.look_at = {0, 0, -0.1f};
+    // camera.ortho_min_x = -90;
+    // camera.ortho_min_y = -90;
+    // camera.ortho_max_x = 90;
+    // camera.ortho_max_y = 90;
   }
 
   void free() {}

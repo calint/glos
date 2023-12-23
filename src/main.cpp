@@ -40,6 +40,8 @@ static struct color {
   GLclampf blue;
 } background_color = {0, 0, .3f};
 
+static object *camera_follow_object = nullptr;
+
 //
 #include "app/application.hpp"
 
@@ -99,6 +101,10 @@ void main(){
 }
 
 inline static void main_render(const frame_ctx &fc) {
+  if (camera_follow_object) {
+    camera.look_at = camera_follow_object->physics.position;
+  }
+
   camera.update_matrix_wvp();
   glUniformMatrix4fv(shaders::umtx_wvp, 1, GL_FALSE,
                      glm::value_ptr(camera.Mvp));
@@ -290,6 +296,9 @@ int main(int argc, char *argv[]) {
           if (shader_program_ix >= shaders.programs.size()) {
             shader_program_ix = 0;
           }
+          break;
+        case SDLK_4:
+          print_grid = not print_grid;
           break;
         }
         break;
