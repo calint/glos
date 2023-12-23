@@ -13,6 +13,23 @@ done
 
 
 #pragma once
+#include <execinfo.h>
+#include <stdio.h>
+#include <stdlib.h>
+#define stacktrace_depth 128
+void stacktrace_print(FILE *f) {
+  void *array[stacktrace_depth];
+  const int size = backtrace(array, stacktrace_depth);
+  char **strings = backtrace_symbols(array, size);
+  for (int i = 0; i < size; i++) {
+    fprintf(f, "%s\n", strings[i]);
+  }
+  free(strings);
+}
+
+
+
+#pragma once
 // object
 //   |
 //   +--- actor
