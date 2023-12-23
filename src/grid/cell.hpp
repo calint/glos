@@ -14,10 +14,10 @@ public:
   inline void update(const frame_ctx &fc) {
     for (object *o : ols) {
       //? if object overlaps grid in multithreaded use atomic int
-      if (o->update_tick == fc.tick) {
+      if (o->grid_ifc.updated_at_tick == fc.tick) {
         continue;
       }
-      o->update_tick = fc.tick;
+      o->grid_ifc.updated_at_tick = fc.tick;
       if (o->update(fc)) {
         set_bit(o->grid_ifc.bits, bit_is_dead);
         objects.free(o);
@@ -28,10 +28,10 @@ public:
 
   inline void render(const frame_ctx &fc) {
     for (object *o : ols) {
-      if (o->render_tick == fc.tick) {
+      if (o->grid_ifc.rendered_at_tick == fc.tick) {
         continue;
       }
-      o->render_tick = fc.tick;
+      o->grid_ifc.rendered_at_tick = fc.tick;
       o->render(fc);
       metrics.objects_rendered++;
     }
@@ -122,13 +122,15 @@ private:
                                           const frame_ctx &fc) {
     metrics.collision_grid_overlap_check++;
 
-    if (o1->grid_ifc.tick != fc.tick) { // list out of date
+    if (o1->grid_ifc.checked_collision_list_at_tick != fc.tick) {
+      // list out of date
       o1->grid_ifc.checked_collisions.clear();
-      o1->grid_ifc.tick = fc.tick;
+      o1->grid_ifc.checked_collision_list_at_tick = fc.tick;
     }
-    if (o2->grid_ifc.tick != fc.tick) { // list out of date
+    if (o2->grid_ifc.checked_collision_list_at_tick != fc.tick) {
+      // list out of date
       o2->grid_ifc.checked_collisions.clear();
-      o2->grid_ifc.tick = fc.tick;
+      o2->grid_ifc.checked_collision_list_at_tick = fc.tick;
     }
 
     return is_in_checked_collision_list(o1, o2) or

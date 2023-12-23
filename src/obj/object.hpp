@@ -15,10 +15,8 @@
 class object {
 public:
   std::string name{};
-  unsigned update_tick = 0;
-  unsigned render_tick = 0;
-  node node{};
-  volume volume{};
+  node node{};                // render info
+  volume volume{};            // bounding volume
   physics physics_prv{};      // physics state from previous frame
   physics physics_nxt{};      // physics state for next frame
   physics physics{};          // physics state of current frame
