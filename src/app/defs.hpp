@@ -1,7 +1,7 @@
 #pragma once
 // reviewed: 2023-12-22
 
-// contains definitions used by engine and application
+// definitions used by engine and application
 
 // grid dimensions
 static constexpr int grid_cell_size = 20;
