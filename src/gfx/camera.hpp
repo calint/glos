@@ -34,7 +34,6 @@ public:
       glm::mat4 Mv = glm::lookAt(position, look_at, {0, 1, 0});
       glm::mat4 Mp = glm::perspective(glm::radians(fov), aspect_ratio,
                                       near_plane, far_plane);
-      std::cout << "Mp = " << glm::to_string(Mp) << std::endl;
       Mvp = Mp * Mv;
       break;
     }
