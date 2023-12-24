@@ -1,7 +1,6 @@
 #pragma once
 // reviewed: 2023-12-22
 
-#include "../obj/object.hpp"
 #include <algorithm>
 
 class cell final {
@@ -11,15 +10,13 @@ public:
 
   std::vector<object *> ols{};
 
+  // called from grid
   inline void update(const frame_ctx &fc) {
     for (object *o : ols) {
       if (grid_threaded and is_bit_set(o->grid_ifc.bits, bit_overlaps)) {
-        // grid cell overlapping object may be called from multiple threads
+        // object is in several cells and may be called from multiple threads
 
         //? use atomic int
-        //
-        // critical section begin
-        //
         o->grid_ifc.acquire_lock();
         if (o->grid_ifc.updated_at_tick == fc.tick) {
           o->grid_ifc.release_lock();
@@ -27,17 +24,14 @@ public:
         }
         o->grid_ifc.updated_at_tick = fc.tick;
         o->grid_ifc.release_lock();
-        //
-        // critical section done
-        //
-
       } else {
-        // non grid cell overlapping object can only be called from one thread
+        // object is in only one cell or can only be called from one thread
         if (o->grid_ifc.updated_at_tick == fc.tick) {
           continue;
         }
         o->grid_ifc.updated_at_tick = fc.tick;
       }
+
       o->grid_ifc.checked_collisions.clear();
       if (o->update(fc)) {
         set_bit(o->grid_ifc.bits, bit_is_dead);
@@ -47,6 +41,7 @@ public:
     }
   }
 
+  // called from grid
   inline void render(const frame_ctx &fc) {
     for (object *o : ols) {
       if (o->grid_ifc.rendered_at_tick == fc.tick) {
@@ -58,8 +53,10 @@ public:
     }
   }
 
+  // called from grid
   inline void clear() { ols.clear(); }
 
+  // called from grid
   inline void add(object *o) { ols.push_back(o); }
 
   inline void print() {
@@ -73,6 +70,7 @@ public:
     printf("\n");
   }
 
+  // called from grid
   inline void resolve_collisions(const frame_ctx &fc) {
     const size_t len = ols.size();
     if (len == 0) {
@@ -102,39 +100,24 @@ public:
             is_bit_set(Oj->grid_ifc.bits, bit_overlaps)) {
           // the same objects might be checked for collision from different
           // cells on multiple threads
+
           if (grid_threaded) {
-            //
-            // critical section begin
-            //
             Oi->grid_ifc.acquire_lock();
             Oj->grid_ifc.acquire_lock();
-            const bool collision_detection_has_been_done =
-                is_collision_checked(Oi, Oj, fc);
-            if (not collision_detection_has_been_done) {
-              // add Oj to Oi checked collisions list
-              Oi->grid_ifc.checked_collisions.push_back(Oj);
-              // note. only one entry in one of the objects necessary
-            }
+          }
+          const bool collision_detection_is_checked =
+              is_collision_checked(Oi, Oj, fc);
+          if (not collision_detection_is_checked) {
+            // add Oj to Oi checked collisions list
+            Oi->grid_ifc.checked_collisions.push_back(Oj);
+            // note. only one entry in one of the objects necessary
+          }
+          if (grid_threaded) {
             Oj->grid_ifc.release_lock();
             Oi->grid_ifc.release_lock();
-            //
-            // critical section done
-            //
-            if (collision_detection_has_been_done) {
-              continue;
-            }
-          } else {
-            // running on single thread
-            const bool collision_detection_has_been_done =
-                is_collision_checked(Oi, Oj, fc);
-            if (not collision_detection_has_been_done) {
-              // add Oj to Oi checked collisions list
-              Oi->grid_ifc.checked_collisions.push_back(Oj);
-              // note. only one entry in one of the objects necessary
-            }
-            if (collision_detection_has_been_done) {
-              continue;
-            }
+          }
+          if (collision_detection_is_checked) {
+            continue;
           }
         }
 
@@ -155,38 +138,30 @@ public:
 private:
   inline static void handle_collision(object *Oi, object *Oj,
                                       const frame_ctx &fc) {
-    if (grid_threaded) {
-      // multithreaded
-      if (Oi->grid_ifc.collision_mask & Oj->grid_ifc.collision_bits) {
-        if (is_bit_set(Oi->grid_ifc.bits, bit_overlaps)) {
-          // object overlaps grid cells
-          // can be called from multiple threads
+    // multithreaded
+    if (Oi->grid_ifc.collision_mask & Oj->grid_ifc.collision_bits) {
+      if (is_bit_set(Oi->grid_ifc.bits, bit_overlaps)) {
+        // object overlaps grid cells
+        // can be called from multiple threads, racing condition
+        if (grid_threaded) {
           Oi->acquire_lock();
-          if (not is_bit_set(Oi->grid_ifc.bits, bit_is_dead)) {
-            if (Oi->on_collision(Oj, fc)) {
-              objects.free(Oi);
-              set_bit(Oi->grid_ifc.bits, bit_is_dead);
-            }
-          }
-          Oi->release_lock();
-        } else {
-          // object does not overlap grid cells
-          // can only be called from one thread
-          if (not is_bit_set(Oi->grid_ifc.bits, bit_is_dead)) {
-            if (Oi->on_collision(Oj, fc)) {
-              objects.free(Oi);
-              set_bit(Oi->grid_ifc.bits, bit_is_dead);
-            }
-          }
         }
-      }
-    } else {
-      // single threaded
-      if (Oi->grid_ifc.collision_mask & Oj->grid_ifc.collision_bits) {
         if (not is_bit_set(Oi->grid_ifc.bits, bit_is_dead)) {
           if (Oi->on_collision(Oj, fc)) {
-            set_bit(Oi->grid_ifc.bits, bit_is_dead);
             objects.free(Oi);
+            set_bit(Oi->grid_ifc.bits, bit_is_dead);
+          }
+        }
+        if (grid_threaded) {
+          Oi->release_lock();
+        }
+      } else {
+        // object does not overlap grid cells
+        // can only be called from one thread, no racing condition
+        if (not is_bit_set(Oi->grid_ifc.bits, bit_is_dead)) {
+          if (Oi->on_collision(Oj, fc)) {
+            objects.free(Oi);
+            set_bit(Oi->grid_ifc.bits, bit_is_dead);
           }
         }
       }
@@ -304,15 +279,15 @@ private:
 public:
   inline static bool is_bit_set(const unsigned &bits,
                                 int bit_number_starting_at_zero) {
-    return bits & (1 << bit_number_starting_at_zero);
+    return bits & (1u << bit_number_starting_at_zero);
   }
 
   inline static void set_bit(unsigned &bits, int bit_number_starting_at_zero) {
-    bits |= (1 << bit_number_starting_at_zero);
+    bits |= (1u << bit_number_starting_at_zero);
   }
 
   inline static void clear_bit(unsigned &bits,
                                int bit_number_starting_at_zero) {
-    bits &= ~(1 << bit_number_starting_at_zero);
+    bits &= ~(1u << bit_number_starting_at_zero);
   }
 };

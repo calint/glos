@@ -1,10 +1,8 @@
 #pragma once
 // reviewed: 2023-12-22
 
-#include "../obj/object.hpp"
 #include "cell.hpp"
 
-#include <algorithm>
 #include <execution>
 
 class grid final {
@@ -65,6 +63,7 @@ public:
     }
   }
 
+  // called from main
   inline void clear() {
     cell *p = cells[0];
     unsigned i = ncells;
@@ -74,13 +73,13 @@ public:
     }
   }
 
+  // called from main
   inline void add(object *o) {
     if (ncells == 1) {
       cells[0][0].add(o);
       return;
     }
 
-    //	printf("[ grid ] add %s %p\n",o->n.glo_ptr->name.data,(void*)o);
     const float gw = grid_cell_size * grid_ncells_wide;
     const float gh = grid_cell_size * grid_ncells_high;
 
