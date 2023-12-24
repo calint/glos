@@ -24,6 +24,6 @@ intention:
   - update and collision detection of objects (todo)
 
 ubuntu packages used:
-* sdl related packages
-* opengl related packages
+* sdl2 related packages
+* opengl related packages  
 * libglm-dev
