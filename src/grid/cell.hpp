@@ -139,30 +139,31 @@ private:
   inline static void handle_collision(object *Oi, object *Oj,
                                       const frame_ctx &fc) {
     // multithreaded
-    if (Oi->grid_ifc.collision_mask & Oj->grid_ifc.collision_bits) {
-      if (is_bit_set(Oi->grid_ifc.bits, bit_overlaps)) {
-        // object overlaps grid cells
-        // can be called from multiple threads, racing condition
-        if (grid_threaded) {
-          Oi->acquire_lock();
+    if ((Oi->grid_ifc.collision_mask & Oj->grid_ifc.collision_bits) == 0) {
+      return;
+    }
+    if (is_bit_set(Oi->grid_ifc.bits, bit_overlaps)) {
+      // object overlaps grid cells
+      // can be called from multiple threads, racing condition
+      if (grid_threaded) {
+        Oi->acquire_lock();
+      }
+      if (not is_bit_set(Oi->grid_ifc.bits, bit_is_dead)) {
+        if (Oi->on_collision(Oj, fc)) {
+          set_bit(Oi->grid_ifc.bits, bit_is_dead);
+          objects.free(Oi);
         }
-        if (not is_bit_set(Oi->grid_ifc.bits, bit_is_dead)) {
-          if (Oi->on_collision(Oj, fc)) {
-            set_bit(Oi->grid_ifc.bits, bit_is_dead);
-            objects.free(Oi);
-          }
-        }
-        if (grid_threaded) {
-          Oi->release_lock();
-        }
-      } else {
-        // object does not overlap grid cells
-        // can only be called from one thread, no racing condition
-        if (not is_bit_set(Oi->grid_ifc.bits, bit_is_dead)) {
-          if (Oi->on_collision(Oj, fc)) {
-            set_bit(Oi->grid_ifc.bits, bit_is_dead);
-            objects.free(Oi);
-          }
+      }
+      if (grid_threaded) {
+        Oi->release_lock();
+      }
+    } else {
+      // object does not overlap grid cells
+      // can only be called from one thread, no racing condition
+      if (not is_bit_set(Oi->grid_ifc.bits, bit_is_dead)) {
+        if (Oi->on_collision(Oj, fc)) {
+          set_bit(Oi->grid_ifc.bits, bit_is_dead);
+          objects.free(Oi);
         }
       }
     }
