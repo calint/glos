@@ -22,6 +22,7 @@ public:
   int glos_allocated = 0;
   int objects_updated = 0;
   int objects_rendered = 0;
+  int glo_rendered = 0;
   int average_fps = 0;
   int triangles_rendered = 0;
   float net_lag = 0;
@@ -42,21 +43,22 @@ public:
 
   inline void print_headers(FILE *f) {
     fprintf(f,
-            " %6s  %7s  %4s  %7s  %6s  %5s  %5s  %5s  %5s  %6s  %6s  %8s  %5s  "
-            "%8s  %8s\n",
+            " %6s  %7s  %4s  %7s  %6s  %5s  %5s  %5s  %5s  %6s  %6s  %6s  %8s  "
+            "%5s  %8s  %8s\n",
             "ms", "dt", "fps", "netlag", "nobj", "colp", "colc", "colf",
-            "olchk", "upd", "rend", "gtri", "nglo", "vtxbufs", "texbufs");
+            "olchk", "upd", "rend", "rendg", "gtri", "nglo", "vtxbufs",
+            "texbufs");
   }
 
   inline void print(FILE *f) {
     fprintf(
         f,
         " %06u  %0.5f  %04d  %0.5f  %06u  %05u  %05u  %05u  %05u  %06u  %06u "
-        " %08u  %05u  %08lu  %08u\n",
+        " %06u  %08u  %05u  %08lu  %08u\n",
         tick, fps.dt, average_fps, net_lag, objects_allocated,
         collision_detections_possible, collision_detections_considered,
         collision_detections, collision_grid_overlap_check, objects_updated,
-        objects_rendered, triangles_rendered, glos_allocated,
+        objects_rendered, glo_rendered, triangles_rendered, glos_allocated,
         buffered_vertex_data, buffered_texture_data);
   }
 
@@ -67,6 +69,7 @@ public:
     fps.frame_count++;
     objects_rendered = 0;
     objects_updated = 0;
+    glo_rendered = 0;
     triangles_rendered = 0;
     tick = SDL_GetTicks();
     net_lag = 0;
