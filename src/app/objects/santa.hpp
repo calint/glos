@@ -1,5 +1,7 @@
 #pragma once
 class santa : public object {
+  unsigned health = 0;
+
 public:
   inline santa() {
     node.glo = glos.find_by_name("icosphere");
@@ -7,6 +9,7 @@ public:
     volume.radius = node.glo->bounding_radius * 2; // r * scale
     grid_ifc.collision_bits = cb_hero;
     grid_ifc.collision_mask = cb_hero;
+    health = unsigned(rand()) % 10001;
   }
 
   // inline ~santa() { printf("%s destructor\n", name.c_str()); }
@@ -54,7 +57,8 @@ public:
       abort();
     }
     // printf("%s collision with %s\n", name.c_str(), o->name.c_str());
-    return false;
+    health--;
+    return health == 0;
   }
 
   // inline auto on_collision(object *o, const frame_ctx &fc) -> bool override {

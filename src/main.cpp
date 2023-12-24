@@ -1,5 +1,6 @@
 // reviewed: 2023-12-22
 
+#include <SDL2/SDL.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
