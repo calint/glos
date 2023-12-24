@@ -5,6 +5,8 @@
 #include <algorithm>
 
 class cell final {
+  inline static std::atomic_flag spinlock_o1store = ATOMIC_FLAG_INIT;
+
 public:
   static constexpr unsigned bit_overlaps = 0;
   static constexpr unsigned bit_is_dead = 1;
@@ -13,15 +15,41 @@ public:
 
   inline void update(const frame_ctx &fc) {
     for (object *o : ols) {
-      //? if object overlaps grid in multithreaded use atomic int
-      if (o->grid_ifc.updated_at_tick == fc.tick) {
-        continue;
+      if (grid_threaded and is_bit_set(o->grid_ifc.bits, bit_overlaps)) {
+        // grid cell overlapping object may be called from multiple threads
+
+        //? use atomic int
+        //
+        // critical section begin
+        //
+        o->grid_ifc.acquire_lock();
+        if (o->grid_ifc.updated_at_tick == fc.tick) {
+          o->grid_ifc.release_lock();
+          continue;
+        }
+        o->grid_ifc.updated_at_tick = fc.tick;
+        o->grid_ifc.release_lock();
+        //
+        // critical section done
+        //
+
+      } else {
+        // non grid cell overlapping object can only be called from one thread
+        if (o->grid_ifc.updated_at_tick == fc.tick) {
+          continue;
+        }
+        o->grid_ifc.updated_at_tick = fc.tick;
       }
-      o->grid_ifc.updated_at_tick = fc.tick;
       o->grid_ifc.checked_collisions.clear();
       if (o->update(fc)) {
         set_bit(o->grid_ifc.bits, bit_is_dead);
+        if (grid_threaded) {
+          acquire_lock_on_o1store();
+        }
         objects.free(o);
+        if (grid_threaded) {
+          release_lock_on_o1store();
+        }
       }
       metrics.objects_updated++;
     }
@@ -77,18 +105,45 @@ public:
           continue;
         }
 
-        // check if both objects overlap grids in which case the collision
-        // detection might have been done by another cell
+        // check if both objects overlap grid cells
         if (is_bit_set(Oi->grid_ifc.bits, bit_overlaps) and
             is_bit_set(Oj->grid_ifc.bits, bit_overlaps)) {
-          // both objects overlap grids
-          if (is_collision_checked(Oi, Oj, fc)) {
-            // collision already checked by another cell
-            continue;
+          // the same objects might be checked for collision from different
+          // cells on multiple threads
+          if (grid_threaded) {
+            //
+            // critical section begin
+            //
+            Oi->grid_ifc.acquire_lock();
+            Oj->grid_ifc.acquire_lock();
+            const bool collision_detection_has_been_done =
+                is_collision_checked(Oi, Oj, fc);
+            if (not collision_detection_has_been_done) {
+              // add Oj to Oi checked collisions list
+              Oi->grid_ifc.checked_collisions.push_back(Oj);
+              // note. only one entry in one of the objects necessary
+            }
+            Oj->grid_ifc.release_lock();
+            Oi->grid_ifc.release_lock();
+            //
+            // critical section done
+            //
+            if (collision_detection_has_been_done) {
+              continue;
+            }
+          } else {
+            // running on single thread
+            const bool collision_detection_has_been_done =
+                is_collision_checked(Oi, Oj, fc);
+            if (not collision_detection_has_been_done) {
+              // add Oj to Oi checked collisions list
+              Oi->grid_ifc.checked_collisions.push_back(Oj);
+              // note. only one entry in one of the objects necessary
+            }
+            if (collision_detection_has_been_done) {
+              continue;
+            }
           }
-          // add Oj to Oi checked collisions list
-          Oi->grid_ifc.checked_collisions.push_back(Oj);
-          // note. only entry in one of the objects necessary
         }
 
         metrics.collision_detections_considered++;
@@ -99,26 +154,66 @@ public:
 
         metrics.collision_detections++;
 
-        if (not is_bit_set(Oi->grid_ifc.bits, bit_is_dead) and
-            Oi->grid_ifc.collision_mask & Oj->grid_ifc.collision_bits) {
+        handle_collision(Oi, Oj, fc);
+        handle_collision(Oj, Oi, fc);
+      }
+    }
+  }
+
+private:
+  inline static void handle_collision(object *Oi, object *Oj,
+                                      const frame_ctx &fc) {
+    if (grid_threaded) {
+      // multithreaded
+      if (Oi->grid_ifc.collision_mask & Oj->grid_ifc.collision_bits) {
+        if (is_bit_set(Oi->grid_ifc.bits, bit_overlaps)) {
+          // object overlaps grid cells
+          // can be called from multiple threads
+          Oi->acquire_lock();
+          if (not is_bit_set(Oi->grid_ifc.bits, bit_is_dead)) {
+            if (Oi->on_collision(Oj, fc)) {
+              acquire_lock_on_o1store();
+              objects.free(Oi);
+              release_lock_on_o1store();
+              set_bit(Oi->grid_ifc.bits, bit_is_dead);
+            }
+          }
+          Oi->release_lock();
+        } else {
+          // object does not overlap grid cells
+          // can only be called from one thread
+          if (not is_bit_set(Oi->grid_ifc.bits, bit_is_dead)) {
+            if (Oi->on_collision(Oj, fc)) {
+              acquire_lock_on_o1store();
+              objects.free(Oi);
+              release_lock_on_o1store();
+              set_bit(Oi->grid_ifc.bits, bit_is_dead);
+            }
+          }
+        }
+      }
+    } else {
+      // single threaded
+      if (Oi->grid_ifc.collision_mask & Oj->grid_ifc.collision_bits) {
+        if (not is_bit_set(Oi->grid_ifc.bits, bit_is_dead)) {
           if (Oi->on_collision(Oj, fc)) {
             set_bit(Oi->grid_ifc.bits, bit_is_dead);
             objects.free(Oi);
-          }
-        }
-
-        if (not is_bit_set(Oj->grid_ifc.bits, bit_is_dead) and
-            Oj->grid_ifc.collision_mask & Oi->grid_ifc.collision_bits) {
-          if (Oj->on_collision(Oi, fc)) {
-            set_bit(Oj->grid_ifc.bits, bit_is_dead);
-            objects.free(Oj);
           }
         }
       }
     }
   }
 
-private:
+  inline static void acquire_lock_on_o1store() {
+    while (spinlock_o1store.test_and_set(std::memory_order_acquire)) {
+    }
+  }
+
+  inline static void release_lock_on_o1store() {
+    spinlock_o1store.clear(std::memory_order_release);
+  }
+
   inline static bool is_collision_checked(object *o1, object *o2,
                                           const frame_ctx &fc) {
     metrics.collision_grid_overlap_check++;

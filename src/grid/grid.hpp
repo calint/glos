@@ -4,6 +4,9 @@
 #include "../obj/object.hpp"
 #include "cell.hpp"
 
+#include <algorithm>
+#include <execution>
+
 class grid final {
   static constexpr unsigned ncells = grid_ncells_wide * grid_ncells_high;
 
@@ -15,6 +18,16 @@ public:
   inline void free() {}
 
   inline void update(const frame_ctx &fc) {
+    if (grid_threaded) {
+      std::for_each(std::execution::par_unseq, std::begin(cells),
+                    std::end(cells), [&fc](cell(&row)[grid_ncells_wide]) {
+                      for (cell &c : row) {
+                        c.update(fc);
+                      }
+                    });
+      return;
+    }
+
     cell *p = cells[0];
     unsigned i = ncells;
     while (i--) {
@@ -24,6 +37,16 @@ public:
   }
 
   inline void resolve_collisions(const frame_ctx &fc) {
+    if (grid_threaded) {
+      std::for_each(std::execution::par_unseq, std::begin(cells),
+                    std::end(cells), [&fc](cell(&row)[grid_ncells_wide]) {
+                      for (cell &c : row) {
+                        c.resolve_collisions(fc);
+                      }
+                    });
+      return;
+    }
+
     cell *p = cells[0];
     unsigned i = ncells;
     while (i--) {

@@ -168,6 +168,10 @@ int main(int argc, char *argv[]) {
   printf(": %15s : %-9ld :\n", "glo", sizeof(glo));
   printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
 
+  if (grid_threaded) {
+    printf("\nthreaded grid on %d cores\n",
+           std::thread::hardware_concurrency());
+  }
   // sdl.play_path("music/ambience.mp3");
 
   unsigned shader_program_ix = 0;

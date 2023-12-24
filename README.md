@@ -25,5 +25,6 @@ intention:
 
 ubuntu packages used:
 * sdl2 related packages
-* opengl related packages  
-* libglm-dev
+* opengl related packages 
+* libglm-dev - opengl math
+* libtbb-dev - parallel for_each

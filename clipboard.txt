@@ -38,43 +38,6 @@ void stacktrace_print(FILE *f) {
 }
 
 
-
-#include <iostream>
-#include <vector>
-#include <future>
-
-// Example task that doesn't return a result
-void myTask(int id) {
-    std::cout << "Task " << id << " started\n";
-    // Perform some work
-    for (int i = 0; i < 1000000; ++i) {
-        // Do some computation
-    }
-    std::cout << "Task " << id << " completed\n";
-}
-
-int main() {
-    std::vector<std::future<void>> futures;
-
-    // Launch multiple tasks asynchronously
-    for (int i = 0; i < 5; ++i) {
-        futures.push_back(std::async(std::launch::async, myTask, i));
-    }
-
-    // Wait for all tasks to finish
-    for (auto& future : futures) {
-        future.wait();
-    }
-
-    std::cout << "All tasks completed\n";
-
-    return 0;
-}
-
-
-
-
-
 #pragma once
 // object
 //   |

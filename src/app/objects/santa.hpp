@@ -9,9 +9,13 @@ public:
     grid_ifc.collision_mask = cb_hero;
   }
 
-  inline ~santa() { printf("%s destructor\n", name.c_str()); }
+  // inline ~santa() { printf("%s destructor\n", name.c_str()); }
 
   inline auto update(const frame_ctx &fc) -> bool override {
+    if (grid_ifc.bits & 2) {
+      printf("update: object already dead\n");
+      exit(1);
+    }
     if (object::update(fc)) {
       return true;
     }
@@ -45,7 +49,15 @@ public:
   }
 
   inline auto on_collision(object *o, const frame_ctx &fc) -> bool override {
-    printf("%s collision with %s\n", name.c_str(), o->name.c_str());
-    return true;
+    if (grid_ifc.bits & 2) {
+      printf("on collision: object already dead\n");
+      abort();
+    }
+    // printf("%s collision with %s\n", name.c_str(), o->name.c_str());
+    return false;
   }
+
+  // inline auto on_collision(object *o, const frame_ctx &fc) -> bool override {
+  //   return false;
+  // }
 };

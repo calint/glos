@@ -1,6 +1,8 @@
 #pragma once
 // reviewed: 2023-12-22
 
+#include <atomic>
+
 class object;
 
 // decoupling circular reference between 'grid' and 'object'
@@ -12,4 +14,12 @@ public:
   unsigned rendered_at_tick = 0;
   std::vector<const object *> checked_collisions{};
   unsigned bits = 0; // 1: overlaps cells  2: is dead
+  std::atomic_flag spinlock = ATOMIC_FLAG_INIT;
+
+  inline void acquire_lock() {
+    while (spinlock.test_and_set(std::memory_order_acquire)) {
+    }
+  }
+
+  inline void release_lock() { spinlock.clear(std::memory_order_release); }
 };

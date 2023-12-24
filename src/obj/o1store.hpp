@@ -78,10 +78,19 @@ public:
 
   // adds instance to list of instances to be freed with 'apply_free()'
   void free_instance(Type *inst) {
-    if (del_ptr_ >= del_end_) {
-      printf("!!! o1store %d: free overrun\n", StoreId);
-      while (true)
-        ;
+    if (o1store_check_free_limits) {
+      if (del_ptr_ >= del_end_) {
+        printf("!!! o1store %d: free overrun\n", StoreId);
+        abort();
+      }
+    }
+    if (o1store_check_double_free) {
+      for (Type **it = del_bgn_; it < del_ptr_; it++) {
+        if (*it == inst) {
+          printf("!!! double free\n");
+          abort();
+        }
+      }
     }
     *del_ptr_ = inst;
     del_ptr_++;

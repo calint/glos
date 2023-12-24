@@ -7,6 +7,8 @@
 static constexpr int grid_cell_size = 20;
 static constexpr int grid_ncells_wide = 8;
 static constexpr int grid_ncells_high = 8;
+// running grid on available cores
+static constexpr bool grid_threaded = true;
 
 // window dimensions
 static constexpr int window_width = 512;
@@ -23,3 +25,7 @@ static constexpr int objects_instance_size_B = 1024;
 
 // collision bits
 static constexpr int cb_hero = 1;
+
+// o1store debugging
+static constexpr bool o1store_check_double_free = true;
+static constexpr bool o1store_check_free_limits = true;

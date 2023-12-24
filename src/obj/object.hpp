@@ -23,6 +23,7 @@ public:
   grid_ifc grid_ifc{};        // interface to 'grid'
   net_state *state = nullptr; // pointer to signals used by this object
   object **alloc_ptr;         // initiated at allocate by 'o1store'
+  std::atomic_flag spinlock = ATOMIC_FLAG_INIT;
 
 private:
   glm::vec3 Mmw_pos{}; // position of current Mmw matrix
@@ -81,6 +82,11 @@ public:
     return node.Mmw;
   }
 
+  inline void acquire_lock() {
+    while (spinlock.test_and_set(std::memory_order_acquire)) {
+    }
+  }
+  inline void release_lock() { spinlock.clear(std::memory_order_release); }
 };
 
 class objects final {
