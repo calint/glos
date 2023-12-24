@@ -59,8 +59,8 @@ in vec3 apos;
 out float depth;
 void main(){
   gl_Position = umtx_wvp * umtx_mw * vec4(apos, 1);
-//  depth = 0.5 * (gl_Position.z / gl_Position.w) + 0.5;
-  depth = gl_Position.z / 500;
+  depth = 0.5 * (gl_Position.z / gl_Position.w) + 0.5;
+//  depth = gl_Position.z / 500;
 }
     )";
 

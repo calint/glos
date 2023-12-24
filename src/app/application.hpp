@@ -11,7 +11,7 @@ public:
     printf(": %15s : %-9ld :\n", "santa", sizeof(santa));
     printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
     puts("");
-    
+
     static_assert(sizeof(santa) <= objects_instance_size_B, "");
 
     glos.load_from_file("obj/skydome.obj");
@@ -39,6 +39,8 @@ public:
       // note. 16 is the model coordinates span from -8 to 8
       o->volume.scale = {grid_scale, grid_scale, grid_scale};
       o->volume.radius = o->node.glo->bounding_radius * grid_scale;
+      // o->physics_nxt.angular_velocity = glm::vec3(glm::radians(20.0f), 0, 0);
+      // o->physics = o->physics_nxt;
     }
     {
       object *o = new (objects.alloc()) santa{};
@@ -51,6 +53,10 @@ public:
       camera.type = LOOK_AT;
       camera.position = {0, 40, 50};
       camera_follow_object = o;
+
+      // camera.type = ANGLE;
+      // camera.position = {0, 100, 50};
+      // camera.angle = {glm::radians(0.0f), 0, 0};
     }
     {
       object *o = new (objects.alloc()) santa{};
@@ -59,6 +65,8 @@ public:
       o->physics = o->physics_nxt;
       o->state = &net.states[2];
     }
+
+    ambient_light = glm::normalize(glm::vec3{0, 1, 0});
 
     // camera.type = ORTHO;
     // camera.position = {0, 50, 0};
