@@ -1,42 +1,8 @@
 #pragma once
-// reviewed: 2023-12-22
+// reviewed: 2023-12-24
 
 #include "../metrics.hpp"
 #include <vector>
-
-static const char *vertex_shader_source = R"(
-  #version 330 core
-  uniform mat4 umtx_mw;  // model-to-world-matrix
-  uniform mat4 umtx_wvp; // world-to-view-to-projection
-  in vec3 apos;
-  in vec4 argba;
-  in vec3 anorm;
-  in vec2 atex;
-  out vec4 vrgba;
-  out vec3 vnorm;
-  out vec2 vtex;
-  void main(){
-	  gl_Position = umtx_wvp * umtx_mw * vec4(apos,1);
-	  vrgba = argba;
-	  vnorm = normalize(transpose(inverse(mat3(umtx_mw))) * anorm);
-//	  vnorm = anorm;
-	  vtex = atex;
-  }
-)";
-
-static const char *fragment_shader_source = R"(
-  #version 330 core
-  uniform sampler2D utex;
-  uniform vec3 ulht;
-  in vec4 vrgba;
-  in vec3 vnorm;
-  in vec2 vtex;
-  out vec4 rgba;
-  void main(){
-    float diff = max(dot(vnorm, ulht), 0);
-    rgba = texture2D(utex, vtex) + diff * vrgba;
-  }
-)";
 
 class vertex final {
 public:
@@ -53,6 +19,39 @@ public:
 };
 
 class shaders final {
+  inline static const char *vertex_shader_source = R"(
+  #version 330 core
+  uniform mat4 umtx_mw;  // model-to-world-matrix
+  uniform mat4 umtx_wvp; // world-to-view-to-projection
+  in vec3 apos;
+  in vec4 argba;
+  in vec3 anorm;
+  in vec2 atex;
+  out vec4 vrgba;
+  out vec3 vnorm;
+  out vec2 vtex;
+  void main(){
+	  gl_Position = umtx_wvp * umtx_mw * vec4(apos,1);
+	  vrgba = argba;
+	  vnorm = normalize(transpose(inverse(mat3(umtx_mw))) * anorm);
+	  vtex = atex;
+  }
+  )";
+
+  inline static const char *fragment_shader_source = R"(
+  #version 330 core
+  uniform sampler2D utex;
+  uniform vec3 ulht;
+  in vec4 vrgba;
+  in vec3 vnorm;
+  in vec2 vtex;
+  out vec4 rgba;
+  void main(){
+    float diff = max(dot(vnorm, ulht), 0);
+    rgba = texture2D(utex, vtex) + diff * vrgba;
+  }
+)";
+
 public:
   // enabled_attributes layout in shaders
   static constexpr unsigned apos = 0;
@@ -69,7 +68,7 @@ public:
   std::vector<program> programs{};
 
   inline void init() {
-    gl_check_error("shader_init");
+    gl_check_error("init");
 
     puts("");
     gl_print_string("GL_VENDOR", GL_VENDOR);
@@ -97,8 +96,6 @@ public:
         vertex_shader_source, fragment_shader_source,
         {shaders::apos, shaders::argba, shaders::anorm, shaders::atex});
 
-    gl_check_error("after shader_init");
-
     printf("shader uniform locations:\n");
     printf(":-%10s-:-%7s-:\n", "----------", "-------");
     printf(": %10s : %-7d :\n", "umtx_mw",
@@ -123,6 +120,8 @@ public:
            glGetAttribLocation(programs.at(0).id, "atex"));
     printf(":-%10s-:-%7s-:\n", "----------", "-------");
     puts("");
+
+    gl_check_error("after init");
   }
 
   inline void free() {
@@ -197,9 +196,10 @@ private:
       break;
 #endif
 #if defined __gl_h_
-    case GL_STACK_OVERFLOW:op
-      //		str = "GL_STACK_OVERFLOW";-Wunused-variable
-      break;
+    case GL_STACK_OVERFLOW:
+      op
+          //		str = "GL_STACK_OVERFLOW";-Wunused-variable
+          break;
     case GL_STACK_UNDERFLOW:
       str = "GL_STACK_UNDERFLOW";
       break;
