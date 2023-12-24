@@ -6,6 +6,8 @@ CC="clang++ -std=c++20"
 SRC="src/main.cpp"
 BIN="glos"
 CFLAGS="-fno-exceptions -fno-rtti $(sdl2-config --cflags)"
+LDFLAGS=
+#LDFLAGS="-fsanitize=address -fsanitize-address-use-after-scope"
 LIBS="-lGL -lSDL2_image -lSDL2_ttf -lSDL2_mixer $(sdl2-config --libs)"
 WARNINGS="-Wall -Wextra -Wpedantic -Wfatal-errors \
     -Wconversion -Wsign-conversion \
@@ -16,7 +18,7 @@ REMARKS=
 PROFILE=
 #PROFILE=-pg
 
-CMD="$CC -o $BIN $SRC $PROFILE $OPTIMIZATION $CFLAGS $LIBS $WARNINGS"
+CMD="$CC -o $BIN $SRC $PROFILE $OPTIMIZATION $CFLAGS $LDFLAGS $LIBS $WARNINGS"
 echo $CMD
 $CMD
 echo
