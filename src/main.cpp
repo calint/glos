@@ -55,7 +55,7 @@ static object *camera_follow_object = nullptr;
 inline static void main_init_shaders() {
   {
     const char *vtx = R"(
-#version 130
+#version 330 core
 uniform mat4 umtx_mw; // model-to-world-matrix
 uniform mat4 umtx_wvp;// world-to-view-to-projection
 in vec3 apos;
@@ -67,7 +67,7 @@ void main() {
     )";
 
     const char *frag = R"(
-#version 130
+#version 330 core
 in float depth;
 out vec4 rgba;
 void main() {
@@ -79,7 +79,7 @@ void main() {
   }
   {
     const char *vtx = R"(
-#version 130
+#version 330 core
 uniform mat4 umtx_mw; // model-to-world-matrix
 uniform mat4 umtx_wvp;// world-to-view-to-projection
 in vec3 apos;
@@ -92,7 +92,7 @@ void main() {
     )";
 
     const char *frag = R"(
-#version 130
+#version 330 core
 in vec4 vrgba;
 out vec4 rgba;
 void main(){
