@@ -9,21 +9,19 @@ intention:
   - server synchronizes clients signals
 * importing blender exported 'obj' files
 * explore opengl rendering
-* intuitive programming of game objects and logic
+* intuitive programming of application objects and logic
+* application code written in `app/` and included by `main.cpp`
 * collision detection
   - bounding radius
-
-todo:
-* collision detection
-  - bounding boxes
-  - bounding convex volumes
+  - bounding boxes (todo)
+  - bounding convex volumes (todo)
 * collision reaction
-  - sphere vs sphere
-  - sphere vs box
-  - box vs box
-  - convex volume vs convex volume
+  - sphere vs sphere (todo)
+  - sphere vs box (todo)
+  - box vs box (todo)
+  - convex volume vs convex volume (todo)
 * multithreaded grid of cells that partition world space
-  - update and collision detection of objects
+  - update and collision detection of objects (todo)
 
 ubuntu packages used:
 * sdl related packages
