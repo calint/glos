@@ -91,13 +91,13 @@ public:
   void apply_free() {
     for (Type **it = del_bgn_; it < del_ptr_; it++) {
       Type *inst_deleted = *it;
-      inst_deleted->~object();
       alloc_ptr_--;
       Type *inst_to_move = *alloc_ptr_;
       inst_to_move->alloc_ptr = inst_deleted->alloc_ptr;
       *(inst_deleted->alloc_ptr) = inst_to_move;
       free_ptr_--;
       *free_ptr_ = inst_deleted;
+      inst_deleted->~object();
     }
     del_ptr_ = del_bgn_;
   }
