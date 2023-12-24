@@ -1,3 +1,4 @@
+ [ ] camera: update matrix only if necessary
  [x] c++ conversion
  [x]   replace dynp, dyni, dynf with vector
  [x]   replace str with string

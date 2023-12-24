@@ -14,12 +14,13 @@ WARNINGS="-Wall -Wextra -Wpedantic -Wfatal-errors \
     -Wno-unsafe-buffer-usage -Wno-unused-function -Wno-unused-parameter"
 OPTIMIZATION="-O3 -g"
 REMARKS=
-#REMARKS=-Rpass=inline
+#REMARKS="-Rpass=inline"
 PROFILE=
-#PROFILE=-pg
+PROFILE="-pg"
 
-CMD="$CC -o $BIN $SRC $PROFILE $OPTIMIZATION $CFLAGS $LDFLAGS $LIBS $WARNINGS"
+CMD="$CC -o $BIN $SRC $PROFILE $REMARKS $OPTIMIZATION $CFLAGS $LDFLAGS $LIBS $WARNINGS"
 echo $CMD
 $CMD
 echo
 ls -la --color $BIN
+echo

@@ -169,13 +169,14 @@ int main(int argc, char *argv[]) {
 
   unsigned shader_program_ix = 0;
   unsigned shader_program_ix_prev = shader_program_ix;
-  bool do_main_render = true;
-  bool print_grid = false;
   const float rad_over_degree = 2.0f * glm::pi<float>() / 360.0f;
   float rad_over_mouse_pixels = rad_over_degree * .02f;
   float mouse_sensitivity = 1.5f;
   bool mouse_mode = false;
   unsigned frame_num = 0;
+  bool do_main_render = true;
+  bool print_grid = false;
+  bool resolve_collisions = true;
 
   {
     puts("");
@@ -305,6 +306,9 @@ int main(int argc, char *argv[]) {
         case SDLK_5:
           do_main_render = not do_main_render;
           break;
+        case SDLK_6:
+          resolve_collisions = not resolve_collisions;
+          break;
         }
         break;
       }
@@ -350,7 +354,9 @@ int main(int argc, char *argv[]) {
       grid.print();
     }
     grid.update(fc);
-    grid.resolve_collisions(fc);
+    if (resolve_collisions) {
+      grid.resolve_collisions(fc);
+    }
     // apply delete on objects that have died during 'update' and 'on_collision'
     objects.apply_free();
 

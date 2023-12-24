@@ -4,6 +4,9 @@ git reset --hard HEAD
 # tag with date and time
 TAG=$(date "+%Y-%m-%d--%H-%M") && git tag $TAG && git push origin $TAG
 
+# to view profile data
+gprof glos -pg
+
 # to view a core dump
 ulimit -c unlimited
 # run the program to crash
