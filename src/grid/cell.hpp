@@ -5,8 +5,6 @@
 #include <algorithm>
 
 class cell final {
-  inline static std::atomic_flag spinlock_o1store = ATOMIC_FLAG_INIT;
-
 public:
   static constexpr unsigned bit_overlaps = 0;
   static constexpr unsigned bit_is_dead = 1;
@@ -43,13 +41,7 @@ public:
       o->grid_ifc.checked_collisions.clear();
       if (o->update(fc)) {
         set_bit(o->grid_ifc.bits, bit_is_dead);
-        if (grid_threaded) {
-          acquire_lock_on_o1store();
-        }
         objects.free(o);
-        if (grid_threaded) {
-          release_lock_on_o1store();
-        }
       }
       metrics.objects_updated++;
     }
@@ -172,9 +164,7 @@ private:
           Oi->acquire_lock();
           if (not is_bit_set(Oi->grid_ifc.bits, bit_is_dead)) {
             if (Oi->on_collision(Oj, fc)) {
-              acquire_lock_on_o1store();
               objects.free(Oi);
-              release_lock_on_o1store();
               set_bit(Oi->grid_ifc.bits, bit_is_dead);
             }
           }
@@ -184,9 +174,7 @@ private:
           // can only be called from one thread
           if (not is_bit_set(Oi->grid_ifc.bits, bit_is_dead)) {
             if (Oi->on_collision(Oj, fc)) {
-              acquire_lock_on_o1store();
               objects.free(Oi);
-              release_lock_on_o1store();
               set_bit(Oi->grid_ifc.bits, bit_is_dead);
             }
           }
@@ -203,15 +191,6 @@ private:
         }
       }
     }
-  }
-
-  inline static void acquire_lock_on_o1store() {
-    while (spinlock_o1store.test_and_set(std::memory_order_acquire)) {
-    }
-  }
-
-  inline static void release_lock_on_o1store() {
-    spinlock_o1store.clear(std::memory_order_release);
   }
 
   inline static bool is_collision_checked(object *o1, object *o2,

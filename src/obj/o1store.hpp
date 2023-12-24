@@ -22,6 +22,7 @@ class o1store {
   Type **del_bgn_ = nullptr;
   Type **del_ptr_ = nullptr;
   Type **del_end_ = nullptr;
+  std::atomic_flag spinlock = ATOMIC_FLAG_INIT;
 
 public:
   o1store() {
@@ -65,7 +66,13 @@ public:
   // allocates an instance
   // returns nullptr if instance could not be allocated
   auto allocate_instance() -> Type * {
+    if (o1store_threaded) {
+      acquire_lock();
+    }
     if (free_ptr_ >= free_end_) {
+      if (o1store_threaded) {
+        release_lock();
+      }
       return nullptr;
     }
     Type *inst = *free_ptr_;
@@ -73,11 +80,17 @@ public:
     *alloc_ptr_ = inst;
     inst->alloc_ptr = alloc_ptr_;
     alloc_ptr_++;
+    if (o1store_threaded) {
+      release_lock();
+    }
     return inst;
   }
 
   // adds instance to list of instances to be freed with 'apply_free()'
   void free_instance(Type *inst) {
+    if (o1store_threaded) {
+      acquire_lock();
+    }
     if (o1store_check_free_limits) {
       if (del_ptr_ >= del_end_) {
         printf("!!! o1store %d: free overrun\n", StoreId);
@@ -94,6 +107,9 @@ public:
     }
     *del_ptr_ = inst;
     del_ptr_++;
+    if (o1store_threaded) {
+      release_lock();
+    }
   }
 
   // deallocates the instances that have been freed
@@ -144,4 +160,11 @@ public:
                ? (Size * InstanceSizeInBytes + 3 * Size * sizeof(Type *))
                : (Size * sizeof(Type) + 3 * Size * sizeof(Type *));
   }
+
+  inline void acquire_lock() {
+    while (spinlock.test_and_set(std::memory_order_acquire)) {
+    }
+  }
+
+  inline void release_lock() { spinlock.clear(std::memory_order_release); }
 };

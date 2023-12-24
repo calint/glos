@@ -9,6 +9,7 @@ static constexpr int grid_ncells_wide = 8;
 static constexpr int grid_ncells_high = 8;
 // running grid on available cores
 static constexpr bool grid_threaded = true;
+static constexpr bool o1store_threaded = true;
 
 // window dimensions
 static constexpr int window_width = 512;
