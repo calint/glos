@@ -93,7 +93,7 @@ public:
         glBindTexture(GL_TEXTURE_2D, 0);
       }
     }
-    metrics.glo_rendered++;
+    metrics.glos_rendered++;
   }
 
   static /*gives*/ glo *make_from_string(const char **ptr_p) {

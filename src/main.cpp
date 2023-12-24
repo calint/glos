@@ -32,6 +32,7 @@ public:
 #include "grid/grid.hpp"
 //
 #include "net/net.hpp"
+//
 #include "net/net_server.hpp"
 
 static struct color {
@@ -57,9 +58,9 @@ uniform mat4 umtx_wvp;// world-to-view-to-projection
 in vec3 apos;
 out float depth;
 void main(){
-  gl_Position=umtx_wvp*umtx_mw*vec4(apos,1);
-//  depth=gl_Position.z/2000.0;
-  depth=gl_Position.z/gl_Position.w;
+  gl_Position = umtx_wvp * umtx_mw * vec4(apos, 1);
+//  depth = 0.5 * (gl_Position.z / gl_Position.w) + 0.5;
+  depth = gl_Position.z / 250;
 }
     )";
 
@@ -68,7 +69,7 @@ void main(){
 in float depth;
 out vec4 rgba;
 void main(){
-  rgba=vec4(vec3(depth),1.0);
+  rgba = vec4(depth, 0.0, 0.0, 1.0);
 }
     )";
 
@@ -83,8 +84,8 @@ in vec3 apos;
 in vec4 argba;
 out vec4 vrgba;
 void main(){
-  gl_Position=umtx_wvp*umtx_mw*vec4(apos,1);
-  vrgba=argba;
+  gl_Position = umtx_wvp * umtx_mw * vec4(apos, 1);
+  vrgba = argba;
 }
     )";
 
@@ -93,7 +94,7 @@ void main(){
 in vec4 vrgba;
 out vec4 rgba;
 void main(){
-  rgba=vrgba;
+  rgba = vrgba;
 }
     )";
 
@@ -353,16 +354,15 @@ int main(int argc, char *argv[]) {
     if (print_grid) {
       grid.print();
     }
+    if (do_main_render) {
+      main_render(fc);
+    }
     grid.update(fc);
     if (resolve_collisions) {
       grid.resolve_collisions(fc);
     }
     // apply delete on objects that have died during 'update' and 'on_collision'
     objects.apply_free();
-
-    if (do_main_render) {
-      main_render(fc);
-    }
 
     // update signals state
     if (use_net) {

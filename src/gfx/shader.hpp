@@ -49,8 +49,6 @@ public:
 class program final {
 public:
   GLuint id = 0;
-  GLuint vertex_shader_id = 0;
-  GLuint fragment_shader_id = 0;
   std::vector<GLuint> enabled_attributes{};
 };
 
@@ -129,59 +127,49 @@ public:
 
   inline void free() {
     for (const program &p : programs) {
-      glDeleteShader(p.vertex_shader_id);
-      glDeleteShader(p.fragment_shader_id);
       glDeleteProgram(p.id);
     }
   }
 
   auto load_program_from_source(const char *vert_src, const char *frag_src,
                                 std::vector<GLuint> attrs) -> int {
-    gl_check_error("enter shader_program_load");
-
-    const GLuint id = glCreateProgram();
-    programs.push_back({id, compile(GL_VERTEX_SHADER, vert_src),
-                        compile(GL_FRAGMENT_SHADER, frag_src),
-                        std::move(attrs)});
-
-    glAttachShader(id, programs.back().vertex_shader_id);
-    glAttachShader(id, programs.back().fragment_shader_id);
-    glLinkProgram(id);
-
+    gl_check_error("enter load_program_from_source");
+    const GLuint program_id = glCreateProgram();
+    const GLuint vertex_shader_id = compile(GL_VERTEX_SHADER, vert_src);
+    const GLuint fragment_shader_id = compile(GL_FRAGMENT_SHADER, frag_src);
+    glAttachShader(program_id, vertex_shader_id);
+    glAttachShader(program_id, fragment_shader_id);
+    glLinkProgram(program_id);
     GLint ok = 0;
-    glGetProgramiv(id, GL_LINK_STATUS, &ok);
+    glGetProgramiv(program_id, GL_LINK_STATUS, &ok);
     if (!ok) {
-      GLint len = 0;
-      glGetProgramiv(id, GL_INFO_LOG_LENGTH, &len);
-
       GLchar msg[1024];
-      if (len > (signed)sizeof(msg)) {
-        len = sizeof(msg);
-      }
-      glGetProgramInfoLog(id, len, NULL, msg);
+      glGetProgramInfoLog(program_id, sizeof(msg), nullptr, msg);
       printf("program linking error: %s\n", msg);
-      exit(8);
+      exit(1);
     }
-    gl_check_error("exit shader_program_load");
+    glDeleteShader(vertex_shader_id);
+    glDeleteShader(fragment_shader_id);
+    gl_check_error("exit load_program_from_source");
+    programs.push_back({program_id, std::move(attrs)});
     return int(programs.size() - 1);
   }
 
 private:
   inline static auto compile(GLenum shader_type, const char *src) -> GLuint {
-    const GLuint id = glCreateShader(shader_type);
-    const size_t length = strlen(src);
-    glShaderSource(id, 1, (const GLchar **)&src, (GLint *)&length);
-    glCompileShader(id);
+    const GLuint shader_id = glCreateShader(shader_type);
+    glShaderSource(shader_id, 1, &src, nullptr);
+    glCompileShader(shader_id);
     GLint ok = 0;
-    glGetShaderiv(id, GL_COMPILE_STATUS, &ok);
+    glGetShaderiv(shader_id, GL_COMPILE_STATUS, &ok);
     if (!ok) {
       GLchar msg[1024];
-      glGetShaderInfoLog(id, sizeof(msg), NULL, msg);
-      printf("compiler error in %s shader:\n%s\n",
+      glGetShaderInfoLog(shader_id, sizeof(msg), NULL, msg);
+      printf("compile error in %s shader:\n%s\n",
              shader_name_for_type(shader_type), msg);
-      exit(7);
+      exit(1);
     }
-    return id;
+    return shader_id;
   }
 
   inline static auto gl_get_error_string(const GLenum gl_error) -> const
@@ -209,7 +197,7 @@ private:
       break;
 #endif
 #if defined __gl_h_
-    case GL_STACK_OVERFLOW:
+    case GL_STACK_OVERFLOW:op
       //		str = "GL_STACK_OVERFLOW";-Wunused-variable
       break;
     case GL_STACK_UNDERFLOW:
@@ -231,15 +219,15 @@ private:
     printf("%s=%s\n", name, str);
   }
 
-  inline static void gl_check_error(const char *op) {
-    int err = 0;
+  inline static void gl_check_error(const char *user_msg) {
+    bool is_error = false;
     for (GLenum error = glGetError(); error; error = glGetError()) {
-      printf("!!! %s   glerror %x   %s\n", op, error,
+      printf("!!! %s   glerror %x   %s\n", user_msg, error,
              gl_get_error_string(error));
-      err = 1;
+      is_error = true;
     }
-    if (err) {
-      exit(11);
+    if (is_error) {
+      exit(1);
     }
   }
 
