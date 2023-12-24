@@ -10,7 +10,7 @@ intention:
 * importing blender exported 'obj' files
 * explore opengl rendering
 * intuitive programming of application objects and logic
-* application code written in `app/` and included by `main.cpp`
+* application code written in `src/app/` and included by `src/main.cpp`
 * collision detection
   - bounding radius
   - bounding boxes (todo)
