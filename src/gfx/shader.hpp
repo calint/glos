@@ -30,7 +30,7 @@ class shaders final {
   out vec4 vrgba;
   out vec3 vnorm;
   out vec2 vtex;
-  void main(){
+  void main() {
 	  gl_Position = umtx_wvp * umtx_mw * vec4(apos,1);
 	  vrgba = argba;
 	  vnorm = normalize(transpose(inverse(mat3(umtx_mw))) * anorm);
@@ -46,7 +46,7 @@ class shaders final {
   in vec3 vnorm;
   in vec2 vtex;
   out vec4 rgba;
-  void main(){
+  void main() {
     float diff = max(dot(vnorm, ulht), 0);
     rgba = texture2D(utex, vtex) + diff * vrgba;
   }
