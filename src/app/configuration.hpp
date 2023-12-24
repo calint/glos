@@ -16,7 +16,7 @@ static constexpr int window_height = 512;
 static constexpr int net_players = 2;
 
 // number of preallocated objects
-static constexpr int objects_count = 8192;
+static constexpr int objects_count = 32 * 1024;
 
 // maximum size of any object instance in bytes
 static constexpr int objects_instance_size_B = 1024;
