@@ -1,108 +1,109 @@
- [ ] camera: update matrix only if necessary
- [x] c++ conversion
- [x]   replace dynp, dyni, dynf with vector
- [x]   replace str with string
- [ ] namespaces
- [x] hpp files included by main.cpp
- [x] convert structs to classes
- [x] use glm library for math
- [x] multithreaded grid update
-     => initial try with futures and async lambda degrades performance by 50%
-     => try with ~25K objects
-        std::for_each(std::execution::par_unseq,... gives 7 fps instead of 5 fps
- [x] deleted objects list created during 'update'
- [ ] shader: mtx_wvp * mtx_mw   is it better with mtx_mwvp?
- [x] use unique_ptr instead of new and delete
-     => o1store for objects
- [ ] grid: static vs moving objects vs 'bullets'
- ------------------------------
- [x] dynamic pointer vector
- [x] texturing
- [x] obj format
- [x]   colors
- [x]   texture coords
- [x]   materials
- [ ]     global
- [x]   textures
- [x]   render
- [x]   scene
- [x]     to objects
- [ ]     center/scale/position
- [x]   faces to ccw
- [ ] draw bounding volume
- [x]   sphere
- [ ]   box
- [ ]   planes
- [x] multiple materials in render
- [ ] collision detection 
- [ ]   bounding volume
- [ ]     sphere
- [ ]       vs sphere
- [ ]       vs plane
- [ ]       vs box
- [ ]     planes
- [ ]       vs box
- [ ]       vs planes
- [ ]     box
- [ ]       vs box
- [ ]     line
- [ ]       vs sphere
- [ ]       planes 
- [ ]     empty/solids
- [ ]       boolean ops
- [ ] collision physics/animatics
- [ ]   sphere vs sphere
- [ ]   box vs box
- [ ]   sphere vs plane
- [ ]   spherer vs box
- [x] grid
- [x]   render
- [ ]     cull
- [x]   update
- [ ]   multicore
- [x] keyshub
- [x]   client
- [x]   server
- [x]   multiplayer
- [x] camera
- [x]   projection
- [x]     orthonormal
- [x]     perspective
- [x]   look-at
- [ ]   click select
- [x]   follow
- [ ]     pd regulator
- [ ]     pid regulator
- [ ]   script
- [ ]     path
- [ ]     focus
- [ ] hud
- [ ]   console
- [ ] draw text
- [x] mouse
- [x]   fps controls
- [ ]   alternative controls
- [o] light sources
- [o]   ambient
- [ ] shadow map
- [ ]   render to texture
- [x]   use several programs
- [ ]   ortho
- [ ]     zoom zbuf render to encompass view frustum
- [ ]   persp
- [ ] hierarchial objects
- [ ]   cached matrices
- [ ]     model-to-local
- [ ]     local-to-world
- [ ]   collisions
- [ ]     root object bounding volume, recursive
- [ ]     objects individually of hierarchy
- [ ] draw grid
- [x]   sky dome
- [x]   ground plane
- [ ] 3D newton conservation with spheres
- [x]   1D cradle
- [ ]   2D
- [ ]   3D
- 
- 
+[ ] o1store: new objects list that is applied after update
+    causing allocated list to be stable during update and collision_resolution
+[ ] camera: update matrix only if necessary
+[x] c++ conversion
+[x]   replace dynp, dyni, dynf with vector
+[x]   replace str with string
+[ ] namespaces
+[x] hpp files included by main.cpp
+[x] convert structs to classes
+[x] use glm library for math
+[x] multithreaded grid update
+    => initial try with futures and async lambda degrades performance by 50%
+    => try with ~25K objects
+    std::for_each(std::execution::par_unseq,...) gives 7 fps instead of 5 fps
+    => with less objects (<1K) par_unseq degrades performance by 50%
+[x] deleted objects list created during 'update'
+[ ] shader: mtx_wvp * mtx_mw   is it better with mtx_mwvp?
+[x] use unique_ptr instead of new and delete
+    => o1store for objects
+[ ] grid: static vs moving objects vs 'bullets'
+------------------------------
+[x] dynamic pointer vector
+[x] texturing
+[x] obj format
+[x]   colors
+[x]   texture coords
+[x]   materials
+[ ]     global
+[x]   textures
+[x]   render
+[x]   scene
+[x]     to objects
+[ ]     center/scale/position
+[x]   faces to ccw
+[ ] draw bounding volume
+[x]   sphere
+[ ]   box
+[ ]   planes
+[x] multiple materials in render
+[ ] collision detection 
+[ ]   bounding volume
+[ ]     sphere
+[ ]       vs sphere
+[ ]       vs plane
+[ ]       vs box
+[ ]     planes
+[ ]       vs box
+[ ]       vs planes
+[ ]     box
+[ ]       vs box
+[ ]     line
+[ ]       vs sphere
+[ ]       planes 
+[ ]     empty/solids
+[ ]       boolean ops
+[ ] collision physics/animatics
+[ ]   sphere vs sphere
+[ ]   box vs box
+[ ]   sphere vs plane
+[ ]   spherer vs box
+[x] grid
+[x]   render
+[ ]     cull
+[x]   update
+[ ]   multicore
+[x] keyshub
+[x]   client
+[x]   server
+[x]   multiplayer
+[x] camera
+[x]   projection
+[x]     orthonormal
+[x]     perspective
+[x]   look-at
+[ ]   click select
+[x]   follow
+[ ]     pd regulator
+[ ]     pid regulator
+[ ]   script
+[ ]     path
+[ ]     focus
+[ ] hud
+[ ]   console
+[ ] draw text
+[x] mouse
+[x]   fps controls
+[ ]   alternative controls
+[o] light sources
+[o]   ambient
+[ ] shadow map
+[ ]   render to texture
+[x]   use several programs
+[ ]   ortho
+[ ]     zoom zbuf render to encompass view frustum
+[ ]   persp
+[ ] hierarchial objects
+[ ]   cached matrices
+[ ]     model-to-local
+[ ]     local-to-world
+[ ]   collisions
+[ ]     root object bounding volume, recursive
+[ ]     objects individually of hierarchy
+[ ] draw grid
+[x]   sky dome
+[x]   ground plane
+[ ] 3D newton conservation with spheres
+[x]   1D cradle
+[ ]   2D
+[ ]   3D
