@@ -148,8 +148,8 @@ private:
         }
         if (not is_bit_set(Oi->grid_ifc.bits, bit_is_dead)) {
           if (Oi->on_collision(Oj, fc)) {
-            objects.free(Oi);
             set_bit(Oi->grid_ifc.bits, bit_is_dead);
+            objects.free(Oi);
           }
         }
         if (grid_threaded) {
@@ -160,8 +160,8 @@ private:
         // can only be called from one thread, no racing condition
         if (not is_bit_set(Oi->grid_ifc.bits, bit_is_dead)) {
           if (Oi->on_collision(Oj, fc)) {
-            objects.free(Oi);
             set_bit(Oi->grid_ifc.bits, bit_is_dead);
+            objects.free(Oi);
           }
         }
       }
