@@ -11,6 +11,8 @@ intention:
 * explore opengl rendering
 * intuitive programming of application objects and logic
 * application code written in `src/app/` and included by `src/main.cpp`
+* multithreaded grid of cells that partition world space
+  - update and collision detection of objects
 * collision detection
   - bounding radius
   - bounding boxes (todo)
@@ -20,8 +22,6 @@ intention:
   - sphere vs box (todo)
   - box vs box (todo)
   - convex volume vs convex volume (todo)
-* multithreaded grid of cells that partition world space
-  - update and collision detection of objects (todo)
 
 ubuntu packages used:
 * sdl2 related packages
