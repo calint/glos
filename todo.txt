@@ -8,6 +8,7 @@
  [x] use glm library for math
  [o] multithreaded grid update
      => initial try with futures and async lambda degrades performance by 50%
+     => try with std::for_each(std::execution::par_unseq,... gives 7 fps instead of 5 fps
  [x] deleted objects list created during 'update'
  [ ] shader: mtx_wvp * mtx_mw   is it better with mtx_mwvp?
  [x] use unique_ptr instead of new and delete
