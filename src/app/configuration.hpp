@@ -11,7 +11,7 @@ static constexpr int grid_ncells_high = 8;
 // multithreaded grid
 // note. in most cases multithreaded mode is a degradation of performance by up
 // to 50% (todo. find out why?)
-static constexpr bool grid_threaded = false;
+static constexpr bool grid_threaded = true;
 static constexpr bool o1store_threaded = grid_threaded;
 
 // window dimensions

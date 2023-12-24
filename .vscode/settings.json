@@ -74,6 +74,9 @@
         "streambuf": "cpp",
         "thread": "cpp",
         "cinttypes": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "iomanip": "cpp",
+        "shared_mutex": "cpp",
+        "cfenv": "cpp"
     }
 }

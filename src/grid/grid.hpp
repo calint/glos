@@ -8,7 +8,7 @@
 #include <execution>
 
 class grid final {
-  static constexpr unsigned ncells = grid_ncells_wide * grid_ncells_high;
+  static constexpr int ncells = grid_ncells_wide * grid_ncells_high;
 
 public:
   cell cells[grid_ncells_high][grid_ncells_wide];
@@ -17,6 +17,7 @@ public:
 
   inline void free() {}
 
+  // called from main
   inline void update(const frame_ctx &fc) {
     if (grid_threaded) {
       std::for_each(std::execution::par_unseq, std::begin(cells),
@@ -25,17 +26,17 @@ public:
                         c.update(fc);
                       }
                     });
-      return;
-    }
-
-    cell *p = cells[0];
-    unsigned i = ncells;
-    while (i--) {
-      p->update(fc);
-      p++;
+    } else {
+      cell *p = cells[0];
+      unsigned i = ncells;
+      while (i--) {
+        p->update(fc);
+        p++;
+      }
     }
   }
 
+  // called from main
   inline void resolve_collisions(const frame_ctx &fc) {
     if (grid_threaded) {
       std::for_each(std::execution::par_unseq, std::begin(cells),
@@ -44,17 +45,17 @@ public:
                         c.resolve_collisions(fc);
                       }
                     });
-      return;
-    }
-
-    cell *p = cells[0];
-    unsigned i = ncells;
-    while (i--) {
-      p->resolve_collisions(fc);
-      p++;
+    } else {
+      cell *p = cells[0];
+      unsigned i = ncells;
+      while (i--) {
+        p->resolve_collisions(fc);
+        p++;
+      }
     }
   }
 
+  // called from main
   inline void render(const frame_ctx &fc) {
     cell *p = cells[0];
     unsigned i = ncells;
