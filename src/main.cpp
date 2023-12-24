@@ -1,7 +1,10 @@
 // reviewed: 2023-12-22
 
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/euler_angles.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 // include order of subsystems relevant
 #include "app/defs.hpp"
@@ -59,8 +62,7 @@ in vec3 apos;
 out float depth;
 void main(){
   gl_Position = umtx_wvp * umtx_mw * vec4(apos, 1);
-  depth = 0.5 * (gl_Position.z / gl_Position.w) + 0.5;
-//  depth = gl_Position.z / 500;
+  depth = gl_Position.z / 300; // magic number is camera far plane
 }
     )";
 
@@ -69,7 +71,7 @@ void main(){
 in float depth;
 out vec4 rgba;
 void main(){
-  rgba = vec4(depth, 0.0, 0.0, 1.0);
+  rgba = vec4(vec3(depth), 1.0);
 }
     )";
 

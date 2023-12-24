@@ -1,10 +1,6 @@
 #pragma once
 // reviewed: 2023-12-22
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/euler_angles.hpp>
-
 enum camera_type { LOOK_AT, ANGLE, ORTHO };
 
 class camera final {
@@ -38,6 +34,7 @@ public:
       glm::mat4 Mv = glm::lookAt(position, look_at, {0, 1, 0});
       glm::mat4 Mp = glm::perspective(glm::radians(fov), aspect_ratio,
                                       near_plane, far_plane);
+      std::cout << "Mp = " << glm::to_string(Mp) << std::endl;
       Mvp = Mp * Mv;
       break;
     }
