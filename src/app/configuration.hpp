@@ -8,7 +8,9 @@ static constexpr int grid_cell_size = 20;
 static constexpr int grid_ncells_wide = 8;
 static constexpr int grid_ncells_high = 8;
 
-// multithreaded grid (note. in most cases true is a degradation of performance)
+// multithreaded grid
+// note. in most cases multithreaded mode is a degradation of performance by up
+// to 50% (todo. find out why?)
 static constexpr bool grid_threaded = false;
 static constexpr bool o1store_threaded = grid_threaded;
 

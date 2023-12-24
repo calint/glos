@@ -9,7 +9,7 @@ public:
     volume.radius = node.glo->bounding_radius * 2; // r * scale
     grid_ifc.collision_bits = cb_hero;
     grid_ifc.collision_mask = cb_hero;
-    health = unsigned(rand()) % 10001;
+    health = unsigned(rand()) % 50001;
   }
 
   // inline ~santa() { printf("%s destructor\n", name.c_str()); }
