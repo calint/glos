@@ -7,7 +7,7 @@
 #include <glm/gtx/string_cast.hpp>
 
 // include order of subsystems relevant
-#include "app/defs.hpp"
+#include "app/configuration.hpp"
 //
 #include "metrics.hpp"
 //

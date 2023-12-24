@@ -1,5 +1,5 @@
 #pragma once
-#include "santa.hpp"
+#include "objects/santa.hpp"
 
 class application final {
 public:
