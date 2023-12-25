@@ -92,7 +92,20 @@ public:
 
   void free() {}
 
-  void at_frame_end() {}
+  void at_frame_end() {
+    const int n = objects_count - objects.allocated_list_len();
+    for (int i = 0; i < n; i++) {
+      float x = float(rand()) / float(RAND_MAX) * 160 - 80;
+      float y = 10;
+      float z = float(rand()) / float(RAND_MAX) * 160 - 80;
+      object *o = new (objects.alloc()) santa{};
+      o->name = "santa1";
+      o->physics_nxt.position = {x, y, z};
+      o->physics_nxt.velocity = {0, -2, 0};
+      o->physics = o->physics_nxt;
+      // std::cout << glm::to_string(o->physics_nxt.position) << std::endl;
+    }
+  }
 };
 
 static application application{};

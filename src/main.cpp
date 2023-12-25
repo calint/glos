@@ -212,6 +212,9 @@ int main(int argc, char *argv[]) {
   // number (rollover possible)
   frame_ctx fc{};
 
+  // 
+  objects.apply_allocated_instances();
+
   // enter game loop
   for (bool running = true; running;) {
     metrics.at_frame_begin();
@@ -350,26 +353,40 @@ int main(int argc, char *argv[]) {
     fc.dt = use_net ? net.dt : metrics.fps.dt;
     fc.tick = frame_num;
 
-    // update grid
+    // update phase
     grid.clear();
+    
     // add all allocated objects to the grid
-    object **const end = objects.store.allocated_list_end();
-    for (object **it = objects.store.allocated_list(); it < end; it++) {
+    object **const end = objects.allocated_list_end();
+    for (object **it = objects.allocated_list(); it < end; it++) {
       object *obj = *it;
       grid.add(obj);
     }
+    
     if (print_grid) {
       grid.print();
     }
+    
     if (do_main_render) {
       main_render(fc);
     }
+    
     grid.update(fc);
+
     if (resolve_collisions) {
       grid.resolve_collisions(fc);
     }
-    // apply delete on objects that have died during 'update' and 'on_collision'
-    objects.apply_free();
+
+    // apply changes done at 'update' and 'resolve_collisions'
+    objects.apply_freed_instances();
+    objects.apply_allocated_instances();
+    
+    // callback
+    application.at_frame_end();
+    
+    // apply changes done by application
+    objects.apply_freed_instances();
+    objects.apply_allocated_instances();
 
     // update signals state
     if (use_net) {
@@ -379,11 +396,8 @@ int main(int argc, char *argv[]) {
       net.states[net.active_state_ix] = net.next_state;
     }
 
-    // callback
-    application.at_frame_end();
-
     // metrics
-    metrics.objects_allocated = objects.allocated_objects_count();
+    metrics.objects_allocated = objects.allocated_list_len();
     metrics.at_frame_end(stderr);
   }
   //---------------------------------------------------------------------free
@@ -400,6 +414,5 @@ int main(int argc, char *argv[]) {
   }
   metrics.print(stderr);
   metrics.free();
-  puts(" * clean exit");
   return 0;
 }

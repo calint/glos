@@ -90,30 +90,44 @@ public:
 };
 
 class objects final {
-public:
-  o1store<object, objects_count, 0, objects_instance_size_B> store{};
+  o1store<object, objects_count, 0, objects_instance_size_B> store_{};
+  object **allocated_list_end_ = nullptr;
+  int allocated_list_len_ = 0;
 
+public:
   inline void init() {}
 
   inline void free() {
-    object **end = store.allocated_list_end();
+    object **const end = store_.allocated_list_end();
     // note. important to get the 'end' outside the loop because objects may
     //       allocate new objects in the loop and that would change the 'end'
-    for (object **it = store.allocated_list(); it < end; it++) {
+    for (object **it = store_.allocated_list(); it < end; it++) {
       object *obj = *it;
       obj->~object(); // note. the freeing of the memory is done by 'o1store'
     }
+    //? what if destructors created new objects
   }
 
-  inline auto alloc() -> object * { return store.allocate_instance(); }
+  inline auto alloc() -> object * { return store_.allocate_instance(); }
 
-  inline void free(object *o) { store.free_instance(o); }
+  inline void free(object *o) { store_.free_instance(o); }
 
-  inline void apply_free() { store.apply_free(); }
+  inline auto allocated_list_len() const -> int { return allocated_list_len_; }
 
-  inline auto allocated_objects_count() -> int {
-    return store.allocated_list_len();
+  inline auto allocated_list_end() const { return allocated_list_end_; }
+
+  inline auto allocated_list() const -> object ** {
+    return store_.allocated_list();
   }
+
+  inline void apply_allocated_instances() {
+    // retrieve the end of list because during 'update' new objects might be
+    // created which would change the end of list pointer
+    allocated_list_len_ = store_.allocated_list_len();
+    allocated_list_end_ = store_.allocated_list_end();
+  }
+
+  inline void apply_freed_instances() { store_.apply_free(); }
 };
 
 static objects objects{};

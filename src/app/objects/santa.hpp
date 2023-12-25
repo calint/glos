@@ -22,6 +22,10 @@ public:
     if (object::update(fc)) {
       return true;
     }
+    if (physics.position.y < volume.radius) {
+      physics_nxt.position.y = volume.radius;
+      physics_nxt.velocity = {0, 0, 0};
+    }
     if (!state) {
       return false;
     }
