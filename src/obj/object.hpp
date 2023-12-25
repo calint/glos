@@ -24,6 +24,7 @@ public:
   net_state *state = nullptr; // pointer to signals used by this object
   object **alloc_ptr;         // initiated at allocate by 'o1store'
   std::atomic_flag spinlock = ATOMIC_FLAG_INIT;
+  // std::atomic<int> spinlock{0};
 
 private:
   glm::vec3 Mmw_pos{}; // position of current Mmw matrix
@@ -87,6 +88,14 @@ public:
     }
   }
   inline void release_lock() { spinlock.clear(std::memory_order_release); }
+
+  // inline void acquire_lock() {
+  //   while (spinlock.exchange(1, std::memory_order_acquire) == 1) {
+  //   }
+  // }
+
+  // inline void release_lock() { spinlock.store(0, std::memory_order_release);
+  // }
 };
 
 class objects final {

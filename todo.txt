@@ -18,6 +18,7 @@
 [x] use unique_ptr instead of new and delete
     => o1store for objects
 [ ] grid: static vs moving objects vs 'bullets'
+[ ] consider: https://github.com/alugowski/task-thread-pool for simple multithreading
 ------------------------------
 [x] dynamic pointer vector
 [x] texturing

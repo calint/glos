@@ -2,11 +2,12 @@
 // reviewed: 2023-12-22
 
 #include "cell.hpp"
-
+// #include "task_thread_pool.hpp"
 #include <execution>
 
 class grid final {
   static constexpr int ncells = grid_ncells_wide * grid_ncells_high;
+  // task_thread_pool::task_thread_pool pool{};
 
 public:
   cell cells[grid_ncells_high][grid_ncells_wide];
@@ -24,6 +25,16 @@ public:
                         c.update(fc);
                       }
                     });
+
+      // for (int i = 0; i < grid_ncells_high; i++) {
+      //   pool.submit_detach([&fc, &row = cells[i]]() {
+      //     for (int j = 0; j < grid_ncells_wide; j++) {
+      //       row[j].update(fc);
+      //     }
+      //   });
+      // }
+      // pool.wait_for_tasks();
+
     } else {
       cell *p = cells[0];
       unsigned i = ncells;
@@ -43,6 +54,16 @@ public:
                         c.resolve_collisions(fc);
                       }
                     });
+
+      // for (int i = 0; i < grid_ncells_high; i++) {
+      //   pool.submit_detach([&fc, &row = cells[i]]() {
+      //     for (int j = 0; j < grid_ncells_wide; j++) {
+      //       row[j].resolve_collisions(fc);
+      //     }
+      //   });
+      // }
+      // pool.wait_for_tasks();
+
     } else {
       cell *p = cells[0];
       unsigned i = ncells;
