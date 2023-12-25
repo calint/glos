@@ -10,9 +10,9 @@
 
 class range final {
 public:
-  unsigned begin = 0;
-  unsigned count = 0;
-  unsigned material_ix = 0;
+  int begin = 0;
+  int count = 0;
+  int material_ix = 0;
 };
 
 class glo final {
@@ -38,7 +38,7 @@ public:
                  vertex_buffer.data(), GL_STATIC_DRAW);
     metrics.buffered_vertex_data += vertex_buffer.size() * sizeof(float);
     for (const range &mtlrng : ranges) {
-      material &mtl = materials.store.at(mtlrng.material_ix);
+      material &mtl = materials.store.at(unsigned(mtlrng.material_ix));
       if (not mtl.map_Kd.empty()) {
         // load texture
         glGenTextures(1, &mtl.texture_id);
@@ -76,7 +76,7 @@ public:
     glVertexAttribPointer(shaders::atex, 2, GL_FLOAT, GL_FALSE, sizeof(vertex),
                           (GLvoid *)((3 + 4 + 3) * sizeof(float)));
     for (const range &mr : ranges) {
-      const material &m = materials.store.at(mr.material_ix);
+      const material &m = materials.store.at(unsigned(mr.material_ix));
       if (m.texture_id) {
         glUniform1i(shaders::utex, 0);
         glActiveTexture(GL_TEXTURE0);

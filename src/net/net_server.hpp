@@ -5,7 +5,7 @@
 
 class net_server final {
 public:
-  int port = 8085;
+  uint16_t port = 8085;
   net_state state[net_players + 1];
   // note. state[0] is used by server to broadcast to all clients
   //       e.g. delta time for frame (dt)
@@ -74,7 +74,12 @@ public:
 
     // send the assigned player index to clients
     for (uint32_t i = 1; i < net_players + 1; i++) {
-      write(clients_fd[i], &i, sizeof(uint32_t));
+      if (write(clients_fd[i], &i, sizeof(uint32_t)) == -1) {
+        fprintf(stderr, "\n%s:%u: could not start player %u: ", __FILE__,
+                __LINE__, i);
+        perror("");
+        exit(-1);
+      }
     }
   }
 
@@ -107,7 +112,12 @@ public:
       // using state[0] to broadcast data from server to all players, such as dt
       state[0].lookangle_x = dt;
       for (unsigned i = 1; i < net_players + 1; i++) {
-        write(clients_fd[i], state, sizeof(state));
+        ssize_t n = write(clients_fd[i], state, sizeof(state));
+        if (n == -1 or n != sizeof(state)) {
+          fprintf(stderr, "\n%s:%u: player %u: send failed\n", __FILE__,
+                  __LINE__, i);
+          exit(-1);
+        }
       }
     }
   }
