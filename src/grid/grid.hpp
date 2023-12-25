@@ -80,8 +80,8 @@ public:
       return;
     }
 
-    const float gw = grid_cell_size * grid_ncells_wide;
-    const float gh = grid_cell_size * grid_ncells_high;
+    constexpr float gw = grid_cell_size * grid_ncells_wide;
+    constexpr float gh = grid_cell_size * grid_ncells_high;
 
     const float r = o->volume.radius;
 
@@ -91,9 +91,9 @@ public:
     const float zr = gh / 2 + o->physics.position.z + r;
 
     int xil = (int)(xl / grid_cell_size);
-    int xir = (int)((xr) / grid_cell_size);
+    int xir = (int)(xr / grid_cell_size);
     int zil = (int)(zl / grid_cell_size);
-    int zir = (int)((zr) / grid_cell_size);
+    int zir = (int)(zr / grid_cell_size);
 
     xil = clamp(xil, 0, grid_ncells_wide);
     xir = clamp(xir, 0, grid_ncells_wide);
