@@ -49,7 +49,7 @@ public:
       }
       o->grid_ifc.rendered_at_tick = fc.tick;
       o->render(fc);
-      metrics.objects_rendered++;
+      metrics.rendered_objects++;
     }
   }
 

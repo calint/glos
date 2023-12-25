@@ -397,7 +397,7 @@ int main(int argc, char *argv[]) {
     }
 
     // metrics
-    metrics.objects_allocated = objects.allocated_list_len();
+    metrics.allocated_objects = objects.allocated_list_len();
     metrics.at_frame_end(stderr);
   }
   //---------------------------------------------------------------------free

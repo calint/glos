@@ -26,7 +26,7 @@ public:
   inline void free() {
     glDeleteBuffers(1, &vertex_buffer_id);
     metrics.buffered_vertex_data -= vertex_buffer.size() * sizeof(float);
-    metrics.glos_allocated--;
+    metrics.allocated_glos--;
   }
 
   inline void upload_to_opengl() {
@@ -88,12 +88,12 @@ public:
         glDisableVertexAttribArray(shaders::atex);
       }
       glDrawArrays(GL_TRIANGLES, (signed)mr.begin, (signed)mr.count);
-      metrics.triangles_rendered += mr.count / 3;
+      metrics.rendered_triangles += mr.count / 3;
       if (m.texture_id) {
         glBindTexture(GL_TEXTURE_2D, 0);
       }
     }
-    metrics.glos_rendered++;
+    metrics.rendered_glos++;
   }
 
   static /*gives*/ glo *make_from_string(const char **ptr_p) {
@@ -256,7 +256,7 @@ public:
 
     glo *g = new glo{std::move(object_name), std::move(vertex_buffer),
                      std::move(material_ranges), bounding_radius};
-    metrics.glos_allocated++;
+    metrics.allocated_glos++;
     return g;
   }
 };
