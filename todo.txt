@@ -1,4 +1,5 @@
-[ ] grid_ifc: hash_set instead of vector for checked_collisions
+[-] grid_ifc: hash_set instead of vector for checked_collisions
+    => degrades performance from 27 fps to 18 fps in test case
 [-] o1store: new objects list that is applied after update
     causing allocated list to be stable during update and collision_resolution
     => objects made o1store private and handles list end limit

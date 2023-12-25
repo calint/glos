@@ -10,13 +10,12 @@ public:
 
   std::vector<object *> ols{};
 
-  // called from grid
+  // called from grid (possibly by multiple threads)
   inline void update(const frame_ctx &fc) {
     for (object *o : ols) {
       if (grid_threaded and is_bit_set(o->grid_ifc.bits, bit_overlaps)) {
         // object is in several cells and may be called from multiple threads
 
-        //? use atomic int
         o->grid_ifc.acquire_lock();
         if (o->grid_ifc.updated_at_tick == fc.tick) {
           o->grid_ifc.release_lock();
@@ -32,16 +31,17 @@ public:
         o->grid_ifc.updated_at_tick = fc.tick;
       }
 
-      o->grid_ifc.checked_collisions.clear();
       if (o->update(fc)) {
         set_bit(o->grid_ifc.bits, bit_is_dead);
         objects.free(o);
+        continue;
       }
-      // metrics.objects_updated++;
+
+      o->grid_ifc.checked_collisions.clear();
     }
   }
 
-  // called from grid
+  // called from grid (from only one thread)
   inline void render(const frame_ctx &fc) {
     for (object *o : ols) {
       if (o->grid_ifc.rendered_at_tick == fc.tick) {
@@ -53,10 +53,10 @@ public:
     }
   }
 
-  // called from grid
+  // called from grid (from only one thread)
   inline void clear() { ols.clear(); }
 
-  // called from grid
+  // called from grid (from only one thread)
   inline void add(object *o) { ols.push_back(o); }
 
   inline void print() {
@@ -70,7 +70,7 @@ public:
     printf("\n");
   }
 
-  // called from grid
+  // called from grid (possibly by multiple threads)
   inline void resolve_collisions(const frame_ctx &fc) {
     const size_t len = ols.size();
     if (len == 0) {
@@ -78,7 +78,6 @@ public:
     }
     for (unsigned i = 0; i < len - 1; i++) {
       for (unsigned j = i + 1; j < len; j++) {
-        // metrics.collision_detections_possible++;
 
         object *Oi = ols[i];
         object *Oj = ols[j];
@@ -108,7 +107,7 @@ public:
             Oj->grid_ifc.acquire_lock();
           }
           const bool collision_detection_is_checked =
-              is_collision_checked(Oi, Oj, fc);
+              is_collision_checked(Oi, Oj);
           if (not collision_detection_is_checked) {
             // add Oj to Oi checked collisions list
             Oi->grid_ifc.checked_collisions.push_back(Oj);
@@ -123,13 +122,9 @@ public:
           }
         }
 
-        // metrics.collision_detections_considered++;
-
         if (not detect_and_resolve_collision_for_spheres(Oi, Oj, fc)) {
           continue;
         }
-
-        // metrics.collision_detections++;
 
         handle_collision(Oi, Oj, fc);
         handle_collision(Oj, Oi, fc);
@@ -159,17 +154,15 @@ private:
     }
   }
 
-  inline static bool is_collision_checked(object *o1, object *o2,
-                                          const frame_ctx &fc) {
-    // metrics.collision_grid_overlap_check++;
+  inline static bool is_collision_checked(object *o1, object *o2) {
     return is_in_checked_collision_list(o1, o2) or
            is_in_checked_collision_list(o2, o1);
   }
 
   inline static bool is_in_checked_collision_list(object *src, object *trg) {
-    auto it = std::find(src->grid_ifc.checked_collisions.begin(),
-                        src->grid_ifc.checked_collisions.end(), trg);
-    return it != src->grid_ifc.checked_collisions.end();
+    return std::find(src->grid_ifc.checked_collisions.begin(),
+                     src->grid_ifc.checked_collisions.end(),
+                     trg) != src->grid_ifc.checked_collisions.end();
   }
 
   //? works only in 1D with equal masses
