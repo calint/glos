@@ -1,5 +1,7 @@
-[ ] o1store: new objects list that is applied after update
+[ ] grid_ifc: hash_set instead of vector for checked_collisions
+[-] o1store: new objects list that is applied after update
     causing allocated list to be stable during update and collision_resolution
+    => objects made o1store private and handles list end limit
 [ ] camera: update matrix only if necessary
 [x] c++ conversion
 [x]   replace dynp, dyni, dynf with vector
