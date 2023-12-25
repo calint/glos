@@ -13,6 +13,10 @@
     => try with ~25K objects
     std::for_each(std::execution::par_unseq,...) gives 7 fps instead of 5 fps
     => with less objects (<1K) par_unseq degrades performance by 50%
+    => incrementing metrics attributes have a big impact on performance when multithreading
+       turning those metrics off doubles the performance. why so expensive?
+       with metrics turned of in cell::resolve_collisions multithreaded
+       performance gain is 3x compared to single threaded
 [x] deleted objects list created during 'update'
 [ ] shader: mtx_wvp * mtx_mw   is it better with mtx_mwvp?
 [x] use unique_ptr instead of new and delete

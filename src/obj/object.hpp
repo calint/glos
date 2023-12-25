@@ -10,6 +10,7 @@
 #include <glm/gtx/euler_angles.hpp>
 #include <glm/gtx/string_cast.hpp>
 #include <iostream>
+#include <mutex>
 #include <string>
 
 class object {
@@ -23,8 +24,9 @@ public:
   grid_ifc grid_ifc{};        // interface to 'grid'
   net_state *state = nullptr; // pointer to signals used by this object
   object **alloc_ptr;         // initiated at allocate by 'o1store'
-  std::atomic_flag spinlock = ATOMIC_FLAG_INIT;
+  // std::atomic_flag spinlock = ATOMIC_FLAG_INIT;
   // std::atomic<int> spinlock{0};
+  std::mutex mutex{};
 
 private:
   glm::vec3 Mmw_pos{}; // position of current Mmw matrix
@@ -83,11 +85,11 @@ public:
     return node.Mmw;
   }
 
-  inline void acquire_lock() {
-    while (spinlock.test_and_set(std::memory_order_acquire)) {
-    }
-  }
-  inline void release_lock() { spinlock.clear(std::memory_order_release); }
+  // inline void acquire_lock() {
+  //   while (spinlock.test_and_set(std::memory_order_acquire)) {
+  //   }
+  // }
+  // inline void release_lock() { spinlock.clear(std::memory_order_release); }
 
   // inline void acquire_lock() {
   //   while (spinlock.exchange(1, std::memory_order_acquire) == 1) {
@@ -96,6 +98,9 @@ public:
 
   // inline void release_lock() { spinlock.store(0, std::memory_order_release);
   // }
+
+  inline void acquire_lock() { mutex.lock(); }
+  inline void release_lock() { mutex.unlock(); }
 };
 
 class objects final {

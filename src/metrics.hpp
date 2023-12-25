@@ -45,8 +45,8 @@ public:
     fprintf(f,
             " %6s  %7s  %4s  %7s  %6s  %5s  %5s  %5s  %5s  %6s  %6s  %6s  %8s  "
             "%5s  %8s  %8s\n",
-            "ms", "dt", "fps", "netlag", "nobj", "colpos", "colchk", "coldet",
-            "colovp", "upd", "rend", "rendg", "gtri", "nglo", "vtxbufs",
+            "ms", "dt", "fps", "netlag", "nobj", "colp", "colc", "cold",
+            "colo", "upd", "rend", "rendg", "gtri", "nglo", "vtxbufs",
             "texbufs");
   }
 

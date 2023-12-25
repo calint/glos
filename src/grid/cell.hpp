@@ -37,7 +37,7 @@ public:
         set_bit(o->grid_ifc.bits, bit_is_dead);
         objects.free(o);
       }
-      metrics.objects_updated++;
+      // metrics.objects_updated++;
     }
   }
 
@@ -78,10 +78,10 @@ public:
     }
     for (unsigned i = 0; i < len - 1; i++) {
       for (unsigned j = i + 1; j < len; j++) {
-        metrics.collision_detections_possible++;
+        // metrics.collision_detections_possible++;
 
-        object *Oi = ols.at(i);
-        object *Oj = ols.at(j);
+        object *Oi = ols[i];
+        object *Oj = ols[j];
 
         // check if Oi and Oj have interest in collision with each other
         if ((Oi->grid_ifc.collision_mask & Oj->grid_ifc.collision_bits) == 0 and
@@ -123,14 +123,14 @@ public:
           }
         }
 
-        metrics.collision_detections_considered++;
+        // metrics.collision_detections_considered++;
 
         if (not detect_and_resolve_collision_for_spheres(Oi, Oj, fc)) {
           continue;
         }
 
-        metrics.collision_detections++;
-        
+        // metrics.collision_detections++;
+
         handle_collision(Oi, Oj, fc);
         handle_collision(Oj, Oi, fc);
       }
@@ -161,7 +161,7 @@ private:
 
   inline static bool is_collision_checked(object *o1, object *o2,
                                           const frame_ctx &fc) {
-    metrics.collision_grid_overlap_check++;
+    // metrics.collision_grid_overlap_check++;
     return is_in_checked_collision_list(o1, o2) or
            is_in_checked_collision_list(o2, o1);
   }
