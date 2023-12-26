@@ -52,8 +52,8 @@ public:
         object *Oi = ols[i];
         object *Oj = ols[j];
 
-        // thread safe because 'collision_mask' and 'collision_bits' does not
-        // change during 'resolve_collisions' phase
+        // thread safe because 'collision_mask' and 'collision_bits' do not
+        // change during 'resolve_collisions'
 
         // check if Oi and Oj have interest in collision with each other
         if ((Oi->grid_ifc.collision_mask & Oj->grid_ifc.collision_bits) == 0 and
@@ -63,7 +63,7 @@ public:
 
         // check if both objects are dead
         // note. ? maybe racing condition but is re-checked at
-        // 'handle_collision'
+        // 'handle_collision' which is thread safe
         if (Oi->grid_ifc.is_dead() and Oj->grid_ifc.is_dead()) {
           continue;
         }
@@ -73,7 +73,7 @@ public:
         // do the checking than just trying and only handling a collision
         // between 2 objects once
 
-        if (not detect_and_resolve_collision_for_spheres(Oi, Oj, fc)) {
+        if (not detect_collision_for_spheres(Oi, Oj, fc)) {
           continue;
         }
 
@@ -138,6 +138,7 @@ private:
     }
 
     // only one thread at a time can be here
+
     if (not Oi->grid_ifc.is_dead() and Oi->on_collision(Oj, fc)) {
       Oi->grid_ifc.set_is_dead();
       objects.free(Oi);
@@ -149,97 +150,14 @@ private:
   }
 
   //? works only in 1D with equal masses
-  inline static bool
-  detect_and_resolve_collision_for_spheres(object *o1, object *o2,
-                                           const frame_ctx &fc) {
+  inline static bool detect_collision_for_spheres(object *o1, object *o2,
+                                                  const frame_ctx &fc) {
 
-    glm::vec3 v = o2->physics.position - o1->physics.position;
+    const glm::vec3 v = o2->physics.position - o1->physics.position;
     const float d = o1->volume.radius + o2->volume.radius;
     const float dsq = d * d;
     const float vsq = glm::dot(v, v);
     const float diff = vsq - dsq;
-    if (diff >= 0) {
-      return false;
-    }
-    return true;
-
-    // partial dt to collision
-    const float x1 = o1->physics.position.x;
-    const float u1 = o1->physics.velocity.x;
-    const float r1 = o1->volume.radius;
-    const float x2 = o2->physics.position.x;
-    const float u2 = o2->physics.velocity.x;
-    const float r2 = o1->volume.radius;
-    // if x1<x2
-    //   x1+u1*t+r1=x2+u2*t-r2
-    // else if x1>x2
-    //   x1+u1*t-r1=x2+u2*t+r2
-    // else
-    //   ?
-    // for x1<x2
-    //   x1+u1*t+r1=x2+u2*t-r2
-    //   x1-x2+r1+r2=u2*t-u1*t
-    //   (x1-x2+r1+r2)/(u2-u1)=t
-    // for x1>x2
-    //   x1+u1*t-r1=x2+u2*t+r2
-    //   x1-x2-r1-r2=u2*t-u1*t
-    //   (x1-x2-r1-r2)/(u2-u1)=t
-    const float div = u2 - u1;
-    if (div == 0) {
-      //? number precision
-      // printf(" *** du=0   diff=%f    dx=%f    %s x=%f    vs   %s x=%f\n",
-      // diff,
-      //        o2->physics.position.x - o1->physics.position.x,
-      //        o1->name.c_str(), o1->physics.position.x, o2->name.c_str(),
-      //        o2->physics.position.x);
-      return 0;
-    }
-    float t;
-    if (x1 < x2) {
-      t = (x1 - x2 + r1 + r2) / div;
-    } else if (x1 > x2) {
-      t = (x1 - x2 - r1 - r2) / div;
-    } else {
-      fprintf(stderr, "\n%s:%u: x1==x2?\n", __FILE__, __LINE__);
-      fprintf(stderr, "\n\n");
-      exit(-1);
-    }
-
-    // move objects to moment off collision
-    o1->physics_nxt.position += o1->physics_nxt.velocity * t;
-    o2->physics_nxt.position += o2->physics_nxt.velocity * t;
-
-    //	{
-    //		// validate
-    //		const float dist=o2->p_nxt.p.x-o1->p_nxt.p.x;
-    //		vec4 vv;vec3_minus(&vv,&o2->p_nxt.p,&o1->p_nxt.p);
-    //		const float d=o1->b.r+o2->b.r;
-    //		const float dsq=d*d;
-    //		const float epsilon=0;//.001f;
-    //		const float vsq=vec3_dot(&vv,&vv)+epsilon;
-    //		if(vsq<dsq){
-    //			fprintf(stderr,"\n%s:%u: collision not fully
-    // resolved\n",__FILE__,__LINE__); stacktrace_print(stderr);
-    //			fprintf(stderr,"\n\n");
-    //			exit(-1);
-    //		}
-    //	}
-
-    // swap velocities
-    if (o1->grid_ifc.collision_mask == 0) { // o1 is a bouncer
-      o2->physics_nxt.velocity = -o2->physics_nxt.velocity;
-    } else if (o2->grid_ifc.collision_mask == 0) { // o2 is a bouncer
-      o1->physics_nxt.velocity = -o1->physics_nxt.velocity;
-    } else { // swap velocities
-      glm::vec3 swap_from_o1 = o1->physics_nxt.velocity;
-      glm::vec3 swap_from_o2 = o2->physics_nxt.velocity;
-      o1->physics_nxt.velocity = swap_from_o2;
-      o2->physics_nxt.velocity = swap_from_o1;
-    }
-    // rest of t
-    o1->physics_nxt.position += o1->physics_nxt.velocity * -t;
-    o2->physics_nxt.position += o2->physics_nxt.velocity * -t;
-
-    return true;
+    return diff < 0;
   }
 };
