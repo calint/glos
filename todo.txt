@@ -19,7 +19,7 @@
     => incrementing metrics attributes have a big impact on performance when multithreading
        turning those metrics off doubles the performance. why so expensive?
        with metrics turned of in cell::resolve_collisions multithreaded
-       performance gain is 3x compared to single threaded
+       performance gain is 3x compared to single threaded (with no rendering)
 [x] deleted objects list created during 'update'
 [ ] shader: mtx_wvp * mtx_mw   is it better with mtx_mwvp?
 [x] use unique_ptr instead of new and delete

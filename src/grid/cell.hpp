@@ -31,13 +31,92 @@ public:
         o->grid_ifc.updated_at_tick = fc.tick;
       }
 
+      // only one thread at a time during a frame gets to this code
       if (o->update(fc)) {
         set_bit(o->grid_ifc.bits, bit_is_dead);
         objects.free(o);
         continue;
       }
 
+      // clear the list prior to 'resolve_collisions'
       o->grid_ifc.checked_collisions.clear();
+    }
+  }
+
+  // called from grid (possibly by multiple threads)
+  inline void resolve_collisions(const frame_ctx &fc) {
+    // thread safe because 'ols' does not change during 'resolve_collisions'
+    // phase
+    const size_t len = ols.size();
+    if (len == 0) {
+      return;
+    }
+    for (unsigned i = 0; i < len - 1; i++) {
+      for (unsigned j = i + 1; j < len; j++) {
+
+        object *Oi = ols[i];
+        object *Oj = ols[j];
+
+        // thread safe because 'collision_mask' and 'collision_bits' does not
+        // change during 'resolve_collisions' phase
+
+        // check if Oi and Oj have interest in collision with each other
+        if ((Oi->grid_ifc.collision_mask & Oj->grid_ifc.collision_bits) == 0 and
+            (Oj->grid_ifc.collision_mask & Oi->grid_ifc.collision_bits) == 0) {
+          continue;
+        }
+
+        // check if both objects are dead
+        // note. ? maybe racing condition but is re-checked at
+        // 'handle_collision'
+        if (is_bit_set(Oi->grid_ifc.bits, bit_is_dead) and
+            is_bit_set(Oj->grid_ifc.bits, bit_is_dead)) {
+          continue;
+        }
+
+        // check if both objects overlap grid cells
+        if (is_bit_set(Oi->grid_ifc.bits, bit_overlaps) and
+            is_bit_set(Oj->grid_ifc.bits, bit_overlaps)) {
+
+          // the same 2 objects might be checked for collision from different
+          // cells on multiple threads
+
+          if (grid_threaded) {
+            Oi->grid_ifc.acquire_lock();
+            Oj->grid_ifc.acquire_lock();
+          }
+
+          const bool collision_detection_is_checked =
+              is_in_checked_collision_list(Oi, Oj) or
+              is_in_checked_collision_list(Oj, Oi);
+
+          if (not collision_detection_is_checked) {
+            // add Oj to Oi checked collisions list
+            Oi->grid_ifc.checked_collisions.push_back(Oj);
+            // note. only one entry in one of the objects necessary
+          }
+
+          if (grid_threaded) {
+            Oj->grid_ifc.release_lock();
+            Oi->grid_ifc.release_lock();
+          }
+
+          if (collision_detection_is_checked) {
+            // collision between these 2 objects has been checked by a different
+            // thread
+            continue;
+          }
+        }
+
+        // only on thread will be here for these 2 objects
+
+        if (not detect_and_resolve_collision_for_spheres(Oi, Oj, fc)) {
+          continue;
+        }
+
+        handle_collision(Oi, Oj, fc);
+        handle_collision(Oj, Oi, fc);
+      }
     }
   }
 
@@ -70,93 +149,32 @@ public:
     printf("\n");
   }
 
-  // called from grid (possibly by multiple threads)
-  inline void resolve_collisions(const frame_ctx &fc) {
-    const size_t len = ols.size();
-    if (len == 0) {
-      return;
-    }
-    for (unsigned i = 0; i < len - 1; i++) {
-      for (unsigned j = i + 1; j < len; j++) {
-
-        object *Oi = ols[i];
-        object *Oj = ols[j];
-
-        // check if Oi and Oj have interest in collision with each other
-        if ((Oi->grid_ifc.collision_mask & Oj->grid_ifc.collision_bits) == 0 and
-            (Oj->grid_ifc.collision_mask & Oi->grid_ifc.collision_bits) == 0) {
-          continue;
-        }
-
-        // check if both objects are dead
-        // note. ? maybe racing condition but is re-checked at
-        // 'handle_collision'
-        if (is_bit_set(Oi->grid_ifc.bits, bit_is_dead) and
-            is_bit_set(Oj->grid_ifc.bits, bit_is_dead)) {
-          continue;
-        }
-
-        // check if both objects overlap grid cells
-        if (is_bit_set(Oi->grid_ifc.bits, bit_overlaps) and
-            is_bit_set(Oj->grid_ifc.bits, bit_overlaps)) {
-          // the same objects might be checked for collision from different
-          // cells on multiple threads
-
-          if (grid_threaded) {
-            Oi->grid_ifc.acquire_lock();
-            Oj->grid_ifc.acquire_lock();
-          }
-          const bool collision_detection_is_checked =
-              is_collision_checked(Oi, Oj);
-          if (not collision_detection_is_checked) {
-            // add Oj to Oi checked collisions list
-            Oi->grid_ifc.checked_collisions.push_back(Oj);
-            // note. only one entry in one of the objects necessary
-          }
-          if (grid_threaded) {
-            Oj->grid_ifc.release_lock();
-            Oi->grid_ifc.release_lock();
-          }
-          if (collision_detection_is_checked) {
-            continue;
-          }
-        }
-
-        if (not detect_and_resolve_collision_for_spheres(Oi, Oj, fc)) {
-          continue;
-        }
-
-        handle_collision(Oi, Oj, fc);
-        handle_collision(Oj, Oi, fc);
-      }
-    }
-  }
-
 private:
   inline static void handle_collision(object *Oi, object *Oj,
                                       const frame_ctx &fc) {
+
+    // check if Oi is subscribed to collision with Oj
     if ((Oi->grid_ifc.collision_mask & Oj->grid_ifc.collision_bits) == 0) {
       return;
     }
+
     const bool object_overlaps_cells =
         is_bit_set(Oi->grid_ifc.bits, bit_overlaps);
 
     if (grid_threaded and object_overlaps_cells) {
       Oi->acquire_lock();
     }
+
+    // only one thread at a time can call 'object::on_collision'
     if (not is_bit_set(Oi->grid_ifc.bits, bit_is_dead) and
         Oi->on_collision(Oj, fc)) {
       set_bit(Oi->grid_ifc.bits, bit_is_dead);
       objects.free(Oi);
     }
+
     if (grid_threaded and object_overlaps_cells) {
       Oi->release_lock();
     }
-  }
-
-  inline static bool is_collision_checked(object *o1, object *o2) {
-    return is_in_checked_collision_list(o1, o2) or
-           is_in_checked_collision_list(o2, o1);
   }
 
   inline static bool is_in_checked_collision_list(object *src, object *trg) {
