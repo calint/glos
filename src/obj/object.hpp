@@ -31,12 +31,9 @@ private:
   glm::vec3 Mmw_scl{}; // scale of current Mmw matrix
 
 public:
-  inline object() {}
-
   inline virtual ~object() {}
-  // note. 'delete obj' may not be used
-  //       destructor invoked in the 'objects.apply_free'
-  //       override only to free resources
+  // note. 'delete obj' may not be used because memory is managed by 'o1store'
+  //       destructor is invoked in the 'objects.apply_free'
 
   inline virtual void render(const frame_ctx &fc) {
     if (!node.glo) {
