@@ -5,9 +5,10 @@ set -e
 CC="clang++ -std=c++20"
 SRC="src/main.cpp"
 BIN="glos"
-CFLAGS="-fno-rtti $(sdl2-config --cflags)"
+CFLAGS="$(sdl2-config --cflags)"
 LDFLAGS=
 #LDFLAGS="-fsanitize=address -fsanitize-address-use-after-scope"
+#LDFLAGS="-fsanitize=thread"
 LIBS="-lGL -lSDL2_image -lSDL2_ttf -lSDL2_mixer $(sdl2-config --libs) -ltbb"
 WARNINGS="-Wall -Wextra -Wpedantic -Wfatal-errors \
     -Wconversion -Wsign-conversion \

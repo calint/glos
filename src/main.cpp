@@ -275,6 +275,9 @@ int main(int argc, char *argv[]) {
         net.states[net.active_state_ix] = net.next_state;
       }
     }
+    // in case render thread is waiting
+    is_update = false;
+    grid_ready_for_render_cv.notify_one();
   });
 
   // enter game loop
@@ -432,6 +435,9 @@ int main(int argc, char *argv[]) {
   }
   //---------------------------------------------------------------------free
 
+  // in case 'update' thread is waiting
+  is_update = true;
+  grid_ready_for_render_cv.notify_one();
   update_thread.join();
 
   application.free();
