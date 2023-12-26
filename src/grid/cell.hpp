@@ -41,7 +41,6 @@ public:
   // called from grid (possibly by multiple threads)
   inline void resolve_collisions(const frame_ctx &fc) {
     // thread safe because 'ols' does not change during 'resolve_collisions'
-    // phase
     const size_t len = ols.size();
     if (len == 0) {
       return;
