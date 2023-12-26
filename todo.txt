@@ -1,3 +1,5 @@
+[ ] move 'collision_bits' and 'collision_mask' to 'object' and solve circular
+    reference by implementation moving the implementation outside the 'grid_ifc'
 [ ] render on separate thread
 [-] grid_ifc: hash_set instead of vector for checked_collisions
     => degrades performance from 27 fps to 18 fps in test case
