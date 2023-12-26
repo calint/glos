@@ -15,14 +15,19 @@
 class object {
 public:
   std::string name{};
-  node node{};                // render info
-  volume volume{};            // bounding volume
-  physics physics_prv{};      // physics state from previous frame
-  physics physics_nxt{};      // physics state for next frame
-  physics physics{};          // physics state of current frame
-  grid_ifc grid_ifc{};        // interface to 'grid'
-  net_state *state = nullptr; // pointer to signals used by this object
-  object **alloc_ptr;         // initiated at allocate by 'o1store'
+  node node{};                 // render info
+  volume volume{};             // bounding volume
+  physics physics_prv{};       // physics state from previous frame
+  physics physics_nxt{};       // physics state for next frame
+  physics physics{};           // physics state of current frame
+  grid_ifc grid_ifc{};         // interface to 'grid'
+  unsigned collision_bits = 0; // mask & bits for collision subscription
+  unsigned collision_mask = 0; // ...
+  net_state *state = nullptr;  // pointer to signals used by this object
+  object **alloc_ptr;          // initiated at allocate by 'o1store'
+  unsigned rendered_at_tick = 0;
+  unsigned updated_at_tick = 0;
+  std::vector<const object *> handled_collisions{};
   std::atomic_flag spinlock = ATOMIC_FLAG_INIT;
 
 private:
@@ -81,6 +86,18 @@ public:
     node.Mmw = Mt * Mr * Ms;
     return node.Mmw;
   }
+
+  inline auto is_collision_handled_and_if_not_add(const object *obj) -> bool {
+    const bool is_handled =
+        std::find(handled_collisions.begin(), handled_collisions.end(), obj) !=
+        handled_collisions.end();
+    if (not is_handled) {
+      handled_collisions.push_back(obj);
+    }
+    return is_handled;
+  }
+
+  inline void clear_handled_collisions() { handled_collisions.clear(); }
 
   inline void acquire_lock() {
     while (spinlock.test_and_set(std::memory_order_acquire)) {

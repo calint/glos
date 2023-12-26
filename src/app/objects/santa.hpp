@@ -8,8 +8,8 @@ public:
     node.glo = glos.find_by_name("icosphere");
     volume.scale = {1, 1, 1};
     volume.radius = node.glo->bounding_radius * 1; // r * scale
-    grid_ifc.collision_bits = cb_hero;
-    grid_ifc.collision_mask = cb_hero;
+    collision_bits = cb_hero;
+    collision_mask = cb_hero;
     health = unsigned(rand()) % 50001;
   }
 

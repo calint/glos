@@ -11,19 +11,19 @@ public:
       if (grid_threaded and o->grid_ifc.is_overlaps_cells()) {
         // object is in several cells and may be called from multiple threads
 
-        o->grid_ifc.acquire_lock();
-        if (o->grid_ifc.updated_at_tick == fc.tick) {
-          o->grid_ifc.release_lock();
+        o->acquire_lock();
+        if (o->updated_at_tick == fc.tick) {
+          o->release_lock();
           continue;
         }
-        o->grid_ifc.updated_at_tick = fc.tick;
-        o->grid_ifc.release_lock();
+        o->updated_at_tick = fc.tick;
+        o->release_lock();
       } else {
         // object is in only one cell or can only be called from one thread
-        if (o->grid_ifc.updated_at_tick == fc.tick) {
+        if (o->updated_at_tick == fc.tick) {
           continue;
         }
-        o->grid_ifc.updated_at_tick = fc.tick;
+        o->updated_at_tick = fc.tick;
       }
 
       // only one thread at a time gets to this code
@@ -34,7 +34,7 @@ public:
       }
 
       // note. opportunity to clear the list prior to 'resolve_collisions'
-      o->grid_ifc.clear_handled_collisions();
+      o->clear_handled_collisions();
     }
   }
 
@@ -55,8 +55,8 @@ public:
         // change during 'resolve_collisions'
 
         // check if Oi and Oj have interest in collision with each other
-        if ((Oi->grid_ifc.collision_mask & Oj->grid_ifc.collision_bits) == 0 and
-            (Oj->grid_ifc.collision_mask & Oi->grid_ifc.collision_bits) == 0) {
+        if ((Oi->collision_mask & Oj->collision_bits) == 0 and
+            (Oj->collision_mask & Oi->collision_bits) == 0) {
           continue;
         }
 
@@ -78,10 +78,10 @@ public:
   // called from grid (from only one thread)
   inline void render(const frame_ctx &fc) {
     for (object *o : ols) {
-      if (o->grid_ifc.rendered_at_tick == fc.tick) {
+      if (o->rendered_at_tick == fc.tick) {
         continue;
       }
-      o->grid_ifc.rendered_at_tick = fc.tick;
+      o->rendered_at_tick = fc.tick;
       o->render(fc);
       metrics.rendered_objects++;
     }
@@ -109,7 +109,7 @@ private:
                                       const frame_ctx &fc) {
 
     // check if Oi is subscribed to collision with Oj
-    if ((Oi->grid_ifc.collision_mask & Oj->grid_ifc.collision_bits) == 0) {
+    if ((Oi->collision_mask & Oj->collision_bits) == 0) {
       return;
     }
 
@@ -122,7 +122,7 @@ private:
       Oi->acquire_lock();
     }
 
-    if (Oi->grid_ifc.is_collision_handled_and_if_not_add(Oj)) {
+    if (Oi->is_collision_handled_and_if_not_add(Oj)) {
       if (synchronization_necessary) {
         Oi->release_lock();
       }
