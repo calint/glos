@@ -75,11 +75,11 @@ public:
   }
 
   // called from main
-  inline void render(const frame_ctx &fc) {
+  inline void render(const unsigned render_frame_num) {
     cell *p = cells[0];
     unsigned i = ncells;
     while (i--) {
-      p->render(fc);
+      p->render(render_frame_num);
       p++;
     }
   }

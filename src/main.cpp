@@ -1,11 +1,13 @@
 // reviewed: 2023-12-22
 
 #include <SDL2/SDL.h>
+#include <condition_variable>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/euler_angles.hpp>
 #include <glm/gtx/string_cast.hpp>
+#include <mutex>
 
 // include order of subsystems relevant
 #include "app/configuration.hpp"
@@ -106,7 +108,7 @@ void main(){
   }
 }
 
-inline static void main_render(const frame_ctx &fc) {
+inline static void main_render(const unsigned render_frame_num) {
   if (camera_follow_object) {
     camera.look_at = camera_follow_object->physics.position;
   }
@@ -117,7 +119,7 @@ inline static void main_render(const frame_ctx &fc) {
   glClearColor(background_color.red, background_color.green,
                background_color.blue, 1.0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  grid.render(fc);
+  grid.render(render_frame_num);
   window.swap_buffers();
 }
 
@@ -157,6 +159,8 @@ int main(int argc, char *argv[]) {
   objects.init();
   grid.init();
   application.init();
+  // apply objects allocated in 'application.init()'
+  objects.apply_allocated_instances();
 
   main_init_shaders();
 
@@ -181,7 +185,7 @@ int main(int argc, char *argv[]) {
   float rad_over_mouse_pixels = rad_over_degree * .02f;
   float mouse_sensitivity = 1.5f;
   bool mouse_mode = false;
-  unsigned frame_num = 0;
+  unsigned render_frame_num = 0;
   bool do_main_render = true;
   bool print_grid = false;
   bool resolve_collisions = true;
@@ -208,15 +212,73 @@ int main(int argc, char *argv[]) {
     net.begin();
   }
 
-  // information about dt (elapsed time in previous frame) and a unique frame
-  // number (rollover possible)
-  frame_ctx fc{};
+  std::mutex grid_ready_for_render_mutex{};
+  std::condition_variable grid_ready_for_render_cv{};
 
-  //
-  objects.apply_allocated_instances();
+  bool is_update = true;
+  bool running = true;
+
+  std::thread update_thread([&]() {
+    unsigned update_frame_num = 0;
+    while (running) {
+      update_frame_num++;
+      {
+        std::unique_lock<std::mutex> lock{grid_ready_for_render_mutex};
+        grid_ready_for_render_cv.wait(lock, [&is_update] { return is_update; });
+
+        // printf("update %u\n", update_frame_num);
+
+        grid.clear();
+
+        // add all allocated objects to the grid
+        object **const end = objects.allocated_list_end();
+        for (object **it = objects.allocated_list(); it < end; it++) {
+          object *obj = *it;
+          grid.add(obj);
+        }
+
+        is_update = false;
+
+        lock.unlock();
+        grid_ready_for_render_cv.notify_one();
+      }
+
+      if (print_grid) {
+        grid.print();
+      }
+
+      // in multiplayer mode use dt from server else previous frame
+      frame_ctx fc{use_net ? net.dt : metrics.fps.dt, update_frame_num};
+
+      grid.update(fc);
+
+      if (resolve_collisions) {
+        grid.resolve_collisions(fc);
+      }
+
+      // apply changes done at 'update' and 'resolve_collisions'
+      objects.apply_freed_instances();
+      objects.apply_allocated_instances();
+
+      // callback
+      application.at_frame_end();
+
+      // apply changes done by application
+      objects.apply_freed_instances();
+      objects.apply_allocated_instances();
+
+      // update signals state
+      if (use_net) {
+        // receive signals from previous frame and send signals of current frame
+        net.at_frame_end();
+      } else {
+        net.states[net.active_state_ix] = net.next_state;
+      }
+    }
+  });
 
   // enter game loop
-  for (bool running = true; running;) {
+  while (running) {
     metrics.at_frame_begin();
 
     // poll events
@@ -346,53 +408,22 @@ int main(int argc, char *argv[]) {
       shader_program_ix_prev = shader_program_ix;
     }
 
-    // start frame
-    frame_num++;
+    {
+      std::unique_lock<std::mutex> lock{grid_ready_for_render_mutex};
+      grid_ready_for_render_cv.wait(lock,
+                                    [&is_update] { return not is_update; });
 
-    // in multiplayer mode use dt from server else previous frame
-    fc.dt = use_net ? net.dt : metrics.fps.dt;
-    fc.tick = frame_num;
+      render_frame_num++;
+      // printf("render %d\n", render_frame_num);
 
-    grid.clear();
+      if (do_main_render) {
+        main_render(render_frame_num);
+      }
 
-    // add all allocated objects to the grid
-    object **const end = objects.allocated_list_end();
-    for (object **it = objects.allocated_list(); it < end; it++) {
-      object *obj = *it;
-      grid.add(obj);
-    }
+      is_update = true;
 
-    if (print_grid) {
-      grid.print();
-    }
-
-    if (do_main_render) {
-      main_render(fc);
-    }
-
-    grid.update(fc);
-
-    if (resolve_collisions) {
-      grid.resolve_collisions(fc);
-    }
-
-    // apply changes done at 'update' and 'resolve_collisions'
-    objects.apply_freed_instances();
-    objects.apply_allocated_instances();
-
-    // callback
-    application.at_frame_end();
-
-    // apply changes done by application
-    objects.apply_freed_instances();
-    objects.apply_allocated_instances();
-
-    // update signals state
-    if (use_net) {
-      // receive signals from previous frame and send signals of current frame
-      net.at_frame_end();
-    } else {
-      net.states[net.active_state_ix] = net.next_state;
+      lock.unlock();
+      grid_ready_for_render_cv.notify_one();
     }
 
     // metrics
@@ -400,6 +431,9 @@ int main(int argc, char *argv[]) {
     metrics.at_frame_end(stderr);
   }
   //---------------------------------------------------------------------free
+
+  update_thread.join();
+
   application.free();
   grid.free();
   objects.free();

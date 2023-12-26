@@ -35,7 +35,7 @@ public:
   // note. 'delete obj' may not be used because memory is managed by 'o1store'
   //       destructor is invoked in the 'objects.apply_free'
 
-  inline virtual void render(const frame_ctx &fc) {
+  inline virtual void render() {
     if (!node.glo) {
       return;
     }

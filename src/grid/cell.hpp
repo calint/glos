@@ -76,13 +76,13 @@ public:
   }
 
   // called from grid (from only one thread)
-  inline void render(const frame_ctx &fc) {
+  inline void render(const unsigned render_frame_num) {
     for (object *o : ols) {
-      if (o->rendered_at_tick == fc.tick) {
+      if (o->rendered_at_tick == render_frame_num) {
         continue;
       }
-      o->rendered_at_tick = fc.tick;
-      o->render(fc);
+      o->rendered_at_tick = render_frame_num;
+      o->render();
       metrics.rendered_objects++;
     }
   }
