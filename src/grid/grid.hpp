@@ -129,9 +129,9 @@ public:
     }
 
     if (xil == xir and zil == zir) {
-      cell::clear_bit(o->grid_ifc.bits, cell::bit_overlaps);
+      o->grid_ifc.clear_flags();
     } else {
-      cell::set_bit(o->grid_ifc.bits, cell::bit_overlaps);
+      o->grid_ifc.set_overlaps_cells();
     }
   }
 

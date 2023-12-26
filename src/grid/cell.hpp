@@ -1,19 +1,14 @@
 #pragma once
 // reviewed: 2023-12-22
 
-#include <algorithm>
-
 class cell final {
 public:
-  static constexpr unsigned bit_overlaps = 0;
-  static constexpr unsigned bit_is_dead = 1;
-
   std::vector<object *> ols{};
 
   // called from grid (possibly by multiple threads)
   inline void update(const frame_ctx &fc) {
     for (object *o : ols) {
-      if (grid_threaded and is_bit_set(o->grid_ifc.bits, bit_overlaps)) {
+      if (grid_threaded and o->grid_ifc.is_overlaps_cells()) {
         // object is in several cells and may be called from multiple threads
 
         o->grid_ifc.acquire_lock();
@@ -31,15 +26,15 @@ public:
         o->grid_ifc.updated_at_tick = fc.tick;
       }
 
-      // only one thread at a time during a frame gets to this code
+      // only one thread at a time gets to this code
       if (o->update(fc)) {
-        set_bit(o->grid_ifc.bits, bit_is_dead);
+        o->grid_ifc.set_is_dead();
         objects.free(o);
         continue;
       }
 
-      // clear the list prior to 'resolve_collisions'
-      o->grid_ifc.handled_collisions.clear();
+      // note. opportunity to clear the list prior to 'resolve_collisions'
+      o->grid_ifc.clear_handled_collisions();
     }
   }
 
@@ -69,8 +64,7 @@ public:
         // check if both objects are dead
         // note. ? maybe racing condition but is re-checked at
         // 'handle_collision'
-        if (is_bit_set(Oi->grid_ifc.bits, bit_is_dead) and
-            is_bit_set(Oj->grid_ifc.bits, bit_is_dead)) {
+        if (Oi->grid_ifc.is_dead() and Oj->grid_ifc.is_dead()) {
           continue;
         }
 
@@ -128,7 +122,7 @@ private:
     }
 
     const bool synchronization_necessary =
-        grid_threaded and is_bit_set(Oi->grid_ifc.bits, bit_overlaps);
+        grid_threaded and Oi->grid_ifc.is_overlaps_cells();
 
     // if object overlaps cells this code might be called by several threads at
     // the same time
@@ -136,31 +130,22 @@ private:
       Oi->acquire_lock();
     }
 
-    if (is_collision_handled(Oi, Oj)) {
+    if (Oi->grid_ifc.is_collision_handled_and_add_if_not(Oj)) {
       if (synchronization_necessary) {
         Oi->release_lock();
       }
       return;
-    } else {
-      Oi->grid_ifc.handled_collisions.push_back(Oj);
     }
 
     // only one thread at a time can be here
-    if (not is_bit_set(Oi->grid_ifc.bits, bit_is_dead) and
-        Oi->on_collision(Oj, fc)) {
-      set_bit(Oi->grid_ifc.bits, bit_is_dead);
+    if (not Oi->grid_ifc.is_dead() and Oi->on_collision(Oj, fc)) {
+      Oi->grid_ifc.set_is_dead();
       objects.free(Oi);
     }
 
     if (synchronization_necessary) {
       Oi->release_lock();
     }
-  }
-
-  inline static bool is_collision_handled(object *src, object *trg) {
-    return std::find(src->grid_ifc.handled_collisions.begin(),
-                     src->grid_ifc.handled_collisions.end(),
-                     trg) != src->grid_ifc.handled_collisions.end();
   }
 
   //? works only in 1D with equal masses
@@ -256,20 +241,5 @@ private:
     o2->physics_nxt.position += o2->physics_nxt.velocity * -t;
 
     return true;
-  }
-
-public:
-  inline static bool is_bit_set(const unsigned &bits,
-                                int bit_number_starting_at_zero) {
-    return bits & (1u << bit_number_starting_at_zero);
-  }
-
-  inline static void set_bit(unsigned &bits, int bit_number_starting_at_zero) {
-    bits |= (1u << bit_number_starting_at_zero);
-  }
-
-  inline static void clear_bit(unsigned &bits,
-                               int bit_number_starting_at_zero) {
-    bits &= ~(1u << bit_number_starting_at_zero);
   }
 };

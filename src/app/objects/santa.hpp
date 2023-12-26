@@ -15,10 +15,8 @@ public:
   // inline ~santa() { printf("%s destructor\n", name.c_str()); }
 
   inline auto update(const frame_ctx &fc) -> bool override {
-    if (grid_ifc.bits & 2) {
-      printf("update: object already dead\n");
-      exit(1);
-    }
+    assert(not grid_ifc.is_dead());
+
     if (object::update(fc)) {
       return true;
     }
@@ -56,10 +54,7 @@ public:
   }
 
   inline auto on_collision(object *o, const frame_ctx &fc) -> bool override {
-    if (grid_ifc.bits & 2) {
-      printf("on collision: object already dead\n");
-      abort();
-    }
+    assert(not grid_ifc.is_dead());
     // printf("%s collision with %s\n", name.c_str(), o->name.c_str());
     health--;
     return health == 0;
