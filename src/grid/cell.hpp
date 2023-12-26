@@ -61,16 +61,9 @@ public:
           continue;
         }
 
-        // check if both objects are dead
-        // note. ? maybe racing condition but is re-checked at
-        // 'handle_collision' which is thread safe
-        if (Oi->grid_ifc.is_dead() and Oj->grid_ifc.is_dead()) {
-          continue;
-        }
-
         // note. instead of checking if collision detection has been tried
         // between these 2 objects just try it because it is more expensive to
-        // do the checking than just trying and only handling a collision
+        // do the locking than just trying and only handling a collision
         // between 2 objects once
 
         if (not detect_collision_for_spheres(Oi, Oj, fc)) {
@@ -121,11 +114,11 @@ private:
       return;
     }
 
+    // if object overlaps cells this code might be called by several threads at
+    // the same time
     const bool synchronization_necessary =
         grid_threaded and Oi->grid_ifc.is_overlaps_cells();
 
-    // if object overlaps cells this code might be called by several threads at
-    // the same time
     if (synchronization_necessary) {
       Oi->acquire_lock();
     }
