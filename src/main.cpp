@@ -212,19 +212,22 @@ int main(int argc, char *argv[]) {
     net.begin();
   }
 
-  std::mutex grid_ready_for_render_mutex{};
-  std::condition_variable grid_ready_for_render_cv{};
-
+  // synchronization of update and render thread
+  std::mutex update_render_mutex{};
+  std::condition_variable update_render_cv{};
   bool is_update = true;
-  bool running = true;
 
+  // while application is running
+  bool is_running = true;
+
+  // the update grid thread
   std::thread update_thread([&]() {
     unsigned update_frame_num = 0;
-    while (running) {
+    while (is_running) {
       update_frame_num++;
       {
-        std::unique_lock<std::mutex> lock{grid_ready_for_render_mutex};
-        grid_ready_for_render_cv.wait(lock, [&is_update] { return is_update; });
+        std::unique_lock<std::mutex> lock{update_render_mutex};
+        update_render_cv.wait(lock, [&is_update] { return is_update; });
 
         // printf("update %u\n", update_frame_num);
 
@@ -238,9 +241,8 @@ int main(int argc, char *argv[]) {
         }
 
         is_update = false;
-
         lock.unlock();
-        grid_ready_for_render_cv.notify_one();
+        update_render_cv.notify_one();
       }
 
       if (print_grid) {
@@ -277,11 +279,11 @@ int main(int argc, char *argv[]) {
     }
     // in case render thread is waiting
     is_update = false;
-    grid_ready_for_render_cv.notify_one();
+    update_render_cv.notify_one();
   });
 
   // enter game loop
-  while (running) {
+  while (is_running) {
     metrics.at_frame_begin();
 
     // poll events
@@ -303,7 +305,7 @@ int main(int argc, char *argv[]) {
         break;
       }
       case SDL_QUIT:
-        running = false;
+        is_running = false;
         break;
       case SDL_MOUSEMOTION: {
         if (event.motion.xrel != 0) {
@@ -412,9 +414,9 @@ int main(int argc, char *argv[]) {
     }
 
     {
-      std::unique_lock<std::mutex> lock{grid_ready_for_render_mutex};
-      grid_ready_for_render_cv.wait(lock,
-                                    [&is_update] { return not is_update; });
+      // don't render when grid is adding objects to cells
+      std::unique_lock<std::mutex> lock{update_render_mutex};
+      update_render_cv.wait(lock, [&is_update] { return not is_update; });
 
       render_frame_num++;
       // printf("render %d\n", render_frame_num);
@@ -424,9 +426,8 @@ int main(int argc, char *argv[]) {
       }
 
       is_update = true;
-
       lock.unlock();
-      grid_ready_for_render_cv.notify_one();
+      update_render_cv.notify_one();
     }
 
     // metrics
@@ -437,7 +438,7 @@ int main(int argc, char *argv[]) {
 
   // in case 'update' thread is waiting
   is_update = true;
-  grid_ready_for_render_cv.notify_one();
+  update_render_cv.notify_one();
   update_thread.join();
 
   application.free();
