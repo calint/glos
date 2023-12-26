@@ -27,14 +27,14 @@ public:
       physics_nxt.velocity = {0, 0, 0};
     }
 
-    if (!state) {
+    if (!net_state) {
       return false;
     }
 
     // update using signals state
     glm::vec3 &v = physics_nxt.velocity;
     v = {0, 0, 0};
-    unsigned keys = state->keys;
+    unsigned keys = net_state->keys;
     if (keys != 0) {
       // wasd keys
       if (keys & 1) {

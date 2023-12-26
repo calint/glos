@@ -9,20 +9,20 @@
 
 class object {
 public:
-  std::string name{};
-  node node{};                 // render info
-  volume volume{};             // bounding volume
-  physics physics_prv{};       // physics state from previous frame
-  physics physics_nxt{};       // physics state for next frame
-  physics physics{};           // physics state of current frame
-  unsigned collision_bits = 0; // mask & bits for collision subscription
-  unsigned collision_mask = 0; // ...
-  net_state *state = nullptr;  // pointer to signals used by this object
-  object **alloc_ptr;          // initiated at allocate by 'o1store'
-  unsigned rendered_at_tick = 0;
-  unsigned updated_at_tick = 0;
+  object **alloc_ptr;             // initiated at allocate by 'o1store'
+  std::string name{};             // instance name
+  node node{};                    // render info
+  volume volume{};                // bounding volume
+  physics physics_prv{};          // physics state from previous frame
+  physics physics_nxt{};          // physics state for next frame
+  physics physics{};              // physics state of current frame
+  unsigned collision_bits = 0;    // mask & bits for collision subscription
+  unsigned collision_mask = 0;    // ...
+  net_state *net_state = nullptr; // pointer to signals used by this object
+  unsigned rendered_at_tick = 0;  // avoids rendering same object twice
+  unsigned updated_at_tick = 0;   // avoids updating same object twice
+  unsigned grid_flags = 0;        // used by grid (overlaps, is_dead)
   std::vector<const object *> handled_collisions{};
-  unsigned flags = 0; // 1: overlaps cells  2: is dead
   std::atomic_flag spinlock = ATOMIC_FLAG_INIT;
 
 private:
@@ -94,15 +94,15 @@ public:
 
   inline void clear_handled_collisions() { handled_collisions.clear(); }
 
-  inline auto is_dead() const -> bool { return flags & 2; }
+  inline auto is_dead() const -> bool { return grid_flags & 2; }
 
-  inline void set_is_dead() { flags |= 2; }
+  inline void set_is_dead() { grid_flags |= 2; }
 
-  inline auto is_overlaps_cells() const -> bool { return flags & 1; }
+  inline auto is_overlaps_cells() const -> bool { return grid_flags & 1; }
 
-  inline void set_overlaps_cells() { flags |= 1; }
+  inline void set_overlaps_cells() { grid_flags |= 1; }
 
-  inline void clear_flags() { flags = 0; }
+  inline void clear_flags() { grid_flags = 0; }
 
   inline void acquire_lock() {
     while (spinlock.test_and_set(std::memory_order_acquire)) {

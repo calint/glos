@@ -48,7 +48,7 @@ public:
       o->physics_nxt.position = {-20, o->volume.radius, 20};
       o->physics_nxt.angular_velocity = glm::vec3(0, glm::radians(20.0f), 0);
       o->physics = o->physics_nxt;
-      o->state = &net.states[1];
+      o->net_state = &net.states[1];
 
       camera.type = LOOK_AT;
       camera.position = {0, 40, 50};
@@ -63,7 +63,7 @@ public:
       o->name = "santa2";
       o->physics_nxt.position = {20, o->volume.radius, 10};
       o->physics = o->physics_nxt;
-      o->state = &net.states[2];
+      o->net_state = &net.states[2];
     }
 
     ambient_light = glm::normalize(glm::vec3{0, 1, 0});
@@ -85,7 +85,7 @@ public:
         o->name = "santa1";
         o->physics_nxt.position = {x, o->volume.radius, y};
         o->physics = o->physics_nxt;
-        o->state = &net.states[1];
+        o->net_state = &net.states[1];
       }
     }
   }
