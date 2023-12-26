@@ -353,7 +353,6 @@ int main(int argc, char *argv[]) {
     fc.dt = use_net ? net.dt : metrics.fps.dt;
     fc.tick = frame_num;
 
-    // update phase
     grid.clear();
 
     // add all allocated objects to the grid

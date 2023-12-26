@@ -141,7 +141,6 @@ private:
     }
   }
 
-  //? works only in 1D with equal masses
   inline static bool detect_collision_for_spheres(object *o1, object *o2,
                                                   const frame_ctx &fc) {
 
