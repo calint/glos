@@ -103,7 +103,6 @@ public:
       o->physics_nxt.position = {x, y, z};
       o->physics_nxt.velocity = {0, -2, 0};
       o->physics = o->physics_nxt;
-      // std::cout << glm::to_string(o->physics_nxt.position) << std::endl;
     }
   }
 };

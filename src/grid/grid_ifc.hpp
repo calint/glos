@@ -25,7 +25,7 @@ public:
 
   inline void release_lock() { spinlock.clear(std::memory_order_release); }
 
-  inline auto is_collision_handled_and_add_if_not(const object *obj) -> bool {
+  inline auto is_collision_handled_and_if_not_add(const object *obj) -> bool {
     const bool is_handled =
         std::find(handled_collisions.begin(), handled_collisions.end(), obj) !=
         handled_collisions.end();

@@ -122,7 +122,7 @@ private:
       Oi->acquire_lock();
     }
 
-    if (Oi->grid_ifc.is_collision_handled_and_add_if_not(Oj)) {
+    if (Oi->grid_ifc.is_collision_handled_and_if_not_add(Oj)) {
       if (synchronization_necessary) {
         Oi->release_lock();
       }
