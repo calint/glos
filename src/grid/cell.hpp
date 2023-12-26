@@ -8,7 +8,7 @@ public:
   // called from grid (possibly by multiple threads)
   inline void update(const frame_ctx &fc) {
     for (object *o : ols) {
-      if (grid_threaded and o->grid_ifc.is_overlaps_cells()) {
+      if (grid_threaded and o->is_overlaps_cells()) {
         // object is in several cells and may be called from multiple threads
 
         o->acquire_lock();
@@ -28,7 +28,7 @@ public:
 
       // only one thread at a time gets to this code
       if (o->update(fc)) {
-        o->grid_ifc.set_is_dead();
+        o->set_is_dead();
         objects.free(o);
         continue;
       }
@@ -116,7 +116,7 @@ private:
     // if object overlaps cells this code might be called by several threads at
     // the same time
     const bool synchronization_necessary =
-        grid_threaded and Oi->grid_ifc.is_overlaps_cells();
+        grid_threaded and Oi->is_overlaps_cells();
 
     if (synchronization_necessary) {
       Oi->acquire_lock();
@@ -131,8 +131,8 @@ private:
 
     // only one thread at a time can be here
 
-    if (not Oi->grid_ifc.is_dead() and Oi->on_collision(Oj, fc)) {
-      Oi->grid_ifc.set_is_dead();
+    if (not Oi->is_dead() and Oi->on_collision(Oj, fc)) {
+      Oi->set_is_dead();
       objects.free(Oi);
     }
 

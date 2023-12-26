@@ -10,6 +10,9 @@
 //
 // note. no destructor since life-time is program life-time
 //
+
+#include <atomic>
+
 template <typename Type, const int Size, const int StoreId = 0,
           const int InstanceSizeInBytes = 0>
 class o1store {

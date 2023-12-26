@@ -16,7 +16,7 @@ public:
   // inline ~santa() { printf("%s destructor\n", name.c_str()); }
 
   inline auto update(const frame_ctx &fc) -> bool override {
-    assert(not grid_ifc.is_dead());
+    assert(not is_dead());
 
     if (object::update(fc)) {
       return true;
@@ -56,7 +56,7 @@ public:
   }
 
   inline auto on_collision(object *o, const frame_ctx &fc) -> bool override {
-    assert(not grid_ifc.is_dead());
+    assert(not is_dead());
     // printf("%s collision with %s\n", name.c_str(), o->name.c_str());
     health--;
     return health == 0;

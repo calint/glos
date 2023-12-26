@@ -212,7 +212,7 @@ int main(int argc, char *argv[]) {
   // number (rollover possible)
   frame_ctx fc{};
 
-  // 
+  //
   objects.apply_allocated_instances();
 
   // enter game loop
@@ -355,22 +355,22 @@ int main(int argc, char *argv[]) {
 
     // update phase
     grid.clear();
-    
+
     // add all allocated objects to the grid
     object **const end = objects.allocated_list_end();
     for (object **it = objects.allocated_list(); it < end; it++) {
       object *obj = *it;
       grid.add(obj);
     }
-    
+
     if (print_grid) {
       grid.print();
     }
-    
+
     if (do_main_render) {
       main_render(fc);
     }
-    
+
     grid.update(fc);
 
     if (resolve_collisions) {
@@ -380,10 +380,10 @@ int main(int argc, char *argv[]) {
     // apply changes done at 'update' and 'resolve_collisions'
     objects.apply_freed_instances();
     objects.apply_allocated_instances();
-    
+
     // callback
     application.at_frame_end();
-    
+
     // apply changes done by application
     objects.apply_freed_instances();
     objects.apply_allocated_instances();

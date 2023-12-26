@@ -128,10 +128,11 @@ public:
       }
     }
 
-    if (xil == xir and zil == zir) {
-      o->grid_ifc.clear_flags();
-    } else {
-      o->grid_ifc.set_overlaps_cells();
+    o->clear_flags();
+    // note. flags need to be cleared before entering 'update' or
+    // 'resolve_collisions'
+    if (xil != xir or zil != zir) {
+      o->set_overlaps_cells();
     }
   }
 

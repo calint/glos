@@ -1,16 +1,11 @@
 #pragma once
 // reviewed: 2023-12-22
 
-#include "../grid/grid_ifc.hpp"
 #include "node.hpp"
 #include "o1store.hpp"
 #include "physics.hpp"
 #include "volume.hpp"
-#include <glm/gtc/type_ptr.hpp>
-#include <glm/gtx/euler_angles.hpp>
-#include <glm/gtx/string_cast.hpp>
-#include <iostream>
-#include <string>
+#include <algorithm>
 
 class object {
 public:
@@ -20,7 +15,6 @@ public:
   physics physics_prv{};       // physics state from previous frame
   physics physics_nxt{};       // physics state for next frame
   physics physics{};           // physics state of current frame
-  grid_ifc grid_ifc{};         // interface to 'grid'
   unsigned collision_bits = 0; // mask & bits for collision subscription
   unsigned collision_mask = 0; // ...
   net_state *state = nullptr;  // pointer to signals used by this object
@@ -28,6 +22,7 @@ public:
   unsigned rendered_at_tick = 0;
   unsigned updated_at_tick = 0;
   std::vector<const object *> handled_collisions{};
+  unsigned flags = 0; // 1: overlaps cells  2: is dead
   std::atomic_flag spinlock = ATOMIC_FLAG_INIT;
 
 private:
@@ -98,6 +93,16 @@ public:
   }
 
   inline void clear_handled_collisions() { handled_collisions.clear(); }
+
+  inline auto is_dead() const -> bool { return flags & 2; }
+
+  inline void set_is_dead() { flags |= 2; }
+
+  inline auto is_overlaps_cells() const -> bool { return flags & 1; }
+
+  inline void set_overlaps_cells() { flags |= 1; }
+
+  inline void clear_flags() { flags = 0; }
 
   inline void acquire_lock() {
     while (spinlock.test_and_set(std::memory_order_acquire)) {
