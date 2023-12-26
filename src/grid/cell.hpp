@@ -39,7 +39,7 @@ public:
       }
 
       // clear the list prior to 'resolve_collisions'
-      o->grid_ifc.checked_collisions.clear();
+      o->grid_ifc.handled_collisions.clear();
     }
   }
 
@@ -74,41 +74,10 @@ public:
           continue;
         }
 
-        // check if both objects overlap grid cells
-        if (is_bit_set(Oi->grid_ifc.bits, bit_overlaps) and
-            is_bit_set(Oj->grid_ifc.bits, bit_overlaps)) {
-
-          // the same 2 objects might be checked for collision from different
-          // cells on multiple threads
-
-          if (grid_threaded) {
-            Oi->grid_ifc.acquire_lock();
-            Oj->grid_ifc.acquire_lock();
-          }
-
-          const bool collision_detection_is_checked =
-              is_in_checked_collision_list(Oi, Oj) or
-              is_in_checked_collision_list(Oj, Oi);
-
-          if (not collision_detection_is_checked) {
-            // add Oj to Oi checked collisions list
-            Oi->grid_ifc.checked_collisions.push_back(Oj);
-            // note. only one entry in one of the objects necessary
-          }
-
-          if (grid_threaded) {
-            Oj->grid_ifc.release_lock();
-            Oi->grid_ifc.release_lock();
-          }
-
-          if (collision_detection_is_checked) {
-            // collision between these 2 objects has been checked by a different
-            // thread
-            continue;
-          }
-        }
-
-        // only on thread will be here for these 2 objects
+        // note. instead of checking if collision detection has been tried
+        // between these 2 objects just try it because it is more expensive to
+        // do the checking than just trying and only handling a collision
+        // between 2 objects once
 
         if (not detect_and_resolve_collision_for_spheres(Oi, Oj, fc)) {
           continue;
@@ -158,29 +127,40 @@ private:
       return;
     }
 
-    const bool object_overlaps_cells =
-        is_bit_set(Oi->grid_ifc.bits, bit_overlaps);
+    const bool synchronization_necessary =
+        grid_threaded and is_bit_set(Oi->grid_ifc.bits, bit_overlaps);
 
-    if (grid_threaded and object_overlaps_cells) {
+    // if object overlaps cells this code might be called by several threads at
+    // the same time
+    if (synchronization_necessary) {
       Oi->acquire_lock();
     }
 
-    // only one thread at a time can call 'object::on_collision'
+    if (is_collision_handled(Oi, Oj)) {
+      if (synchronization_necessary) {
+        Oi->release_lock();
+      }
+      return;
+    } else {
+      Oi->grid_ifc.handled_collisions.push_back(Oj);
+    }
+
+    // only one thread at a time can be here
     if (not is_bit_set(Oi->grid_ifc.bits, bit_is_dead) and
         Oi->on_collision(Oj, fc)) {
       set_bit(Oi->grid_ifc.bits, bit_is_dead);
       objects.free(Oi);
     }
 
-    if (grid_threaded and object_overlaps_cells) {
+    if (synchronization_necessary) {
       Oi->release_lock();
     }
   }
 
-  inline static bool is_in_checked_collision_list(object *src, object *trg) {
-    return std::find(src->grid_ifc.checked_collisions.begin(),
-                     src->grid_ifc.checked_collisions.end(),
-                     trg) != src->grid_ifc.checked_collisions.end();
+  inline static bool is_collision_handled(object *src, object *trg) {
+    return std::find(src->grid_ifc.handled_collisions.begin(),
+                     src->grid_ifc.handled_collisions.end(),
+                     trg) != src->grid_ifc.handled_collisions.end();
   }
 
   //? works only in 1D with equal masses
