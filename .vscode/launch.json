@@ -3,7 +3,7 @@
   "configurations": [
     {
       "name": "glos debug",
-      "type": "cppdbg",
+      "type": "lldb",
       "request": "launch",
       "program": "${workspaceFolder}/glos",
       "args": [],
