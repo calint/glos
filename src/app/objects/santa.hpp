@@ -4,6 +4,7 @@ class santa : public object {
 
 public:
   inline santa() {
+    //? glos.find_by_index for O(1)
     node.glo = glos.find_by_name("icosphere");
     volume.scale = {1, 1, 1};
     volume.radius = node.glo->bounding_radius * 1; // r * scale
@@ -20,13 +21,16 @@ public:
     if (object::update(fc)) {
       return true;
     }
+
     if (physics.position.y < volume.radius) {
       physics_nxt.position.y = volume.radius;
       physics_nxt.velocity = {0, 0, 0};
     }
+
     if (!state) {
       return false;
     }
+
     // update using signals state
     glm::vec3 &v = physics_nxt.velocity;
     v = {0, 0, 0};
@@ -48,8 +52,6 @@ public:
       v *= 10.0f;
     }
 
-    // std::cout << name << " pos: " << glm::to_string(physics.position) <<
-    // "\n";
     return false;
   }
 
@@ -59,8 +61,4 @@ public:
     health--;
     return health == 0;
   }
-
-  // inline auto on_collision(object *o, const frame_ctx &fc) -> bool override {
-  //   return false;
-  // }
 };
