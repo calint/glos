@@ -15,12 +15,12 @@ public:
   inline void init() {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)) {
       std::cout << "SDL_Init failed: " << SDL_GetError() << std::endl;
-      exit(1);
+      abort();
     }
 
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
       std::cout << "Mix_OpenAudio failed: " << Mix_GetError() << std::endl;
-      exit(2);
+      abort();
     }
   }
 
@@ -34,12 +34,12 @@ public:
     music = Mix_LoadMUS(path);
     if (music == nullptr) {
       std::cout << "Mix_LoadMUS failed: " << Mix_GetError() << std::endl;
-      exit(3);
+      abort();
     }
 
     if (Mix_PlayMusic(music, -1) == -1) {
       std::cout << "Mix_PlayMusic failed: " << Mix_GetError() << std::endl;
-      exit(4);
+      abort();
     }
   }
 };

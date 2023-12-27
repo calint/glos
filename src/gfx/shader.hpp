@@ -145,7 +145,7 @@ public:
       GLchar msg[1024];
       glGetProgramInfoLog(program_id, sizeof(msg), nullptr, msg);
       printf("program linking error: %s\n", msg);
-      exit(1);
+      abort();
     }
     glDeleteShader(vertex_shader_id);
     glDeleteShader(fragment_shader_id);
@@ -166,7 +166,7 @@ private:
       glGetShaderInfoLog(shader_id, sizeof(msg), NULL, msg);
       printf("compile error in %s shader:\n%s\n",
              shader_name_for_type(shader_type), msg);
-      exit(1);
+      abort();
     }
     return shader_id;
   }
@@ -227,7 +227,7 @@ private:
       is_error = true;
     }
     if (is_error) {
-      exit(1);
+      abort();
     }
   }
 

@@ -41,7 +41,7 @@ public:
 
     if (!all_ or !free_bgn_ or !alloc_bgn_ or !del_bgn_) {
       printf("!!! o1store %u: could not allocate arrays\n", StoreId);
-      exit(1);
+      abort();
     }
 
     free_end_ = free_bgn_ + Size;

@@ -53,7 +53,7 @@ public:
     std::ifstream file(path);
     if (!file) {
       printf("*** cannot open file '%s'\n", path);
-      exit(1);
+      abort();
     }
     std::stringstream buffer;
     buffer << file.rdbuf();

@@ -19,7 +19,7 @@ public:
     server_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (server_fd == -1) {
       fprintf(stderr, "\n%s:%u: create socket failed\n", __FILE__, __LINE__);
-      exit(-1);
+      abort();
     }
 
     int flag = 1;
@@ -27,7 +27,7 @@ public:
         setsockopt(server_fd, IPPROTO_TCP, TCP_NODELAY, &flag, sizeof(int));
     if (result < 0) {
       fprintf(stderr, "\n%s:%u: set TCP_NODELAY failed\n", __FILE__, __LINE__);
-      exit(-1);
+      abort();
     }
 
     struct sockaddr_in server;
@@ -37,13 +37,13 @@ public:
 
     if (bind(server_fd, (struct sockaddr *)&server, sizeof(server)) < 0) {
       fprintf(stderr, "\n%s:%u: bind failed\n", __FILE__, __LINE__);
-      exit(-1);
+      abort();
     }
 
     if (listen(server_fd, net_players + 1) == -1) {
       fprintf(stderr, "\n%s:%u: ", __FILE__, __LINE__);
       perror("");
-      exit(-1);
+      abort();
     }
 
     printf(" * waiting for %d players to connect on port %d\n", net_players,
@@ -55,7 +55,7 @@ public:
       if (clients_fd[i] == -1) {
         fprintf(stderr, "\n%s:%u: ", __FILE__, __LINE__);
         perror("");
-        exit(-1);
+        abort();
       }
 
       int flag = 1;
@@ -64,7 +64,7 @@ public:
       if (result == -1) {
         fprintf(stderr, "\n%s:%u: ", __FILE__, __LINE__);
         perror("");
-        exit(-1);
+        abort();
       }
 
       printf(" * player %d of %d connected\n", i, net_players);
@@ -78,7 +78,7 @@ public:
         fprintf(stderr, "\n%s:%u: could not start player %u: ", __FILE__,
                 __LINE__, i);
         perror("");
-        exit(-1);
+        abort();
       }
     }
   }
@@ -93,17 +93,17 @@ public:
         if (n == -1) {
           fprintf(stderr, "\n%s:%u: player %u: ", __FILE__, __LINE__, i);
           perror("");
-          exit(-1);
+          abort();
         }
         if (n == 0) {
           fprintf(stderr, "\n%s:%u: player %u: disconnected\n", __FILE__,
                   __LINE__, i);
-          exit(-1);
+          abort();
         }
         if ((unsigned)n != state_read_size) {
           fprintf(stderr, "\n%s:%u: player %u: read was incomplete\n", __FILE__,
                   __LINE__, i);
-          exit(-1);
+          abort();
         }
       }
       const uint64_t t1 = SDL_GetPerformanceCounter();
@@ -116,7 +116,7 @@ public:
         if (n == -1 or n != sizeof(state)) {
           fprintf(stderr, "\n%s:%u: player %u: send failed\n", __FILE__,
                   __LINE__, i);
-          exit(-1);
+          abort();
         }
       }
     }

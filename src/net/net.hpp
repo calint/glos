@@ -31,7 +31,7 @@ public:
     if (fd == -1) {
       fprintf(stderr, "\n%s:%u: ", __FILE__, __LINE__);
       perror("");
-      exit(-1);
+      abort();
     }
 
     int flag = 1;
@@ -39,7 +39,7 @@ public:
         setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, (char *)&flag, sizeof(int));
     if (result < 0) {
       fprintf(stderr, "\n%s:%u: set TCP_NODELAY failed\n", __FILE__, __LINE__);
-      exit(-1);
+      abort();
     }
 
     server.sin_addr.s_addr = inet_addr(host);
@@ -50,7 +50,7 @@ public:
     if (connect(fd, (struct sockaddr *)&server, sizeof(server)) < 0) {
       fprintf(stderr, "\n%s:%u: ", __FILE__, __LINE__);
       perror("");
-      exit(-1);
+      abort();
     }
     printf("[ net ] connected. waiting for go ahead\n");
     ssize_t n = recv(fd, &active_state_ix, sizeof(active_state_ix), 0);
@@ -61,7 +61,7 @@ public:
       } else {
         perror("");
       }
-      exit(-1);
+      abort();
     }
     printf("[ net ] playing player %u\n", active_state_ix);
   }
@@ -81,7 +81,7 @@ public:
     if (recv(fd, states, sizeof(states), 0) < 0) {
       fprintf(stderr, "\n%s:%u: ", __FILE__, __LINE__);
       perror("");
-      exit(-1);
+      abort();
     }
     // send current frame signals
     send_state();
@@ -98,7 +98,7 @@ private:
     if (send(fd, &next_state, sizeof(next_state), 0) < 0) {
       fprintf(stderr, "\n%s:%u: ", __FILE__, __LINE__);
       perror("");
-      exit(-1);
+      abort();
     }
   }
 };
