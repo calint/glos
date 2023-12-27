@@ -1,5 +1,8 @@
+[ ] glo: upgrade to glGenVertexArrays
 [ ] move init() and free() into constructor and destructor
 [ ] glos.get_by_index instead of main in constructors of game objects
+[ ] object render culling using camera frustum, position and bounding sphere
+[ ] grid cell render culling
 [x] move 'collision_bits' and 'collision_mask' to 'object' and solve circular
     reference by implementation moving the implementation outside the 'grid_ifc'
     => no circular references

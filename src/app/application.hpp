@@ -52,7 +52,8 @@ public:
 
       camera.type = LOOK_AT;
       camera.position = {0, 50, 50};
-      camera.look_at = {0, 0, 0};
+      // camera.look_at = {0, 0, 0};
+      camera.look_at = {0, 0, -100};
       // camera_follow_object = o;
 
       // camera.type = ANGLE;

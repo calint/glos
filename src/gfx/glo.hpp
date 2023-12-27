@@ -34,7 +34,7 @@ public:
     glGenBuffers(1, &vertex_buffer_id);
     glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_id);
     glBufferData(GL_ARRAY_BUFFER,
-                 (signed)(vertex_buffer.size() * sizeof(float)),
+                 GLsizeiptr(vertex_buffer.size() * sizeof(float)),
                  vertex_buffer.data(), GL_STATIC_DRAW);
     metrics.buffered_vertex_data += vertex_buffer.size() * sizeof(float);
     for (const range &mtlrng : ranges) {
@@ -87,7 +87,7 @@ public:
         glBindTexture(GL_TEXTURE_2D, 0);
         glDisableVertexAttribArray(shaders::atex);
       }
-      glDrawArrays(GL_TRIANGLES, (signed)mr.begin, (signed)mr.count);
+      glDrawArrays(GL_TRIANGLES, mr.begin, mr.count);
       metrics.rendered_triangles += mr.count / 3;
       if (m.texture_id) {
         glBindTexture(GL_TEXTURE_2D, 0);

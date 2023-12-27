@@ -147,10 +147,17 @@ public:
       printf("program linking error: %s\n", msg);
       std::abort();
     }
+
     glDeleteShader(vertex_shader_id);
     glDeleteShader(fragment_shader_id);
+
+    for (const GLuint i : attrs) {
+      glEnableVertexAttribArray(i);
+    }
+
     gl_check_error("exit load_program_from_source");
     programs.push_back({program_id, std::move(attrs)});
+
     return int(programs.size() - 1);
   }
 
