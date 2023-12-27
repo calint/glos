@@ -43,27 +43,28 @@ public:
       // o->physics = o->physics_nxt;
     }
     {
-      object *o = new (objects.alloc()) santa{};
-      o->name = "santa1";
-      o->physics_nxt.position = {-20, o->volume.radius, 20};
-      o->physics_nxt.angular_velocity = glm::vec3(0, glm::radians(20.0f), 0);
-      o->physics = o->physics_nxt;
-      o->net_state = &net.states[1];
+      // object *o = new (objects.alloc()) santa{};
+      // o->name = "santa1";
+      // o->physics_nxt.position = {-20, o->volume.radius, 20};
+      // o->physics_nxt.angular_velocity = glm::vec3(0, glm::radians(20.0f), 0);
+      // o->physics = o->physics_nxt;
+      // o->net_state = &net.states[1];
 
       camera.type = LOOK_AT;
-      camera.position = {0, 40, 50};
-      camera_follow_object = o;
+      camera.position = {0, 50, 50};
+      camera.look_at = {0, 0, 0};
+      // camera_follow_object = o;
 
       // camera.type = ANGLE;
       // camera.position = {0, 100, 50};
       // camera.angle = {glm::radians(0.0f), 0, 0};
     }
     {
-      object *o = new (objects.alloc()) santa{};
-      o->name = "santa2";
-      o->physics_nxt.position = {20, o->volume.radius, 10};
-      o->physics = o->physics_nxt;
-      o->net_state = &net.states[2];
+      // object *o = new (objects.alloc()) santa{};
+      // o->name = "santa2";
+      // o->physics_nxt.position = {20, o->volume.radius, 10};
+      // o->physics = o->physics_nxt;
+      // o->net_state = &net.states[2];
     }
 
     ambient_light = glm::normalize(glm::vec3{0, 1, 0});
@@ -79,15 +80,15 @@ public:
     // camera.ortho_max_x = 80;
     // camera.ortho_max_y = 80;
 
-    for (float y = -80; y <= 80; y += 1) {
-      for (float x = -80; x <= 80; x += 1) {
-        object *o = new (objects.alloc()) santa{};
-        o->name = "santa1";
-        o->physics_nxt.position = {x, o->volume.radius, y};
-        o->physics = o->physics_nxt;
-        o->net_state = &net.states[1];
-      }
-    }
+    // for (float y = -80; y <= 80; y += 1) {
+    //   for (float x = -80; x <= 80; x += 1) {
+    //     object *o = new (objects.alloc()) santa{};
+    //     o->name = "santa1";
+    //     o->physics_nxt.position = {x, o->volume.radius, y};
+    //     o->physics = o->physics_nxt;
+    //     o->net_state = &net.states[1];
+    //   }
+    // }
   }
 
   void free() {}
@@ -96,7 +97,7 @@ public:
     const int n = objects_count - objects.allocated_list_len();
     for (int i = 0; i < n; i++) {
       float x = float(rand()) / float(RAND_MAX) * 160 - 80;
-      float y = 10;
+      float y = 50;
       float z = float(rand()) / float(RAND_MAX) * 160 - 80;
       object *o = new (objects.alloc()) santa{};
       o->name = "santa1";

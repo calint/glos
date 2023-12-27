@@ -31,5 +31,5 @@ static constexpr int objects_count = 32 * 1024;
 static constexpr int objects_instance_size_B = 1024;
 
 // collision bits
-static constexpr int cb_none = 0;
-static constexpr int cb_hero = 1;
+static constexpr unsigned cb_none = 0;
+static constexpr unsigned cb_hero = 1;
