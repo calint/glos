@@ -48,7 +48,7 @@ public:
         SDL_Surface *surface = IMG_Load(mtl.map_Kd.c_str());
         if (!surface) {
           printf("!!! could not load image from '%s'\n", mtl.map_Kd.c_str());
-          abort();
+          std::abort();
         }
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface->w, surface->h, 0,
                      GL_RGB, GL_UNSIGNED_BYTE, surface->pixels);
@@ -153,7 +153,7 @@ public:
                   __LINE__);
           fprintf(stderr, "        name: '%s'\n\n", name.c_str());
           fprintf(stderr, "\n\n");
-          abort();
+          std::abort();
         }
         if (prev_vertex_buffer_ix != vertex_buffer_ix) {
           material_ranges.emplace_back(prev_vertex_buffer_ix, vertex_buffer_ix,
@@ -278,7 +278,7 @@ public:
     std::ifstream file(path);
     if (!file) {
       printf("!!! cannot open file '%s'\n", path);
-      abort();
+      std::abort();
     }
     std::stringstream buffer;
     buffer << file.rdbuf();
@@ -299,7 +299,7 @@ public:
     fprintf(stderr, "\n%s:%u: could not find glo '%s' \n", __FILE__, __LINE__,
             name);
     fprintf(stderr, "\n\n");
-    abort();
+    std::abort();
   }
 };
 

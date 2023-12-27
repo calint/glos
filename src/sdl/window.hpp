@@ -15,29 +15,29 @@ public:
                          window_width, window_height, SDL_WINDOW_OPENGL);
     if (!sdl_window) {
       printf("%s %d: %s", __FILE__, __LINE__, SDL_GetError());
-      abort();
+      std::abort();
     }
     glcontext = SDL_GL_CreateContext(sdl_window);
     if (!glcontext) {
       printf("%s %d: %s", __FILE__, __LINE__, SDL_GetError());
-      abort();
+      std::abort();
     }
     if (SDL_GL_SetSwapInterval(1)) {
       printf("%s %d: %s", __FILE__, __LINE__, SDL_GetError());
-      abort();
+      std::abort();
     }
     if (SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1)) {
       printf("%s %d: %s", __FILE__, __LINE__, SDL_GetError());
-      abort();
+      std::abort();
     }
     if (SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24)) {
       printf("%s %d: %s", __FILE__, __LINE__, SDL_GetError());
-      abort();
+      std::abort();
     }
     renderer = SDL_CreateRenderer(sdl_window, -1, SDL_WINDOW_OPENGL);
     if (!renderer) {
       printf("%s %d: %s", __FILE__, __LINE__, SDL_GetError());
-      abort();
+      std::abort();
     }
 
     gl_print_context_profile_and_version();
@@ -55,15 +55,15 @@ public:
                                                     int major, int minor) {
     if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, prof)) {
       printf("%s %d: %s", __FILE__, __LINE__, SDL_GetError());
-      abort();
+      std::abort();
     }
     if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, major)) {
       printf("%s %d: %s", __FILE__, __LINE__, SDL_GetError());
-      abort();
+      std::abort();
     }
     if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, minor)) {
       printf("%s %d: %s", __FILE__, __LINE__, SDL_GetError());
-      abort();
+      std::abort();
     }
   }
 
@@ -71,7 +71,7 @@ public:
     int value;
     if (SDL_GL_GetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, &value)) {
       printf("%s %d: %s", __FILE__, __LINE__, SDL_GetError());
-      abort();
+      std::abort();
     }
     printf("%-32s", "SDL_GL_CONTEXT_PROFILE_MASK");
     switch (value) {
@@ -90,19 +90,19 @@ public:
     default:
       perror("unknown option");
       printf("%s %d: %d", __FILE__, __LINE__, value);
-      abort();
+      std::abort();
     }
     printf(" (%d)\n", value);
 
     if (SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &value)) {
       printf("%s %d: %s", __FILE__, __LINE__, SDL_GetError());
-      abort();
+      std::abort();
     }
     printf("%-32s  %d\n", "SDL_GL_CONTEXT_MAJOR_VERSION", value);
 
     if (SDL_GL_GetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, &value)) {
       printf("%s %d: %s", __FILE__, __LINE__, SDL_GetError());
-      abort();
+      std::abort();
     }
     printf("%-32s  %d\n", "SDL_GL_CONTEXT_MINOR_VERSION", value);
   }

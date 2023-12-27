@@ -64,7 +64,7 @@ inline static unsigned token_get_uint(token *t) {
   int i = atoi(t->content); //?  assuming file ends with whitespace, error?
   if (i < 0) {
     //? break
-    abort();
+    std::abort();
   }
   return (unsigned)i;
 }
