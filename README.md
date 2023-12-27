@@ -24,7 +24,7 @@ intention:
   - convex volume vs convex volume _(todo)_
 
 ubuntu packages used:
+* libglm-dev: opengl math
+* libtbb-dev: parallel unsequenced `for_each`
 * sdl2 related packages
 * opengl related packages 
-* libglm-dev - opengl math
-* libtbb-dev - parallel for_each
