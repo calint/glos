@@ -7,21 +7,21 @@ intention:
   - synchronized client input signals
   - clients render at the rate of the slowest client
   - server synchronizes clients signals
-* importing blender exported 'obj' files
+* multithreaded grid of cells that partition world space
+  - update and collision detection between objects
+* importing blender exported `obj` files
 * explore opengl rendering
 * intuitive programming of application objects and logic
 * application code written in `src/app/` and included by `src/main.cpp`
-* multithreaded grid of cells that partition world space
-  - update and collision detection of objects
 * collision detection
   - bounding radius
-  - bounding boxes (todo)
-  - bounding convex volumes (todo)
+  - bounding boxes _(todo)_
+  - bounding convex volumes _(todo)_
 * collision reaction
-  - sphere vs sphere (todo)
-  - sphere vs box (todo)
-  - box vs box (todo)
-  - convex volume vs convex volume (todo)
+  - sphere vs sphere _(todo)_
+  - sphere vs box _(todo)_
+  - box vs box _(todo)_
+  - convex volume vs convex volume _(todo)_
 
 ubuntu packages used:
 * sdl2 related packages
