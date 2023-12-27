@@ -8,7 +8,7 @@ intention:
   - clients render at the rate of the slowest client
   - server synchronizes clients signals
 * multithreaded grid of cells that partition world space
-  - update and collision detection between objects
+  - update and collision detection of objects
 * importing blender exported `obj` files
 * explore legacy opengl rendering
 * intuitive programming of game objects and logic
