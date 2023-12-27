@@ -227,7 +227,8 @@ int main(int argc, char *argv[]) {
       update_frame_num++;
       {
         std::unique_lock<std::mutex> lock{is_rendering_mutex};
-        is_rendering_cv.wait(lock, [&is_rendering] { return not is_rendering; });
+        is_rendering_cv.wait(lock,
+                             [&is_rendering] { return not is_rendering; });
 
         // printf("update %u\n", update_frame_num);
 
@@ -293,8 +294,7 @@ int main(int argc, char *argv[]) {
       case SDL_WINDOWEVENT: {
         switch (event.window.event) {
         case SDL_WINDOWEVENT_SIZE_CHANGED: {
-          int w = 0, h = 0;
-          SDL_GetWindowSize(window.sdl_window, &w, &h);
+          auto [w, h] = window.get_width_and_height();
           camera.width = (float)w;
           camera.height = (float)h;
           glViewport(0, 0, w, h);

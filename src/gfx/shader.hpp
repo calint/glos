@@ -197,9 +197,8 @@ private:
 #endif
 #if defined __gl_h_
     case GL_STACK_OVERFLOW:
-      op
-          //		str = "GL_STACK_OVERFLOW";-Wunused-variable
-          break;
+      str = "GL_STACK_OVERFLOW";
+      break;
     case GL_STACK_UNDERFLOW:
       str = "GL_STACK_UNDERFLOW";
       break;

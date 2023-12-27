@@ -1,15 +1,14 @@
 #pragma once
 // reviewed: 2023-12-22
+// reviewed: 2023-12-27
 
 class window final {
-public:
   SDL_Window *sdl_window = nullptr;
-  SDL_Renderer *renderer = nullptr;
-  SDL_GLContext glcontext = nullptr;
+  SDL_Renderer *sdl_renderer = nullptr;
+  SDL_GLContext sdl_gl_context = nullptr;
 
+public:
   inline void init() {
-    gl_request_profile_and_version(SDL_GL_CONTEXT_PROFILE_ES, 3, 2);
-
     sdl_window =
         SDL_CreateWindow("glos", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                          window_width, window_height, SDL_WINDOW_OPENGL);
@@ -17,25 +16,22 @@ public:
       printf("%s %d: %s", __FILE__, __LINE__, SDL_GetError());
       std::abort();
     }
-    glcontext = SDL_GL_CreateContext(sdl_window);
-    if (!glcontext) {
+
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK,
+                        SDL_GL_CONTEXT_PROFILE_CORE);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+
+    sdl_gl_context = SDL_GL_CreateContext(sdl_window);
+    if (!sdl_gl_context) {
       printf("%s %d: %s", __FILE__, __LINE__, SDL_GetError());
       std::abort();
     }
-    if (SDL_GL_SetSwapInterval(1)) {
-      printf("%s %d: %s", __FILE__, __LINE__, SDL_GetError());
-      std::abort();
-    }
-    if (SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1)) {
-      printf("%s %d: %s", __FILE__, __LINE__, SDL_GetError());
-      std::abort();
-    }
-    if (SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24)) {
-      printf("%s %d: %s", __FILE__, __LINE__, SDL_GetError());
-      std::abort();
-    }
-    renderer = SDL_CreateRenderer(sdl_window, -1, SDL_WINDOW_OPENGL);
-    if (!renderer) {
+
+    sdl_renderer = SDL_CreateRenderer(
+        sdl_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    if (!sdl_renderer) {
       printf("%s %d: %s", __FILE__, __LINE__, SDL_GetError());
       std::abort();
     }
@@ -44,29 +40,21 @@ public:
   }
 
   inline void free() {
-    SDL_DestroyRenderer(renderer);
-    SDL_GL_DeleteContext(glcontext);
+    SDL_DestroyRenderer(sdl_renderer);
+    SDL_GL_DeleteContext(sdl_gl_context);
     SDL_DestroyWindow(sdl_window);
   }
 
   inline void swap_buffers() { SDL_GL_SwapWindow(sdl_window); }
 
-  inline static void gl_request_profile_and_version(SDL_GLprofile prof,
-                                                    int major, int minor) {
-    if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, prof)) {
-      printf("%s %d: %s", __FILE__, __LINE__, SDL_GetError());
-      std::abort();
-    }
-    if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, major)) {
-      printf("%s %d: %s", __FILE__, __LINE__, SDL_GetError());
-      std::abort();
-    }
-    if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, minor)) {
-      printf("%s %d: %s", __FILE__, __LINE__, SDL_GetError());
-      std::abort();
-    }
+  inline auto get_width_and_height() const -> std::pair<int, int> {
+    int w = 0;
+    int h = 0;
+    SDL_GetWindowSize(sdl_window, &w, &h);
+    return {w, h};
   }
 
+private:
   inline static void gl_print_context_profile_and_version() {
     int value;
     if (SDL_GL_GetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, &value)) {

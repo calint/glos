@@ -10,9 +10,9 @@ intention:
 * multithreaded grid of cells that partition world space
   - update and collision detection between objects
 * importing blender exported `obj` files
-* explore opengl rendering
-* intuitive programming of application objects and logic
-* application code written in `src/app/` and included by `src/main.cpp`
+* explore legacy opengl rendering
+* intuitive programming of game objects and logic
+* game code written in `src/app/` and included by `src/main.cpp`
 * collision detection
   - bounding radius
   - bounding boxes _(todo)_
