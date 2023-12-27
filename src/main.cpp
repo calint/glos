@@ -213,9 +213,9 @@ int main(int argc, char *argv[]) {
   }
 
   // synchronization of update and render thread
-  std::mutex update_render_mutex{};
-  std::condition_variable update_render_cv{};
-  bool is_update = true;
+  bool is_rendering = false;
+  std::mutex is_rendering_mutex{};
+  std::condition_variable is_rendering_cv{};
 
   // while application is running
   bool is_running = true;
@@ -226,8 +226,8 @@ int main(int argc, char *argv[]) {
     while (is_running) {
       update_frame_num++;
       {
-        std::unique_lock<std::mutex> lock{update_render_mutex};
-        update_render_cv.wait(lock, [&is_update] { return is_update; });
+        std::unique_lock<std::mutex> lock{is_rendering_mutex};
+        is_rendering_cv.wait(lock, [&is_rendering] { return not is_rendering; });
 
         // printf("update %u\n", update_frame_num);
 
@@ -240,9 +240,9 @@ int main(int argc, char *argv[]) {
           grid.add(obj);
         }
 
-        is_update = false;
+        is_rendering = true;
         lock.unlock();
-        update_render_cv.notify_one();
+        is_rendering_cv.notify_one();
       }
 
       if (print_grid) {
@@ -278,8 +278,8 @@ int main(int argc, char *argv[]) {
       }
     }
     // in case render thread is waiting
-    is_update = false;
-    update_render_cv.notify_one();
+    is_rendering = true;
+    is_rendering_cv.notify_one();
   });
 
   // enter game loop
@@ -415,8 +415,8 @@ int main(int argc, char *argv[]) {
 
     {
       // don't render when grid is adding objects to cells
-      std::unique_lock<std::mutex> lock{update_render_mutex};
-      update_render_cv.wait(lock, [&is_update] { return not is_update; });
+      std::unique_lock<std::mutex> lock{is_rendering_mutex};
+      is_rendering_cv.wait(lock, [&is_rendering] { return is_rendering; });
 
       render_frame_num++;
       // printf("render %d\n", render_frame_num);
@@ -425,9 +425,9 @@ int main(int argc, char *argv[]) {
         main_render(render_frame_num);
       }
 
-      is_update = true;
+      is_rendering = false;
       lock.unlock();
-      update_render_cv.notify_one();
+      is_rendering_cv.notify_one();
     }
 
     // metrics
@@ -437,8 +437,8 @@ int main(int argc, char *argv[]) {
   //---------------------------------------------------------------------free
 
   // in case 'update' thread is waiting
-  is_update = true;
-  update_render_cv.notify_one();
+  is_rendering = false;
+  is_rendering_cv.notify_one();
   update_thread.join();
 
   application.free();
