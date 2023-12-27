@@ -1,3 +1,4 @@
+[ ] shaders: move program activation from 'main' to 'program'
 [ ] glo: upgrade to glGenVertexArrays (opengl es3)
 [ ] move init() and free() into constructor and destructor
 [ ] glos.get_by_index instead of main in constructors of game objects
