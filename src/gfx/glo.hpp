@@ -249,7 +249,7 @@ public:
           vertex_buffer.push_back(current_object_material.Kd.x);
           vertex_buffer.push_back(current_object_material.Kd.y);
           vertex_buffer.push_back(current_object_material.Kd.z);
-          vertex_buffer.push_back(1);
+          vertex_buffer.push_back(1); // opacity
           // normal
           vertex_buffer.push_back(normal.x);
           vertex_buffer.push_back(normal.y);

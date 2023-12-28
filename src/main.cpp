@@ -45,7 +45,7 @@ static struct color {
   GLclampf red;
   GLclampf green;
   GLclampf blue;
-} background_color = {0, 0, .3f};
+} background_color = {0, 0, 0};
 
 static glm::vec3 ambient_light = glm::normalize(glm::vec3{0, 1, 1});
 
