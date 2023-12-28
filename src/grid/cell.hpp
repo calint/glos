@@ -138,7 +138,6 @@ private:
     const float relative_velocity =
         glm::dot(Oj->physics.velocity - Oi->physics.velocity, collision_normal);
 
-    constexpr float restitution = 1;
     if (relative_velocity < 0) {
       // objects are moving towards each other
 
@@ -147,6 +146,7 @@ private:
         objects.free(Oi);
       }
 
+      constexpr float restitution = 1;
       const float impulse = -(1.0f + restitution) * relative_velocity /
                             (1.0f / Oi->physics.mass + 1.0f / Oj->physics.mass);
 
