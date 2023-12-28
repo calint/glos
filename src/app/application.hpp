@@ -57,16 +57,16 @@ public:
       o->name = "sphere1";
       o->physics_nxt.mass = 3;
       o->physics_nxt.position = {-5, o->volume.radius, 0};
-      o->physics_nxt.velocity = {2, 0, 0};
+      o->physics_nxt.velocity = {4, 0, 0};
       o->physics = o->physics_nxt;
     }
 
     {
       sphere *o = new (objects.alloc()) sphere{};
       o->name = "sphere2";
-      o->physics_nxt.mass = 2;
+      o->physics_nxt.mass = 5;
       o->physics_nxt.position = {5, o->volume.radius, 0};
-      o->physics_nxt.velocity = {-3, 0, 0};
+      o->physics_nxt.velocity = {-6, 0, 0};
       o->physics = o->physics_nxt;
     }
 
