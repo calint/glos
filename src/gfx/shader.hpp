@@ -15,20 +15,8 @@ public:
 class program final {
 public:
   GLuint id = 0;
-  std::vector<GLuint> enabled_attributes{};
 
-  inline void activate() {
-    for (GLuint ix : enabled_attributes) {
-      glEnableVertexAttribArray(ix);
-    }
-    glUseProgram(id);
-  }
-
-  inline void deactivate() {
-    for (GLuint ix : enabled_attributes) {
-      glDisableVertexAttribArray(ix);
-    }
-  }
+  inline void activate() { glUseProgram(id); }
 };
 
 class shaders final {
@@ -65,7 +53,6 @@ class shaders final {
   }
 )";
 
-  int active_program_ix = 0;
   std::vector<program> programs{};
 
 public:
@@ -106,9 +93,8 @@ public:
     printf(":-%10s-:-%7s-:\n", "----------", "-------");
     puts("");
 
-    const int default_program_id = load_program_from_source(
-        vertex_shader_source, fragment_shader_source,
-        {shaders::apos, shaders::argba, shaders::anorm, shaders::atex});
+    const int default_program_id =
+        load_program_from_source(vertex_shader_source, fragment_shader_source);
 
     programs.at(size_t(default_program_id)).activate();
 
@@ -146,8 +132,8 @@ public:
     }
   }
 
-  auto load_program_from_source(const char *vert_src, const char *frag_src,
-                                std::vector<GLuint> attrs) -> int {
+  auto load_program_from_source(const char *vert_src, const char *frag_src)
+      -> int {
     gl_check_error("enter load_program_from_source");
     const GLuint program_id = glCreateProgram();
     const GLuint vertex_shader_id = compile(GL_VERTEX_SHADER, vert_src);
@@ -167,12 +153,8 @@ public:
     glDeleteShader(vertex_shader_id);
     glDeleteShader(fragment_shader_id);
 
-    for (const GLuint i : attrs) {
-      glEnableVertexAttribArray(i);
-    }
-
     gl_check_error("exit load_program_from_source");
-    programs.push_back({program_id, std::move(attrs)});
+    programs.push_back({program_id});
 
     return int(programs.size() - 1);
   }
@@ -180,12 +162,7 @@ public:
   inline auto programs_count() const -> int { return int(programs.size()); }
 
   inline void activate_program(const int ix) {
-    if (active_program_ix == ix) {
-      return;
-    }
-    programs.at(size_t(active_program_ix)).deactivate();
     programs.at(size_t(ix)).activate();
-    active_program_ix = ix;
   }
 
 private:

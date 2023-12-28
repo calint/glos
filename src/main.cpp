@@ -78,7 +78,7 @@ void main() {
 }
     )";
 
-    shaders.load_program_from_source(vtx, frag, {shaders::apos});
+    shaders.load_program_from_source(vtx, frag);
   }
   {
     const char *vtx = R"(
@@ -103,8 +103,7 @@ void main(){
 }
     )";
 
-    shaders.load_program_from_source(vtx, frag,
-                                     {shaders::apos, shaders::argba});
+    shaders.load_program_from_source(vtx, frag);
   }
 }
 
