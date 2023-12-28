@@ -150,7 +150,7 @@ public:
         token t = token_next(&p);
         const unsigned n = token_size(&t);
         object_name = std::string{t.content, t.content + n};
-        printf("   %s\n", object_name.c_str());
+        printf("     %s\n", object_name.c_str());
         continue;
       }
       if (token_equals(&t, "usemtl")) {
@@ -268,9 +268,15 @@ public:
                                  vertex_buffer_ix - vertex_buffer_ix_prv,
                                  current_object_material_ix);
 
-    printf("   %zu range%c  %lu vertices   %zu B   radius: %0.3f\n",
+    int ntriangles = 0;
+    for (const range &r : material_ranges) {
+      ntriangles += r.vertex_count / 3;
+    }
+
+    printf("     %zu range%c   %lu vertices   %d triangles   %zu B   radius: "
+           "%0.2f\n",
            material_ranges.size(), material_ranges.size() == 1 ? ' ' : 's',
-           vertex_buffer.size() / sizeof(vertex),
+           vertex_buffer.size() / sizeof(vertex), ntriangles,
            vertex_buffer.size() * sizeof(float), bounding_radius);
 
     glo *g = new glo{std::move(object_name), std::move(vertex_buffer),
