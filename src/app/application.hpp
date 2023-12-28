@@ -65,7 +65,7 @@ public:
 
     {
       sphere *o = new (objects.alloc()) sphere{};
-      o->name = "santa3";
+      o->name = "sphere3";
       o->physics_nxt.mass = 1;
       o->physics_nxt.position = {4, o->volume.radius, 0};
       o->physics_nxt.velocity = {-1, 0, 0};

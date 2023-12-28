@@ -27,6 +27,7 @@ public:
       }
 
       // only one thread at a time gets to this code
+
       if (o->update(fc)) {
         o->set_is_dead();
         objects.free(o);
@@ -131,26 +132,24 @@ private:
 
     // only one thread at a time can be here
 
-    if (not Oi->is_dead() and Oi->on_collision(Oj, fc)) {
-      Oi->set_is_dead();
-      objects.free(Oi);
-    }
-
     const glm::vec3 collision_normal =
         glm::normalize(Oj->physics.position - Oi->physics.position);
-    // std::cout << "collision_normal = " << glm::to_string(collision_normal)
-    //           << "\n";
 
     const float relative_velocity =
         glm::dot(Oj->physics.velocity - Oi->physics.velocity, collision_normal);
-    // std::cout << "relative_velocity = " << relative_velocity << "\n";
 
     constexpr float restitution = 1;
     if (relative_velocity < 0) {
+      // objects are moving towards each other
+
+      if (not Oi->is_dead() and Oi->on_collision(Oj, fc)) {
+        Oi->set_is_dead();
+        objects.free(Oi);
+      }
+
       const float impulse = -(1.0f + restitution) * relative_velocity /
                             (1.0f / Oi->physics.mass + 1.0f / Oj->physics.mass);
-      // std::cout << "impulse = " << impulse << "\n";
-      
+
       Oi->physics_nxt.velocity -= impulse / Oi->physics.mass * collision_normal;
     }
 
