@@ -179,8 +179,8 @@ int main(int argc, char *argv[]) {
   }
   // sdl.play_path("music/ambience.mp3");
 
-  unsigned shader_program_ix = 0;
-  unsigned shader_program_ix_prev = shader_program_ix;
+  int shader_program_ix = 0;
+  int shader_program_ix_prev = shader_program_ix;
   const float rad_over_degree = 2.0f * glm::pi<float>() / 360.0f;
   float rad_over_mouse_pixels = rad_over_degree * .02f;
   float mouse_sensitivity = 1.5f;
@@ -189,17 +189,6 @@ int main(int argc, char *argv[]) {
   bool do_main_render = true;
   bool print_grid = false;
   bool resolve_collisions = true;
-
-  {
-    puts("");
-    const program &p = shaders.programs.at(shader_program_ix);
-    glUseProgram(p.id);
-    printf(" * using program at index %u\n", shader_program_ix);
-    for (GLuint ix : p.enabled_attributes) {
-      glEnableVertexAttribArray(ix);
-    }
-    puts("");
-  }
 
   SDL_SetRelativeMouseMode(mouse_mode ? SDL_TRUE : SDL_FALSE);
 
@@ -374,7 +363,7 @@ int main(int argc, char *argv[]) {
           break;
         case SDLK_3:
           shader_program_ix++;
-          if (shader_program_ix >= shaders.programs.size()) {
+          if (shader_program_ix >= shaders.programs_count()) {
             shader_program_ix = 0;
           }
           break;
@@ -395,21 +384,7 @@ int main(int argc, char *argv[]) {
     // check if shader program has changed
     if (shader_program_ix_prev != shader_program_ix) {
       printf(" * switching to program at index %u\n", shader_program_ix);
-      {
-        const program &p = shaders.programs.at(shader_program_ix_prev);
-        for (GLuint ix : p.enabled_attributes) {
-          printf("   * disable vertex attrib array %d\n", ix);
-          glDisableVertexAttribArray(ix);
-        }
-      }
-      {
-        const program &p = shaders.programs.at(shader_program_ix);
-        glUseProgram(p.id);
-        for (GLuint ix : p.enabled_attributes) {
-          printf("   * enable vertex attrib array %d\n", ix);
-          glEnableVertexAttribArray(ix);
-        }
-      }
+      shaders.activate_program(shader_program_ix);
       shader_program_ix_prev = shader_program_ix;
     }
 

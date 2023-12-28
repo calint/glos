@@ -16,6 +16,19 @@ class program final {
 public:
   GLuint id = 0;
   std::vector<GLuint> enabled_attributes{};
+
+  inline void activate() {
+    for (GLuint ix : enabled_attributes) {
+      glEnableVertexAttribArray(ix);
+    }
+    glUseProgram(id);
+  }
+
+  inline void deactivate() {
+    for (GLuint ix : enabled_attributes) {
+      glDisableVertexAttribArray(ix);
+    }
+  }
 };
 
 class shaders final {
@@ -52,6 +65,9 @@ class shaders final {
   }
 )";
 
+  int active_program_ix = 0;
+  std::vector<program> programs{};
+
 public:
   // enabled_attributes layout in shaders
   static constexpr unsigned apos = 0;
@@ -64,8 +80,6 @@ public:
   // uniform textures
   static constexpr unsigned utex = 2; // texture mapper
   static constexpr unsigned ulht = 3; // light vector
-
-  std::vector<program> programs{};
 
   inline void init() {
     gl_check_error("init");
@@ -92,9 +106,11 @@ public:
     printf(":-%10s-:-%7s-:\n", "----------", "-------");
     puts("");
 
-    load_program_from_source(
+    const int default_program_id = load_program_from_source(
         vertex_shader_source, fragment_shader_source,
         {shaders::apos, shaders::argba, shaders::anorm, shaders::atex});
+
+    programs.at(size_t(default_program_id)).activate();
 
     printf("shader uniform locations:\n");
     printf(":-%10s-:-%7s-:\n", "----------", "-------");
@@ -159,6 +175,17 @@ public:
     programs.push_back({program_id, std::move(attrs)});
 
     return int(programs.size() - 1);
+  }
+
+  inline auto programs_count() const -> int { return int(programs.size()); }
+
+  inline void activate_program(const int ix) {
+    if (active_program_ix == ix) {
+      return;
+    }
+    programs.at(size_t(active_program_ix)).deactivate();
+    programs.at(size_t(ix)).activate();
+    active_program_ix = ix;
   }
 
 private:
