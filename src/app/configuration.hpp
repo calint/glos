@@ -33,3 +33,8 @@ static constexpr int objects_instance_size_B = 1024;
 // collision bits
 static constexpr unsigned cb_none = 0;
 static constexpr unsigned cb_hero = 1;
+
+// glo indexes
+static constexpr int glo_index_skydome = 0;
+static constexpr int glo_index_grid = 1;
+static constexpr int glo_index_santa = 2;

@@ -14,17 +14,16 @@ public:
 
     static_assert(sizeof(santa) <= objects_instance_size_B, "");
 
+    // the load order matches the 'glo_index_*' configuration
     glos.load_from_file("obj/skydome.obj");
     glos.load_from_file("obj/grid.obj");
-    glos.load_from_file("obj/santa.obj");
     glos.load_from_file("obj/icosphere.obj");
-    // glos.load_from_file("obj/grouped.obj");
 
     constexpr float world_size = grid_cell_size * grid_ncells_wide;
     {
       object *o = new (objects.alloc()) object{};
       o->name = "skydome";
-      o->node.glo = glos.find_by_name("skydome");
+      o->node.glo = glos.get_by_index(glo_index_skydome);
       const float skydome_scale =
           world_size / (2 * o->node.glo->bounding_radius);
       o->volume.scale = {skydome_scale, skydome_scale, skydome_scale};
@@ -34,7 +33,7 @@ public:
     {
       object *o = new (objects.alloc()) object{};
       o->name = "grid";
-      o->node.glo = glos.find_by_name("grid");
+      o->node.glo = glos.get_by_index(glo_index_grid);
       constexpr float grid_scale = world_size / 16;
       // note. 16 is the model coordinates span from -8 to 8
       o->volume.scale = {grid_scale, grid_scale, grid_scale};

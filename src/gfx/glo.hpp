@@ -290,7 +290,7 @@ public:
     delete g;
   }
 
-  inline glo *find_by_name(const char *name) {
+  inline auto get_by_name(const char *name) -> glo * {
     for (glo &g : store) {
       if (!strcmp(name, g.name.c_str())) {
         return &g;
@@ -301,6 +301,8 @@ public:
     fprintf(stderr, "\n\n");
     std::abort();
   }
+
+  inline glo *get_by_index(const int ix) { return &store.at(size_t(ix)); }
 };
 
 static glos glos{};

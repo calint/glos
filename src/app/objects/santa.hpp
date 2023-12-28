@@ -5,7 +5,7 @@ class santa : public object {
 public:
   inline santa() {
     //? glos.find_by_index for O(1)
-    node.glo = glos.find_by_name("icosphere");
+    node.glo = glos.get_by_index(glo_index_santa);
     volume.scale = {1, 1, 1};
     volume.radius = node.glo->bounding_radius * 1; // r * scale
     collision_bits = cb_hero;
