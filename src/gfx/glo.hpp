@@ -10,9 +10,9 @@
 
 class range final {
 public:
-  int begin = 0;
-  int count = 0;
-  int material_ix = 0;
+  int vertex_begin = 0; // index in vertex buffer where triangle data starts
+  int vertex_count = 0; // number of triangle vertices in the range
+  int material_ix = 0;  // index in 'materials'
 };
 
 class glo final {
@@ -62,6 +62,7 @@ public:
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     metrics.buffered_vertex_data += vertex_buffer.size() * sizeof(float);
+
     for (const range &mtlrng : ranges) {
       material &mtl = materials.store.at(unsigned(mtlrng.material_ix));
       if (not mtl.map_Kd.empty()) {
@@ -95,18 +96,15 @@ public:
     glBindVertexArray(vertex_array_id);
     for (const range &mr : ranges) {
       const material &m = materials.store.at(unsigned(mr.material_ix));
+      glActiveTexture(GL_TEXTURE0);
       if (m.texture_id) {
         glUniform1i(shaders::utex, 0);
-        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, m.texture_id);
-        glEnableVertexAttribArray(shaders::atex);
       } else {
-        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, 0);
-        glDisableVertexAttribArray(shaders::atex);
       }
-      glDrawArrays(GL_TRIANGLES, mr.begin, mr.count);
-      metrics.rendered_triangles += mr.count / 3;
+      glDrawArrays(GL_TRIANGLES, mr.vertex_begin, mr.vertex_count);
+      metrics.rendered_triangles += mr.vertex_count / 3;
       if (m.texture_id) {
         glBindTexture(GL_TEXTURE_2D, 0);
       }
@@ -128,7 +126,7 @@ public:
     unsigned current_object_material_ix = 0;
     const char *basedir = "obj/";
     unsigned vertex_buffer_ix = 0;
-    unsigned prev_vertex_buffer_ix = 0;
+    unsigned vertex_buffer_ix_prv = 0;
     int first_o = 1;
     std::string object_name = "";
     float bounding_radius = 0;
@@ -174,10 +172,11 @@ public:
           fprintf(stderr, "\n\n");
           std::abort();
         }
-        if (prev_vertex_buffer_ix != vertex_buffer_ix) {
-          material_ranges.emplace_back(prev_vertex_buffer_ix, vertex_buffer_ix,
+        if (vertex_buffer_ix_prv != vertex_buffer_ix) {
+          material_ranges.emplace_back(vertex_buffer_ix_prv,
+                                       vertex_buffer_ix - vertex_buffer_ix_prv,
                                        current_object_material_ix);
-          prev_vertex_buffer_ix = vertex_buffer_ix;
+          vertex_buffer_ix_prv = vertex_buffer_ix;
         }
       }
       if (token_equals(&t, "s")) {
@@ -242,7 +241,7 @@ public:
           const glm::vec3 &normal = normals.at(ix3 - 1);
 
           // add to buffer
-          // vertex
+          // position
           vertex_buffer.push_back(vertex.x);
           vertex_buffer.push_back(vertex.y);
           vertex_buffer.push_back(vertex.z);
@@ -265,7 +264,8 @@ public:
       }
     }
     // add the last material range
-    material_ranges.emplace_back(prev_vertex_buffer_ix, vertex_buffer_ix,
+    material_ranges.emplace_back(vertex_buffer_ix_prv,
+                                 vertex_buffer_ix - vertex_buffer_ix_prv,
                                  current_object_material_ix);
 
     printf("   %zu range%c  %lu vertices   %zu B   radius: %0.3f\n",

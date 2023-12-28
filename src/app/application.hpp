@@ -20,6 +20,7 @@ public:
     glos.load_from_file("obj/icosphere.obj");
 
     constexpr float world_size = grid_cell_size * grid_ncells_wide;
+
     {
       object *o = new (objects.alloc()) object{};
       o->name = "skydome";
@@ -30,6 +31,7 @@ public:
       o->volume.radius = o->node.glo->bounding_radius * skydome_scale;
       // printf("skydome bounding radius: %0.3f\n", o->volume.radius);
     }
+
     {
       object *o = new (objects.alloc()) object{};
       o->name = "grid";
@@ -41,6 +43,7 @@ public:
       // o->physics_nxt.angular_velocity = glm::vec3(glm::radians(20.0f), 0, 0);
       // o->physics = o->physics_nxt;
     }
+
     {
       // object *o = new (objects.alloc()) santa{};
       // o->name = "santa1";
@@ -59,6 +62,7 @@ public:
       // camera.position = {0, 100, 50};
       // camera.angle = {glm::radians(0.0f), 0, 0};
     }
+
     {
       // object *o = new (objects.alloc()) santa{};
       // o->name = "santa2";
