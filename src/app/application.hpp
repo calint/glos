@@ -56,8 +56,8 @@ public:
       sphere *o = new (objects.alloc()) sphere{};
       o->name = "sphere1";
       o->physics_nxt.mass = 3;
-      o->physics_nxt.position = {-4, o->volume.radius, 0};
-      o->physics_nxt.velocity = {1, 0, 0};
+      o->physics_nxt.position = {-5, o->volume.radius, 0};
+      o->physics_nxt.velocity = {2, 0, 0};
       o->physics = o->physics_nxt;
     }
 
@@ -65,8 +65,8 @@ public:
       sphere *o = new (objects.alloc()) sphere{};
       o->name = "sphere2";
       o->physics_nxt.mass = 2;
-      o->physics_nxt.position = {0, o->volume.radius, 0};
-      o->physics_nxt.velocity = {-1, 0, 0};
+      o->physics_nxt.position = {5, o->volume.radius, 0};
+      o->physics_nxt.velocity = {-3, 0, 0};
       o->physics = o->physics_nxt;
     }
 

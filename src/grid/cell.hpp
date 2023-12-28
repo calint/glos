@@ -149,6 +149,10 @@ private:
     if (not Oi->is_dead() and Oi->on_collision(Oj, fc)) {
       Oi->set_is_dead();
       objects.free(Oi);
+      if (synchronization_necessary) {
+        Oi->release_lock();
+      }
+      return;
     }
 
     constexpr float restitution = 1;
