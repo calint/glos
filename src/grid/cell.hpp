@@ -152,10 +152,14 @@ private:
     }
 
     constexpr float restitution = 1;
-    const float impulse = -(1.0f + restitution) * relative_velocity /
-                          (1.0f / Oi->physics.mass + 1.0f / Oj->physics.mass);
+    const float impulse = (1.0f + restitution) * relative_velocity /
+                          (Oi->physics.mass + Oj->physics.mass);
 
-    Oi->physics_nxt.velocity -= impulse / Oi->physics.mass * collision_normal;
+    Oi->physics_nxt.velocity += impulse * Oj->physics.mass * collision_normal;
+
+    std::cout << Oi->name
+              << ": new velocity: " << glm::to_string(Oi->physics_nxt.velocity)
+              << "\n";
 
     if (synchronization_necessary) {
       Oi->release_lock();
