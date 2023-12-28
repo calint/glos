@@ -12,14 +12,14 @@ public:
   float texture[2];
 };
 
-class program final {
-public:
-  GLuint id = 0;
-
-  inline void activate() { glUseProgram(id); }
-};
-
 class shaders final {
+  class program final {
+  public:
+    GLuint id = 0;
+
+    inline void activate() { glUseProgram(id); }
+  };
+
   inline static const char *vertex_shader_source = R"(
   #version 330 core
   uniform mat4 umtx_mw;  // model-to-world-matrix

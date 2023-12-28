@@ -8,14 +8,14 @@
 #include <string>
 #include <vector>
 
-class range final {
-public:
-  int vertex_begin = 0; // index in vertex buffer where triangle data starts
-  int vertex_count = 0; // number of triangle vertices in the range
-  int material_ix = 0;  // index in 'materials'
-};
-
 class glo final {
+  class range final {
+  public:
+    int vertex_begin = 0; // index in vertex buffer where triangle data starts
+    int vertex_count = 0; // number of triangle vertices in the range
+    int material_ix = 0;  // index in 'materials'
+  };
+
 public:
   std::string name = "";
   std::vector<float> vertex_buffer{};
