@@ -1,6 +1,6 @@
-[x] shaders: move program activation from 'main' to 'program'
-[ ] glo: upgrade to glGenVertexArrays (opengl es3)
+[x] glo: upgrade to glGenVertexArrays (opengl es3)
 [ ] move init() and free() into constructor and destructor
+[x] shaders: move program activation from 'main' to 'program'
 [x] glos.get_by_index instead of name in constructors of game objects
 [ ] node.glo maybe should be an index instead of a pointer in case glos
     are loaded during game play and vector reallocates

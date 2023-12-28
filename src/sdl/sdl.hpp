@@ -5,7 +5,7 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_mixer.h>
-#include <SDL_opengles2.h>
+#include <GLES3/gl3.h>
 
 class sdl final {
   Mix_Music *music = nullptr;
@@ -25,6 +25,7 @@ public:
 
   inline void free() {
     Mix_FreeMusic(music);
+    Mix_CloseAudio();
     SDL_Quit();
   }
 

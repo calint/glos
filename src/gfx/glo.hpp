@@ -22,29 +22,54 @@ public:
   std::vector<range> ranges{};
   float bounding_radius = 0;
   GLuint vertex_buffer_id = 0;
+  GLuint vertex_array_id = 0;
 
   inline void free() {
     glDeleteBuffers(1, &vertex_buffer_id);
+    glDeleteVertexArrays(1, &vertex_array_id);
     metrics.buffered_vertex_data -= vertex_buffer.size() * sizeof(float);
     metrics.allocated_glos--;
   }
 
   inline void upload_to_opengl() {
-    // upload vertex buffer
+    glGenVertexArrays(1, &vertex_array_id);
+    glBindVertexArray(vertex_array_id);
+
     glGenBuffers(1, &vertex_buffer_id);
     glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_id);
     glBufferData(GL_ARRAY_BUFFER,
                  GLsizeiptr(vertex_buffer.size() * sizeof(float)),
                  vertex_buffer.data(), GL_STATIC_DRAW);
+
+    // describe the data format
+    glEnableVertexAttribArray(shaders::apos);
+    glVertexAttribPointer(shaders::apos, 3, GL_FLOAT, GL_FALSE, sizeof(vertex),
+                          0);
+
+    glEnableVertexAttribArray(shaders::argba);
+    glVertexAttribPointer(shaders::argba, 4, GL_FLOAT, GL_FALSE, sizeof(vertex),
+                          (GLvoid *)(3 * sizeof(float)));
+
+    glEnableVertexAttribArray(shaders::anorm);
+    glVertexAttribPointer(shaders::anorm, 3, GL_FLOAT, GL_FALSE, sizeof(vertex),
+                          (GLvoid *)((3 + 4) * sizeof(float)));
+
+    glEnableVertexAttribArray(shaders::atex);
+    glVertexAttribPointer(shaders::atex, 2, GL_FLOAT, GL_FALSE, sizeof(vertex),
+                          (GLvoid *)((3 + 4 + 3) * sizeof(float)));
+
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
     metrics.buffered_vertex_data += vertex_buffer.size() * sizeof(float);
     for (const range &mtlrng : ranges) {
       material &mtl = materials.store.at(unsigned(mtlrng.material_ix));
       if (not mtl.map_Kd.empty()) {
         // load texture
         glGenTextures(1, &mtl.texture_id);
+        glBindTexture(GL_TEXTURE_2D, mtl.texture_id);
         printf(" * loading texture %u from '%s'\n", mtl.texture_id,
                mtl.map_Kd.c_str());
-        glBindTexture(GL_TEXTURE_2D, mtl.texture_id);
         SDL_Surface *surface = IMG_Load(mtl.map_Kd.c_str());
         if (!surface) {
           printf("!!! could not load image from '%s'\n", mtl.map_Kd.c_str());
@@ -54,27 +79,20 @@ public:
                      GL_RGB, GL_UNSIGNED_BYTE, surface->pixels);
         mtl.texture_size_bytes =
             surface->w * surface->h * int(sizeof(uint32_t));
-        SDL_FreeSurface(surface);
         metrics.buffered_texture_data += mtl.texture_size_bytes;
+        SDL_FreeSurface(surface);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glBindTexture(GL_TEXTURE_2D, 0);
       }
     }
   }
 
   inline void render(const glm::mat4 &mtx_mw) {
     glUniformMatrix4fv(shaders::umtx_mw, 1, GL_FALSE, glm::value_ptr(mtx_mw));
-    glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_id);
-    glVertexAttribPointer(shaders::apos, 3, GL_FLOAT, GL_FALSE, sizeof(vertex),
-                          0);
-    glVertexAttribPointer(shaders::argba, 4, GL_FLOAT, GL_FALSE, sizeof(vertex),
-                          (GLvoid *)(3 * sizeof(float)));
-    glVertexAttribPointer(shaders::anorm, 3, GL_FLOAT, GL_FALSE, sizeof(vertex),
-                          (GLvoid *)((3 + 4) * sizeof(float)));
-    glVertexAttribPointer(shaders::atex, 2, GL_FLOAT, GL_FALSE, sizeof(vertex),
-                          (GLvoid *)((3 + 4 + 3) * sizeof(float)));
+    glBindVertexArray(vertex_array_id);
     for (const range &mr : ranges) {
       const material &m = materials.store.at(unsigned(mr.material_ix));
       if (m.texture_id) {
@@ -93,6 +111,7 @@ public:
         glBindTexture(GL_TEXTURE_2D, 0);
       }
     }
+    glBindVertexArray(0);
     metrics.rendered_glos++;
   }
 
