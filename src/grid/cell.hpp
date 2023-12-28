@@ -138,20 +138,24 @@ private:
     const float relative_velocity =
         glm::dot(Oj->physics.velocity - Oi->physics.velocity, collision_normal);
 
-    if (relative_velocity < 0) {
-      // objects are moving towards each other
-
-      if (not Oi->is_dead() and Oi->on_collision(Oj, fc)) {
-        Oi->set_is_dead();
-        objects.free(Oi);
+    if (relative_velocity >= 0) {
+      // objects are not moving towards each other
+      if (synchronization_necessary) {
+        Oi->release_lock();
       }
-
-      constexpr float restitution = 1;
-      const float impulse = -(1.0f + restitution) * relative_velocity /
-                            (1.0f / Oi->physics.mass + 1.0f / Oj->physics.mass);
-
-      Oi->physics_nxt.velocity -= impulse / Oi->physics.mass * collision_normal;
+      return;
     }
+
+    if (not Oi->is_dead() and Oi->on_collision(Oj, fc)) {
+      Oi->set_is_dead();
+      objects.free(Oi);
+    }
+
+    constexpr float restitution = 1;
+    const float impulse = -(1.0f + restitution) * relative_velocity /
+                          (1.0f / Oi->physics.mass + 1.0f / Oj->physics.mass);
+
+    Oi->physics_nxt.velocity -= impulse / Oi->physics.mass * collision_normal;
 
     if (synchronization_necessary) {
       Oi->release_lock();
