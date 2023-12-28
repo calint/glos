@@ -55,10 +55,17 @@ public:
     return false;
   }
 
+  // inline auto on_collision(object *o, const frame_ctx &fc) -> bool override {
+  //   assert(not is_dead());
+  //   // printf("%s collision with %s\n", name.c_str(), o->name.c_str());
+  //   health--;
+  //   return health == 0;
+  // }
+
   inline auto on_collision(object *o, const frame_ctx &fc) -> bool override {
     assert(not is_dead());
-    // printf("%s collision with %s\n", name.c_str(), o->name.c_str());
-    health--;
-    return health == 0;
+    printf("%u: %s collision with %s\n", fc.tick, name.c_str(),
+           o->name.c_str());
+    return false;
   }
 };

@@ -47,9 +47,7 @@ public:
     physics_prv = physics;
     physics = physics_nxt;
 
-    const float dt = fc.dt;
-    physics_nxt.position += physics_nxt.velocity * dt;
-    physics_nxt.angle += physics_nxt.angular_velocity * dt;
+    physics_nxt.step(fc);
     return false;
   }
 

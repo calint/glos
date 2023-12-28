@@ -55,7 +55,7 @@ public:
       object *o = new (objects.alloc()) santa{};
       o->name = "santa1";
       o->physics_nxt.mass = 1;
-      o->physics_nxt.position = {-4, o->volume.radius, 0};
+      o->physics_nxt.position = {-2, o->volume.radius, 0};
       o->physics_nxt.velocity = {1, 0, 0};
       o->physics = o->physics_nxt;
     }
@@ -63,15 +63,6 @@ public:
     {
       object *o = new (objects.alloc()) santa{};
       o->name = "santa2";
-      o->physics_nxt.mass = 1;
-      o->physics_nxt.position = {0, o->volume.radius, 0};
-      o->physics_nxt.velocity = {0, 0, 0};
-      o->physics = o->physics_nxt;
-    }
-
-    {
-      object *o = new (objects.alloc()) santa{};
-      o->name = "santa3";
       o->physics_nxt.mass = 1;
       o->physics_nxt.position = {2, o->volume.radius, 0};
       o->physics_nxt.velocity = {0, 0, 0};
