@@ -33,8 +33,10 @@ public:
       std::abort();
     }
 
-    sdl_renderer = SDL_CreateRenderer(
-        sdl_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    // sdl_renderer = SDL_CreateRenderer(
+    //     sdl_window, -1, SDL_RENDERER_ACCELERATED |
+    //     SDL_RENDERER_PRESENTVSYNC);
+    sdl_renderer = SDL_CreateRenderer(sdl_window, -1, SDL_RENDERER_ACCELERATED);
     if (!sdl_renderer) {
       printf("%s %d: %s", __FILE__, __LINE__, SDL_GetError());
       std::abort();

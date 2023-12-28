@@ -147,10 +147,11 @@ private:
 
     constexpr float restitution = 1;
     if (relative_velocity < 0) {
-      const float impulse = (1.0f + restitution) * relative_velocity /
+      const float impulse = -(1.0f + restitution) * relative_velocity /
                             (1.0f / Oi->physics.mass + 1.0f / Oj->physics.mass);
       // std::cout << "impulse = " << impulse << "\n";
-      Oi->physics_nxt.velocity += impulse / Oi->physics.mass * collision_normal;
+      
+      Oi->physics_nxt.velocity -= impulse / Oi->physics.mass * collision_normal;
     }
 
     if (synchronization_necessary) {

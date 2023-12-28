@@ -24,27 +24,7 @@ public:
 
     if (physics.position.y < volume.radius) {
       physics_nxt.position.y = volume.radius;
-      physics_nxt.velocity.y = 0;
-    }
-
-    if (physics.position.x < -80) {
-      physics_nxt.position.x = -80;
-      physics_nxt.velocity.x = -physics_nxt.velocity.x;
-    }
-
-    if (physics.position.x > 80) {
-      physics_nxt.position.x = 80;
-      physics_nxt.velocity.x = -physics_nxt.velocity.x;
-    }
-
-    if (physics.position.z < -80) {
-      physics_nxt.position.z = -80;
-      physics_nxt.velocity.z = -physics_nxt.velocity.z;
-    }
-
-    if (physics.position.z > 80) {
-      physics_nxt.position.z = 80;
-      physics_nxt.velocity.z = -physics_nxt.velocity.z;
+      physics_nxt.velocity = {0, 0, 0};
     }
 
     if (!net_state) {
@@ -75,17 +55,10 @@ public:
     return false;
   }
 
-  // inline auto on_collision(object *o, const frame_ctx &fc) -> bool override {
-  //   assert(not is_dead());
-  //   // printf("%s collision with %s\n", name.c_str(), o->name.c_str());
-  //   health--;
-  //   return health == 0;
-  // }
-
   inline auto on_collision(object *o, const frame_ctx &fc) -> bool override {
     assert(not is_dead());
-    // printf("%u: %s collision with %s\n", fc.tick, name.c_str(),
-    //        o->name.c_str());
-    return false;
+    // printf("%s collision with %s\n", name.c_str(), o->name.c_str());
+    health--;
+    return health == 0;
   }
 };

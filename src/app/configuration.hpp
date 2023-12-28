@@ -38,3 +38,4 @@ static constexpr unsigned cb_hero = 1;
 static constexpr int glo_index_skydome = 0;
 static constexpr int glo_index_grid = 1;
 static constexpr int glo_index_santa = 2;
+static constexpr int glo_index_sphere = 2;
