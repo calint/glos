@@ -18,7 +18,7 @@ intention:
   - bounding boxes _(todo)_
   - bounding convex volumes _(todo)_
 * collision reaction
-  - sphere vs sphere _(todo)_
+  - sphere vs sphere
   - sphere vs box _(todo)_
   - box vs box _(todo)_
   - convex volume vs convex volume _(todo)_
