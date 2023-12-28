@@ -135,10 +135,10 @@ private:
     const glm::vec3 collision_normal =
         glm::normalize(Oj->physics.position - Oi->physics.position);
 
-    const float relative_velocity =
+    const float relative_velocity_along_collision_normal =
         glm::dot(Oj->physics.velocity - Oi->physics.velocity, collision_normal);
 
-    if (relative_velocity >= 0) {
+    if (relative_velocity_along_collision_normal >= 0) {
       // objects are not moving towards each other
       if (synchronization_necessary) {
         Oi->release_lock();
@@ -155,8 +155,11 @@ private:
       return;
     }
 
+    // resolve collision between the spheres
+
     constexpr float restitution = 1;
-    const float impulse = (1.0f + restitution) * relative_velocity /
+    const float impulse = (1.0f + restitution) *
+                          relative_velocity_along_collision_normal /
                           (Oi->physics.mass + Oj->physics.mass);
 
     Oi->physics_nxt.velocity += impulse * Oj->physics.mass * collision_normal;
