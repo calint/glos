@@ -56,16 +56,26 @@ public:
       cube *o = new (objects.alloc()) cube{};
       o->name = "cube1";
       o->physics_nxt.mass = 1;
-      o->physics_nxt.position = {0, 2, 0};
+      o->physics_nxt.position = {0, 1, 0};
       o->physics_nxt.velocity = {0, 0, 0};
-      o->physics_nxt.angular_velocity = {glm::radians(10.0f), glm::radians(10.0f), 0};
+      // o->physics_nxt.angular_velocity = {glm::radians(10.0f),
+      //                                    glm::radians(10.0f), 0};
       o->physics = o->physics_nxt;
+    }
+
+    {
+      cube *o = new (objects.alloc()) cube{};
+      o->name = "cube2";
+      o->physics_nxt.mass = 1;
+      o->physics_nxt.position = {6, 1, 0};
+      o->physics = o->physics_nxt;
+      o->net_state = &net.states[1];
     }
 
     ambient_light = glm::normalize(glm::vec3{0, 1, 0});
 
     camera.type = LOOK_AT;
-    camera.position = {10, 20, 20};
+    camera.position = {0, 20, 20};
     camera.look_at = {0, 0, 0};
 
     // camera.type = ORTHO;

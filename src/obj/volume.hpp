@@ -17,8 +17,8 @@ class volume final {
     bool first_update = true;
 
   public:
-    inline void update_model_to_world(const std::vector<glm::vec3> points,
-                                      const std::vector<glm::vec3> normals,
+    inline void update_model_to_world(const std::vector<glm::vec3> &points,
+                                      const std::vector<glm::vec3> &normals,
                                       const glm::vec3 &position,
                                       const glm::vec3 &angle,
                                       const glm::vec3 &scale) {
@@ -56,10 +56,10 @@ class volume final {
       }
     }
 
+    // for each position check if behind all planes of 'planes'
+    // assumes both this and 'planes' have updated world points and normals
     inline auto is_any_point_behind_all_planes(const planes &planes) const
         -> bool {
-      // for each position check if behind all planes in 'vol'
-      // assumes both this and 'vol' has updated world positions and normals
       for (const glm::vec3 &p : world_positions) {
         if (planes.is_point_behind_all_planes(p)) {
           return true;
@@ -71,10 +71,12 @@ class volume final {
     inline auto is_point_behind_all_planes(const glm::vec3 &p) const -> bool {
       const size_t n = world_positions.size();
       for (unsigned i = 0; i < n; ++i) {
+        // render_wcs_line(world_positions[i], p, {0, 1, 0});
         const glm::vec3 v = p - world_positions[i];
         const glm::vec3 n = world_normals[i];
-        const float d = glm::dot(n, v);
-        if (d >= 0) {
+        const float d = glm::dot(v, n);
+        // printf("%p   d=%f\n", this, d);
+        if (d > 0) {
           return false;
         }
       }
@@ -100,4 +102,5 @@ public:
   float radius = 0;
   glm::vec3 scale{};
   planes planes{};
+  bool is_sphere = true;
 };
