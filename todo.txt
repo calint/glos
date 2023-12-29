@@ -64,30 +64,30 @@
 [x] multiple materials in render
 [ ] collision detection 
 [ ]   bounding volume
-[ ]     sphere
-[ ]       vs sphere
+[o]     sphere
+[x]       vs sphere
 [ ]       vs plane
-[ ]       vs box
-[ ]     planes
-[ ]       vs box
-[ ]       vs planes
-[ ]     box
-[ ]       vs box
-[ ]     line
-[ ]       vs sphere
-[ ]       planes 
-[ ]     empty/solids
-[ ]       boolean ops
-[ ] collision physics/animatics
-[ ]   sphere vs sphere
+[-]       vs box
+[o]     planes
+[-]       vs box
+[x]       vs planes
+[-]     box
+[-]       vs box
+[-]     line
+[-]       vs sphere
+[-]       planes 
+[-]     empty/solids
+[-]       boolean ops
+[p] collision physics/animatics
+[x]   sphere vs sphere
 [ ]   box vs box
 [ ]   sphere vs plane
-[ ]   spherer vs box
+[ ]   sphere vs box
 [x] grid
 [x]   render
 [ ]     cull
 [x]   update
-[ ]   multicore
+[x]   multicore
 [x] keyshub
 [x]   client
 [x]   server
@@ -110,8 +110,8 @@
 [x] mouse
 [x]   fps controls
 [ ]   alternative controls
-[o] light sources
-[o]   ambient
+[x] light sources
+[x]   ambient
 [ ] shadow map
 [ ]   render to texture
 [x]   use several programs
@@ -125,10 +125,10 @@
 [ ]   collisions
 [ ]     root object bounding volume, recursive
 [ ]     objects individually of hierarchy
-[ ] draw grid
+[x] draw grid
 [x]   sky dome
 [x]   ground plane
-[ ] 3D newton conservation with spheres
+[x] 3D newton conservation with spheres
 [x]   1D cradle
-[ ]   2D
-[ ]   3D
+[x]   2D
+[x]   3D
