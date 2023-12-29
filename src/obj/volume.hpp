@@ -15,6 +15,7 @@ class volume final {
     glm::vec3 Mmw_scl{};
     glm::vec3 Nmw_agl{};
     bool first_update = true;
+    std::atomic_flag spinlock = ATOMIC_FLAG_INIT;
 
   public:
     inline void update_model_to_world(const std::vector<glm::vec3> &points,
@@ -56,6 +57,20 @@ class volume final {
       }
     }
 
+    inline void debug_render_normals(const std::vector<glm::vec3> points,
+                                     const std::vector<glm::vec3> normals,
+                                     const glm::vec3 &position,
+                                     const glm::vec3 &angle,
+                                     const glm::vec3 &scale) {
+      update_model_to_world(points, normals, position, angle, scale);
+      const size_t n = world_positions.size();
+      for (size_t i = 0; i < n; ++i) {
+        const glm::vec3 &pnt = world_positions[i];
+        const glm::vec3 &nml = world_normals[i];
+        render_wcs_line(pnt, pnt + nml, {1, 0, 0});
+      }
+    }
+
     // for each position check if behind all planes of 'planes'
     // assumes both this and 'planes' have updated world points and normals
     inline auto is_any_point_behind_all_planes(const planes &planes) const
@@ -68,6 +83,14 @@ class volume final {
       return false;
     }
 
+    inline void acquire_lock() {
+      while (spinlock.test_and_set(std::memory_order_acquire)) {
+      }
+    }
+
+    inline void release_lock() { spinlock.clear(std::memory_order_release); }
+
+  private:
     inline auto is_point_behind_all_planes(const glm::vec3 &p) const -> bool {
       const size_t n = world_positions.size();
       for (unsigned i = 0; i < n; ++i) {
@@ -81,20 +104,6 @@ class volume final {
         }
       }
       return true;
-    }
-
-    inline void debug_render_normals(const std::vector<glm::vec3> points,
-                                     const std::vector<glm::vec3> normals,
-                                     const glm::vec3 &position,
-                                     const glm::vec3 &angle,
-                                     const glm::vec3 &scale) {
-      update_model_to_world(points, normals, position, angle, scale);
-      const size_t n = world_positions.size();
-      for (size_t i = 0; i < n; ++i) {
-        const glm::vec3 &pnt = world_positions[i];
-        const glm::vec3 &nml = world_normals[i];
-        render_wcs_line(pnt, pnt + nml, {1, 0, 0});
-      }
     }
   };
 

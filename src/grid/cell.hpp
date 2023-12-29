@@ -244,7 +244,7 @@ private:
     const bool lock_o2 = grid_threaded and o2->is_overlaps_cells();
 
     if (lock_o1) {
-      o1->acquire_lock();
+      o1->volume.planes.acquire_lock();
     }
 
     o1->volume.planes.update_model_to_world(
@@ -252,11 +252,11 @@ private:
         o1->physics.position, o1->physics.angle, o1->volume.scale);
 
     if (lock_o1) {
-      o1->release_lock();
+      o1->volume.planes.release_lock();
     }
 
     if (lock_o2) {
-      o2->acquire_lock();
+      o2->volume.planes.acquire_lock();
     }
 
     o2->volume.planes.update_model_to_world(
@@ -264,7 +264,7 @@ private:
         o2->physics.position, o2->physics.angle, o2->volume.scale);
 
     if (lock_o2) {
-      o2->release_lock();
+      o2->volume.planes.release_lock();
     }
 
     if (o1->volume.planes.is_any_point_behind_all_planes(o2->volume.planes)) {

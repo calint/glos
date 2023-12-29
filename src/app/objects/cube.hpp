@@ -42,7 +42,7 @@ public:
       if (keys & 8) {
         av.y = -1;
       }
-      v *= 10.0f;
+      v *= 5.0f;
     }
 
     return false;
