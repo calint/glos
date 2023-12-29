@@ -14,8 +14,9 @@ intention:
 * intuitive programming of game objects and logic
 * game code written in `src/app/` which is included by `src/main.cpp`
 * collision detection
-  - bounding sphere
-  - bounding convex volume _(todo)_
+  - sphere vs sphere
+  - sphere vs convex volume _(todo)_
+  - convex volume vs convex volume _(todo)_
 * collision reaction
   - sphere vs sphere
   - sphere vs convex volume _(todo)_
