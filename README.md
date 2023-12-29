@@ -16,7 +16,7 @@ intention:
 * collision detection
   - sphere vs sphere
   - sphere vs convex volume _(todo)_
-  - convex volume vs convex volume _(todo)_
+  - convex volume vs convex volume
 * collision reaction
   - sphere vs sphere
   - sphere vs convex volume _(todo)_
