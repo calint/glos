@@ -99,7 +99,7 @@ public:
 
     programs.at(size_t(default_program_id)).activate();
 
-    printf("shader uniform locations:\n");
+    printf("shader uniforms locations:\n");
     printf(":-%10s-:-%7s-:\n", "----------", "-------");
     printf(": %10s : %-7d :\n", "umtx_mw",
            glGetUniformLocation(programs.at(0).id, "umtx_mw"));
@@ -111,7 +111,7 @@ public:
            glGetUniformLocation(programs.at(0).id, "ulht"));
     printf(":-%10s-:-%7s-:\n", "----------", "-------");
     puts("");
-    printf("shader attribute locations:\n");
+    printf("shader attributes locations:\n");
     printf(":-%10s-:-%7s-:\n", "----------", "-------");
     printf(": %10s : %-7d :\n", "apos",
            glGetAttribLocation(programs.at(0).id, "apos"));

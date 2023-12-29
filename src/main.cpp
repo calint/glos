@@ -201,6 +201,8 @@ int main(int argc, char *argv[]) {
     return 0;
   }
 
+  puts("\nprogram glos\n");
+
   // set random number generator seed for deterministic behaviour
   srand(0);
 
