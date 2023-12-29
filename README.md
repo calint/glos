@@ -14,13 +14,11 @@ intention:
 * intuitive programming of game objects and logic
 * game code written in `src/app/` which is included by `src/main.cpp`
 * collision detection
-  - bounding radius
-  - bounding boxes _(todo)_
-  - bounding convex volumes _(todo)_
+  - bounding sphere
+  - bounding convex volume _(todo)_
 * collision reaction
   - sphere vs sphere
-  - sphere vs box _(todo)_
-  - box vs box _(todo)_
+  - sphere vs convex volume _(todo)_
   - convex volume vs convex volume _(todo)_
 
 ubuntu packages used:
