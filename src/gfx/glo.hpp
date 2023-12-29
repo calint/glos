@@ -23,6 +23,9 @@ public:
   float bounding_radius = 0;
   GLuint vertex_buffer_id = 0;
   GLuint vertex_array_id = 0;
+  // planes
+  std::vector<glm::vec3> planes_points{};
+  std::vector<glm::vec3> planes_normals{};
 
   inline void free() {
     glDeleteBuffers(1, &vertex_buffer_id);
@@ -111,6 +114,80 @@ public:
     }
     glBindVertexArray(0);
     metrics.rendered_glos++;
+  }
+
+  inline void load_planes_from_path(const char *path) {
+    // load from blender exported 'obj' file
+    printf(" * loading planes from '%s'\n", path);
+    std::ifstream file(path);
+    if (!file) {
+      printf("!!! cannot open file '%s'\n", path);
+      std::abort();
+    }
+    std::stringstream buffer;
+    buffer << file.rdbuf();
+    std::string content = buffer.str();
+    const char *p = content.c_str();
+
+    std::vector<glm::vec3> positions{};
+    std::vector<glm::vec3> normals{};
+
+    while (*p) {
+      token t = token_next(&p);
+      if (token_equals(&t, "v")) {
+        token tx = token_next(&p);
+        float x = token_get_float(&tx);
+        token ty = token_next(&p);
+        float y = token_get_float(&ty);
+        token tz = token_next(&p);
+        float z = token_get_float(&tz);
+        positions.emplace_back(x, y, z);
+        continue;
+      }
+      if (token_equals(&t, "vn")) {
+        token tx = token_next(&p);
+        float x = token_get_float(&tx);
+        token ty = token_next(&p);
+        float y = token_get_float(&ty);
+        token tz = token_next(&p);
+        float z = token_get_float(&tz);
+        normals.emplace_back(x, y, z);
+        continue;
+      }
+      if (token_equals(&t, "f")) {
+        // read first vertex in face and create position and normal
+        // position
+        token ix1_tkn = token_from_string_additional_delim(p, '/');
+        p = ix1_tkn.end;
+        const unsigned ix1 = token_get_uint(&ix1_tkn);
+        const glm::vec3 &position = positions.at(ix1 - 1);
+
+        // texture, skip
+        token ix2_tkn = token_from_string_additional_delim(p, '/');
+        p = ix2_tkn.end;
+
+        // normal
+        token ix3_tkn = token_from_string_additional_delim(p, '/');
+        p = ix3_tkn.end;
+        const unsigned ix3 = token_get_uint(&ix3_tkn);
+        const glm::vec3 &normal = normals.at(ix3 - 1);
+
+        planes_points.emplace_back(position);
+        planes_normals.emplace_back(normal);
+
+        // ignore the other vertices
+        p = scan_to_including_newline(p);
+        continue;
+      }
+      // unknown token
+      p = scan_to_including_newline(p);
+    }
+    printf("     %zu planes\n", planes_normals.size());
+    // const size_t n = planes_points.size();
+    // for (unsigned i = 0; i < n; i++) {
+    //   printf(" p: %s  n: %s\n", glm::to_string(planes_points[i]).c_str(),
+    //          glm::to_string(planes_normals[i]).c_str());
+    // }
   }
 
   static /*gives*/ glo *make_from_string(const char **ptr_p) {

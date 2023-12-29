@@ -40,6 +40,9 @@ public:
       return;
     }
     node.glo->render(get_updated_Mmw());
+    volume.planes.debug_render_normals(
+        node.glo->planes_points, node.glo->planes_normals, physics.position,
+        physics.angle, volume.scale);
   }
 
   // returns true if object has died

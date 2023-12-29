@@ -11,6 +11,10 @@
 #include <limits>
 #include <mutex>
 
+inline static void render_wcs_line(const glm::vec3 &from_wcs,
+                                   const glm::vec3 &to_wcs,
+                                   const glm::vec3 &color);
+
 // include order of subsystems relevant
 #include "app/configuration.hpp"
 //
@@ -185,8 +189,6 @@ inline static void main_render(const unsigned render_frame_num) {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   grid.render(render_frame_num);
-
-  render_wcs_line({0, 5, 0}, {1, 5, 0}, {1, 0, 0});
 
   window.swap_buffers();
 }

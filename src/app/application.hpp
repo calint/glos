@@ -1,4 +1,5 @@
 #pragma once
+#include "objects/cube.hpp"
 #include "objects/santa.hpp"
 #include "objects/sphere.hpp"
 
@@ -11,16 +12,22 @@ public:
     printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
     printf(": %15s : %-9ld :\n", "santa", sizeof(santa));
     printf(": %15s : %-9ld :\n", "sphere", sizeof(sphere));
+    printf(": %15s : %-9ld :\n", "sphere", sizeof(cube));
     printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
     puts("");
 
     static_assert(sizeof(santa) <= objects_instance_size_B, "");
     static_assert(sizeof(sphere) <= objects_instance_size_B, "");
+    static_assert(sizeof(cube) <= objects_instance_size_B, "");
 
     // the load order matches the 'glo_index_*' configuration
     glos.load_from_file("obj/skydome.obj");
     glos.load_from_file("obj/grid.obj");
+    glos.load_from_file("obj/santa.obj");
     glos.load_from_file("obj/icosphere.obj");
+    glos.load_from_file("obj/cube.obj");
+
+    glos.get_by_index(glo_index_cube)->load_planes_from_path("obj/bv-cube.obj");
 
     constexpr float world_size = grid_cell_size * grid_ncells_wide;
 
@@ -46,36 +53,19 @@ public:
     }
 
     {
-      sphere *o = new (objects.alloc()) sphere{};
-      o->name = "sphere1";
+      cube *o = new (objects.alloc()) cube{};
+      o->name = "cube1";
       o->physics_nxt.mass = 1;
-      o->physics_nxt.position = {-4, o->volume.radius, 0};
-      o->physics_nxt.velocity = {1, 0, 0};
-      o->physics = o->physics_nxt;
-    }
-
-    {
-      sphere *o = new (objects.alloc()) sphere{};
-      o->name = "sphere2";
-      o->physics_nxt.mass = 1;
-      o->physics_nxt.position = {0, o->volume.radius, 0};
+      o->physics_nxt.position = {0, 2, 0};
       o->physics_nxt.velocity = {0, 0, 0};
-      o->physics = o->physics_nxt;
-    }
-
-    {
-      sphere *o = new (objects.alloc()) sphere{};
-      o->name = "sphere3";
-      o->physics_nxt.mass = 1;
-      o->physics_nxt.position = {4, o->volume.radius, 0};
-      o->physics_nxt.velocity = {-1, 0, 0};
+      o->physics_nxt.angular_velocity = {glm::radians(10.0f), glm::radians(10.0f), 0};
       o->physics = o->physics_nxt;
     }
 
     ambient_light = glm::normalize(glm::vec3{0, 1, 0});
 
     camera.type = LOOK_AT;
-    camera.position = {0, 20, 20};
+    camera.position = {10, 20, 20};
     camera.look_at = {0, 0, 0};
 
     // camera.type = ORTHO;
