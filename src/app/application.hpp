@@ -10,10 +10,12 @@ public:
     printf(": %15s : %-9s :\n", "class", "bytes");
     printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
     printf(": %15s : %-9ld :\n", "santa", sizeof(santa));
+    printf(": %15s : %-9ld :\n", "sphere", sizeof(sphere));
     printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
     puts("");
 
     static_assert(sizeof(santa) <= objects_instance_size_B, "");
+    static_assert(sizeof(sphere) <= objects_instance_size_B, "");
 
     // the load order matches the 'glo_index_*' configuration
     glos.load_from_file("obj/skydome.obj");
@@ -43,30 +45,30 @@ public:
       o->volume.radius = o->node.glo->bounding_radius * grid_scale;
     }
 
-    // {
-    //   object *o = new (objects.alloc()) santa{};
-    //   o->name = "santa1";
-    //   o->physics_nxt.mass = std::numeric_limits<float>::max();
-    //   o->physics_nxt.position = {-6, o->volume.radius, 0};
-    //   o->physics_nxt.velocity = {0, 0, 0};
-    //   o->physics = o->physics_nxt;
-    // }
-
     {
       sphere *o = new (objects.alloc()) sphere{};
       o->name = "sphere1";
-      o->physics_nxt.mass = 3;
-      o->physics_nxt.position = {-5, o->volume.radius, 0};
-      o->physics_nxt.velocity = {4, 0, 0};
+      o->physics_nxt.mass = 1;
+      o->physics_nxt.position = {-4, o->volume.radius, 0};
+      o->physics_nxt.velocity = {1, 0, 0};
       o->physics = o->physics_nxt;
     }
 
     {
       sphere *o = new (objects.alloc()) sphere{};
       o->name = "sphere2";
-      o->physics_nxt.mass = 5;
-      o->physics_nxt.position = {5, o->volume.radius, 0};
-      o->physics_nxt.velocity = {-6, 0, 0};
+      o->physics_nxt.mass = 1;
+      o->physics_nxt.position = {0, o->volume.radius, 0};
+      o->physics_nxt.velocity = {0, 0, 0};
+      o->physics = o->physics_nxt;
+    }
+
+    {
+      sphere *o = new (objects.alloc()) sphere{};
+      o->name = "sphere3";
+      o->physics_nxt.mass = 1;
+      o->physics_nxt.position = {4, o->volume.radius, 0};
+      o->physics_nxt.velocity = {-1, 0, 0};
       o->physics = o->physics_nxt;
     }
 

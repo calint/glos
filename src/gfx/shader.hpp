@@ -24,10 +24,10 @@ class shaders final {
   #version 330 core
   uniform mat4 umtx_mw;  // model-to-world-matrix
   uniform mat4 umtx_wvp; // world-to-view-to-projection
-  in vec3 apos;
-  in vec4 argba;
-  in vec3 anorm;
-  in vec2 atex;
+  layout(location = 0) in vec3 apos;
+  layout(location = 1) in vec4 argba;
+  layout(location = 2) in vec3 anorm;
+  layout(location = 3) in vec2 atex;
   out vec4 vrgba;
   out vec3 vnorm;
   out vec2 vtex;
@@ -56,7 +56,7 @@ class shaders final {
   std::vector<program> programs{};
 
 public:
-  // enabled_attributes layout in shaders
+  // vertex attributes layout in shaders
   static constexpr unsigned apos = 0;
   static constexpr unsigned argba = 1;
   static constexpr unsigned anorm = 2;
@@ -66,6 +66,7 @@ public:
   static constexpr unsigned umtx_wvp = 1; // world->view->projection matrix
   // uniform textures
   static constexpr unsigned utex = 2; // texture mapper
+  // uniform ambient light
   static constexpr unsigned ulht = 3; // light vector
 
   inline void init() {
@@ -161,8 +162,10 @@ public:
 
   inline auto programs_count() const -> int { return int(programs.size()); }
 
-  inline void activate_program(const int ix) {
-    programs.at(size_t(ix)).activate();
+  inline void use_program(const int ix) { programs.at(size_t(ix)).activate(); }
+
+  inline auto program_id(const int ix) const -> GLuint {
+    return programs.at(size_t(ix)).id;
   }
 
 private:

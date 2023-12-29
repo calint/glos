@@ -56,6 +56,8 @@ static object *camera_follow_object = nullptr;
 //
 #include "app/application.hpp"
 
+static int shader_program_line = 0;
+
 //----------------------------------------------------------------------- init
 inline static void main_init_shaders() {
   {
@@ -107,20 +109,85 @@ void main(){
 
     shaders.load_program_from_source(vtx, frag);
   }
+  {
+    const char *vtx = R"(
+  #version 330 core
+  uniform mat4 umtx_wvp; // world-to-view-to-projection
+  layout(location = 0) in vec3 apos; // world coordinates
+  void main() {
+	  gl_Position = umtx_wvp * vec4(apos, 1);
+  }
+  )";
+
+    const char *frag = R"(
+  #version 330 core
+  uniform vec3 ucolor;
+  out vec4 rgba;
+  void main() {
+    rgba = vec4(ucolor, 1);
+  }
+)";
+    shader_program_line = shaders.load_program_from_source(vtx, frag);
+  }
+}
+
+static int shader_program_ix = 0;
+static int shader_program_ix_prev = shader_program_ix;
+
+// for debugging
+inline static void render_wcs_line(const glm::vec3 &from_wcs,
+                                   const glm::vec3 &to_wcs,
+                                   const glm::vec3 &color) {
+  GLuint vao = 0;
+  glGenVertexArrays(1, &vao);
+  glBindVertexArray(vao);
+
+  GLuint vbo = 0;
+  glGenBuffers(1, &vbo);
+  glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+  const glm::vec3 line_vertices[]{from_wcs, to_wcs};
+  glBufferData(GL_ARRAY_BUFFER, sizeof(line_vertices), line_vertices,
+               GL_STATIC_DRAW);
+  glEnableVertexAttribArray(0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+  camera.update_matrix_wvp();
+
+  shaders.use_program(shader_program_line);
+
+  glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(camera.Mvp));
+  glUniform3fv(1, 1, glm::value_ptr(color));
+
+  glDrawArrays(GL_LINES, 0, 2);
+
+  glBindVertexArray(0);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+  glDeleteBuffers(1, &vbo);
+  glDeleteVertexArrays(1, &vao);
+
+  shaders.use_program(shader_program_ix);
 }
 
 inline static void main_render(const unsigned render_frame_num) {
   if (camera_follow_object) {
     camera.look_at = camera_follow_object->physics.position;
   }
+
   camera.update_matrix_wvp();
+
   glUniformMatrix4fv(shaders::umtx_wvp, 1, GL_FALSE,
                      glm::value_ptr(camera.Mvp));
   glUniform3fv(shaders::ulht, 1, glm::value_ptr(ambient_light));
   glClearColor(background_color.red, background_color.green,
                background_color.blue, 1.0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
   grid.render(render_frame_num);
+
+  render_wcs_line({0, 5, 0}, {1, 5, 0}, {1, 0, 0});
+
   window.swap_buffers();
 }
 
@@ -180,8 +247,6 @@ int main(int argc, char *argv[]) {
   }
   // sdl.play_path("music/ambience.mp3");
 
-  int shader_program_ix = 0;
-  int shader_program_ix_prev = shader_program_ix;
   const float rad_over_degree = 2.0f * glm::pi<float>() / 360.0f;
   float rad_over_mouse_pixels = rad_over_degree * .02f;
   float mouse_sensitivity = 1.5f;
@@ -385,7 +450,7 @@ int main(int argc, char *argv[]) {
     // check if shader program has changed
     if (shader_program_ix_prev != shader_program_ix) {
       printf(" * switching to program at index %u\n", shader_program_ix);
-      shaders.activate_program(shader_program_ix);
+      shaders.use_program(shader_program_ix);
       shader_program_ix_prev = shader_program_ix;
     }
 
