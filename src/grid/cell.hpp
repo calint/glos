@@ -67,7 +67,7 @@ public:
         // collision between 2 objects once
 
         // bounding spheres collision detections
-        if (not detect_collision_for_spheres(Oi, Oj, fc)) {
+        if (not are_bounding_spheres_in_collision(Oi, Oj, fc)) {
           continue;
         }
 
@@ -98,12 +98,10 @@ public:
           continue;
         }
 
-        // bounding planes collision detection
-        if (not detect_collision_for_planes(Oi, Oj, fc)) {
+        if (not are_bounding_planes_in_collision(Oi, Oj, fc)) {
           continue;
         }
 
-        printf("collision\n");
         dispatch_collision(Oi, Oj, fc);
         dispatch_collision(Oj, Oi, fc);
       }
@@ -243,8 +241,9 @@ private:
     }
   }
 
-  inline static auto detect_collision_for_spheres(object *o1, object *o2,
-                                                  const frame_ctx &fc) -> bool {
+  inline static auto are_bounding_spheres_in_collision(object *o1, object *o2,
+                                                       const frame_ctx &fc)
+      -> bool {
 
     const glm::vec3 v = o2->physics.position - o1->physics.position;
     const float d = o1->volume.radius + o2->volume.radius;
@@ -270,8 +269,9 @@ private:
     }
   }
 
-  inline static auto detect_collision_for_planes(object *o1, object *o2,
-                                                 const frame_ctx &fc) -> bool {
+  inline static auto are_bounding_planes_in_collision(object *o1, object *o2,
+                                                      const frame_ctx &fc)
+      -> bool {
 
     update_planes_world_coordinates(o1);
     update_planes_world_coordinates(o2);
