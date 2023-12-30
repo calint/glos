@@ -67,13 +67,13 @@ class volume final {
       for (size_t i = 0; i < n; ++i) {
         const glm::vec3 &pnt = world_positions[i];
         const glm::vec3 &nml = world_normals[i];
-        render_wcs_line(pnt, pnt + nml, {1, 0, 0});
+        debug_render_wcs_line(pnt, pnt + nml, {1, 0, 0});
       }
     }
 
     // for each position check if behind all planes of 'planes'
     // assumes both this and 'planes' have updated world points and normals
-    inline auto is_any_point_behind_all_planes(const planes &planes) const
+    inline auto is_in_collision_with_planes(const planes &planes) const
         -> bool {
       for (const glm::vec3 &p : world_positions) {
         if (planes.is_point_behind_all_planes(p)) {
@@ -81,6 +81,21 @@ class volume final {
         }
       }
       return false;
+    }
+
+    inline auto is_in_collision_with_sphere(const glm::vec3 &position,
+                                            const float radius) {
+      const size_t n = world_normals.size();
+      for (unsigned i = 0; i < n; ++i) {
+        // render_wcs_line(world_positions[i], p, {0, 1, 0});
+        const glm::vec3 v = position - world_positions[i];
+        const glm::vec3 n = world_normals[i];
+        const float d = glm::dot(v, n);
+        if (d > radius) {
+          return false;
+        }
+      }
+      return true;
     }
 
     inline void acquire_lock() {
@@ -92,7 +107,7 @@ class volume final {
 
   private:
     inline auto is_point_behind_all_planes(const glm::vec3 &p) const -> bool {
-      const size_t n = world_positions.size();
+      const size_t n = world_normals.size();
       for (unsigned i = 0; i < n; ++i) {
         // render_wcs_line(world_positions[i], p, {0, 1, 0});
         const glm::vec3 v = p - world_positions[i];

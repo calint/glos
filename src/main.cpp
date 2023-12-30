@@ -11,9 +11,9 @@
 #include <limits>
 #include <mutex>
 
-inline static void render_wcs_line(const glm::vec3 &from_wcs,
-                                   const glm::vec3 &to_wcs,
-                                   const glm::vec3 &color);
+inline static void debug_render_wcs_line(const glm::vec3 &from_wcs,
+                                         const glm::vec3 &to_wcs,
+                                         const glm::vec3 &color);
 
 // include order of subsystems relevant
 #include "app/configuration.hpp"
@@ -139,9 +139,9 @@ static int shader_program_ix = 0;
 static int shader_program_ix_prev = shader_program_ix;
 
 // for debugging
-inline static void render_wcs_line(const glm::vec3 &from_wcs,
-                                   const glm::vec3 &to_wcs,
-                                   const glm::vec3 &color) {
+inline static void debug_render_wcs_line(const glm::vec3 &from_wcs,
+                                         const glm::vec3 &to_wcs,
+                                         const glm::vec3 &color) {
   GLuint vao = 0;
   glGenVertexArrays(1, &vao);
   glBindVertexArray(vao);

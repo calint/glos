@@ -77,14 +77,35 @@ public:
           continue;
         }
 
+        // sphere vs planes
+        if (Oi->volume.is_sphere) {
+          // Oj is not sphere
+          update_planes_world_coordinates(Oj);
+          if (Oj->volume.planes.is_in_collision_with_sphere(
+                  Oi->physics.position, Oi->volume.radius)) {
+            dispatch_collision(Oi, Oj, fc);
+            dispatch_collision(Oj, Oi, fc);
+          }
+          continue;
+        } else if (Oj->volume.is_sphere) {
+          // Oi is not a sphere
+          update_planes_world_coordinates(Oi);
+          if (Oi->volume.planes.is_in_collision_with_sphere(
+                  Oj->physics.position, Oj->volume.radius)) {
+            dispatch_collision(Oj, Oi, fc);
+            dispatch_collision(Oi, Oj, fc);
+          }
+          continue;
+        }
+
         // bounding planes collision detection
         if (not detect_collision_for_planes(Oi, Oj, fc)) {
           continue;
         }
 
         printf("collision\n");
-        handle_planes_collision(Oi, Oj, fc);
-        handle_planes_collision(Oj, Oi, fc);
+        dispatch_collision(Oi, Oj, fc);
+        dispatch_collision(Oj, Oi, fc);
       }
     }
   }
@@ -186,39 +207,39 @@ private:
     }
   }
 
-  inline static void handle_planes_collision(object *Oi, object *Oj,
-                                             const frame_ctx &fc) {
+  inline static void dispatch_collision(object *Osrc, object *Otrg,
+                                        const frame_ctx &fc) {
 
     // check if Oi is subscribed to collision with Oj
-    if ((Oi->collision_mask & Oj->collision_bits) == 0) {
+    if ((Osrc->collision_mask & Otrg->collision_bits) == 0) {
       return;
     }
 
     // if object overlaps cells this code might be called by several threads at
     // the same time
     const bool synchronization_necessary =
-        grid_threaded and Oi->is_overlaps_cells();
+        grid_threaded and Osrc->is_overlaps_cells();
 
     if (synchronization_necessary) {
-      Oi->acquire_lock();
+      Osrc->acquire_lock();
     }
 
-    if (Oi->is_collision_handled_and_if_not_add(Oj)) {
+    if (Osrc->is_collision_handled_and_if_not_add(Otrg)) {
       if (synchronization_necessary) {
-        Oi->release_lock();
+        Osrc->release_lock();
       }
       return;
     }
 
     // only one thread at a time can be here
 
-    if (not Oi->is_dead() and Oi->on_collision(Oj, fc)) {
-      Oi->set_is_dead();
-      objects.free(Oi);
+    if (not Osrc->is_dead() and Osrc->on_collision(Otrg, fc)) {
+      Osrc->set_is_dead();
+      objects.free(Osrc);
     }
 
     if (synchronization_necessary) {
-      Oi->release_lock();
+      Osrc->release_lock();
     }
   }
 
@@ -233,41 +254,33 @@ private:
     return diff < 0;
   }
 
+  inline static void update_planes_world_coordinates(object *o) {
+    const bool needs_synchronization = grid_threaded and o->is_overlaps_cells();
+
+    if (needs_synchronization) {
+      o->volume.planes.acquire_lock();
+    }
+
+    o->volume.planes.update_model_to_world(
+        o->node.glo->planes_points, o->node.glo->planes_normals,
+        o->physics.position, o->physics.angle, o->volume.scale);
+
+    if (needs_synchronization) {
+      o->volume.planes.release_lock();
+    }
+  }
+
   inline static auto detect_collision_for_planes(object *o1, object *o2,
                                                  const frame_ctx &fc) -> bool {
 
-    const bool lock_o1 = grid_threaded and o1->is_overlaps_cells();
-    const bool lock_o2 = grid_threaded and o2->is_overlaps_cells();
+    update_planes_world_coordinates(o1);
+    update_planes_world_coordinates(o2);
 
-    if (lock_o1) {
-      o1->volume.planes.acquire_lock();
-    }
-
-    o1->volume.planes.update_model_to_world(
-        o1->node.glo->planes_points, o1->node.glo->planes_normals,
-        o1->physics.position, o1->physics.angle, o1->volume.scale);
-
-    if (lock_o1) {
-      o1->volume.planes.release_lock();
-    }
-
-    if (lock_o2) {
-      o2->volume.planes.acquire_lock();
-    }
-
-    o2->volume.planes.update_model_to_world(
-        o2->node.glo->planes_points, o2->node.glo->planes_normals,
-        o2->physics.position, o2->physics.angle, o2->volume.scale);
-
-    if (lock_o2) {
-      o2->volume.planes.release_lock();
-    }
-
-    if (o1->volume.planes.is_any_point_behind_all_planes(o2->volume.planes)) {
+    if (o1->volume.planes.is_in_collision_with_planes(o2->volume.planes)) {
       return true;
     }
 
-    if (o2->volume.planes.is_any_point_behind_all_planes(o1->volume.planes)) {
+    if (o2->volume.planes.is_in_collision_with_planes(o1->volume.planes)) {
       return true;
     }
 

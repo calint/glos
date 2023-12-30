@@ -54,7 +54,7 @@ public:
 
     {
       cube *o = new (objects.alloc()) cube{};
-      o->name = "cube";
+      o->name = "cube1";
       o->physics_nxt.mass = 1;
       o->physics_nxt.position = {0, 1, 0};
       o->physics_nxt.velocity = {0, 0, 0};
@@ -64,8 +64,8 @@ public:
     }
 
     {
-      sphere *o = new (objects.alloc()) sphere{};
-      o->name = "sphere";
+      cube *o = new (objects.alloc()) cube{};
+      o->name = "cube2";
       o->physics_nxt.mass = 1;
       o->physics_nxt.position = {6, 1, 0};
       o->physics = o->physics_nxt;

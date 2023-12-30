@@ -1,3 +1,4 @@
+[ ] cell: tidy up the code
 [ ] collision reaction: tiny random added to 'dt' for each object to avoid
     mathematical precision example: o>  o  <o   ooo instead of  o< o >o
 [ ] object: checked_collisions make minimum size of vector to e.g. 8
@@ -62,11 +63,11 @@
 [ ]   box
 [ ]   planes
 [x] multiple materials in render
-[ ] collision detection 
-[ ]   bounding volume
-[o]     sphere
+[o] collision detection 
+[o]   bounding volume
+[x]     sphere
 [x]       vs sphere
-[ ]       vs plane
+[x]       vs plane
 [-]       vs box
 [o]     planes
 [-]       vs box
@@ -78,7 +79,7 @@
 [-]       planes 
 [-]     empty/solids
 [-]       boolean ops
-[p] collision physics/animatics
+[o] collision physics/animatics
 [x]   sphere vs sphere
 [ ]   box vs box
 [ ]   sphere vs plane
