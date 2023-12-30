@@ -17,6 +17,9 @@ static constexpr bool o1store_threaded = grid_threaded;
 static constexpr bool o1store_check_double_free = true;
 static constexpr bool o1store_check_free_limits = true;
 
+// debug volume normals (turn off)
+static constexpr bool volume_planes_debug_normals = false;
+
 // window dimensions
 static constexpr int window_width = 512;
 static constexpr int window_height = 512;

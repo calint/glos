@@ -66,7 +66,7 @@ public:
       if (keys & 8) {
         av.y = -1;
       }
-      v *= 5.0f;
+      v *= 2.0f;
     }
     return false;
   }

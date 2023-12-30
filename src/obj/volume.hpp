@@ -23,7 +23,9 @@ class volume final {
                                       const glm::vec3 &position,
                                       const glm::vec3 &angle,
                                       const glm::vec3 &scale) {
-      if (position != Mmw_pos or angle != Mmw_agl or scale != Mmw_scl) {
+      if (points.size() != 0 and
+          (position != Mmw_pos or angle != Mmw_agl or scale != Mmw_scl)) {
+        // printf("update points\n");
         // make a new matrix
         Mmw_pos = position;
         Mmw_agl = angle;
@@ -41,7 +43,8 @@ class volume final {
         }
       }
       // normals
-      if (first_update or angle != Nmw_agl) {
+      if (normals.size() != 0 and (first_update or angle != Nmw_agl)) {
+        // printf("update normals\n");
         first_update = false;
         // update world_normals
         Nmw_agl = angle;
