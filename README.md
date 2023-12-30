@@ -15,7 +15,7 @@ intention:
 * game code written in `src/app/` which is included by `src/main.cpp`
 * collision detection
   - sphere vs sphere
-  - sphere vs convex volume _(todo)_
+  - sphere vs convex volume
   - convex volume vs convex volume
 * collision reaction
   - sphere vs sphere
