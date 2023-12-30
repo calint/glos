@@ -28,6 +28,7 @@ public:
     glos.load_from_file("obj/cube.obj");
 
     glos.get_by_index(glo_index_cube)->load_planes_from_path("obj/bv-cube.obj");
+    // glos.get_by_index(glo_index_sphere)->load_planes_from_path("obj/icosphere.obj");
 
     constexpr float world_size = grid_cell_size * grid_ncells_wide;
 

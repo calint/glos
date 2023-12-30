@@ -1,5 +1,11 @@
 [ ] implement sample game
 [ ] halt development and tidy up
+[ ]   use uint32_t instead of unsigned int32_t etc
+[ ]   consider a more standard source layout without depending on include order
+[ ]   class private members at the bottom of the declaration
+[ ]   use gl_element_array_buffer
+[ ]   use glDebugMessageCallback
+[ ]   clang-tidy
 [ ] volume::planes - ability to store some extra points without normals for use
     in collision detection
 [ ] use "moving towards each other" vector to cull collision detection
