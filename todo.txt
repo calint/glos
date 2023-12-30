@@ -1,5 +1,6 @@
 [ ] implement sample game
 [ ] halt development and tidy up
+[ ] use "moving towards each other" vector to cull collision detection
 [ ] collision reaction: tiny random added to 'dt' for each object to avoid
     mathematical precision example: "o>  o  <o"   "ooo" instead of  "o<  o  >o"
 [ ] object: checked_collisions make minimum size of vector to e.g. 8
