@@ -66,7 +66,6 @@ public:
         // do the locking and lookup than just trying and only handling a
         // collision between 2 objects once
 
-        // bounding spheres collision detections
         if (not are_bounding_spheres_in_collision(Oi, Oj, fc)) {
           continue;
         }
@@ -79,7 +78,7 @@ public:
 
         // sphere vs planes
         if (Oi->volume.is_sphere) {
-          // Oj is not sphere
+          // Oj is not a sphere
           update_planes_world_coordinates(Oj);
           if (Oj->volume.planes.is_in_collision_with_sphere(
                   Oi->physics.position, Oi->volume.radius)) {
