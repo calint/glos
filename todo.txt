@@ -1,6 +1,6 @@
 [ ] implement sample game
 [ ] halt development and tidy up
-[ ] volume::planes - ability to store some extra points without normals used
+[ ] volume::planes - ability to store some extra points without normals for use
     in collision detection
 [ ] use "moving towards each other" vector to cull collision detection
 [ ] collision reaction: tiny random added to 'dt' for each object to avoid
