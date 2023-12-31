@@ -3,8 +3,9 @@
 
 #include "material.hpp"
 #include "shader.hpp"
+#include "texture.hpp"
+#include <cstdio>
 #include <glm/gtc/type_ptr.hpp>
-#include <stdio.h>
 #include <string>
 #include <vector>
 
@@ -18,11 +19,11 @@ class glo final {
 
 public:
   std::string name = "";
-  std::vector<float> vertex_buffer{};
-  std::vector<range> ranges{};
   float bounding_radius = 0;
-  GLuint vertex_buffer_id = 0;
   GLuint vertex_array_id = 0;
+  GLuint vertex_buffer_id = 0;
+  std::vector<range> ranges{};
+  int size_B = 0;
   // planes
   std::vector<glm::vec3> planes_points{};
   std::vector<glm::vec3> planes_normals{};
@@ -30,68 +31,8 @@ public:
   inline void free() {
     glDeleteBuffers(1, &vertex_buffer_id);
     glDeleteVertexArrays(1, &vertex_array_id);
-    metrics.buffered_vertex_data -= vertex_buffer.size() * sizeof(float);
+    metrics.buffered_vertex_data -= size_B;
     metrics.allocated_glos--;
-  }
-
-  inline void upload_to_opengl() {
-    glGenVertexArrays(1, &vertex_array_id);
-    glBindVertexArray(vertex_array_id);
-
-    glGenBuffers(1, &vertex_buffer_id);
-    glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_id);
-    glBufferData(GL_ARRAY_BUFFER,
-                 GLsizeiptr(vertex_buffer.size() * sizeof(float)),
-                 vertex_buffer.data(), GL_STATIC_DRAW);
-
-    // describe the data format
-    glEnableVertexAttribArray(shaders::apos);
-    glVertexAttribPointer(shaders::apos, 3, GL_FLOAT, GL_FALSE, sizeof(vertex),
-                          0);
-
-    glEnableVertexAttribArray(shaders::argba);
-    glVertexAttribPointer(shaders::argba, 4, GL_FLOAT, GL_FALSE, sizeof(vertex),
-                          (GLvoid *)(3 * sizeof(float)));
-
-    glEnableVertexAttribArray(shaders::anorm);
-    glVertexAttribPointer(shaders::anorm, 3, GL_FLOAT, GL_FALSE, sizeof(vertex),
-                          (GLvoid *)((3 + 4) * sizeof(float)));
-
-    glEnableVertexAttribArray(shaders::atex);
-    glVertexAttribPointer(shaders::atex, 2, GL_FLOAT, GL_FALSE, sizeof(vertex),
-                          (GLvoid *)((3 + 4 + 3) * sizeof(float)));
-
-    glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    metrics.buffered_vertex_data += vertex_buffer.size() * sizeof(float);
-
-    for (const range &mtlrng : ranges) {
-      material &mtl = materials.store.at(unsigned(mtlrng.material_ix));
-      if (not mtl.map_Kd.empty()) {
-        // load texture
-        glGenTextures(1, &mtl.texture_id);
-        glBindTexture(GL_TEXTURE_2D, mtl.texture_id);
-        printf(" * loading texture %u from '%s'\n", mtl.texture_id,
-               mtl.map_Kd.c_str());
-        SDL_Surface *surface = IMG_Load(mtl.map_Kd.c_str());
-        if (!surface) {
-          printf("!!! could not load image from '%s'\n", mtl.map_Kd.c_str());
-          std::abort();
-        }
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface->w, surface->h, 0,
-                     GL_RGB, GL_UNSIGNED_BYTE, surface->pixels);
-        mtl.texture_size_bytes =
-            surface->w * surface->h * int(sizeof(uint32_t));
-        metrics.buffered_texture_data += mtl.texture_size_bytes;
-        SDL_FreeSurface(surface);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glBindTexture(GL_TEXTURE_2D, 0);
-      }
-    }
   }
 
   inline void render(const glm::mat4 &mtx_mw) {
@@ -116,12 +57,12 @@ public:
     metrics.rendered_glos++;
   }
 
-  inline void load_planes_from_path(const char *path) {
-    // load from blender exported 'obj' file
-    printf(" * loading planes from '%s'\n", path);
-    std::ifstream file(path);
+  inline void load_definition_from_path(const char *obj_path,
+                                        const char *bounding_planes_path) {
+    printf(" * loading glo from '%s'\n", obj_path);
+    std::ifstream file(obj_path);
     if (!file) {
-      printf("!!! cannot open file '%s'\n", path);
+      printf("!!! cannot open file '%s'\n", obj_path);
       std::abort();
     }
     std::stringstream buffer;
@@ -129,76 +70,10 @@ public:
     std::string content = buffer.str();
     const char *p = content.c_str();
 
-    std::vector<glm::vec3> positions{};
-    std::vector<glm::vec3> normals{};
-
-    while (*p) {
-      token t = token_next(&p);
-      if (token_equals(&t, "v")) {
-        token tx = token_next(&p);
-        float x = token_get_float(&tx);
-        token ty = token_next(&p);
-        float y = token_get_float(&ty);
-        token tz = token_next(&p);
-        float z = token_get_float(&tz);
-        positions.emplace_back(x, y, z);
-        continue;
-      }
-      if (token_equals(&t, "vn")) {
-        token tx = token_next(&p);
-        float x = token_get_float(&tx);
-        token ty = token_next(&p);
-        float y = token_get_float(&ty);
-        token tz = token_next(&p);
-        float z = token_get_float(&tz);
-        normals.emplace_back(x, y, z);
-        continue;
-      }
-      if (token_equals(&t, "f")) {
-        // read first vertex in face and create position and normal
-        // position
-        token ix1_tkn = token_from_string_additional_delim(p, '/');
-        p = ix1_tkn.end;
-        const unsigned ix1 = token_get_uint(&ix1_tkn);
-        const glm::vec3 &position = positions.at(ix1 - 1);
-
-        // texture, skip
-        token ix2_tkn = token_from_string_additional_delim(p, '/');
-        p = ix2_tkn.end;
-
-        // normal
-        token ix3_tkn = token_from_string_additional_delim(p, '/');
-        p = ix3_tkn.end;
-        const unsigned ix3 = token_get_uint(&ix3_tkn);
-        const glm::vec3 &normal = normals.at(ix3 - 1);
-
-        planes_points.emplace_back(position);
-        planes_normals.emplace_back(normal);
-
-        // ignore the other vertices
-        p = scan_to_including_newline(p);
-        continue;
-      }
-      // unknown token
-      p = scan_to_including_newline(p);
-    }
-    printf("     %zu planes\n", planes_normals.size());
-    // const size_t n = planes_points.size();
-    // for (unsigned i = 0; i < n; i++) {
-    //   printf(" p: %s  n: %s\n", glm::to_string(planes_points[i]).c_str(),
-    //          glm::to_string(planes_normals[i]).c_str());
-    // }
-  }
-
-  static /*gives*/ glo *make_from_string(const char **ptr_p) {
-    const char *p = *ptr_p;
-
+    std::vector<float> vertex_buffer{};
     std::vector<glm::vec3> vertices{};
     std::vector<glm::vec3> normals{};
     std::vector<glm::vec2> texture_uv{};
-
-    std::vector<float> vertex_buffer{};
-    std::vector<range> material_ranges{};
 
     unsigned current_object_material_ix = 0;
     const char *basedir = "obj/";
@@ -206,7 +81,6 @@ public:
     unsigned vertex_buffer_ix_prv = 0;
     int first_o = 1;
     std::string object_name = "";
-    float bounding_radius = 0;
 
     while (*p) {
       token tk = token_next(&p);
@@ -232,7 +106,7 @@ public:
       }
       if (token_equals(&tk, "usemtl")) {
         token t = token_next(&p);
-        std::string name{t.content, t.content + token_size(&t)};
+        name = {t.content, t.content + token_size(&t)};
         bool found = false;
         for (unsigned i = 0; i < materials.store.size(); i++) {
           material &mtl = materials.store.at(i);
@@ -250,9 +124,9 @@ public:
           std::abort();
         }
         if (vertex_buffer_ix_prv != vertex_buffer_ix) {
-          material_ranges.emplace_back(vertex_buffer_ix_prv,
-                                       vertex_buffer_ix - vertex_buffer_ix_prv,
-                                       current_object_material_ix);
+          ranges.emplace_back(vertex_buffer_ix_prv,
+                              vertex_buffer_ix - vertex_buffer_ix_prv,
+                              current_object_material_ix);
           vertex_buffer_ix_prv = vertex_buffer_ix;
         }
       }
@@ -341,25 +215,141 @@ public:
       }
     }
     // add the last material range
-    material_ranges.emplace_back(vertex_buffer_ix_prv,
-                                 vertex_buffer_ix - vertex_buffer_ix_prv,
-                                 current_object_material_ix);
+    ranges.emplace_back(vertex_buffer_ix_prv,
+                        vertex_buffer_ix - vertex_buffer_ix_prv,
+                        current_object_material_ix);
 
     int ntriangles = 0;
-    for (const range &r : material_ranges) {
+    for (const range &r : ranges) {
       ntriangles += r.vertex_count / 3;
     }
 
     printf("     %zu range%c   %lu vertices   %d triangles   %zu B   radius: "
            "%0.2f\n",
-           material_ranges.size(), material_ranges.size() == 1 ? ' ' : 's',
+           ranges.size(), ranges.size() == 1 ? ' ' : 's',
            vertex_buffer.size() / sizeof(vertex), ntriangles,
            vertex_buffer.size() * sizeof(float), bounding_radius);
 
-    glo *g = new glo{std::move(object_name), std::move(vertex_buffer),
-                     std::move(material_ranges), bounding_radius};
     metrics.allocated_glos++;
-    return g;
+
+    if (bounding_planes_path) {
+      load_planes_from_path(bounding_planes_path);
+    }
+
+    glGenVertexArrays(1, &vertex_array_id);
+    glBindVertexArray(vertex_array_id);
+
+    glGenBuffers(1, &vertex_buffer_id);
+    glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_id);
+    glBufferData(GL_ARRAY_BUFFER,
+                 GLsizeiptr(vertex_buffer.size() * sizeof(float)),
+                 vertex_buffer.data(), GL_STATIC_DRAW);
+
+    // describe the data format
+    glEnableVertexAttribArray(shaders::apos);
+    glVertexAttribPointer(shaders::apos, 3, GL_FLOAT, GL_FALSE, sizeof(vertex),
+                          0);
+
+    glEnableVertexAttribArray(shaders::argba);
+    glVertexAttribPointer(shaders::argba, 4, GL_FLOAT, GL_FALSE, sizeof(vertex),
+                          (GLvoid *)(3 * sizeof(float)));
+
+    glEnableVertexAttribArray(shaders::anorm);
+    glVertexAttribPointer(shaders::anorm, 3, GL_FLOAT, GL_FALSE, sizeof(vertex),
+                          (GLvoid *)((3 + 4) * sizeof(float)));
+
+    glEnableVertexAttribArray(shaders::atex);
+    glVertexAttribPointer(shaders::atex, 2, GL_FLOAT, GL_FALSE, sizeof(vertex),
+                          (GLvoid *)((3 + 4 + 3) * sizeof(float)));
+
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    size_B = int(vertex_buffer.size() * sizeof(float));
+
+    metrics.buffered_vertex_data += size_B;
+
+    for (const range &mtlrng : ranges) {
+      material &mtl = materials.store.at(unsigned(mtlrng.material_ix));
+      if (not mtl.map_Kd.empty()) {
+        mtl.texture_id = textures.get_id_or_load_from_path(mtl.map_Kd);
+      }
+    }
+  }
+
+private:
+  inline void load_planes_from_path(const char *path) {
+    // load from blender exported 'obj' file
+    printf(" * loading planes from '%s'\n", path);
+    std::ifstream file(path);
+    if (!file) {
+      printf("!!! cannot open file '%s'\n", path);
+      std::abort();
+    }
+    std::stringstream buffer;
+    buffer << file.rdbuf();
+    std::string content = buffer.str();
+    const char *p = content.c_str();
+
+    std::vector<glm::vec3> positions{};
+    std::vector<glm::vec3> normals{};
+
+    while (*p) {
+      token t = token_next(&p);
+      if (token_equals(&t, "v")) {
+        token tx = token_next(&p);
+        float x = token_get_float(&tx);
+        token ty = token_next(&p);
+        float y = token_get_float(&ty);
+        token tz = token_next(&p);
+        float z = token_get_float(&tz);
+        positions.emplace_back(x, y, z);
+        continue;
+      }
+      if (token_equals(&t, "vn")) {
+        token tx = token_next(&p);
+        float x = token_get_float(&tx);
+        token ty = token_next(&p);
+        float y = token_get_float(&ty);
+        token tz = token_next(&p);
+        float z = token_get_float(&tz);
+        normals.emplace_back(x, y, z);
+        continue;
+      }
+      if (token_equals(&t, "f")) {
+        // read first vertex in face and create position and normal
+        // position
+        token ix1_tkn = token_from_string_additional_delim(p, '/');
+        p = ix1_tkn.end;
+        const unsigned ix1 = token_get_uint(&ix1_tkn);
+        const glm::vec3 &position = positions.at(ix1 - 1);
+
+        // texture, skip
+        token ix2_tkn = token_from_string_additional_delim(p, '/');
+        p = ix2_tkn.end;
+
+        // normal
+        token ix3_tkn = token_from_string_additional_delim(p, '/');
+        p = ix3_tkn.end;
+        const unsigned ix3 = token_get_uint(&ix3_tkn);
+        const glm::vec3 &normal = normals.at(ix3 - 1);
+
+        planes_points.emplace_back(position);
+        planes_normals.emplace_back(normal);
+
+        // ignore the other vertices
+        p = scan_to_including_newline(p);
+        continue;
+      }
+      // unknown token
+      p = scan_to_including_newline(p);
+    }
+    printf("     %zu planes\n", planes_normals.size());
+    // const size_t n = planes_points.size();
+    // for (unsigned i = 0; i < n; i++) {
+    //   printf(" p: %s  n: %s\n", glm::to_string(planes_points[i]).c_str(),
+    //          glm::to_string(planes_normals[i]).c_str());
+    // }
   }
 };
 
@@ -376,23 +366,9 @@ public:
   }
 
   inline int load(const char *obj_path, const char *bounding_planes_path) {
-    printf(" * loading glo from '%s'\n", obj_path);
-    std::ifstream file(obj_path);
-    if (!file) {
-      printf("!!! cannot open file '%s'\n", obj_path);
-      std::abort();
-    }
-    std::stringstream buffer;
-    buffer << file.rdbuf();
-    std::string content = buffer.str();
-    const char *p = content.c_str();
-    glo *g = /*takes*/ glo::make_from_string(&p);
-    if (bounding_planes_path) {
-      g->load_planes_from_path(bounding_planes_path);
-    }
-    g->upload_to_opengl();
-    store.push_back(std::move(*g));
-    delete g;
+    glo g{};
+    g.load_definition_from_path(obj_path, bounding_planes_path);
+    store.push_back(std::move(g));
     return int(store.size() - 1);
   }
 

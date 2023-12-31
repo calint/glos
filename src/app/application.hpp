@@ -72,23 +72,23 @@ public:
 
     ambient_light = glm::normalize(glm::vec3{0, 1, 0});
 
-    // camera.type = LOOK_AT;
-    // camera.position = {0, 20, 20};
-    // camera.look_at = {0, 0, 0};
+    camera.type = LOOK_AT;
+    camera.position = {0, 50, 50};
+    camera.look_at = {0, 0, 0};
 
-    camera.type = ORTHO;
-    camera.position = {0, 50, 0};
-    camera.look_at = {0, 0, -0.0001f};
+    // camera.type = ORTHO;
+    // camera.position = {0, 50, 0};
+    // camera.look_at = {0, 0, -0.0001f};
     // note. -0.0001f because of the math of 'look at'
     // fit the 'grid' size
     // camera.ortho_min_x = -80;
     // camera.ortho_min_y = -80;
     // camera.ortho_max_x = 80;
     // camera.ortho_max_y = 80;
-    camera.ortho_min_x = -10;
-    camera.ortho_min_y = -10;
-    camera.ortho_max_x = 10;
-    camera.ortho_max_y = 10;
+    // camera.ortho_min_x = -10;
+    // camera.ortho_min_y = -10;
+    // camera.ortho_max_x = 10;
+    // camera.ortho_max_y = 10;
 
     // for (float y = -80; y <= 80; y += 1) {
     //   for (float x = -80; x <= 80; x += 1) {
