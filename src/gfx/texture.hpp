@@ -35,7 +35,7 @@ public:
 
 class textures final {
 public:
-  inline auto get_id_or_load_from_path(std::string const &path) -> GLuint {
+  inline auto get_id_or_load(std::string const &path) -> GLuint {
     auto it = store.find(path);
     if (it != store.end()) {
       return it->second.id;
@@ -44,7 +44,9 @@ public:
     texture tex{};
     tex.load(path);
     metrics.buffered_texture_data += tex.size_B;
-    return tex.id;
+    const GLuint id = tex.id;
+    store.insert({path, std::move(tex)});
+    return id;
   }
 
 private:

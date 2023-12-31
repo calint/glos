@@ -31,7 +31,7 @@ public:
   inline void free() {
     glDeleteBuffers(1, &vertex_buffer_id);
     glDeleteVertexArrays(1, &vertex_array_id);
-    metrics.buffered_vertex_data -= size_B;
+    metrics.buffered_vertex_data -= size_t(size_B);
     metrics.allocated_glos--;
   }
 
@@ -57,8 +57,8 @@ public:
     metrics.rendered_glos++;
   }
 
-  inline void load_definition_from_path(const char *obj_path,
-                                        const char *bounding_planes_path) {
+  // loads definition and optional bounding planes from 'obj' files
+  inline void load(const char *obj_path, const char *bounding_planes_path) {
     printf(" * loading glo from '%s'\n", obj_path);
     std::ifstream file(obj_path);
     if (!file) {
@@ -233,7 +233,7 @@ public:
     metrics.allocated_glos++;
 
     if (bounding_planes_path) {
-      load_planes_from_path(bounding_planes_path);
+      load_planes(bounding_planes_path);
     }
 
     glGenVertexArrays(1, &vertex_array_id);
@@ -267,18 +267,19 @@ public:
 
     size_B = int(vertex_buffer.size() * sizeof(float));
 
-    metrics.buffered_vertex_data += size_B;
+    metrics.buffered_vertex_data += size_t(size_B);
 
     for (const range &mtlrng : ranges) {
       material &mtl = materials.store.at(unsigned(mtlrng.material_ix));
       if (not mtl.map_Kd.empty()) {
-        mtl.texture_id = textures.get_id_or_load_from_path(mtl.map_Kd);
+        mtl.texture_id = textures.get_id_or_load(mtl.map_Kd);
+        textures.get_id_or_load(mtl.map_Kd);
       }
     }
   }
 
 private:
-  inline void load_planes_from_path(const char *path) {
+  inline void load_planes(const char *path) {
     // load from blender exported 'obj' file
     printf(" * loading planes from '%s'\n", path);
     std::ifstream file(path);
@@ -367,7 +368,7 @@ public:
 
   inline int load(const char *obj_path, const char *bounding_planes_path) {
     glo g{};
-    g.load_definition_from_path(obj_path, bounding_planes_path);
+    g.load(obj_path, bounding_planes_path);
     store.push_back(std::move(g));
     return int(store.size() - 1);
   }
