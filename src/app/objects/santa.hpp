@@ -15,7 +15,7 @@ public:
 
   // inline ~santa() { printf("%s destructor\n", name.c_str()); }
 
-  inline auto update(const frame_context &fc) -> bool override {
+  inline auto update(glos::frame_context const &fc) -> bool override {
     assert(not is_dead());
 
     if (object::update(fc)) {
@@ -55,7 +55,7 @@ public:
     return false;
   }
 
-  inline auto on_collision(object *o, const frame_context &fc)
+  inline auto on_collision(object *o, glos::frame_context const &fc)
       -> bool override {
     assert(not is_dead());
     // printf("%s collision with %s\n", name.c_str(), o->name.c_str());

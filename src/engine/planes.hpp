@@ -1,5 +1,5 @@
 #pragma once
-
+namespace glos {
 class planes final {
   glm::mat3 Nmw{}; // normals rotation matrix
 
@@ -35,7 +35,6 @@ public:
     }
     // normals
     if (normals.size() != 0 and (first_update or agl != Nmw_agl)) {
-      // printf("update normals\n");
       first_update = false;
       // update world_normals
       Nmw_agl = agl;
@@ -51,11 +50,7 @@ public:
     }
   }
 
-  inline void debug_render_normals(std::vector<glm::vec3> const &points,
-                                   std::vector<glm::vec3> const &normals,
-                                   glm::mat4 const &Mmw, glm::vec3 const &pos,
-                                   glm::vec3 const &agl, glm::vec3 const &scl) {
-    update_model_to_world(points, normals, Mmw, pos, agl, scl);
+  inline void debug_render_normals() {
     const size_t n = world_positions.size();
     for (size_t i = 0; i < n; ++i) {
       const glm::vec3 &pnt = world_positions[i];
@@ -76,13 +71,14 @@ public:
   }
 
   inline auto is_in_collision_with_sphere(glm::vec3 const &pos,
-                                          float const rds) {
+                                          float const rds) const -> bool {
     const size_t n = world_normals.size();
     for (unsigned i = 0; i < n; ++i) {
       // render_wcs_line(world_positions[i], p, {0, 1, 0});
       const glm::vec3 v = pos - world_positions[i];
       const glm::vec3 nml = world_normals[i];
       const float d = glm::dot(v, nml);
+      // printf("i=%u  d=%f  rds=%f\n", i, d, rds);
       if (d > rds) {
         return false;
       }
@@ -113,3 +109,4 @@ private:
     return true;
   }
 };
+} // namespace glos

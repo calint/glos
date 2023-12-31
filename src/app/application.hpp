@@ -69,7 +69,7 @@ public:
       o->net_state = &glos::net.states[1];
     }
 
-    ambient_light = glm::normalize(glm::vec3{0, 1, 0});
+    glos::ambient_light = glm::normalize(glm::vec3{0, 1, 0});
 
     glos::camera.type = glos::camera::type::LOOK_AT;
     glos::camera.position = {0, 20, 20};

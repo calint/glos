@@ -11,56 +11,14 @@
 #include <limits>
 #include <mutex>
 
-inline static void debug_render_wcs_line(const glm::vec3 &from_wcs,
-                                         const glm::vec3 &to_wcs,
-                                         const glm::vec3 &color);
+static bool use_net = false;
 
-// include order of subsystems relevant
+// include order relevant
 #include "app/configuration.hpp"
 //
-#include "engine/metrics.hpp"
-//
-#include "engine/net.hpp"
-//
-#include "engine/sdl.hpp"
-//
-#include "engine/window.hpp"
-//
-#include "engine/shader.hpp"
-//
-#include "engine/camera.hpp"
-//
-#include "engine/material.hpp"
-//
-#include "engine/glo.hpp"
-//
-class frame_context {
-public:
-  float dt = 0;
-  unsigned tick = 0;
-};
-#include "engine/object.hpp"
-//
-#include "engine/grid.hpp"
-//
-#include "engine/net.hpp"
-//
-#include "engine/net_server.hpp"
-
-static struct color {
-  GLclampf red;
-  GLclampf green;
-  GLclampf blue;
-} background_color = {0, 0, 0};
-
-static glm::vec3 ambient_light = glm::normalize(glm::vec3{0, 1, 1});
-
-static glos::object *camera_follow_object = nullptr;
-
+#include "engine/engine.hpp"
 //
 #include "app/application.hpp"
-
-static int shader_program_render_line = 0;
 
 //----------------------------------------------------------------------- init
 inline static void main_init_shaders() {
@@ -113,80 +71,20 @@ void main(){
 
     glos::shaders.load_program_from_source(vtx, frag);
   }
-  {
-    const char *vtx = R"(
-  #version 330 core
-  uniform mat4 umtx_wvp; // world-to-view-to-projection
-  layout(location = 0) in vec3 apos; // world coordinates
-  void main() {
-	  gl_Position = umtx_wvp * vec4(apos, 1);
-  }
-  )";
-
-    const char *frag = R"(
-  #version 330 core
-  uniform vec3 ucolor;
-  out vec4 rgba;
-  void main() {
-    rgba = vec4(ucolor, 1);
-  }
-)";
-    shader_program_render_line =
-        glos::shaders.load_program_from_source(vtx, frag);
-  }
-}
-
-static int shader_program_ix = 0;
-static int shader_program_ix_prev = shader_program_ix;
-
-// for debugging
-inline static void debug_render_wcs_line(const glm::vec3 &from_wcs,
-                                         const glm::vec3 &to_wcs,
-                                         const glm::vec3 &color) {
-  GLuint vao = 0;
-  glGenVertexArrays(1, &vao);
-  glBindVertexArray(vao);
-
-  GLuint vbo = 0;
-  glGenBuffers(1, &vbo);
-  glBindBuffer(GL_ARRAY_BUFFER, vbo);
-
-  const glm::vec3 line_vertices[]{from_wcs, to_wcs};
-  glBufferData(GL_ARRAY_BUFFER, sizeof(line_vertices), line_vertices,
-               GL_STATIC_DRAW);
-  glEnableVertexAttribArray(0);
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
-  glos::camera.update_matrix_wvp();
-
-  glos::shaders.use_program(shader_program_render_line);
-
-  glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(glos::camera.Mvp));
-  glUniform3fv(1, 1, glm::value_ptr(color));
-
-  glDrawArrays(GL_LINES, 0, 2);
-
-  glBindVertexArray(0);
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-  glDeleteBuffers(1, &vbo);
-  glDeleteVertexArrays(1, &vao);
-
-  glos::shaders.use_program(shader_program_ix);
 }
 
 inline static void main_render(const unsigned render_frame_num) {
-  if (camera_follow_object) {
-    glos::camera.look_at = camera_follow_object->position;
+  if (glos::camera_follow_object) {
+    glos::camera.look_at = glos::camera_follow_object->position;
   }
 
   glos::camera.update_matrix_wvp();
 
   glUniformMatrix4fv(glos::shaders::umtx_wvp, 1, GL_FALSE,
                      glm::value_ptr(glos::camera.Mvp));
-  glUniform3fv(glos::shaders::ulht, 1, glm::value_ptr(ambient_light));
-  glClearColor(background_color.red, background_color.green,
-               background_color.blue, 1.0);
+  glUniform3fv(glos::shaders::ulht, 1, glm::value_ptr(glos::ambient_light));
+  glClearColor(glos::background_color.red, glos::background_color.green,
+               glos::background_color.blue, 1.0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   glos::grid.render(render_frame_num);
@@ -210,7 +108,6 @@ int main(int argc, char *argv[]) {
   srand(0);
 
   // this instance is client
-  bool use_net = false;
   if (argc > 1 && *argv[1] == 'c') {
     // connect to server
     use_net = true;
@@ -219,19 +116,10 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  // initiate subsystems
-  if (use_net) {
-    glos::net.init();
-  }
-  glos::metrics.init();
-  glos::sdl.init();
-  glos::window.init();
-  glos::shaders.init();
-  glos::materials.init();
-  glos::glos.init();
-  glos::objects.init();
-  glos::grid.init();
+  glos::engine.init();
+
   application.init();
+
   // apply objects allocated in 'application.init()'
   glos::objects.apply_allocated_instances();
 
@@ -312,8 +200,8 @@ int main(int argc, char *argv[]) {
       }
 
       // in multiplayer mode use dt from server else previous frame
-      frame_context fc{use_net ? glos::net.dt : glos::metrics.fps.dt,
-                   update_frame_num};
+      glos::frame_context fc{use_net ? glos::net.dt : glos::metrics.fps.dt,
+                             update_frame_num};
 
       glos::grid.update(fc);
 
@@ -435,9 +323,10 @@ int main(int argc, char *argv[]) {
           SDL_SetRelativeMouseMode(mouse_mode ? SDL_TRUE : SDL_FALSE);
           break;
         case SDLK_3:
-          shader_program_ix++;
-          if (shader_program_ix >= glos::shaders.programs_count()) {
-            shader_program_ix = 0;
+          glos::engine.shader_program_ix++;
+          if (glos::engine.shader_program_ix >=
+              glos::shaders.programs_count()) {
+            glos::engine.shader_program_ix = 0;
           }
           break;
         case SDLK_4:
@@ -455,10 +344,11 @@ int main(int argc, char *argv[]) {
     }
 
     // check if shader program has changed
-    if (shader_program_ix_prev != shader_program_ix) {
-      printf(" * switching to program at index %u\n", shader_program_ix);
-      glos::shaders.use_program(shader_program_ix);
-      shader_program_ix_prev = shader_program_ix;
+    if (glos::engine.shader_program_ix_prev != glos::engine.shader_program_ix) {
+      printf(" * switching to program at index %u\n",
+             glos::engine.shader_program_ix);
+      glos::shaders.use_program(glos::engine.shader_program_ix);
+      glos::engine.shader_program_ix_prev = glos::engine.shader_program_ix;
     }
 
     {
