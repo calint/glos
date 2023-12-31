@@ -1,8 +1,8 @@
 #pragma once
-class cube : public object {
+class cube : public glos::object {
 public:
   inline cube() {
-    node.glo = glos.get_by_index(glo_index_cube);
+    node.glo = glos::glos.get_by_index(glo_index_cube);
     volume.scale = {2, 1, 1};
     volume.radius = node.glo->bounding_radius * 2; // r * scale
     volume.is_sphere = false;

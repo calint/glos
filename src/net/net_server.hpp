@@ -3,6 +3,7 @@
 
 #include "net.hpp"
 
+namespace glos {
 class net_server final {
 public:
   uint16_t port = 8085;
@@ -130,3 +131,4 @@ public:
 };
 
 static net_server net_server{};
+} // namespace glos

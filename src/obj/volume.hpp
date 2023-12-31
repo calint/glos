@@ -1,6 +1,7 @@
 #pragma once
 // reviewed: 2023-12-22
 
+namespace glos {
 class volume final {
   class planes final {
     // transform matrixes
@@ -129,3 +130,4 @@ public:
   planes planes{};
   bool is_sphere = true;
 };
+} // namespace glos

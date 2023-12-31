@@ -7,6 +7,7 @@
 #include "volume.hpp"
 #include <algorithm>
 
+namespace glos {
 class object {
 public:
   object **alloc_ptr;             // initiated at allocate by 'o1store'
@@ -154,3 +155,4 @@ public:
 };
 
 static objects objects{};
+} // namespace glos

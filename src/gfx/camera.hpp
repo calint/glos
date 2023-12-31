@@ -1,6 +1,7 @@
 #pragma once
 // reviewed: 2023-12-22
 
+namespace glos {
 enum camera_type { LOOK_AT, ANGLE, ORTHO };
 
 class camera final {
@@ -58,3 +59,4 @@ public:
 };
 
 static camera camera{};
+} // namespace glos

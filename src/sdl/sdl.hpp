@@ -6,6 +6,7 @@
 #include <SDL.h>
 #include <SDL_image.h>
 
+namespace glos {
 class sdl final {
   // Mix_Music *music = nullptr;
 
@@ -34,3 +35,4 @@ public:
 };
 
 static sdl sdl{};
+} // namespace glos

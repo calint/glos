@@ -9,6 +9,7 @@
 #include <string>
 #include <vector>
 
+namespace glos {
 class glo final {
   class range final {
   public:
@@ -389,3 +390,4 @@ public:
 };
 
 static glos glos{};
+} // namespace glos

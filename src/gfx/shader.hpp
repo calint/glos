@@ -4,6 +4,7 @@
 #include "../metrics.hpp"
 #include <vector>
 
+namespace glos {
 class vertex final {
 public:
   float position[3];
@@ -258,3 +259,4 @@ private:
 };
 
 static shaders shaders{};
+} // namespace glos

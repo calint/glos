@@ -55,7 +55,7 @@ static struct color {
 
 static glm::vec3 ambient_light = glm::normalize(glm::vec3{0, 1, 1});
 
-static object *camera_follow_object = nullptr;
+static glos::object *camera_follow_object = nullptr;
 
 //
 #include "app/application.hpp"
@@ -86,7 +86,7 @@ void main() {
 }
     )";
 
-    shaders.load_program_from_source(vtx, frag);
+    glos::shaders.load_program_from_source(vtx, frag);
   }
   {
     const char *vtx = R"(
@@ -111,7 +111,7 @@ void main(){
 }
     )";
 
-    shaders.load_program_from_source(vtx, frag);
+    glos::shaders.load_program_from_source(vtx, frag);
   }
   {
     const char *vtx = R"(
@@ -131,7 +131,8 @@ void main(){
     rgba = vec4(ucolor, 1);
   }
 )";
-    shader_program_render_line = shaders.load_program_from_source(vtx, frag);
+    shader_program_render_line =
+        glos::shaders.load_program_from_source(vtx, frag);
   }
 }
 
@@ -156,11 +157,11 @@ inline static void debug_render_wcs_line(const glm::vec3 &from_wcs,
   glEnableVertexAttribArray(0);
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
-  camera.update_matrix_wvp();
+  glos::camera.update_matrix_wvp();
 
-  shaders.use_program(shader_program_render_line);
+  glos::shaders.use_program(shader_program_render_line);
 
-  glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(camera.Mvp));
+  glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(glos::camera.Mvp));
   glUniform3fv(1, 1, glm::value_ptr(color));
 
   glDrawArrays(GL_LINES, 0, 2);
@@ -171,35 +172,35 @@ inline static void debug_render_wcs_line(const glm::vec3 &from_wcs,
   glDeleteBuffers(1, &vbo);
   glDeleteVertexArrays(1, &vao);
 
-  shaders.use_program(shader_program_ix);
+  glos::shaders.use_program(shader_program_ix);
 }
 
 inline static void main_render(const unsigned render_frame_num) {
   if (camera_follow_object) {
-    camera.look_at = camera_follow_object->physics.position;
+    glos::camera.look_at = camera_follow_object->physics.position;
   }
 
-  camera.update_matrix_wvp();
+  glos::camera.update_matrix_wvp();
 
-  glUniformMatrix4fv(shaders::umtx_wvp, 1, GL_FALSE,
-                     glm::value_ptr(camera.Mvp));
-  glUniform3fv(shaders::ulht, 1, glm::value_ptr(ambient_light));
+  glUniformMatrix4fv(glos::shaders::umtx_wvp, 1, GL_FALSE,
+                     glm::value_ptr(glos::camera.Mvp));
+  glUniform3fv(glos::shaders::ulht, 1, glm::value_ptr(ambient_light));
   glClearColor(background_color.red, background_color.green,
                background_color.blue, 1.0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  grid.render(render_frame_num);
+  glos::grid.render(render_frame_num);
 
-  window.swap_buffers();
+  glos::window.swap_buffers();
 }
 
 //------------------------------------------------------------------------ main
 int main(int argc, char *argv[]) {
   // check if this instance is server
   if (argc > 1 && *argv[1] == 's') {
-    net_server.init();
-    net_server.loop();
-    net_server.free();
+    glos::net_server.init();
+    glos::net_server.loop();
+    glos::net_server.free();
     return 0;
   }
 
@@ -214,25 +215,25 @@ int main(int argc, char *argv[]) {
     // connect to server
     use_net = true;
     if (argc > 2) {
-      net.host = argv[2];
+      glos::net.host = argv[2];
     }
   }
 
   // initiate subsystems
   if (use_net) {
-    net.init();
+    glos::net.init();
   }
-  metrics.init();
-  sdl.init();
-  window.init();
-  shaders.init();
-  materials.init();
-  glos.init();
-  objects.init();
-  grid.init();
+  glos::metrics.init();
+  glos::sdl.init();
+  glos::window.init();
+  glos::shaders.init();
+  glos::materials.init();
+  glos::glos.init();
+  glos::objects.init();
+  glos::grid.init();
   application.init();
   // apply objects allocated in 'application.init()'
-  objects.apply_allocated_instances();
+  glos::objects.apply_allocated_instances();
 
   main_init_shaders();
 
@@ -241,8 +242,8 @@ int main(int argc, char *argv[]) {
   printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
   printf(": %15s : %-9s :\n", "class", "bytes");
   printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
-  printf(": %15s : %-9ld :\n", "object", sizeof(object));
-  printf(": %15s : %-9ld :\n", "glo", sizeof(glo));
+  printf(": %15s : %-9ld :\n", "object", sizeof(glos::object));
+  printf(": %15s : %-9ld :\n", "glo", sizeof(glos::glo));
   printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
 
   if (grid_threaded) {
@@ -262,13 +263,13 @@ int main(int argc, char *argv[]) {
 
   SDL_SetRelativeMouseMode(mouse_mode ? SDL_TRUE : SDL_FALSE);
 
-  metrics.fps.calculation_intervall_ms = 1000;
-  metrics.reset_timer();
-  metrics.print_headers(stderr);
+  glos::metrics.fps.calculation_intervall_ms = 1000;
+  glos::metrics.reset_timer();
+  glos::metrics.print_headers(stderr);
 
   if (use_net) {
     // send initial signals
-    net.begin();
+    glos::net.begin();
   }
 
   // synchronization of update and render thread
@@ -291,13 +292,14 @@ int main(int argc, char *argv[]) {
 
         // printf("update %u\n", update_frame_num);
 
-        grid.clear();
+        glos::grid.clear();
 
         // add all allocated objects to the grid
-        object **const end = objects.allocated_list_end();
-        for (object **it = objects.allocated_list(); it < end; it++) {
-          object *obj = *it;
-          grid.add(obj);
+        glos::object **const end = glos::objects.allocated_list_end();
+        for (glos::object **it = glos::objects.allocated_list(); it < end;
+             ++it) {
+          glos::object *obj = *it;
+          glos::grid.add(obj);
         }
 
         is_rendering = true;
@@ -306,35 +308,36 @@ int main(int argc, char *argv[]) {
       }
 
       if (print_grid) {
-        grid.print();
+        glos::grid.print();
       }
 
       // in multiplayer mode use dt from server else previous frame
-      frame_ctx fc{use_net ? net.dt : metrics.fps.dt, update_frame_num};
+      frame_ctx fc{use_net ? glos::net.dt : glos::metrics.fps.dt,
+                   update_frame_num};
 
-      grid.update(fc);
+      glos::grid.update(fc);
 
       if (resolve_collisions) {
-        grid.resolve_collisions(fc);
+        glos::grid.resolve_collisions(fc);
       }
 
       // apply changes done at 'update' and 'resolve_collisions'
-      objects.apply_freed_instances();
-      objects.apply_allocated_instances();
+      glos::objects.apply_freed_instances();
+      glos::objects.apply_allocated_instances();
 
       // callback
       application.at_frame_end();
 
       // apply changes done by application
-      objects.apply_freed_instances();
-      objects.apply_allocated_instances();
+      glos::objects.apply_freed_instances();
+      glos::objects.apply_allocated_instances();
 
       // update signals state
       if (use_net) {
         // receive signals from previous frame and send signals of current frame
-        net.at_frame_end();
+        glos::net.at_frame_end();
       } else {
-        net.states[net.active_state_ix] = net.next_state;
+        glos::net.states[glos::net.active_state_ix] = glos::net.next_state;
       }
     }
     // in case render thread is waiting
@@ -344,7 +347,7 @@ int main(int argc, char *argv[]) {
 
   // enter game loop
   while (is_running) {
-    metrics.at_frame_begin();
+    glos::metrics.at_frame_begin();
 
     // poll events
     SDL_Event event;
@@ -353,9 +356,9 @@ int main(int argc, char *argv[]) {
       case SDL_WINDOWEVENT: {
         switch (event.window.event) {
         case SDL_WINDOWEVENT_SIZE_CHANGED: {
-          auto [w, h] = window.get_width_and_height();
-          camera.width = (float)w;
-          camera.height = (float)h;
+          auto [w, h] = glos::window.get_width_and_height();
+          glos::camera.width = float(w);
+          glos::camera.height = float(h);
           glViewport(0, 0, w, h);
           printf(" * window resize to  %u x %u\n", w, h);
           break;
@@ -368,64 +371,64 @@ int main(int argc, char *argv[]) {
         break;
       case SDL_MOUSEMOTION: {
         if (event.motion.xrel != 0) {
-          net.next_state.lookangle_y += (float)event.motion.xrel *
-                                        rad_over_mouse_pixels *
-                                        mouse_sensitivity;
+          glos::net.next_state.lookangle_y += (float)event.motion.xrel *
+                                              rad_over_mouse_pixels *
+                                              mouse_sensitivity;
         }
         if (event.motion.yrel != 0) {
-          net.next_state.lookangle_x += (float)event.motion.yrel *
-                                        rad_over_mouse_pixels *
-                                        mouse_sensitivity;
+          glos::net.next_state.lookangle_x += (float)event.motion.yrel *
+                                              rad_over_mouse_pixels *
+                                              mouse_sensitivity;
         }
         break;
       }
       case SDL_KEYDOWN:
         switch (event.key.keysym.sym) {
         case SDLK_w:
-          net.next_state.keys |= 1;
+          glos::net.next_state.keys |= 1;
           break;
         case SDLK_a:
-          net.next_state.keys |= 2;
+          glos::net.next_state.keys |= 2;
           break;
         case SDLK_s:
-          net.next_state.keys |= 4;
+          glos::net.next_state.keys |= 4;
           break;
         case SDLK_d:
-          net.next_state.keys |= 8;
+          glos::net.next_state.keys |= 8;
           break;
         case SDLK_q:
-          net.next_state.keys |= 16;
+          glos::net.next_state.keys |= 16;
           break;
         case SDLK_e:
-          net.next_state.keys |= 32;
+          glos::net.next_state.keys |= 32;
           break;
         case SDLK_o:
-          net.next_state.keys |= 64;
+          glos::net.next_state.keys |= 64;
           break;
         }
         break;
       case SDL_KEYUP:
         switch (event.key.keysym.sym) {
         case SDLK_w:
-          net.next_state.keys &= ~1u;
+          glos::net.next_state.keys &= ~1u;
           break;
         case SDLK_a:
-          net.next_state.keys &= ~2u;
+          glos::net.next_state.keys &= ~2u;
           break;
         case SDLK_s:
-          net.next_state.keys &= ~4u;
+          glos::net.next_state.keys &= ~4u;
           break;
         case SDLK_d:
-          net.next_state.keys &= ~8u;
+          glos::net.next_state.keys &= ~8u;
           break;
         case SDLK_q:
-          net.next_state.keys &= ~16u;
+          glos::net.next_state.keys &= ~16u;
           break;
         case SDLK_e:
-          net.next_state.keys &= ~32u;
+          glos::net.next_state.keys &= ~32u;
           break;
         case SDLK_o:
-          net.next_state.keys &= ~64u;
+          glos::net.next_state.keys &= ~64u;
           break;
         case SDLK_SPACE:
           mouse_mode = mouse_mode ? SDL_FALSE : SDL_TRUE;
@@ -433,7 +436,7 @@ int main(int argc, char *argv[]) {
           break;
         case SDLK_3:
           shader_program_ix++;
-          if (shader_program_ix >= shaders.programs_count()) {
+          if (shader_program_ix >= glos::shaders.programs_count()) {
             shader_program_ix = 0;
           }
           break;
@@ -454,7 +457,7 @@ int main(int argc, char *argv[]) {
     // check if shader program has changed
     if (shader_program_ix_prev != shader_program_ix) {
       printf(" * switching to program at index %u\n", shader_program_ix);
-      shaders.use_program(shader_program_ix);
+      glos::shaders.use_program(shader_program_ix);
       shader_program_ix_prev = shader_program_ix;
     }
 
@@ -476,8 +479,8 @@ int main(int argc, char *argv[]) {
     }
 
     // metrics
-    metrics.allocated_objects = objects.allocated_list_len();
-    metrics.at_frame_end(stderr);
+    glos::metrics.allocated_objects = glos::objects.allocated_list_len();
+    glos::metrics.at_frame_end(stderr);
   }
   //---------------------------------------------------------------------free
 
@@ -487,17 +490,17 @@ int main(int argc, char *argv[]) {
   update_thread.join();
 
   application.free();
-  grid.free();
-  objects.free();
-  glos.free();
-  materials.free();
-  shaders.free();
-  window.free();
-  sdl.free();
+  glos::grid.free();
+  glos::objects.free();
+  glos::glos.free();
+  glos::materials.free();
+  glos::shaders.free();
+  glos::window.free();
+  glos::sdl.free();
   if (use_net) {
-    net.free();
+    glos::net.free();
   }
-  metrics.print(stderr);
-  metrics.free();
+  glos::metrics.print(stderr);
+  glos::metrics.free();
   return 0;
 }

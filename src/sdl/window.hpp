@@ -2,6 +2,7 @@
 // reviewed: 2023-12-22
 // reviewed: 2023-12-27
 
+namespace glos {
 class window final {
   SDL_Window *sdl_window = nullptr;
   SDL_Renderer *sdl_renderer = nullptr;
@@ -103,3 +104,4 @@ private:
 };
 
 static window window{};
+}; // namespace glos

@@ -5,6 +5,7 @@
 // #include "task_thread_pool.hpp"
 #include <execution>
 
+namespace glos {
 class grid final {
   static constexpr int ncells = grid_ncells_wide * grid_ncells_high;
   // task_thread_pool::task_thread_pool pool{};
@@ -163,3 +164,4 @@ private:
 };
 
 static grid grid{};
+} // namespace glos

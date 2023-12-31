@@ -6,6 +6,7 @@
 #include <string>
 #include <unordered_map>
 
+namespace glos {
 class texture final {
 public:
   GLuint id = 0;
@@ -54,3 +55,4 @@ private:
 };
 
 static textures textures{};
+} // namespace glos

@@ -8,6 +8,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+namespace glos {
 class net_state final {
 public:
   unsigned keys;
@@ -103,3 +104,4 @@ private:
 };
 
 static net net{};
+} // namespace glos

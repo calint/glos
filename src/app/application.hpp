@@ -21,18 +21,18 @@ public:
     static_assert(sizeof(cube) <= objects_instance_size_B, "");
 
     // the load order matches the 'glo_index_*' configuration
-    glos.load("obj/skydome.obj", nullptr);
-    glos.load("obj/grid.obj", nullptr);
-    glos.load("obj/santa.obj", nullptr);
-    glos.load("obj/icosphere.obj", nullptr);
-    glos.load("obj/cube.obj", "obj/bv-cube.obj");
+    glos::glos.load("obj/skydome.obj", nullptr);
+    glos::glos.load("obj/grid.obj", nullptr);
+    glos::glos.load("obj/santa.obj", nullptr);
+    glos::glos.load("obj/icosphere.obj", nullptr);
+    glos::glos.load("obj/cube.obj", "obj/bv-cube.obj");
 
     constexpr float world_size = grid_cell_size * grid_ncells_wide;
 
     {
-      object *o = new (objects.alloc()) object{};
+      glos::object *o = new (glos::objects.alloc()) glos::object{};
       o->name = "skydome";
-      o->node.glo = glos.get_by_index(glo_index_skydome);
+      o->node.glo = glos::glos.get_by_index(glo_index_skydome);
       const float skydome_scale =
           world_size / (2 * o->node.glo->bounding_radius);
       o->volume.scale = {skydome_scale, skydome_scale, skydome_scale};
@@ -41,9 +41,9 @@ public:
     }
 
     {
-      object *o = new (objects.alloc()) object{};
+      glos::object *o = new (glos::objects.alloc()) glos::object{};
       o->name = "grid";
-      o->node.glo = glos.get_by_index(glo_index_grid);
+      o->node.glo = glos::glos.get_by_index(glo_index_grid);
       constexpr float grid_scale = world_size / 16;
       // note. 16 is the model coordinates span from -8 to 8
       o->volume.scale = {grid_scale, grid_scale, grid_scale};
@@ -51,7 +51,7 @@ public:
     }
 
     {
-      cube *o = new (objects.alloc()) cube{};
+      cube *o = new (glos::objects.alloc()) cube{};
       o->name = "cube";
       o->physics_nxt.mass = 1;
       o->physics_nxt.position = {0, 1, 0};
@@ -62,19 +62,19 @@ public:
     }
 
     {
-      sphere *o = new (objects.alloc()) sphere{};
+      sphere *o = new (glos::objects.alloc()) sphere{};
       o->name = "sphere";
       o->physics_nxt.mass = 1;
       o->physics_nxt.position = {6, 1, 0};
       o->physics = o->physics_nxt;
-      o->net_state = &net.states[1];
+      o->net_state = &glos::net.states[1];
     }
 
     ambient_light = glm::normalize(glm::vec3{0, 1, 0});
 
-    camera.type = LOOK_AT;
-    camera.position = {0, 50, 50};
-    camera.look_at = {0, 0, 0};
+    glos::camera.type = glos::LOOK_AT;
+    glos::camera.position = {0, 50, 50};
+    glos::camera.look_at = {0, 0, 0};
 
     // camera.type = ORTHO;
     // camera.position = {0, 50, 0};

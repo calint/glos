@@ -9,6 +9,7 @@
 #include <string>
 #include <vector>
 
+namespace glos {
 // newmtl texture
 // Ns 96.078431
 // Ka 1.000000 1.000000 1.000000
@@ -124,3 +125,4 @@ public:
 };
 
 static materials materials{};
+} // namespace glos

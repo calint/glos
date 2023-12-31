@@ -1,6 +1,6 @@
 #pragma once
 // reviewed: 2023-12-22
-
+namespace glos {
 class cell final {
 public:
   std::vector<object *> ols{};
@@ -286,3 +286,4 @@ private:
     return false;
   }
 };
+} // namespace glos

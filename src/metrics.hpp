@@ -3,6 +3,7 @@
 
 #include <SDL2/SDL.h>
 
+namespace glos {
 class metrics final {
 public:
   struct fps {
@@ -103,3 +104,4 @@ public:
 };
 
 static metrics metrics{};
+} // namespace glos
