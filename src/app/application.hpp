@@ -21,14 +21,11 @@ public:
     static_assert(sizeof(cube) <= objects_instance_size_B, "");
 
     // the load order matches the 'glo_index_*' configuration
-    glos.load_from_file("obj/skydome.obj");
-    glos.load_from_file("obj/grid.obj");
-    glos.load_from_file("obj/santa.obj");
-    glos.load_from_file("obj/icosphere.obj");
-    glos.load_from_file("obj/cube.obj");
-
-    glos.get_by_index(glo_index_cube)->load_planes_from_path("obj/bv-cube.obj");
-    // glos.get_by_index(glo_index_sphere)->load_planes_from_path("obj/icosphere.obj");
+    glos.load("obj/skydome.obj", nullptr);
+    glos.load("obj/grid.obj", nullptr);
+    glos.load("obj/santa.obj", nullptr);
+    glos.load("obj/icosphere.obj", nullptr);
+    glos.load("obj/cube.obj", "obj/bv-cube.obj");
 
     constexpr float world_size = grid_cell_size * grid_ncells_wide;
 

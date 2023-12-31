@@ -375,11 +375,12 @@ public:
     }
   }
 
-  inline void load_from_file(const char *path) {
-    printf(" * loading glo from '%s'\n", path);
-    std::ifstream file(path);
+  inline void load(const char *obj_path,
+                             const char *bounding_planes_path) {
+    printf(" * loading glo from '%s'\n", obj_path);
+    std::ifstream file(obj_path);
     if (!file) {
-      printf("!!! cannot open file '%s'\n", path);
+      printf("!!! cannot open file '%s'\n", obj_path);
       std::abort();
     }
     std::stringstream buffer;
@@ -387,6 +388,9 @@ public:
     std::string content = buffer.str();
     const char *p = content.c_str();
     glo *g = /*takes*/ glo::make_from_string(&p);
+    if (bounding_planes_path) {
+      g->load_planes_from_path(bounding_planes_path);
+    }
     g->upload_to_opengl();
     store.push_back(std::move(*g));
     delete g;
