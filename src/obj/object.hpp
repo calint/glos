@@ -15,7 +15,7 @@ public:
   uint32_t glo_ix = 0;
   float radius = 0;               // bounding radius
   glm::vec3 scale{};              //
-  planes planes{};                //
+  planes planes{};                // bounding planes (if any)
   bool is_sphere = true;          //
   glm::mat4 Mmw{};                // model -> world matrix
   glm::vec3 Mmw_pos{};            // position of current Mmw matrix
