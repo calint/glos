@@ -107,10 +107,10 @@ public:
 
     const float r = o->radius;
 
-    const float xl = gw / 2 + o->physics.position.x - r;
-    const float xr = gw / 2 + o->physics.position.x + r;
-    const float zl = gh / 2 + o->physics.position.z - r;
-    const float zr = gh / 2 + o->physics.position.z + r;
+    const float xl = gw / 2 + o->position.x - r;
+    const float xr = gw / 2 + o->position.x + r;
+    const float zl = gh / 2 + o->position.z - r;
+    const float zr = gh / 2 + o->position.z + r;
 
     int xil = (int)(xl / grid_cell_size);
     int xir = (int)(xr / grid_cell_size);

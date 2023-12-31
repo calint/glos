@@ -80,7 +80,7 @@ public:
         if (Oi->is_sphere) {
           // Oj is not a sphere
           update_planes_world_coordinates(Oj);
-          if (Oj->planes.is_in_collision_with_sphere(Oi->physics.position,
+          if (Oj->planes.is_in_collision_with_sphere(Oi->position,
                                                      Oi->radius)) {
             dispatch_collision(Oi, Oj, fc);
             dispatch_collision(Oj, Oi, fc);
@@ -89,7 +89,7 @@ public:
         } else if (Oj->is_sphere) {
           // Oi is not a sphere
           update_planes_world_coordinates(Oi);
-          if (Oi->planes.is_in_collision_with_sphere(Oj->physics.position,
+          if (Oi->planes.is_in_collision_with_sphere(Oj->position,
                                                      Oj->radius)) {
             dispatch_collision(Oj, Oi, fc);
             dispatch_collision(Oi, Oj, fc);
@@ -164,10 +164,10 @@ private:
     // only one thread at a time can be here
 
     const glm::vec3 collision_normal =
-        glm::normalize(Oj->physics.position - Oi->physics.position);
+        glm::normalize(Oj->position - Oi->position);
 
     const float relative_velocity_along_collision_normal =
-        glm::dot(Oj->physics.velocity - Oi->physics.velocity, collision_normal);
+        glm::dot(Oj->velocity - Oi->velocity, collision_normal);
 
     if (relative_velocity_along_collision_normal >= 0) {
       // objects are not moving towards each other
@@ -191,12 +191,11 @@ private:
     constexpr float restitution = 1;
     const float impulse = (1.0f + restitution) *
                           relative_velocity_along_collision_normal /
-                          (Oi->physics.mass + Oj->physics.mass);
+                          (Oi->mass + Oj->mass);
 
-    Oi->physics_nxt.velocity += impulse * Oj->physics.mass * collision_normal;
+    Oi->velocity += impulse * Oj->mass * collision_normal;
 
-    std::cout << Oi->name
-              << ": new velocity: " << glm::to_string(Oi->physics_nxt.velocity)
+    std::cout << Oi->name << ": new velocity: " << glm::to_string(Oi->velocity)
               << "\n";
 
     if (synchronization_necessary) {
@@ -244,7 +243,7 @@ private:
                                                        frame_context const &fc)
       -> bool {
 
-    const glm::vec3 v = o2->physics.position - o1->physics.position;
+    const glm::vec3 v = o2->position - o1->position;
     const float d = o1->radius + o2->radius;
     const float dsq = d * d;
     const float vsq = glm::dot(v, v);
@@ -262,8 +261,7 @@ private:
     const glo &g = glos.at(o->glo_ix);
 
     o->planes.update_model_to_world(g.planes_points, g.planes_normals,
-                                    o->physics.position, o->physics.angle,
-                                    o->scale);
+                                    o->position, o->angle, o->scale);
 
     if (needs_synchronization) {
       o->planes.release_lock();

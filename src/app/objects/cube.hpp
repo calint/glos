@@ -23,9 +23,9 @@ public:
     }
 
     // update using signals state
-    glm::vec3 &v = physics_nxt.velocity;
-    glm::vec3 &a = physics_nxt.angle;
-    glm::vec3 &av = physics_nxt.angular_velocity;
+    glm::vec3 &v = velocity;
+    glm::vec3 &a = angle;
+    glm::vec3 &av = angular_velocity;
     v = {0, 0, 0};
     av = {0, 0, 0};
     unsigned keys = net_state->keys;

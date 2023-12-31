@@ -54,20 +54,16 @@ public:
     {
       cube *o = new (glos::objects.alloc()) cube{};
       o->name = "cube";
-      o->physics_nxt.mass = 1;
-      o->physics_nxt.position = {0, 1, 0};
-      o->physics_nxt.velocity = {0, 0, 0};
-      // o->physics_nxt.angular_velocity = {glm::radians(10.0f),
-      //                                    glm::radians(10.0f), 0};
-      o->physics = o->physics_nxt;
+      o->mass = 1;
+      o->position = {0, 1, 0};
+      o->velocity = {0, 0, 0};
     }
 
     {
       sphere *o = new (glos::objects.alloc()) sphere{};
       o->name = "sphere";
-      o->physics_nxt.mass = 1;
-      o->physics_nxt.position = {6, 1, 0};
-      o->physics = o->physics_nxt;
+      o->mass = 1;
+      o->position = {6, 1, 0};
       o->net_state = &glos::net.states[1];
     }
 

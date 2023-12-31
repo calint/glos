@@ -22,9 +22,9 @@ public:
       return true;
     }
 
-    if (physics.position.y < radius) {
-      physics_nxt.position.y = radius;
-      physics_nxt.velocity.y = 0;
+    if (position.y < radius) {
+      position.y = radius;
+      velocity.y = 0;
     }
 
     if (!net_state) {
@@ -32,7 +32,7 @@ public:
     }
 
     // update using signals state
-    glm::vec3 &v = physics_nxt.velocity;
+    glm::vec3 &v = velocity;
     v = {0, 0, 0};
     unsigned keys = net_state->keys;
     if (keys != 0) {

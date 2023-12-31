@@ -21,9 +21,12 @@ public:
   glm::vec3 Mmw_pos{};            // position of current Mmw matrix
   glm::vec3 Mmw_agl{};            // angle of current Mmw matrix
   glm::vec3 Mmw_scl{};            // scale of current Mmw matrix
-  physics physics_prv{};          // physics state from previous frame
-  physics physics_nxt{};          // physics state for next frame
-  physics physics{};              // physics state of current frame
+  glm::vec3 position{};           //
+  glm::vec3 velocity{};           //
+  glm::vec3 acceleration{};       //
+  glm::vec3 angle{};              //
+  glm::vec3 angular_velocity{};   //
+  float mass = 0;                 //
   uint32_t collision_bits = 0;    // mask & bits for collision subscription
   uint32_t collision_mask = 0;    // ...
   net_state *net_state = nullptr; // pointer to signals used by this object
@@ -41,17 +44,17 @@ public:
     glos.at(glo_ix).render(get_updated_Mmw());
     if (volume_planes_debug_normals) {
       const glo &g = glos.at(glo_ix);
-      planes.debug_render_normals(g.planes_points, g.planes_normals,
-                                  physics.position, physics.angle, scale);
+      planes.debug_render_normals(g.planes_points, g.planes_normals, position,
+                                  angle, scale);
     }
   }
 
   // returns true if object has died
   inline virtual auto update(frame_context const &fc) -> bool {
-    physics_prv = physics;
-    physics = physics_nxt;
-
-    physics_nxt.step(fc);
+    const float dt = fc.dt;
+    velocity += acceleration * dt;
+    position += velocity * dt;
+    angle += angular_velocity * dt;
     return false;
   }
 
@@ -62,8 +65,7 @@ public:
   }
 
   inline auto is_Mmw_valid() const -> bool {
-    return physics.position == Mmw_pos and physics.angle == Mmw_agl and
-           scale == Mmw_scl;
+    return position == Mmw_pos and angle == Mmw_agl and scale == Mmw_scl;
   }
 
   inline auto get_updated_Mmw() -> glm::mat4 const & {
@@ -71,8 +73,8 @@ public:
       return Mmw;
     }
     // save the state of the matrix
-    Mmw_pos = physics.position;
-    Mmw_agl = physics.angle;
+    Mmw_pos = position;
+    Mmw_agl = angle;
     Mmw_scl = scale;
     // make a new matrix
     glm::mat4 Ms = glm::scale(glm::mat4(1), Mmw_scl);

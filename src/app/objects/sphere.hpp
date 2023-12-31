@@ -17,29 +17,29 @@ public:
       return true;
     }
 
-    if (physics.position.y < radius) {
-      physics_nxt.position.y = radius;
-      physics_nxt.velocity.y = 0;
+    if (position.y < radius) {
+      position.y = radius;
+      velocity.y = 0;
     }
 
-    if (physics.position.x < -80) {
-      physics_nxt.position.x = -80;
-      physics_nxt.velocity.x = -physics_nxt.velocity.x;
+    if (position.x < -80) {
+      position.x = -80;
+      velocity.x = -velocity.x;
     }
 
-    if (physics.position.x > 80) {
-      physics_nxt.position.x = 80;
-      physics_nxt.velocity.x = -physics_nxt.velocity.x;
+    if (position.x > 80) {
+      position.x = 80;
+      velocity.x = -velocity.x;
     }
 
-    if (physics.position.z < -80) {
-      physics_nxt.position.z = -80;
-      physics_nxt.velocity.z = -physics_nxt.velocity.z;
+    if (position.z < -80) {
+      position.z = -80;
+      velocity.z = -velocity.z;
     }
 
-    if (physics.position.z > 80) {
-      physics_nxt.position.z = 80;
-      physics_nxt.velocity.z = -physics_nxt.velocity.z;
+    if (position.z > 80) {
+      position.z = 80;
+      velocity.z = -velocity.z;
     }
 
     if (!net_state) {
@@ -47,9 +47,9 @@ public:
     }
 
     // update using signals state
-    glm::vec3 &v = physics_nxt.velocity;
-    glm::vec3 &a = physics_nxt.angle;
-    glm::vec3 &av = physics_nxt.angular_velocity;
+    glm::vec3 &v = velocity;
+    glm::vec3 &a = angle;
+    glm::vec3 &av = angular_velocity;
     v = {0, 0, 0};
     av = {0, 0, 0};
     unsigned keys = net_state->keys;

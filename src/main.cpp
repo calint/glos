@@ -177,7 +177,7 @@ inline static void debug_render_wcs_line(const glm::vec3 &from_wcs,
 
 inline static void main_render(const unsigned render_frame_num) {
   if (camera_follow_object) {
-    glos::camera.look_at = camera_follow_object->physics.position;
+    glos::camera.look_at = camera_follow_object->position;
   }
 
   glos::camera.update_matrix_wvp();
