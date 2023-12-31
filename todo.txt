@@ -15,8 +15,13 @@
 [ ]   net_server as separate application
 [ ]   ref& const, bool const, etc
 [ ]   ++i instead of i++
-[ ]   friend cell to object
+[ ]   friend cell to object?
+[ ]   const correctness
+[ ]   const everything
+[ ]   constexpr everything
 [ ] use object Mmw when updating volume::planes
+[ ] glo: after upload to gpu buffers can be deleted
+[ ] glo: load obj and planes in a consistent way
 [ ] volume::planes - ability to store some extra points without normals for use
     in collision detection
 [ ] use "moving towards each other" vector to cull collision detection
