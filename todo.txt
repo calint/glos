@@ -26,6 +26,7 @@
 [ ] use object Mmw when updating volume::planes
 [x] glo: after upload to gpu buffers can be deleted
 [x] glo: load obj and planes in a consistent way
+[ ] object size and content is not cache friendly. consider components
 [ ] volume::planes - ability to store some extra points without normals for use
     in collision detection
 [ ] use "moving towards each other" vector to cull collision detection

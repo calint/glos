@@ -34,7 +34,7 @@ public:
 
       // update world_positions
       world_positions.clear();
-      for (const glm::vec3 &Pm : points) {
+      for (glm::vec3 const &Pm : points) {
         glm::vec4 Pw = Mmw * glm::vec4(Pm, 1.0f);
         world_positions.emplace_back(glm::vec3(Pw));
       }
@@ -50,7 +50,7 @@ public:
 
       // update world normals
       world_normals.clear();
-      for (const glm::vec3 &Nm : normals) {
+      for (glm::vec3 const &Nm : normals) {
         glm::vec3 Nw = Nmw * Nm;
         world_normals.emplace_back(Nw);
       }

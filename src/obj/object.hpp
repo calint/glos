@@ -2,7 +2,6 @@
 // reviewed: 2023-12-22
 
 #include "o1store.hpp"
-#include "physics.hpp"
 #include "planes.hpp"
 #include <algorithm>
 
@@ -10,9 +9,9 @@ namespace glos {
 
 class object {
 public:
-  object **alloc_ptr; // initiated at allocate by 'o1store'
-  std::string name{}; // instance name
-  uint32_t glo_ix = 0;
+  object **alloc_ptr;             // initiated at allocate by 'o1store'
+  std::string name{};             // instance name
+  uint32_t glo_ix = 0;            // glo index
   float radius = 0;               // bounding radius
   glm::vec3 scale{};              //
   planes planes{};                // bounding planes (if any)
