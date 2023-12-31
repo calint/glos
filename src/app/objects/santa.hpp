@@ -4,9 +4,8 @@ class santa : public glos::object {
 
 public:
   inline santa() {
-    //? glos.find_by_index for O(1)
-    node.glo_ix = glo_santa_ix;
-    const glos::glo &g = glos::glos.at(node.glo_ix);
+    glo_ix = glo_santa_ix;
+    glos::glo const &g = glos::glos.at(glo_ix);
     volume.scale = {1, 1, 1};
     volume.radius = g.bounding_radius * 1; // r * scale
     collision_bits = cb_hero;
@@ -56,7 +55,8 @@ public:
     return false;
   }
 
-  inline auto on_collision(object *o, const frame_context &fc) -> bool override {
+  inline auto on_collision(object *o, const frame_context &fc)
+      -> bool override {
     assert(not is_dead());
     // printf("%s collision with %s\n", name.c_str(), o->name.c_str());
     health--;

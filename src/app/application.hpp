@@ -32,8 +32,8 @@ public:
     {
       glos::object *o = new (glos::objects.alloc()) glos::object{};
       o->name = "skydome";
-      o->node.glo_ix = glo_skydome_ix;
-      const glos::glo &g = glos::glos.at(o->node.glo_ix);
+      o->glo_ix = glo_skydome_ix;
+      const glos::glo &g = glos::glos.at(o->glo_ix);
       const float skydome_scale = world_size / (2 * g.bounding_radius);
       o->volume.scale = {skydome_scale, skydome_scale, skydome_scale};
       o->volume.radius = g.bounding_radius * skydome_scale;
@@ -43,8 +43,8 @@ public:
     {
       glos::object *o = new (glos::objects.alloc()) glos::object{};
       o->name = "grid";
-      o->node.glo_ix = glo_grid_ix;
-      const glos::glo &g = glos::glos.at(o->node.glo_ix);
+      o->glo_ix = glo_grid_ix;
+      const glos::glo &g = glos::glos.at(o->glo_ix);
       constexpr float grid_scale = world_size / 16;
       // note. 16 is the model coordinates span from -8 to 8
       o->volume.scale = {grid_scale, grid_scale, grid_scale};

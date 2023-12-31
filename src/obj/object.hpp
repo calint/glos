@@ -1,7 +1,6 @@
 #pragma once
 // reviewed: 2023-12-22
 
-#include "node.hpp"
 #include "o1store.hpp"
 #include "physics.hpp"
 #include "volume.hpp"
@@ -11,9 +10,13 @@ namespace glos {
 
 class object {
 public:
-  object **alloc_ptr;             // initiated at allocate by 'o1store'
-  std::string name{};             // instance name
-  node node{};                    // render info
+  object **alloc_ptr; // initiated at allocate by 'o1store'
+  std::string name{}; // instance name
+  int glo_ix = 0;
+  glm::mat4 Mmw{};                // model -> world matrix
+  glm::vec3 Mmw_pos{};            // position of current Mmw matrix
+  glm::vec3 Mmw_agl{};            // angle of current Mmw matrix
+  glm::vec3 Mmw_scl{};            // scale of current Mmw matrix
   volume volume{};                // bounding volume
   physics physics_prv{};          // physics state from previous frame
   physics physics_nxt{};          // physics state for next frame
@@ -32,9 +35,9 @@ public:
   //       destructor is invoked in the 'objects.apply_free'
 
   inline virtual void render() {
-    glos.at(node.glo_ix).render(get_updated_Mmw());
+    glos.at(glo_ix).render(get_updated_Mmw());
     if (volume_planes_debug_normals) {
-      const glo &g = glos.at(node.glo_ix);
+      const glo &g = glos.at(glo_ix);
       volume.planes.debug_render_normals(g.planes_points, g.planes_normals,
                                          physics.position, physics.angle,
                                          volume.scale);
@@ -57,25 +60,24 @@ public:
   }
 
   inline auto is_Mmw_valid() const -> bool {
-    return physics.position == node.Mmw_pos and
-           physics.angle == node.Mmw_agl and volume.scale == node.Mmw_scl;
+    return physics.position == Mmw_pos and physics.angle == Mmw_agl and
+           volume.scale == Mmw_scl;
   }
 
-  inline const glm::mat4 &get_updated_Mmw() {
+  inline auto get_updated_Mmw() -> glm::mat4 const & {
     if (is_Mmw_valid()) {
-      return node.Mmw;
+      return Mmw;
     }
     // save the state of the matrix
-    node.Mmw_pos = physics.position;
-    node.Mmw_agl = physics.angle;
-    node.Mmw_scl = volume.scale;
+    Mmw_pos = physics.position;
+    Mmw_agl = physics.angle;
+    Mmw_scl = volume.scale;
     // make a new matrix
-    glm::mat4 Ms = glm::scale(glm::mat4(1), node.Mmw_scl);
-    glm::mat4 Mr =
-        glm::eulerAngleXYZ(node.Mmw_agl.x, node.Mmw_agl.y, node.Mmw_agl.z);
-    glm::mat4 Mt = glm::translate(glm::mat4(1), node.Mmw_pos);
-    node.Mmw = Mt * Mr * Ms;
-    return node.Mmw;
+    glm::mat4 Ms = glm::scale(glm::mat4(1), Mmw_scl);
+    glm::mat4 Mr = glm::eulerAngleXYZ(Mmw_agl.x, Mmw_agl.y, Mmw_agl.z);
+    glm::mat4 Mt = glm::translate(glm::mat4(1), Mmw_pos);
+    Mmw = Mt * Mr * Ms;
+    return Mmw;
   }
 
   inline auto is_collision_handled_and_if_not_add(object const *obj) -> bool {
