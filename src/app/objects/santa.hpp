@@ -5,9 +5,10 @@ class santa : public glos::object {
 public:
   inline santa() {
     //? glos.find_by_index for O(1)
-    node.glo = glos::glos.get_by_index(glo_santa_ix);
+    node.glo_ix = glo_santa_ix;
+    const glos::glo &g = glos::glos.get_by_index(node.glo_ix);
     volume.scale = {1, 1, 1};
-    volume.radius = node.glo->bounding_radius * 1; // r * scale
+    volume.radius = g.bounding_radius * 1; // r * scale
     collision_bits = cb_hero;
     collision_mask = cb_hero;
     health = unsigned(rand()) % 50001;

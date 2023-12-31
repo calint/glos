@@ -3,7 +3,7 @@
 [ ]   use uint32_t instead of unsigned int32_t etc
 [ ]   consider a more standard source layout without depending on include order
 [ ]   class private members at the bottom of the declaration
-[ ]   use gl_element_array_buffer
+[ ]   use gl_element_array_buffer (where it is possible)
 [ ]   use glDebugMessageCallback
 [ ]   clang-tidy
 [ ]   cmake or premake and automatically download dependencies using git submodules
@@ -20,9 +20,10 @@
 [ ]   const everything
 [ ]   constexpr everything
 [ ]   struct vertex used for sizeof only
+[ ]   rename 'node' to something better
 [ ] use object Mmw when updating volume::planes
-[ ] glo: after upload to gpu buffers can be deleted
-[ ] glo: load obj and planes in a consistent way
+[x] glo: after upload to gpu buffers can be deleted
+[x] glo: load obj and planes in a consistent way
 [ ] volume::planes - ability to store some extra points without normals for use
     in collision detection
 [ ] use "moving towards each other" vector to cull collision detection
@@ -32,10 +33,11 @@
     mathematical precision example: "o>  o  <o"   "ooo" instead of  "o<  o  >o"
 [ ] object: checked_collisions make minimum size of vector to e.g. 8
 [x] glo: upgrade to glGenVertexArrays (opengl es3)
-[ ] move init() and free() into constructor and destructor
+[?] move init() and free() into constructor and destructor
+    => it might be better to know exactly when init and free is done
 [x] shaders: move program activation from 'main' to 'program'
 [x] glos.get_by_index instead of name in constructors of game objects
-[ ] node.glo maybe should be an index instead of a pointer in case glos
+[x] node.glo maybe should be an index instead of a pointer in case glos
     are loaded during game play and vector reallocates
 [ ] object render culling using camera frustum, position and bounding sphere
 [ ] grid cell render culling

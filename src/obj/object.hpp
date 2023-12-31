@@ -37,14 +37,12 @@ public:
   //       destructor is invoked in the 'objects.apply_free'
 
   inline virtual void render() {
-    if (!node.glo) {
-      return;
-    }
-    node.glo->render(get_updated_Mmw());
+    glos.get_by_index(node.glo_ix).render(get_updated_Mmw());
     if (volume_planes_debug_normals) {
-      volume.planes.debug_render_normals(
-          node.glo->planes_points, node.glo->planes_normals, physics.position,
-          physics.angle, volume.scale);
+      const glo &g = glos.get_by_index(node.glo_ix);
+      volume.planes.debug_render_normals(g.planes_points, g.planes_normals,
+                                         physics.position, physics.angle,
+                                         volume.scale);
     }
   }
 

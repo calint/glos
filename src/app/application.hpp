@@ -32,22 +32,23 @@ public:
     {
       glos::object *o = new (glos::objects.alloc()) glos::object{};
       o->name = "skydome";
-      o->node.glo = glos::glos.get_by_index(glo_skydome_ix);
-      const float skydome_scale =
-          world_size / (2 * o->node.glo->bounding_radius);
+      o->node.glo_ix = glo_skydome_ix;
+      const glos::glo &g = glos::glos.get_by_index(o->node.glo_ix);
+      const float skydome_scale = world_size / (2 * g.bounding_radius);
       o->volume.scale = {skydome_scale, skydome_scale, skydome_scale};
-      o->volume.radius = o->node.glo->bounding_radius * skydome_scale;
+      o->volume.radius = g.bounding_radius * skydome_scale;
       // printf("skydome bounding radius: %0.3f\n", o->volume.radius);
     }
 
     {
       glos::object *o = new (glos::objects.alloc()) glos::object{};
       o->name = "grid";
-      o->node.glo = glos::glos.get_by_index(glo_grid_ix);
+      o->node.glo_ix = glo_grid_ix;
+      const glos::glo &g = glos::glos.get_by_index(o->node.glo_ix);
       constexpr float grid_scale = world_size / 16;
       // note. 16 is the model coordinates span from -8 to 8
       o->volume.scale = {grid_scale, grid_scale, grid_scale};
-      o->volume.radius = o->node.glo->bounding_radius * grid_scale;
+      o->volume.radius = g.bounding_radius * grid_scale;
     }
 
     {

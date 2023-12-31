@@ -386,7 +386,7 @@ public:
     std::abort();
   }
 
-  inline glo *get_by_index(const int ix) { return &store.at(size_t(ix)); }
+  inline glo &get_by_index(const int ix) { return store.at(size_t(ix)); }
 };
 
 static glos glos{};

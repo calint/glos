@@ -2,9 +2,10 @@
 class cube : public glos::object {
 public:
   inline cube() {
-    node.glo = glos::glos.get_by_index(glo_cube_ix);
+    node.glo_ix = glo_cube_ix;
+    const glos::glo &g = glos::glos.get_by_index(node.glo_ix);
     volume.scale = {2, 1, 1};
-    volume.radius = node.glo->bounding_radius * 2; // r * scale
+    volume.radius = g.bounding_radius * 2; // r * scale
     volume.is_sphere = false;
     collision_bits = cb_hero;
     collision_mask = cb_hero;

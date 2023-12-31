@@ -259,9 +259,11 @@ private:
       o->volume.planes.acquire_lock();
     }
 
-    o->volume.planes.update_model_to_world(
-        o->node.glo->planes_points, o->node.glo->planes_normals,
-        o->physics.position, o->physics.angle, o->volume.scale);
+    const glo &g = glos.get_by_index(o->node.glo_ix);
+
+    o->volume.planes.update_model_to_world(g.planes_points, g.planes_normals,
+                                           o->physics.position,
+                                           o->physics.angle, o->volume.scale);
 
     if (needs_synchronization) {
       o->volume.planes.release_lock();
