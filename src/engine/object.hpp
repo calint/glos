@@ -40,11 +40,12 @@ public:
   //       destructor is invoked in the 'objects.apply_free'
 
   inline virtual void render() {
-    glos.at(glo_ix).render(get_updated_Mmw());
+    glm::mat4 const &M = get_updated_Mmw();
+    glos.at(glo_ix).render(M);
     if (volume_planes_debug_normals) {
       const glo &g = glos.at(glo_ix);
-      planes.debug_render_normals(g.planes_points, g.planes_normals, position,
-                                  angle, scale);
+      planes.debug_render_normals(g.planes_points, g.planes_normals, M,
+                                  position, angle, scale);
     }
   }
 

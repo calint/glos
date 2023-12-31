@@ -1,9 +1,7 @@
 #pragma once
 
 class planes final {
-  // transform matrixes
-  glm::mat4 Mmw{};
-  glm::mat3 Nmw{};
+  glm::mat3 Nmw{}; // normals rotation matrix
 
   // cached world coordinate system positions and normals
   std::vector<glm::vec3> world_positions{};
@@ -18,7 +16,8 @@ class planes final {
 public:
   inline void update_model_to_world(std::vector<glm::vec3> const &points,
                                     std::vector<glm::vec3> const &normals,
-                                    glm::vec3 const &pos, glm::vec3 const &agl,
+                                    glm::mat4 const &Mmw, glm::vec3 const &pos,
+                                    glm::vec3 const &agl,
                                     glm::vec3 const &scl) {
     if (points.size() != 0 and
         (pos != Mmw_pos or agl != Mmw_agl or scl != Mmw_scl)) {
@@ -27,11 +26,6 @@ public:
       Mmw_pos = pos;
       Mmw_agl = agl;
       Mmw_scl = scl;
-      glm::mat4 Ms = glm::scale(glm::mat4(1), Mmw_scl);
-      glm::mat4 Mr = glm::eulerAngleXYZ(Mmw_agl.x, Mmw_agl.y, Mmw_agl.z);
-      glm::mat4 Mt = glm::translate(glm::mat4(1), Mmw_pos);
-      Mmw = Mt * Mr * Ms;
-
       // update world_positions
       world_positions.clear();
       for (glm::vec3 const &Pm : points) {
@@ -59,9 +53,9 @@ public:
 
   inline void debug_render_normals(std::vector<glm::vec3> const &points,
                                    std::vector<glm::vec3> const &normals,
-                                   glm::vec3 const &pos, glm::vec3 const &agl,
-                                   glm::vec3 const &scl) {
-    update_model_to_world(points, normals, pos, agl, scl);
+                                   glm::mat4 const &Mmw, glm::vec3 const &pos,
+                                   glm::vec3 const &agl, glm::vec3 const &scl) {
+    update_model_to_world(points, normals, Mmw, pos, agl, scl);
     const size_t n = world_positions.size();
     for (size_t i = 0; i < n; ++i) {
       const glm::vec3 &pnt = world_positions[i];

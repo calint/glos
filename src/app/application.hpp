@@ -55,8 +55,10 @@ public:
       cube *o = new (glos::objects.alloc()) cube{};
       o->name = "cube";
       o->mass = 1;
-      o->position = {0, 1, 0};
+      o->position = {0, 1.1f, 0};
       o->velocity = {0, 0, 0};
+      // o->angular_velocity.y = glm::radians(10.0f);
+      o->net_state = &glos::net.states[1];
     }
 
     {
@@ -69,13 +71,13 @@ public:
 
     ambient_light = glm::normalize(glm::vec3{0, 1, 0});
 
-    // glos::camera.type = glos::camera::type::LOOK_AT;
-    // glos::camera.position = {0, 50, 50};
-    // glos::camera.look_at = {0, 0, 0};
+    glos::camera.type = glos::camera::type::LOOK_AT;
+    glos::camera.position = {0, 20, 20};
+    glos::camera.look_at = {0, 0, 0};
 
-    glos::camera.type = glos::camera::type::ORTHO;
-    glos::camera.position = {0, 50, 0};
-    glos::camera.look_at = {0, 0, -0.0001f};
+    // glos::camera.type = glos::camera::type::ORTHO;
+    // glos::camera.position = {0, 50, 0};
+    // glos::camera.look_at = {0, 0, -0.0001f};
     // note. -0.0001f because of the math of 'look at'
     glos::camera.ortho_min_x = -10;
     glos::camera.ortho_min_y = -10;

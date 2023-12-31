@@ -261,7 +261,8 @@ private:
     const glo &g = glos.at(o->glo_ix);
 
     o->planes.update_model_to_world(g.planes_points, g.planes_normals,
-                                    o->position, o->angle, o->scale);
+                                    o->get_updated_Mmw(), o->position, o->angle,
+                                    o->scale);
 
     if (needs_synchronization) {
       o->planes.release_lock();
