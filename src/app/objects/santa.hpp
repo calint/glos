@@ -5,9 +5,9 @@ class santa : public glos::object {
 public:
   inline santa() {
     glo_ix = glo_santa_ix;
+    scale = {1, 1, 1};
     glos::glo const &g = glos::glos.at(glo_ix);
-    volume.scale = {1, 1, 1};
-    volume.radius = g.bounding_radius * 1; // r * scale
+    radius = g.bounding_radius * 1; // r * scale
     collision_bits = cb_hero;
     collision_mask = cb_hero;
     health = unsigned(rand()) % 50001;
@@ -22,9 +22,9 @@ public:
       return true;
     }
 
-    if (physics.position.y < volume.radius) {
-      physics_nxt.position.y = volume.radius;
-      physics_nxt.velocity = {0, 0, 0};
+    if (physics.position.y < radius) {
+      physics_nxt.position.y = radius;
+      physics_nxt.velocity.y = 0;
     }
 
     if (!net_state) {

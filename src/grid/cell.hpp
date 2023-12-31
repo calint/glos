@@ -70,27 +70,27 @@ public:
           continue;
         }
 
-        if (Oi->volume.is_sphere and Oj->volume.is_sphere) {
+        if (Oi->is_sphere and Oj->is_sphere) {
           handle_sphere_collision(Oi, Oj, fc);
           handle_sphere_collision(Oj, Oi, fc);
           continue;
         }
 
         // sphere vs planes
-        if (Oi->volume.is_sphere) {
+        if (Oi->is_sphere) {
           // Oj is not a sphere
           update_planes_world_coordinates(Oj);
-          if (Oj->volume.planes.is_in_collision_with_sphere(
-                  Oi->physics.position, Oi->volume.radius)) {
+          if (Oj->planes.is_in_collision_with_sphere(Oi->physics.position,
+                                                     Oi->radius)) {
             dispatch_collision(Oi, Oj, fc);
             dispatch_collision(Oj, Oi, fc);
           }
           continue;
-        } else if (Oj->volume.is_sphere) {
+        } else if (Oj->is_sphere) {
           // Oi is not a sphere
           update_planes_world_coordinates(Oi);
-          if (Oi->volume.planes.is_in_collision_with_sphere(
-                  Oj->physics.position, Oj->volume.radius)) {
+          if (Oi->planes.is_in_collision_with_sphere(Oj->physics.position,
+                                                     Oj->radius)) {
             dispatch_collision(Oj, Oi, fc);
             dispatch_collision(Oi, Oj, fc);
           }
@@ -245,7 +245,7 @@ private:
       -> bool {
 
     const glm::vec3 v = o2->physics.position - o1->physics.position;
-    const float d = o1->volume.radius + o2->volume.radius;
+    const float d = o1->radius + o2->radius;
     const float dsq = d * d;
     const float vsq = glm::dot(v, v);
     const float diff = vsq - dsq;
@@ -256,17 +256,17 @@ private:
     const bool needs_synchronization = grid_threaded and o->is_overlaps_cells();
 
     if (needs_synchronization) {
-      o->volume.planes.acquire_lock();
+      o->planes.acquire_lock();
     }
 
     const glo &g = glos.at(o->glo_ix);
 
-    o->volume.planes.update_model_to_world(g.planes_points, g.planes_normals,
-                                           o->physics.position,
-                                           o->physics.angle, o->volume.scale);
+    o->planes.update_model_to_world(g.planes_points, g.planes_normals,
+                                    o->physics.position, o->physics.angle,
+                                    o->scale);
 
     if (needs_synchronization) {
-      o->volume.planes.release_lock();
+      o->planes.release_lock();
     }
   }
 
@@ -277,11 +277,11 @@ private:
     update_planes_world_coordinates(o1);
     update_planes_world_coordinates(o2);
 
-    if (o1->volume.planes.is_in_collision_with_planes(o2->volume.planes)) {
+    if (o1->planes.is_in_collision_with_planes(o2->planes)) {
       return true;
     }
 
-    if (o2->volume.planes.is_in_collision_with_planes(o1->volume.planes)) {
+    if (o2->planes.is_in_collision_with_planes(o1->planes)) {
       return true;
     }
 

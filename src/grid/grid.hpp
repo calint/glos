@@ -105,7 +105,7 @@ public:
     constexpr float gw = grid_cell_size * grid_ncells_wide;
     constexpr float gh = grid_cell_size * grid_ncells_high;
 
-    const float r = o->volume.radius;
+    const float r = o->radius;
 
     const float xl = gw / 2 + o->physics.position.x - r;
     const float xr = gw / 2 + o->physics.position.x + r;

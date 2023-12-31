@@ -3,7 +3,7 @@
 
 #include "o1store.hpp"
 #include "physics.hpp"
-#include "volume.hpp"
+#include "planes.hpp"
 #include <algorithm>
 
 namespace glos {
@@ -12,21 +12,24 @@ class object {
 public:
   object **alloc_ptr; // initiated at allocate by 'o1store'
   std::string name{}; // instance name
-  int glo_ix = 0;
+  uint32_t glo_ix = 0;
+  float radius = 0;               // bounding radius
+  glm::vec3 scale{};              //
+  planes planes{};                //
+  bool is_sphere = true;          //
   glm::mat4 Mmw{};                // model -> world matrix
   glm::vec3 Mmw_pos{};            // position of current Mmw matrix
   glm::vec3 Mmw_agl{};            // angle of current Mmw matrix
   glm::vec3 Mmw_scl{};            // scale of current Mmw matrix
-  volume volume{};                // bounding volume
   physics physics_prv{};          // physics state from previous frame
   physics physics_nxt{};          // physics state for next frame
   physics physics{};              // physics state of current frame
-  unsigned collision_bits = 0;    // mask & bits for collision subscription
-  unsigned collision_mask = 0;    // ...
+  uint32_t collision_bits = 0;    // mask & bits for collision subscription
+  uint32_t collision_mask = 0;    // ...
   net_state *net_state = nullptr; // pointer to signals used by this object
   unsigned rendered_at_tick = 0;  // avoids rendering same object twice
   unsigned updated_at_tick = 0;   // avoids updating same object twice
-  unsigned grid_flags = 0;        // used by grid (overlaps, is_dead)
+  uint8_t grid_flags = 0;         // used by grid (overlaps, is_dead)
   std::vector<const object *> handled_collisions{};
   std::atomic_flag spinlock = ATOMIC_FLAG_INIT;
 
@@ -38,9 +41,8 @@ public:
     glos.at(glo_ix).render(get_updated_Mmw());
     if (volume_planes_debug_normals) {
       const glo &g = glos.at(glo_ix);
-      volume.planes.debug_render_normals(g.planes_points, g.planes_normals,
-                                         physics.position, physics.angle,
-                                         volume.scale);
+      planes.debug_render_normals(g.planes_points, g.planes_normals,
+                                  physics.position, physics.angle, scale);
     }
   }
 
@@ -61,7 +63,7 @@ public:
 
   inline auto is_Mmw_valid() const -> bool {
     return physics.position == Mmw_pos and physics.angle == Mmw_agl and
-           volume.scale == Mmw_scl;
+           scale == Mmw_scl;
   }
 
   inline auto get_updated_Mmw() -> glm::mat4 const & {
@@ -71,7 +73,7 @@ public:
     // save the state of the matrix
     Mmw_pos = physics.position;
     Mmw_agl = physics.angle;
-    Mmw_scl = volume.scale;
+    Mmw_scl = scale;
     // make a new matrix
     glm::mat4 Ms = glm::scale(glm::mat4(1), Mmw_scl);
     glm::mat4 Mr = glm::eulerAngleXYZ(Mmw_agl.x, Mmw_agl.y, Mmw_agl.z);

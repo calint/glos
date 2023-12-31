@@ -38,8 +38,8 @@ static constexpr unsigned cb_none = 0;
 static constexpr unsigned cb_hero = 1;
 
 // glo indexes (are set at 'application.init()')
-static int glo_skydome_ix;
-static int glo_grid_ix;
-static int glo_santa_ix;
-static int glo_sphere_ix;
-static int glo_cube_ix;
+static uint32_t glo_skydome_ix;
+static uint32_t glo_grid_ix;
+static uint32_t glo_santa_ix;
+static uint32_t glo_sphere_ix;
+static uint32_t glo_cube_ix;

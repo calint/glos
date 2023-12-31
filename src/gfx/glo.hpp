@@ -376,15 +376,15 @@ public:
   }
 
   inline auto load(char const *obj_path, char const *bounding_planes_path)
-      -> int {
+      -> uint32_t {
     glo g{};
     g.load(obj_path, bounding_planes_path);
     store.push_back(std::move(g));
-    return int(store.size() - 1);
+    return uint32_t(store.size() - 1);
   }
 
-  inline auto at(int const ix) const -> glo const & {
-    return store.at(size_t(ix));
+  inline auto at(uint32_t const ix) const -> glo const & {
+    return store.at(ix);
   }
 };
 
