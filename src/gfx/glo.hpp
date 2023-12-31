@@ -209,12 +209,12 @@ public:
     float bounding_radius = 0;
 
     while (*p) {
-      token t = token_next(&p);
-      if (token_starts_with(&t, "#")) {
+      token tk = token_next(&p);
+      if (token_starts_with(&tk, "#")) {
         p = scan_to_including_newline(p);
         continue;
       }
-      if (token_equals(&t, "mtllib")) {
+      if (token_equals(&tk, "mtllib")) {
         token t = token_next(&p);
         std::string base{basedir};
         std::string file_name{t.content, t.content + token_size(&t)};
@@ -222,7 +222,7 @@ public:
         materials.load_from_file(path.c_str());
         continue;
       }
-      if (token_equals(&t, "o") and first_o) {
+      if (token_equals(&tk, "o") and first_o) {
         first_o = false;
         token t = token_next(&p);
         const unsigned n = token_size(&t);
@@ -230,7 +230,7 @@ public:
         printf("     %s\n", object_name.c_str());
         continue;
       }
-      if (token_equals(&t, "usemtl")) {
+      if (token_equals(&tk, "usemtl")) {
         token t = token_next(&p);
         std::string name{t.content, t.content + token_size(&t)};
         bool found = false;
@@ -256,11 +256,11 @@ public:
           vertex_buffer_ix_prv = vertex_buffer_ix;
         }
       }
-      if (token_equals(&t, "s")) {
+      if (token_equals(&tk, "s")) {
         p = scan_to_including_newline(p);
         continue;
       }
-      if (token_equals(&t, "v")) {
+      if (token_equals(&tk, "v")) {
         token tx = token_next(&p);
         float x = token_get_float(&tx);
         token ty = token_next(&p);
@@ -275,7 +275,7 @@ public:
         }
         continue;
       }
-      if (token_equals(&t, "vt")) {
+      if (token_equals(&tk, "vt")) {
         token tu = token_next(&p);
         float u = token_get_float(&tu);
         token tv = token_next(&p);
@@ -283,7 +283,7 @@ public:
         texture_uv.emplace_back(u, v);
         continue;
       }
-      if (token_equals(&t, "vn")) {
+      if (token_equals(&tk, "vn")) {
         token tx = token_next(&p);
         float x = token_get_float(&tx);
         token ty = token_next(&p);
@@ -294,7 +294,7 @@ public:
         continue;
       }
 
-      if (token_equals(&t, "f")) {
+      if (token_equals(&tk, "f")) {
         const material &current_object_material =
             materials.store.at(current_object_material_ix);
         for (unsigned i = 0; i < 3; i++) {

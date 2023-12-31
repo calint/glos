@@ -6,9 +6,22 @@
 [ ]   use gl_element_array_buffer
 [ ]   use glDebugMessageCallback
 [ ]   clang-tidy
+[ ]   cmake or premake and automatically download dependencies using git submodules
+[ ]   use glm::sin, cos etc
+[ ]   consider verbose self documenting code
+[ ]   move object::volume into physics
+[ ]   use c++ random number generator
+[ ]   review and delete obsolete notes
+[ ]   net_server as separate application
+[ ]   ref& const, bool const, etc
+[ ]   ++i instead of i++
+[ ]   friend cell to object
+[ ] use object Mmw when updating volume::planes
 [ ] volume::planes - ability to store some extra points without normals for use
     in collision detection
 [ ] use "moving towards each other" vector to cull collision detection
+[ ] multiple collision detection convex volumes per object
+[ ] collision detection: collision_context such as collision normal, plane etc
 [ ] collision reaction: tiny random added to 'dt' for each object to avoid
     mathematical precision example: "o>  o  <o"   "ooo" instead of  "o<  o  >o"
 [ ] object: checked_collisions make minimum size of vector to e.g. 8

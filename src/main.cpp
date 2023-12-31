@@ -60,7 +60,7 @@ static object *camera_follow_object = nullptr;
 //
 #include "app/application.hpp"
 
-static int shader_program_line = 0;
+static int shader_program_render_line = 0;
 
 //----------------------------------------------------------------------- init
 inline static void main_init_shaders() {
@@ -131,7 +131,7 @@ void main(){
     rgba = vec4(ucolor, 1);
   }
 )";
-    shader_program_line = shaders.load_program_from_source(vtx, frag);
+    shader_program_render_line = shaders.load_program_from_source(vtx, frag);
   }
 }
 
@@ -158,7 +158,7 @@ inline static void debug_render_wcs_line(const glm::vec3 &from_wcs,
 
   camera.update_matrix_wvp();
 
-  shaders.use_program(shader_program_line);
+  shaders.use_program(shader_program_render_line);
 
   glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(camera.Mvp));
   glUniform3fv(1, 1, glm::value_ptr(color));

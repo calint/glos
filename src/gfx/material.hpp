@@ -60,26 +60,26 @@ public:
     std::string content = buffer.str();
     const char *p = content.c_str();
     while (*p) {
-      token t = token_next(&p);
-      if (token_starts_with(&t, "#")) {
+      token tk = token_next(&p);
+      if (token_starts_with(&tk, "#")) {
         p = scan_to_including_newline(p);
         continue;
       }
-      if (token_starts_with(&t, "newmtl")) {
+      if (token_starts_with(&tk, "newmtl")) {
         store.push_back({});
         token t = token_next(&p);
         const unsigned n = token_size(&t);
         store.back().name = std::string{t.content, t.content + n};
         continue;
       }
-      if (token_equals(&t, "Ns")) {
+      if (token_equals(&tk, "Ns")) {
         token t = token_next(&p);
         float f = token_get_float(&t);
         store.back().Ns = f;
         continue;
       }
-      if (token_equals(&t, "Ka") || token_equals(&t, "Kd") ||
-          token_equals(&t, "Ks") || token_equals(&t, "Ke")) {
+      if (token_equals(&tk, "Ka") || token_equals(&tk, "Kd") ||
+          token_equals(&tk, "Ks") || token_equals(&tk, "Ke")) {
         glm::vec4 v{};
         token x = token_next(&p);
         v.x = token_get_float(&x);
@@ -87,33 +87,33 @@ public:
         v.y = token_get_float(&y);
         token z = token_next(&p);
         v.z = token_get_float(&z);
-        if (token_equals(&t, "Ka")) {
+        if (token_equals(&tk, "Ka")) {
           store.back().Ka = v;
-        } else if (token_equals(&t, "Kd")) {
+        } else if (token_equals(&tk, "Kd")) {
           store.back().Kd = v;
-        } else if (token_equals(&t, "Ks")) {
+        } else if (token_equals(&tk, "Ks")) {
           store.back().Ks = v;
-        } else if (token_equals(&t, "Ke")) {
+        } else if (token_equals(&tk, "Ke")) {
           store.back().Ke = v;
         }
         continue;
       }
 
-      if (token_equals(&t, "Ni")) {
+      if (token_equals(&tk, "Ni")) {
         token t = token_next(&p);
         float f = token_get_float(&t);
         store.back().Ni = f;
         continue;
       }
 
-      if (token_equals(&t, "d")) {
+      if (token_equals(&tk, "d")) {
         token t = token_next(&p);
         float f = token_get_float(&t);
         store.back().d = f;
         continue;
       }
 
-      if (token_equals(&t, "map_Kd")) {
+      if (token_equals(&tk, "map_Kd")) {
         const token t = token_next(&p);
         const unsigned n = token_size(&t);
         store.back().map_Kd = std::string{t.content, t.content + n};

@@ -10,6 +10,7 @@
 
 set -e
 
+#CC="g++ -std=c++20 -Wno-changes-meaning -fanalyzer"
 #CC="g++ -std=c++20 -Wno-changes-meaning"
 CC="clang++ -std=c++20"
 SRC="src/main.cpp"
@@ -19,8 +20,9 @@ LDFLAGS=
 #LDFLAGS="-fsanitize=address -fsanitize-address-use-after-scope"
 #LDFLAGS="-fsanitize=thread"
 LIBS="-lGL -lSDL2_image -lSDL2_ttf -lSDL2_mixer $(sdl2-config --libs) -ltbb"
+# note. -ltbb must be last in list
 WARNINGS="-Wall -Wextra -Wpedantic -Wfatal-errors \
-    -Wconversion -Wsign-conversion \
+    -Wshadow -Wconversion -Wsign-conversion \
     -Wno-unsafe-buffer-usage \
     -Wno-unused-function -Wno-unused-parameter"
 OPTIMIZATION="-O3 -g"

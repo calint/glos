@@ -21,15 +21,16 @@ public:
       fprintf(stderr, "\n%s:%u: create socket failed\n", __FILE__, __LINE__);
       std::abort();
     }
-
-    int flag = 1;
-    int result =
-        setsockopt(server_fd, IPPROTO_TCP, TCP_NODELAY, &flag, sizeof(int));
-    if (result < 0) {
-      fprintf(stderr, "\n%s:%u: set TCP_NODELAY failed\n", __FILE__, __LINE__);
-      std::abort();
+    {
+      int flag = 1;
+      int result =
+          setsockopt(server_fd, IPPROTO_TCP, TCP_NODELAY, &flag, sizeof(int));
+      if (result < 0) {
+        fprintf(stderr, "\n%s:%u: set TCP_NODELAY failed\n", __FILE__,
+                __LINE__);
+        std::abort();
+      }
     }
-
     struct sockaddr_in server;
     server.sin_family = AF_INET;
     server.sin_addr.s_addr = INADDR_ANY;

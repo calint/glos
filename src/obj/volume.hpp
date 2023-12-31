@@ -20,16 +20,16 @@ class volume final {
   public:
     inline void update_model_to_world(const std::vector<glm::vec3> &points,
                                       const std::vector<glm::vec3> &normals,
-                                      const glm::vec3 &position,
-                                      const glm::vec3 &angle,
-                                      const glm::vec3 &scale) {
+                                      const glm::vec3 &pos,
+                                      const glm::vec3 &agl,
+                                      const glm::vec3 &scl) {
       if (points.size() != 0 and
-          (position != Mmw_pos or angle != Mmw_agl or scale != Mmw_scl)) {
+          (pos != Mmw_pos or agl != Mmw_agl or scl != Mmw_scl)) {
         // printf("update points\n");
         // make a new matrix
-        Mmw_pos = position;
-        Mmw_agl = angle;
-        Mmw_scl = scale;
+        Mmw_pos = pos;
+        Mmw_agl = agl;
+        Mmw_scl = scl;
         glm::mat4 Ms = glm::scale(glm::mat4(1), Mmw_scl);
         glm::mat4 Mr = glm::eulerAngleXYZ(Mmw_agl.x, Mmw_agl.y, Mmw_agl.z);
         glm::mat4 Mt = glm::translate(glm::mat4(1), Mmw_pos);
@@ -43,11 +43,11 @@ class volume final {
         }
       }
       // normals
-      if (normals.size() != 0 and (first_update or angle != Nmw_agl)) {
+      if (normals.size() != 0 and (first_update or agl != Nmw_agl)) {
         // printf("update normals\n");
         first_update = false;
         // update world_normals
-        Nmw_agl = angle;
+        Nmw_agl = agl;
         glm::mat4 Nr = glm::eulerAngleXYZ(Nmw_agl.x, Nmw_agl.y, Nmw_agl.z);
         Nmw = glm::mat3(Nr);
 
@@ -62,10 +62,9 @@ class volume final {
 
     inline void debug_render_normals(const std::vector<glm::vec3> points,
                                      const std::vector<glm::vec3> normals,
-                                     const glm::vec3 &position,
-                                     const glm::vec3 &angle,
-                                     const glm::vec3 &scale) {
-      update_model_to_world(points, normals, position, angle, scale);
+                                     const glm::vec3 &pos, const glm::vec3 &agl,
+                                     const glm::vec3 &scl) {
+      update_model_to_world(points, normals, pos, agl, scl);
       const size_t n = world_positions.size();
       for (size_t i = 0; i < n; ++i) {
         const glm::vec3 &pnt = world_positions[i];
@@ -76,25 +75,24 @@ class volume final {
 
     // for each position check if behind all planes of 'planes'
     // assumes both this and 'planes' have updated world points and normals
-    inline auto is_in_collision_with_planes(const planes &planes) const
-        -> bool {
+    inline auto is_in_collision_with_planes(const planes &pns) const -> bool {
       for (const glm::vec3 &p : world_positions) {
-        if (planes.is_point_behind_all_planes(p)) {
+        if (pns.is_point_behind_all_planes(p)) {
           return true;
         }
       }
       return false;
     }
 
-    inline auto is_in_collision_with_sphere(const glm::vec3 &position,
-                                            const float radius) {
+    inline auto is_in_collision_with_sphere(const glm::vec3 &pos,
+                                            const float rds) {
       const size_t n = world_normals.size();
       for (unsigned i = 0; i < n; ++i) {
         // render_wcs_line(world_positions[i], p, {0, 1, 0});
-        const glm::vec3 v = position - world_positions[i];
-        const glm::vec3 n = world_normals[i];
-        const float d = glm::dot(v, n);
-        if (d > radius) {
+        const glm::vec3 v = pos - world_positions[i];
+        const glm::vec3 nml = world_normals[i];
+        const float d = glm::dot(v, nml);
+        if (d > rds) {
           return false;
         }
       }
@@ -114,8 +112,8 @@ class volume final {
       for (unsigned i = 0; i < n; ++i) {
         // render_wcs_line(world_positions[i], p, {0, 1, 0});
         const glm::vec3 v = p - world_positions[i];
-        const glm::vec3 n = world_normals[i];
-        const float d = glm::dot(v, n);
+        const glm::vec3 nml = world_normals[i];
+        const float d = glm::dot(v, nml);
         // printf("%p   d=%f\n", this, d);
         if (d > 0) {
           return false;
