@@ -11,7 +11,7 @@ public:
   glm::vec3 angular_velocity{};
   float mass = 0;
 
-  inline void step(frame_ctx const &fc) {
+  inline void step(frame_context const &fc) {
     const float dt = fc.dt;
     velocity += acceleration * dt;
     position += velocity * dt;

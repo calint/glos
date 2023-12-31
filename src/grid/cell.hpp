@@ -6,7 +6,7 @@ public:
   std::vector<object *> ols{};
 
   // called from grid (possibly by multiple threads)
-  inline void update(frame_ctx const &fc) {
+  inline void update(frame_context const &fc) {
     for (object *o : ols) {
       if (grid_threaded and o->is_overlaps_cells()) {
         // object is in several cells and may be called from multiple threads
@@ -40,7 +40,7 @@ public:
   }
 
   // called from grid (possibly by multiple threads)
-  inline void resolve_collisions(frame_ctx const &fc) {
+  inline void resolve_collisions(frame_context const &fc) {
     // thread safe because 'ols' does not change during 'resolve_collisions'
     const size_t len = ols.size();
     if (len == 0) {
@@ -138,7 +138,7 @@ public:
 
 private:
   inline static void handle_sphere_collision(object *Oi, object *Oj,
-                                             frame_ctx const &fc) {
+                                             frame_context const &fc) {
 
     // check if Oi is subscribed to collision with Oj
     if ((Oi->collision_mask & Oj->collision_bits) == 0) {
@@ -205,7 +205,7 @@ private:
   }
 
   inline static void dispatch_collision(object *Osrc, object *Otrg,
-                                        frame_ctx const &fc) {
+                                        frame_context const &fc) {
 
     // check if Oi is subscribed to collision with Oj
     if ((Osrc->collision_mask & Otrg->collision_bits) == 0) {
@@ -241,7 +241,7 @@ private:
   }
 
   inline static auto are_bounding_spheres_in_collision(object *o1, object *o2,
-                                                       frame_ctx const &fc)
+                                                       frame_context const &fc)
       -> bool {
 
     const glm::vec3 v = o2->physics.position - o1->physics.position;
@@ -271,7 +271,7 @@ private:
   }
 
   inline static auto are_bounding_planes_in_collision(object *o1, object *o2,
-                                                      frame_ctx const &fc)
+                                                      frame_context const &fc)
       -> bool {
 
     update_planes_world_coordinates(o1);

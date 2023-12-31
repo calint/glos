@@ -11,7 +11,7 @@ public:
     collision_mask = cb_hero;
   }
 
-  inline auto update(const frame_ctx &fc) -> bool override {
+  inline auto update(const frame_context &fc) -> bool override {
     assert(not is_dead());
 
     if (object::update(fc)) {
@@ -49,7 +49,7 @@ public:
     return false;
   }
 
-  inline auto on_collision(object *o, const frame_ctx &fc) -> bool override {
+  inline auto on_collision(object *o, const frame_context &fc) -> bool override {
     assert(not is_dead());
     printf("%u: %s collision with %s\n", fc.tick, name.c_str(),
            o->name.c_str());

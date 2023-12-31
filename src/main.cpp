@@ -34,7 +34,7 @@ inline static void debug_render_wcs_line(const glm::vec3 &from_wcs,
 //
 #include "gfx/glo.hpp"
 //
-class frame_ctx {
+class frame_context {
 public:
   float dt = 0;
   unsigned tick = 0;
@@ -312,7 +312,7 @@ int main(int argc, char *argv[]) {
       }
 
       // in multiplayer mode use dt from server else previous frame
-      frame_ctx fc{use_net ? glos::net.dt : glos::metrics.fps.dt,
+      frame_context fc{use_net ? glos::net.dt : glos::metrics.fps.dt,
                    update_frame_num};
 
       glos::grid.update(fc);

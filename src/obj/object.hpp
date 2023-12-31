@@ -8,6 +8,7 @@
 #include <algorithm>
 
 namespace glos {
+
 class object {
 public:
   object **alloc_ptr;             // initiated at allocate by 'o1store'
@@ -41,7 +42,7 @@ public:
   }
 
   // returns true if object has died
-  inline virtual auto update(frame_ctx const &fc) -> bool {
+  inline virtual auto update(frame_context const &fc) -> bool {
     physics_prv = physics;
     physics = physics_nxt;
 
@@ -50,7 +51,8 @@ public:
   }
 
   // returns true if object has died
-  inline virtual auto on_collision(object *obj, frame_ctx const &fc) -> bool {
+  inline virtual auto on_collision(object *obj, frame_context const &fc)
+      -> bool {
     return false;
   }
 
