@@ -36,7 +36,7 @@ public:
     metrics.allocated_glos--;
   }
 
-  inline void render(const glm::mat4 &mtx_mw) const {
+  inline void render(glm::mat4 const &mtx_mw) const {
     glUniformMatrix4fv(shaders::umtx_mw, 1, GL_FALSE, glm::value_ptr(mtx_mw));
     glBindVertexArray(vertex_array_id);
     for (const range &mr : ranges) {
@@ -59,7 +59,7 @@ public:
   }
 
   // loads definition and optional bounding planes from 'obj' files
-  inline void load(const char *obj_path, const char *bounding_planes_path) {
+  inline void load(char const *obj_path, char const *bounding_planes_path) {
     printf(" * loading glo from '%s'\n", obj_path);
     std::ifstream file(obj_path);
     if (!file) {
@@ -94,7 +94,7 @@ public:
         std::string base{basedir};
         std::string file_name{t.content, t.content + token_size(&t)};
         std::string path = base + file_name;
-        materials.load_from_file(path.c_str());
+        materials.load(path.c_str());
         continue;
       }
       if (token_equals(&tk, "o") and first_o) {
@@ -270,7 +270,7 @@ public:
 
     metrics.buffered_vertex_data += size_t(size_B);
 
-    for (const range &mtlrng : ranges) {
+    for (range const &mtlrng : ranges) {
       material &mtl = materials.store.at(unsigned(mtlrng.material_ix));
       if (not mtl.map_Kd.empty()) {
         mtl.texture_id = textures.get_id_or_load(mtl.map_Kd);
@@ -280,7 +280,7 @@ public:
   }
 
 private:
-  inline void load_planes(const char *path) {
+  inline void load_planes(char const *path) {
     // load from blender exported 'obj' file
     printf(" * loading planes from '%s'\n", path);
     std::ifstream file(path);
@@ -367,7 +367,7 @@ public:
     }
   }
 
-  inline auto load(const char *obj_path, const char *bounding_planes_path)
+  inline auto load(char const *obj_path, char const *bounding_planes_path)
       -> int {
     glo g{};
     g.load(obj_path, bounding_planes_path);
@@ -375,7 +375,7 @@ public:
     return int(store.size() - 1);
   }
 
-  inline auto get_by_index(const int ix) const -> glo const & {
+  inline auto get_by_index(int const ix) const -> glo const & {
     return store.at(size_t(ix));
   }
 };

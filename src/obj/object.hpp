@@ -26,12 +26,6 @@ public:
   std::vector<const object *> handled_collisions{};
   std::atomic_flag spinlock = ATOMIC_FLAG_INIT;
 
-private:
-  glm::vec3 Mmw_pos{}; // position of current Mmw matrix
-  glm::vec3 Mmw_agl{}; // angle of current Mmw matrix
-  glm::vec3 Mmw_scl{}; // scale of current Mmw matrix
-
-public:
   inline virtual ~object() {}
   // note. 'delete obj' may not be used because memory is managed by 'o1store'
   //       destructor is invoked in the 'objects.apply_free'
@@ -47,7 +41,7 @@ public:
   }
 
   // returns true if object has died
-  inline virtual auto update(const frame_ctx &fc) -> bool {
+  inline virtual auto update(frame_ctx const &fc) -> bool {
     physics_prv = physics;
     physics = physics_nxt;
 
@@ -56,13 +50,13 @@ public:
   }
 
   // returns true if object has died
-  inline virtual auto on_collision(object *obj, const frame_ctx &fc) -> bool {
+  inline virtual auto on_collision(object *obj, frame_ctx const &fc) -> bool {
     return false;
   }
 
   inline auto is_Mmw_valid() const -> bool {
-    return physics.position == Mmw_pos and physics.angle == Mmw_agl and
-           volume.scale == Mmw_scl;
+    return physics.position == node.Mmw_pos and
+           physics.angle == node.Mmw_agl and volume.scale == node.Mmw_scl;
   }
 
   inline const glm::mat4 &get_updated_Mmw() {
@@ -70,18 +64,19 @@ public:
       return node.Mmw;
     }
     // save the state of the matrix
-    Mmw_pos = physics.position;
-    Mmw_agl = physics.angle;
-    Mmw_scl = volume.scale;
+    node.Mmw_pos = physics.position;
+    node.Mmw_agl = physics.angle;
+    node.Mmw_scl = volume.scale;
     // make a new matrix
-    glm::mat4 Ms = glm::scale(glm::mat4(1), Mmw_scl);
-    glm::mat4 Mr = glm::eulerAngleXYZ(Mmw_agl.x, Mmw_agl.y, Mmw_agl.z);
-    glm::mat4 Mt = glm::translate(glm::mat4(1), Mmw_pos);
+    glm::mat4 Ms = glm::scale(glm::mat4(1), node.Mmw_scl);
+    glm::mat4 Mr =
+        glm::eulerAngleXYZ(node.Mmw_agl.x, node.Mmw_agl.y, node.Mmw_agl.z);
+    glm::mat4 Mt = glm::translate(glm::mat4(1), node.Mmw_pos);
     node.Mmw = Mt * Mr * Ms;
     return node.Mmw;
   }
 
-  inline auto is_collision_handled_and_if_not_add(const object *obj) -> bool {
+  inline auto is_collision_handled_and_if_not_add(object const *obj) -> bool {
     const bool is_handled =
         std::find(handled_collisions.begin(), handled_collisions.end(), obj) !=
         handled_collisions.end();

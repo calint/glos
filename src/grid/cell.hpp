@@ -6,7 +6,7 @@ public:
   std::vector<object *> ols{};
 
   // called from grid (possibly by multiple threads)
-  inline void update(const frame_ctx &fc) {
+  inline void update(frame_ctx const &fc) {
     for (object *o : ols) {
       if (grid_threaded and o->is_overlaps_cells()) {
         // object is in several cells and may be called from multiple threads
@@ -40,7 +40,7 @@ public:
   }
 
   // called from grid (possibly by multiple threads)
-  inline void resolve_collisions(const frame_ctx &fc) {
+  inline void resolve_collisions(frame_ctx const &fc) {
     // thread safe because 'ols' does not change during 'resolve_collisions'
     const size_t len = ols.size();
     if (len == 0) {
@@ -108,7 +108,7 @@ public:
   }
 
   // called from grid (from only one thread)
-  inline void render(const unsigned render_frame_num) {
+  inline void render(unsigned const render_frame_num) {
     for (object *o : ols) {
       if (o->rendered_at_tick == render_frame_num) {
         continue;
@@ -138,7 +138,7 @@ public:
 
 private:
   inline static void handle_sphere_collision(object *Oi, object *Oj,
-                                             const frame_ctx &fc) {
+                                             frame_ctx const &fc) {
 
     // check if Oi is subscribed to collision with Oj
     if ((Oi->collision_mask & Oj->collision_bits) == 0) {
@@ -205,7 +205,7 @@ private:
   }
 
   inline static void dispatch_collision(object *Osrc, object *Otrg,
-                                        const frame_ctx &fc) {
+                                        frame_ctx const &fc) {
 
     // check if Oi is subscribed to collision with Oj
     if ((Osrc->collision_mask & Otrg->collision_bits) == 0) {
@@ -241,7 +241,7 @@ private:
   }
 
   inline static auto are_bounding_spheres_in_collision(object *o1, object *o2,
-                                                       const frame_ctx &fc)
+                                                       frame_ctx const &fc)
       -> bool {
 
     const glm::vec3 v = o2->physics.position - o1->physics.position;
@@ -271,7 +271,7 @@ private:
   }
 
   inline static auto are_bounding_planes_in_collision(object *o1, object *o2,
-                                                      const frame_ctx &fc)
+                                                      frame_ctx const &fc)
       -> bool {
 
     update_planes_world_coordinates(o1);

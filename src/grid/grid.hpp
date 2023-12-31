@@ -18,7 +18,7 @@ public:
   inline void free() {}
 
   // called from main
-  inline void update(const frame_ctx &fc) {
+  inline void update(frame_ctx const &fc) {
     if (grid_threaded) {
       std::for_each(std::execution::par_unseq, std::begin(cells),
                     std::end(cells), [&fc](cell(&row)[grid_ncells_wide]) {
@@ -47,7 +47,7 @@ public:
   }
 
   // called from main
-  inline void resolve_collisions(const frame_ctx &fc) {
+  inline void resolve_collisions(frame_ctx const &fc) {
     if (grid_threaded) {
       std::for_each(std::execution::par_unseq, std::begin(cells),
                     std::end(cells), [&fc](cell(&row)[grid_ncells_wide]) {
@@ -76,7 +76,7 @@ public:
   }
 
   // called from main
-  inline void render(const unsigned render_frame_num) {
+  inline void render(unsigned const render_frame_num) {
     cell *p = cells[0];
     unsigned i = ncells;
     while (i--) {

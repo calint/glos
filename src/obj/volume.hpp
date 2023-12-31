@@ -19,11 +19,11 @@ class volume final {
     std::atomic_flag spinlock = ATOMIC_FLAG_INIT;
 
   public:
-    inline void update_model_to_world(const std::vector<glm::vec3> &points,
-                                      const std::vector<glm::vec3> &normals,
-                                      const glm::vec3 &pos,
-                                      const glm::vec3 &agl,
-                                      const glm::vec3 &scl) {
+    inline void update_model_to_world(std::vector<glm::vec3> const &points,
+                                      std::vector<glm::vec3> const &normals,
+                                      glm::vec3 const &pos,
+                                      glm::vec3 const &agl,
+                                      glm::vec3 const &scl) {
       if (points.size() != 0 and
           (pos != Mmw_pos or agl != Mmw_agl or scl != Mmw_scl)) {
         // printf("update points\n");
@@ -61,10 +61,10 @@ class volume final {
       }
     }
 
-    inline void debug_render_normals(const std::vector<glm::vec3> points,
-                                     const std::vector<glm::vec3> normals,
-                                     const glm::vec3 &pos, const glm::vec3 &agl,
-                                     const glm::vec3 &scl) {
+    inline void debug_render_normals(std::vector<glm::vec3> const &points,
+                                     std::vector<glm::vec3> const &normals,
+                                     glm::vec3 const &pos, glm::vec3 const &agl,
+                                     glm::vec3 const &scl) {
       update_model_to_world(points, normals, pos, agl, scl);
       const size_t n = world_positions.size();
       for (size_t i = 0; i < n; ++i) {
@@ -76,7 +76,7 @@ class volume final {
 
     // for each position check if behind all planes of 'planes'
     // assumes both this and 'planes' have updated world points and normals
-    inline auto is_in_collision_with_planes(const planes &pns) const -> bool {
+    inline auto is_in_collision_with_planes(planes const &pns) const -> bool {
       for (const glm::vec3 &p : world_positions) {
         if (pns.is_point_behind_all_planes(p)) {
           return true;
@@ -85,8 +85,8 @@ class volume final {
       return false;
     }
 
-    inline auto is_in_collision_with_sphere(const glm::vec3 &pos,
-                                            const float rds) {
+    inline auto is_in_collision_with_sphere(glm::vec3 const &pos,
+                                            float const rds) {
       const size_t n = world_normals.size();
       for (unsigned i = 0; i < n; ++i) {
         // render_wcs_line(world_positions[i], p, {0, 1, 0});
@@ -108,7 +108,7 @@ class volume final {
     inline void release_lock() { spinlock.clear(std::memory_order_release); }
 
   private:
-    inline auto is_point_behind_all_planes(const glm::vec3 &p) const -> bool {
+    inline auto is_point_behind_all_planes(glm::vec3 const &p) const -> bool {
       const size_t n = world_normals.size();
       for (unsigned i = 0; i < n; ++i) {
         // render_wcs_line(world_positions[i], p, {0, 1, 0});

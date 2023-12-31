@@ -50,7 +50,7 @@ public:
     }
   }
 
-  inline void load_from_file(const char *path) {
+  inline void load(char const *path) {
     std::ifstream file(path);
     if (!file) {
       printf("*** cannot open file '%s'\n", path);

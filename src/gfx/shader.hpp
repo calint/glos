@@ -134,7 +134,7 @@ public:
     }
   }
 
-  auto load_program_from_source(const char *vert_src, const char *frag_src)
+  auto load_program_from_source(char const *vert_src, char const *frag_src)
       -> int {
     gl_check_error("enter load_program_from_source");
     const GLuint program_id = glCreateProgram();
@@ -163,14 +163,14 @@ public:
 
   inline auto programs_count() const -> int { return int(programs.size()); }
 
-  inline void use_program(const int ix) { programs.at(size_t(ix)).use(); }
+  inline void use_program(int const ix) { programs.at(size_t(ix)).use(); }
 
-  inline auto program_id(const int ix) const -> GLuint {
+  inline auto program_id(int const ix) const -> GLuint {
     return programs.at(size_t(ix)).id;
   }
 
 private:
-  inline static auto compile(GLenum shader_type, const char *src) -> GLuint {
+  inline static auto compile(GLenum shader_type, char const *src) -> GLuint {
     const GLuint shader_id = glCreateShader(shader_type);
     glShaderSource(shader_id, 1, &src, nullptr);
     glCompileShader(shader_id);
@@ -186,7 +186,7 @@ private:
     return shader_id;
   }
 
-  inline static auto gl_get_error_string(const GLenum gl_error) -> const
+  inline static auto gl_get_error_string(GLenum const gl_error) -> const
       char * {
     const char *str = nullptr;
     switch (gl_error) {
@@ -228,12 +228,12 @@ private:
     return str;
   }
 
-  inline static void gl_print_string(const char *name, const GLenum gl_str) {
+  inline static void gl_print_string(char const *name, const GLenum gl_str) {
     const char *str = (const char *)glGetString(gl_str);
     printf("%s=%s\n", name, str);
   }
 
-  inline static void gl_check_error(const char *user_msg) {
+  inline static void gl_check_error(char const *user_msg) {
     bool is_error = false;
     for (GLenum error = glGetError(); error; error = glGetError()) {
       printf("!!! %s   glerror %x   %s\n", user_msg, error,
@@ -245,7 +245,7 @@ private:
     }
   }
 
-  inline static auto shader_name_for_type(const GLenum shader_type) -> const
+  inline static auto shader_name_for_type(GLenum const shader_type) -> const
       char * {
     switch (shader_type) {
     case GL_VERTEX_SHADER:
