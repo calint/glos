@@ -36,7 +36,7 @@ public:
     metrics.allocated_glos--;
   }
 
-  inline void render(const glm::mat4 &mtx_mw) {
+  inline void render(const glm::mat4 &mtx_mw) const {
     glUniformMatrix4fv(shaders::umtx_mw, 1, GL_FALSE, glm::value_ptr(mtx_mw));
     glBindVertexArray(vertex_array_id);
     for (const range &mr : ranges) {
@@ -367,26 +367,17 @@ public:
     }
   }
 
-  inline int load(const char *obj_path, const char *bounding_planes_path) {
+  inline auto load(const char *obj_path, const char *bounding_planes_path)
+      -> int {
     glo g{};
     g.load(obj_path, bounding_planes_path);
     store.push_back(std::move(g));
     return int(store.size() - 1);
   }
 
-  inline auto get_by_name(const char *name) -> glo * {
-    for (glo &g : store) {
-      if (!strcmp(name, g.name.c_str())) {
-        return &g;
-      }
-    }
-    fprintf(stderr, "\n%s:%u: could not find glo '%s' \n", __FILE__, __LINE__,
-            name);
-    fprintf(stderr, "\n\n");
-    std::abort();
+  inline auto get_by_index(const int ix) const -> glo const & {
+    return store.at(size_t(ix));
   }
-
-  inline glo &get_by_index(const int ix) { return store.at(size_t(ix)); }
 };
 
 static glos glos{};
