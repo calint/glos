@@ -61,6 +61,7 @@ public:
   // loads definition and optional bounding planes from 'obj' files
   inline void load(char const *obj_path, char const *bounding_planes_path) {
     printf(" * loading glo from '%s'\n", obj_path);
+
     std::ifstream file(obj_path);
     if (!file) {
       printf("!!! cannot open file '%s'\n", obj_path);
@@ -71,13 +72,21 @@ public:
     std::string content = buffer.str();
     const char *p = content.c_str();
 
+    std::string base_dir_path = "";
+    {
+      const std::string file_path = obj_path;
+      const size_t found = file_path.find_last_of("/\\");
+      if (found != std::string::npos) {
+        base_dir_path = file_path.substr(0, found) + "/";
+      }
+    }
+
     std::vector<float> vertex_buffer{};
     std::vector<glm::vec3> vertices{};
     std::vector<glm::vec3> normals{};
     std::vector<glm::vec2> texture_uv{};
 
     unsigned current_object_material_ix = 0;
-    const char *basedir = "obj/";
     unsigned vertex_buffer_ix = 0;
     unsigned vertex_buffer_ix_prv = 0;
     int first_o = 1;
@@ -91,9 +100,8 @@ public:
       }
       if (token_equals(&tk, "mtllib")) {
         token t = token_next(&p);
-        std::string base{basedir};
         std::string file_name{t.content, t.content + token_size(&t)};
-        std::string path = base + file_name;
+        std::string path = base_dir_path + file_name;
         materials.load(path.c_str());
         continue;
       }
