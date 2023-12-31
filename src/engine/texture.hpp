@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../metrics.hpp"
+#include "metrics.hpp"
 #include <GLES3/gl3.h>
 #include <SDL2/SDL_image.h>
 #include <string>

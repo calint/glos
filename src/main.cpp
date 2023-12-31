@@ -18,34 +18,34 @@ inline static void debug_render_wcs_line(const glm::vec3 &from_wcs,
 // include order of subsystems relevant
 #include "app/configuration.hpp"
 //
-#include "metrics.hpp"
+#include "engine/metrics.hpp"
 //
-#include "net/net.hpp"
+#include "engine/net.hpp"
 //
-#include "sdl/sdl.hpp"
+#include "engine/sdl.hpp"
 //
-#include "sdl/window.hpp"
+#include "engine/window.hpp"
 //
-#include "gfx/shader.hpp"
+#include "engine/shader.hpp"
 //
-#include "gfx/camera.hpp"
+#include "engine/camera.hpp"
 //
-#include "gfx/material.hpp"
+#include "engine/material.hpp"
 //
-#include "gfx/glo.hpp"
+#include "engine/glo.hpp"
 //
 class frame_context {
 public:
   float dt = 0;
   unsigned tick = 0;
 };
-#include "obj/object.hpp"
+#include "engine/object.hpp"
 //
-#include "grid/grid.hpp"
+#include "engine/grid.hpp"
 //
-#include "net/net.hpp"
+#include "engine/net.hpp"
 //
-#include "net/net_server.hpp"
+#include "engine/net_server.hpp"
 
 static struct color {
   GLclampf red;

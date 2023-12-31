@@ -1,7 +1,7 @@
 #pragma once
 // reviewed: 2023-12-22
 
-#include "../misc/token.h"
+#include "token.h"
 
 #include <fstream>
 #include <glm/glm.hpp>
