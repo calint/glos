@@ -31,9 +31,9 @@ public:
   //       destructor is invoked in the 'objects.apply_free'
 
   inline virtual void render() {
-    glos.get_by_index(node.glo_ix).render(get_updated_Mmw());
+    glos.at(node.glo_ix).render(get_updated_Mmw());
     if (volume_planes_debug_normals) {
-      const glo &g = glos.get_by_index(node.glo_ix);
+      const glo &g = glos.at(node.glo_ix);
       volume.planes.debug_render_normals(g.planes_points, g.planes_normals,
                                          physics.position, physics.angle,
                                          volume.scale);

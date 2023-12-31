@@ -3,17 +3,19 @@
 [ ]   use uint32_t instead of unsigned int32_t etc
 [ ]   consider a more standard source layout without depending on include order
 [ ]   class private members at the bottom of the declaration
-[ ]   use gl_element_array_buffer (where it is possible)
+[ ]   use gl_element_array_buffer (where appropriate)
 [ ]   use glDebugMessageCallback
 [ ]   clang-tidy
 [ ]   cmake or premake and automatically download dependencies using git submodules
-[ ]   use glm::sin, cos etc
+[x]   use glm::sin, cos etc
 [ ]   consider verbose self documenting code
 [ ]   move object::volume into physics
 [ ]   use c++ random number generator
 [ ]   review and delete obsolete notes
 [ ]   net_server as separate application
-[ ]   ref& const, bool const, etc
+[o]   ref& const, bool const, etc
+[x]     arguments
+[ ]     code
 [ ]   ++i instead of i++
 [ ]   friend cell to object?
 [ ]   const correctness

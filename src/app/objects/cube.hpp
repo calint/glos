@@ -3,7 +3,7 @@ class cube : public glos::object {
 public:
   inline cube() {
     node.glo_ix = glo_cube_ix;
-    const glos::glo &g = glos::glos.get_by_index(node.glo_ix);
+    const glos::glo &g = glos::glos.at(node.glo_ix);
     volume.scale = {2, 1, 1};
     volume.radius = g.bounding_radius * 2; // r * scale
     volume.is_sphere = false;
@@ -32,13 +32,13 @@ public:
     if (keys != 0) {
       // wasd keys
       if (keys & 1) {
-        v = -glm::vec3{sin(a.y), 0, cos(a.y)};
+        v = -glm::vec3{glm::sin(a.y), 0, glm::cos(a.y)};
       }
       if (keys & 2) {
         av.y = 1;
       }
       if (keys & 4) {
-        v = {sin(a.y), 0, cos(a.y)};
+        v = {glm::sin(a.y), 0, glm::cos(a.y)};
       }
       if (keys & 8) {
         av.y = -1;

@@ -375,7 +375,7 @@ public:
     return int(store.size() - 1);
   }
 
-  inline auto get_by_index(int const ix) const -> glo const & {
+  inline auto at(int const ix) const -> glo const & {
     return store.at(size_t(ix));
   }
 };

@@ -6,7 +6,7 @@ public:
   inline santa() {
     //? glos.find_by_index for O(1)
     node.glo_ix = glo_santa_ix;
-    const glos::glo &g = glos::glos.get_by_index(node.glo_ix);
+    const glos::glo &g = glos::glos.at(node.glo_ix);
     volume.scale = {1, 1, 1};
     volume.radius = g.bounding_radius * 1; // r * scale
     collision_bits = cb_hero;
