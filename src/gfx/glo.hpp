@@ -375,8 +375,7 @@ public:
     }
   }
 
-  inline void load(const char *obj_path,
-                             const char *bounding_planes_path) {
+  inline int load(const char *obj_path, const char *bounding_planes_path) {
     printf(" * loading glo from '%s'\n", obj_path);
     std::ifstream file(obj_path);
     if (!file) {
@@ -394,6 +393,7 @@ public:
     g->upload_to_opengl();
     store.push_back(std::move(*g));
     delete g;
+    return int(store.size() - 1);
   }
 
   inline auto get_by_name(const char *name) -> glo * {
