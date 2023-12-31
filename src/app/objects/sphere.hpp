@@ -2,7 +2,7 @@
 class sphere : public glos::object {
 public:
   inline sphere() {
-    node.glo = glos::glos.get_by_index(glo_index_sphere);
+    node.glo = glos::glos.get_by_index(glo_sphere_ix);
     volume.scale = {1, 1, 1};
     volume.radius = node.glo->bounding_radius * 1; // r * scale
     collision_bits = cb_hero;

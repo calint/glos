@@ -21,18 +21,18 @@ public:
     static_assert(sizeof(cube) <= objects_instance_size_B, "");
 
     // the load order matches the 'glo_index_*' configuration
-    glos::glos.load("obj/skydome.obj", nullptr);
-    glos::glos.load("obj/grid.obj", nullptr);
-    glos::glos.load("obj/santa.obj", nullptr);
-    glos::glos.load("obj/icosphere.obj", nullptr);
-    glos::glos.load("obj/cube.obj", "obj/bv-cube.obj");
+    glo_skydome_ix = glos::glos.load("obj/skydome.obj", nullptr);
+    glo_grid_ix = glos::glos.load("obj/grid.obj", nullptr);
+    glo_santa_ix = glos::glos.load("obj/santa.obj", nullptr);
+    glo_sphere_ix = glos::glos.load("obj/icosphere.obj", nullptr);
+    glo_cube_ix = glos::glos.load("obj/cube.obj", "obj/bv-cube.obj");
 
     constexpr float world_size = grid_cell_size * grid_ncells_wide;
 
     {
       glos::object *o = new (glos::objects.alloc()) glos::object{};
       o->name = "skydome";
-      o->node.glo = glos::glos.get_by_index(glo_index_skydome);
+      o->node.glo = glos::glos.get_by_index(glo_skydome_ix);
       const float skydome_scale =
           world_size / (2 * o->node.glo->bounding_radius);
       o->volume.scale = {skydome_scale, skydome_scale, skydome_scale};
@@ -43,7 +43,7 @@ public:
     {
       glos::object *o = new (glos::objects.alloc()) glos::object{};
       o->name = "grid";
-      o->node.glo = glos::glos.get_by_index(glo_index_grid);
+      o->node.glo = glos::glos.get_by_index(glo_grid_ix);
       constexpr float grid_scale = world_size / 16;
       // note. 16 is the model coordinates span from -8 to 8
       o->volume.scale = {grid_scale, grid_scale, grid_scale};

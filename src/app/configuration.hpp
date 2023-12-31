@@ -37,9 +37,9 @@ static constexpr int objects_instance_size_B = 1024;
 static constexpr unsigned cb_none = 0;
 static constexpr unsigned cb_hero = 1;
 
-// glo indexes
-static constexpr int glo_index_skydome = 0;
-static constexpr int glo_index_grid = 1;
-static constexpr int glo_index_santa = 2;
-static constexpr int glo_index_sphere = 3;
-static constexpr int glo_index_cube = 4;
+// glo indexes (are set at load in application)
+static int glo_skydome_ix;
+static int glo_grid_ix;
+static int glo_santa_ix;
+static int glo_sphere_ix;
+static int glo_cube_ix;

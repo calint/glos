@@ -19,6 +19,7 @@
 [ ]   const correctness
 [ ]   const everything
 [ ]   constexpr everything
+[ ]   struct vertex used for sizeof only
 [ ] use object Mmw when updating volume::planes
 [ ] glo: after upload to gpu buffers can be deleted
 [ ] glo: load obj and planes in a consistent way
@@ -53,7 +54,7 @@
 [x] c++ conversion
 [x]   replace dynp, dyni, dynf with vector
 [x]   replace str with string
-[ ] namespaces
+[x] namespaces
 [x] hpp files included by main.cpp
 [x] convert structs to classes
 [x] use glm library for math

@@ -5,8 +5,8 @@
 #include <vector>
 
 namespace glos {
-class vertex final {
-public:
+
+struct vertex {
   float position[3];
   float color[4];
   float normal[3];
@@ -18,7 +18,7 @@ class shaders final {
   public:
     GLuint id = 0;
 
-    inline void activate() { glUseProgram(id); }
+    inline void use() { glUseProgram(id); }
   };
 
   inline static const char *vertex_shader_source = R"(
@@ -98,7 +98,7 @@ public:
     const int default_program_id =
         load_program_from_source(vertex_shader_source, fragment_shader_source);
 
-    programs.at(size_t(default_program_id)).activate();
+    programs.at(size_t(default_program_id)).use();
 
     printf("shader uniforms locations:\n");
     printf(":-%10s-:-%7s-:\n", "----------", "-------");
@@ -163,7 +163,7 @@ public:
 
   inline auto programs_count() const -> int { return int(programs.size()); }
 
-  inline void use_program(const int ix) { programs.at(size_t(ix)).activate(); }
+  inline void use_program(const int ix) { programs.at(size_t(ix)).use(); }
 
   inline auto program_id(const int ix) const -> GLuint {
     return programs.at(size_t(ix)).id;
