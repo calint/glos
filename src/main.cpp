@@ -380,17 +380,6 @@ int main(int argc, char *argv[]) {
   update_thread.join();
 
   application.free();
-  glos::grid.free();
-  glos::objects.free();
-  glos::glos.free();
-  glos::materials.free();
-  glos::shaders.free();
-  glos::window.free();
-  glos::sdl.free();
-  if (use_net) {
-    glos::net.free();
-  }
-  glos::metrics.print(stderr);
-  glos::metrics.free();
+  glos::engine.free();
   return 0;
 }

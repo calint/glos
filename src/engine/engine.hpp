@@ -60,6 +60,7 @@ public:
     sdl.init();
     window.init();
     shaders.init();
+    textures.init();
     materials.init();
     glos.init();
     objects.init();
@@ -85,6 +86,24 @@ public:
 )";
       shader_program_render_line = shaders.load_program_from_source(vtx, frag);
     }
+  }
+
+  inline void free() {
+    grid.free();
+    objects.free();
+    glos.free();
+    materials.free();
+    textures.free();
+    shaders.free();
+    window.free();
+    sdl.free();
+    if (use_net) {
+      net.free();
+    }
+
+    metrics.print(stderr);
+
+    metrics.free();
   }
 };
 

@@ -90,7 +90,6 @@ public:
     unsigned vertex_buffer_ix = 0;
     unsigned vertex_buffer_ix_prv = 0;
     int first_o = 1;
-    std::string object_name = "";
 
     while (*p) {
       token tk = token_next(&p);
@@ -109,17 +108,17 @@ public:
         first_o = false;
         token t = token_next(&p);
         const unsigned n = token_size(&t);
-        object_name = std::string{t.content, t.content + n};
-        printf("     %s\n", object_name.c_str());
+        name = std::string{t.content, t.content + n};
+        printf("     %s\n", name.c_str());
         continue;
       }
       if (token_equals(&tk, "usemtl")) {
         token t = token_next(&p);
-        name = {t.content, t.content + token_size(&t)};
+        std::string mtl_name = {t.content, t.content + token_size(&t)};
         bool found = false;
         for (unsigned i = 0; i < materials.store.size(); i++) {
           material &mtl = materials.store.at(i);
-          if (mtl.name == name) {
+          if (mtl.name == mtl_name) {
             current_object_material_ix = i;
             found = true;
             break;
@@ -128,7 +127,7 @@ public:
         if (not found) {
           fprintf(stderr, "\n%s:%u: could not find material\n", __FILE__,
                   __LINE__);
-          fprintf(stderr, "        name: '%s'\n\n", name.c_str());
+          fprintf(stderr, "        name: '%s'\n\n", mtl_name.c_str());
           fprintf(stderr, "\n\n");
           std::abort();
         }

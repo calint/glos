@@ -33,7 +33,6 @@ public:
   float d = 0;
   std::string map_Kd = "";
   GLuint texture_id = 0;
-  int texture_size_bytes = 0;
 };
 
 class materials final {
@@ -41,14 +40,7 @@ public:
   std::vector<material> store{};
 
   inline void init() {}
-  inline void free() {
-    for (const material &m : store) {
-      if (m.texture_id) {
-        glDeleteTextures(1, &m.texture_id);
-        metrics.buffered_texture_data -= m.texture_size_bytes;
-      }
-    }
-  }
+  inline void free() { store.clear(); }
 
   inline void load(char const *path) {
     std::ifstream file(path);

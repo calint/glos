@@ -36,6 +36,15 @@ public:
 
 class textures final {
 public:
+  inline void init() {}
+  inline void free() {
+    for (auto const &pair : store) {
+      glDeleteTextures(1, &pair.second.id);
+      metrics.buffered_texture_data -= pair.second.size_B;
+    }
+    store.clear();
+  };
+
   inline auto get_id_or_load(std::string const &path) -> GLuint {
     auto it = store.find(path);
     if (it != store.end()) {
