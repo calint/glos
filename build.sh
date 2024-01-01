@@ -1,5 +1,5 @@
 #!/bin/bash
-# dependencies (ubuntu packages):
+# dependencies (in ubuntu installation):
 # * libglm-dev/mantic,mantic,now 0.9.9.8+ds-7 all: opengl math
 # * libtbb-dev/mantic 2021.9.0-2ubuntu1 i386: for parallel unsequenced `for_each`
 # * libsdl2-dev/mantic,now 2.28.3+dfsg-2 amd64
