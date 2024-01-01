@@ -4,8 +4,9 @@
 
 //------------------------------------------------------------------------ main
 int main(int argc, char *argv[]) {
-  // check if this instance is server
+
   if (argc > 1 && *argv[1] == 's') {
+    // instance is a server
     glos::net_server.init();
     glos::net_server.run();
     glos::net_server.free();
@@ -14,11 +15,11 @@ int main(int argc, char *argv[]) {
 
   puts("\nprogram glos\n");
 
-  // this instance is client
   if (argc > 1 && *argv[1] == 'c') {
-    // connect to server
+    // multiplayer client, enable 'net'
     glos::net.enabled = true;
     if (argc > 2) {
+      // host ip
       glos::net.host = argv[2];
     }
   }
@@ -28,6 +29,6 @@ int main(int argc, char *argv[]) {
   glos::engine.run();
 
   glos::engine.free();
-  
+
   return 0;
 }
