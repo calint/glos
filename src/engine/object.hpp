@@ -42,7 +42,7 @@ public:
   inline virtual void render() {
     glos.at(glo_ix).render(get_updated_Mmw());
 
-    if (volume_planes_debug_normals) {
+    if (object_planes_debug_normals) {
       planes.debug_render_normals();
     }
   }
@@ -54,7 +54,7 @@ public:
     position += velocity * dt;
     angle += angular_velocity * dt;
 
-    if (volume_planes_debug_normals) {
+    if (object_planes_debug_normals) {
       glm::mat4 const &M = get_updated_Mmw();
       glo const &g = glos.at(glo_ix);
       planes.update_model_to_world(g.planes_points, g.planes_normals, M,

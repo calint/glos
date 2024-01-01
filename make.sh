@@ -25,7 +25,7 @@ WARNINGS="-Wall -Wextra -Wpedantic -Wfatal-errors \
     -Wshadow -Wconversion -Wsign-conversion \
     -Wno-unsafe-buffer-usage \
     -Wno-unused-function -Wno-unused-parameter"
-OPTIMIZATION="-O3 -g"
+OPTIMIZATION="-O0 -g"
 REMARKS=
 #REMARKS="-Rpass=inline"
 PROFILE=

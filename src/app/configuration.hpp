@@ -20,14 +20,13 @@ static constexpr bool o1store_check_double_free = true;
 static constexpr bool o1store_check_free_limits = true;
 
 // debug volume normals (turn off)
-static constexpr bool volume_planes_debug_normals = true;
+static constexpr bool object_planes_debug_normals = true;
 
 // window dimensions
 static constexpr int window_width = 512;
 static constexpr int window_height = 512;
 
 // number of players in networked mode
-inline bool use_net = false;
 static constexpr int net_players = 2;
 
 // number of preallocated objects

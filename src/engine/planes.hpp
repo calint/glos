@@ -1,4 +1,7 @@
 #pragma once
+
+#include <glm/gtx/string_cast.hpp>
+
 namespace glos {
 class planes final {
   glm::mat3 Nmw{}; // normals rotation matrix
@@ -47,6 +50,16 @@ public:
         glm::vec3 Nw = Nmw * Nm;
         world_normals.emplace_back(Nw);
       }
+    }
+  }
+
+  inline void print() {
+    const size_t n = world_positions.size();
+    for (size_t i = 0; i < n; ++i) {
+      const glm::vec3 &pnt = world_positions[i];
+      const glm::vec3 &nml = world_normals[i];
+      printf("normal %zu: %s  ->  %s\n", i, glm::to_string(pnt).c_str(),
+             glm::to_string(nml).c_str());
     }
   }
 

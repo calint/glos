@@ -107,7 +107,7 @@ int main(int argc, char *argv[]) {
   // this instance is client
   if (argc > 1 && *argv[1] == 'c') {
     // connect to server
-    use_net = true;
+    glos::net_enabled = true;
     if (argc > 2) {
       glos::net.host = argv[2];
     }
@@ -152,7 +152,7 @@ int main(int argc, char *argv[]) {
   glos::metrics.reset_timer();
   glos::metrics.print_headers(stderr);
 
-  if (use_net) {
+  if (glos::net_enabled) {
     // send initial signals
     glos::net.begin();
   }
@@ -197,7 +197,8 @@ int main(int argc, char *argv[]) {
       }
 
       // in multiplayer mode use dt from server else previous frame
-      glos::frame_context fc{use_net ? glos::net.dt : glos::metrics.fps.dt,
+      glos::frame_context fc{glos::net_enabled ? glos::net.dt
+                                           : glos::metrics.fps.dt,
                              update_frame_num};
 
       glos::grid.update(fc);
@@ -218,7 +219,7 @@ int main(int argc, char *argv[]) {
       glos::objects.apply_allocated_instances();
 
       // update signals state
-      if (use_net) {
+      if (glos::net_enabled) {
         // receive signals from previous frame and send signals of current frame
         glos::net.at_frame_end();
       } else {

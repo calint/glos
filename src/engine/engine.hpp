@@ -1,4 +1,6 @@
 #pragma once
+
+#include <iostream>
 //
 #include "metrics.hpp"
 //
@@ -53,6 +55,8 @@ inline glm::vec3 ambient_light = glm::normalize(glm::vec3{0, 1, 1});
 
 inline object *camera_follow_object = nullptr;
 
+inline bool net_enabled = false;
+
 class engine final {
 public:
   int shader_program_render_line = 0;
@@ -60,7 +64,7 @@ public:
   int shader_program_ix_prev = shader_program_ix;
 
   inline void init() {
-    if (use_net) {
+    if (net_enabled) {
       net.init();
     }
     metrics.init();
@@ -104,7 +108,7 @@ public:
     shaders.free();
     window.free();
     sdl.free();
-    if (use_net) {
+    if (net_enabled) {
       net.free();
     }
 
@@ -114,7 +118,7 @@ public:
   }
 };
 
-static engine engine{};
+inline engine engine{};
 
 // for debugging
 inline static void debug_render_wcs_line(const glm::vec3 &from_wcs,
