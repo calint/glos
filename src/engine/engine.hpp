@@ -5,7 +5,7 @@
 #include <mutex>
 
 // inclusion order relevant
-#include "../app/configuration.hpp"
+#include "../application/configuration.hpp"
 //
 #include "metrics.hpp"
 //
@@ -48,6 +48,7 @@ void application_free();
 #include "net.hpp"
 //
 #include "net_server.hpp"
+//
 
 namespace glos {
 static struct color {
