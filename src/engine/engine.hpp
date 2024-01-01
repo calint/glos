@@ -191,11 +191,14 @@ public:
       while (is_running) {
         update_frame_num++;
         {
+          // wait until render thread is done before removing and adding objects
+          // to grid
           std::unique_lock<std::mutex> lock{is_rendering_mutex};
           is_rendering_cv.wait(lock,
                                [&is_rendering] { return not is_rendering; });
 
-          // printf("update %u\n", update_frame_num);
+          // render thread is done and waiting for grid to remove and add
+          // objects
 
           grid.clear();
 
@@ -206,6 +209,7 @@ public:
             grid.add(obj);
           }
 
+          // notify render thread to start rendering
           is_rendering = true;
           lock.unlock();
           is_rendering_cv.notify_one();
@@ -218,6 +222,8 @@ public:
         // in multiplayer mode use dt from server else previous frame
         frame_context fc{net.enabled ? net.dt : metrics.fps.dt,
                          update_frame_num};
+
+        // note. data racing between render and update is ok
 
         grid.update(fc);
 
@@ -245,6 +251,7 @@ public:
           net.states[net.active_state_ix] = net.next_state;
         }
       }
+
       // in case render thread is waiting
       is_rendering = true;
       is_rendering_cv.notify_one();
@@ -367,17 +374,20 @@ public:
       }
 
       {
-        // don't render when grid is adding objects to cells
+        // wait for update thread to remove and add objects to grid
         std::unique_lock<std::mutex> lock{is_rendering_mutex};
         is_rendering_cv.wait(lock, [&is_rendering] { return is_rendering; });
 
+        // note. render and update have acceptable data races on objects
+        // position etc
+
         render_frame_num++;
-        // printf("render %d\n", render_frame_num);
 
         if (do_render) {
           render(render_frame_num);
         }
 
+        // notify update thread that rendering is done
         is_rendering = false;
         lock.unlock();
         is_rendering_cv.notify_one();
@@ -398,7 +408,7 @@ public:
 
 inline engine engine{};
 
-// for debugging
+// debugging
 inline static void debug_render_wcs_line(const glm::vec3 &from_wcs,
                                          const glm::vec3 &to_wcs,
                                          const glm::vec3 &color) {

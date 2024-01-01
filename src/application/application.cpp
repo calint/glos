@@ -7,9 +7,8 @@ using namespace glm;
 #include "objects/santa.hpp"
 #include "objects/sphere.hpp"
 //
-
 static void application_init_shaders();
-
+//
 void application_init() {
   application_init_shaders();
 
@@ -62,9 +61,7 @@ void application_init() {
     cube *o = new (objects.alloc()) cube{};
     o->name = "cube";
     o->mass = 1;
-    o->position = {0, 1.1f, 0};
-    o->velocity = {0, 0, 0};
-    // o->angular_velocity.y = glm::radians(10.0f);
+    o->position = {0, o->scale.y, 0};
     o->net_state = &net.states[1];
   }
 
@@ -72,7 +69,7 @@ void application_init() {
     sphere *o = new (objects.alloc()) sphere{};
     o->name = "sphere";
     o->mass = 1;
-    o->position = {6, 1, 0};
+    o->position = {6, o->scale.y, 0};
     o->net_state = &net.states[1];
   }
 

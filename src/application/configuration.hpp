@@ -40,8 +40,8 @@ static constexpr uint32_t cb_none = 0;
 static constexpr uint32_t cb_hero = 1;
 
 // glob indexes (set at 'application.init()' when loading)
-static uint32_t glob_skydome_ix;
-static uint32_t glob_grid_ix;
-static uint32_t glob_santa_ix;
-static uint32_t glob_sphere_ix;
-static uint32_t glob_cube_ix;
+static uint32_t glob_skydome_ix = 0;
+static uint32_t glob_grid_ix = 0;
+static uint32_t glob_santa_ix = 0;
+static uint32_t glob_sphere_ix = 0;
+static uint32_t glob_cube_ix = 0;
