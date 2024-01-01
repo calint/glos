@@ -1,10 +1,6 @@
 // reviewed: 2023-12-22
 
-// include order relevant
-#include "app/configuration.hpp"
-//
 #include "engine/engine.hpp"
-//
 
 //------------------------------------------------------------------------ main
 int main(int argc, char *argv[]) {

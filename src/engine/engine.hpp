@@ -3,7 +3,9 @@
 #include <condition_variable>
 #include <iostream>
 #include <mutex>
+
 // inclusion order relevant
+#include "../app/configuration.hpp"
 //
 #include "metrics.hpp"
 //
@@ -19,7 +21,7 @@
 //
 #include "material.hpp"
 //
-#include "glo.hpp"
+#include "glob.hpp"
 //
 
 namespace glos {
@@ -77,7 +79,7 @@ public:
     shaders.init();
     textures.init();
     materials.init();
-    glos.init();
+    globs.init();
     objects.init();
     grid.init();
 
@@ -107,7 +109,7 @@ public:
     printf(": %15s : %-9s :\n", "class", "bytes");
     printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
     printf(": %15s : %-9ld :\n", "object", sizeof(object));
-    printf(": %15s : %-9ld :\n", "glo", sizeof(glo));
+    printf(": %15s : %-9ld :\n", "glo", sizeof(glob));
     printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
 
     if (grid_threaded) {
@@ -119,7 +121,7 @@ public:
   inline void free() {
     grid.free();
     objects.free();
-    glos.free();
+    globs.free();
     materials.free();
     textures.free();
     shaders.free();

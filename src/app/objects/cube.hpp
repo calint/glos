@@ -1,22 +1,18 @@
 #pragma once
 
-#include "../configuration.hpp"
-//
-#include "../../engine/engine.hpp"
-
-class cube : public glos::object {
+class cube : public object {
 public:
   inline cube() {
-    glo_ix = glo_cube_ix;
+    glob_ix = glob_cube_ix;
     scale = {2, 1, 1};
-    glos::glo const &g = glos::glos.at(glo_ix);
+    glob const &g = globs.at(glob_ix);
     radius = g.bounding_radius * 2; // r * scale
     is_sphere = false;
     collision_bits = cb_hero;
     collision_mask = cb_hero;
   }
 
-  inline auto update(glos::frame_context const &fc) -> bool override {
+  inline auto update(frame_context const &fc) -> bool override {
     assert(not is_dead());
 
     if (object::update(fc)) {
@@ -54,7 +50,7 @@ public:
     return false;
   }
 
-  inline auto on_collision(object *o, glos::frame_context const &fc)
+  inline auto on_collision(object *o, frame_context const &fc)
       -> bool override {
     assert(not is_dead());
     printf("%u: %s collision with %s\n", fc.tick, name.c_str(),

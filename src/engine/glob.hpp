@@ -10,7 +10,7 @@
 #include <vector>
 
 namespace glos {
-class glo final {
+class glob final {
   class range final {
   public:
     int vertex_begin = 0; // index in vertex buffer where triangle data starts
@@ -362,30 +362,30 @@ private:
   }
 };
 
-class glos final {
+class globs final {
 public:
-  std::vector<glo> store{};
+  std::vector<glob> store{};
 
   inline void init() {}
 
   inline void free() {
-    for (glo &g : store) {
+    for (glob &g : store) {
       g.free();
     }
   }
 
   inline auto load(char const *obj_path, char const *bounding_planes_path)
       -> uint32_t {
-    glo g{};
+    glob g{};
     g.load(obj_path, bounding_planes_path);
     store.push_back(std::move(g));
     return uint32_t(store.size() - 1);
   }
 
-  inline auto at(uint32_t const ix) const -> glo const & {
+  inline auto at(uint32_t const ix) const -> glob const & {
     return store.at(ix);
   }
 };
 
-inline glos glos{};
+inline globs globs{};
 } // namespace glos

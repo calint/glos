@@ -1,12 +1,13 @@
 #pragma once
-class santa : public glos::object {
+
+class santa : public object {
   unsigned health = 0;
 
 public:
   inline santa() {
-    glo_ix = glo_santa_ix;
+    glob_ix = glob_santa_ix;
     scale = {1, 1, 1};
-    glos::glo const &g = glos::glos.at(glo_ix);
+    glob const &g = globs.at(glob_ix);
     radius = g.bounding_radius * 1; // r * scale
     collision_bits = cb_hero;
     collision_mask = cb_hero;
@@ -15,7 +16,7 @@ public:
 
   // inline ~santa() { printf("%s destructor\n", name.c_str()); }
 
-  inline auto update(glos::frame_context const &fc) -> bool override {
+  inline auto update(frame_context const &fc) -> bool override {
     assert(not is_dead());
 
     if (object::update(fc)) {
@@ -55,7 +56,7 @@ public:
     return false;
   }
 
-  inline auto on_collision(object *o, glos::frame_context const &fc)
+  inline auto on_collision(object *o, frame_context const &fc)
       -> bool override {
     assert(not is_dead());
     // printf("%s collision with %s\n", name.c_str(), o->name.c_str());

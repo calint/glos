@@ -11,7 +11,7 @@ class object {
 public:
   object **alloc_ptr;             // initiated at allocate by 'o1store'
   std::string name{};             // instance name
-  uint32_t glo_ix = 0;            // glo index
+  uint32_t glob_ix = 0;            // glo index
   float radius = 0;               // bounding radius
   glm::vec3 scale{};              //
   planes planes{};                // bounding planes (if any)
@@ -40,7 +40,7 @@ public:
   //       destructor is invoked in the 'objects.apply_free'
 
   inline virtual void render() {
-    glos.at(glo_ix).render(get_updated_Mmw());
+    globs.at(glob_ix).render(get_updated_Mmw());
 
     if (object_planes_debug_normals) {
       planes.debug_render_normals();
@@ -56,7 +56,7 @@ public:
 
     if (object_planes_debug_normals) {
       glm::mat4 const &M = get_updated_Mmw();
-      glo const &g = glos.at(glo_ix);
+      glob const &g = globs.at(glob_ix);
       planes.update_model_to_world(g.planes_points, g.planes_normals, M,
                                    position, angle, scale);
     }

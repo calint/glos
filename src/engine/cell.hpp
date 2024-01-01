@@ -258,7 +258,7 @@ private:
       o->planes.acquire_lock();
     }
 
-    const glo &g = glos.at(o->glo_ix);
+    const glob &g = globs.at(o->glob_ix);
 
     o->planes.update_model_to_world(g.planes_points, g.planes_normals,
                                     o->get_updated_Mmw(), o->position, o->angle,
