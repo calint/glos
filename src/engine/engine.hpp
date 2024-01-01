@@ -116,9 +116,13 @@ public:
       printf("\nthreaded grid on %d cores\n\n",
              std::thread::hardware_concurrency());
     }
+
+    application_init();
   }
 
   inline void free() {
+    application_free();
+
     grid.free();
     objects.free();
     globs.free();

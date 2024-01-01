@@ -25,11 +25,9 @@ int main(int argc, char *argv[]) {
 
   glos::engine.init();
 
-  application_init();
-
   glos::engine.run();
 
-  application_free();
   glos::engine.free();
+  
   return 0;
 }
