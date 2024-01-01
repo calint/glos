@@ -23,7 +23,7 @@ static constexpr bool o1store_check_free_limits = true;
 static constexpr bool object_planes_debug_normals = false;
 
 // window dimensions
-static constexpr int window_width = 512;
+static constexpr int window_width = 1024;
 static constexpr int window_height = 512;
 
 // number of players in networked mode
