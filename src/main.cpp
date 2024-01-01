@@ -19,55 +19,6 @@
 
 //----------------------------------------------------------------------- init
 inline static void main_init_shaders() {
-  {
-    const char *vtx = R"(
-#version 330 core
-uniform mat4 umtx_mw; // model-to-world-matrix
-uniform mat4 umtx_wvp;// world-to-view-to-projection
-in vec3 apos;
-out float depth;
-void main() {
-  gl_Position = umtx_wvp * umtx_mw * vec4(apos, 1);
-  depth = gl_Position.z / 300; // magic number is camera far plane
-}
-    )";
-
-    const char *frag = R"(
-#version 330 core
-in float depth;
-out vec4 rgba;
-void main() {
-  rgba = vec4(vec3(depth), 1.0);
-}
-    )";
-
-    glos::shaders.load_program_from_source(vtx, frag);
-  }
-  {
-    const char *vtx = R"(
-#version 330 core
-uniform mat4 umtx_mw; // model-to-world-matrix
-uniform mat4 umtx_wvp;// world-to-view-to-projection
-in vec3 apos;
-in vec4 argba;
-out vec4 vrgba;
-void main() {
-  gl_Position = umtx_wvp * umtx_mw * vec4(apos, 1);
-  vrgba = argba;
-}
-    )";
-
-    const char *frag = R"(
-#version 330 core
-in vec4 vrgba;
-out vec4 rgba;
-void main(){
-  rgba = vrgba;
-}
-    )";
-
-    glos::shaders.load_program_from_source(vtx, frag);
-  }
 }
 
 inline static void main_render(const unsigned render_frame_num) {
