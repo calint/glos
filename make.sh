@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # dependencies (ubuntu packages):
 # * libglm-dev/mantic,mantic,now 0.9.9.8+ds-7 all: opengl math
 # * libtbb-dev/mantic 2021.9.0-2ubuntu1 i386: for parallel unsequenced `for_each`
@@ -11,27 +11,29 @@
 set -e
 
 #CC="g++ -std=c++20 -Wno-changes-meaning -fanalyzer"
-#CC="g++ -std=c++20 -Wno-changes-meaning"
 CC="clang++ -std=c++20"
 SRC="src/main.cpp src/application/application.cpp"
 BIN="glos"
-CFLAGS="$(sdl2-config --cflags)"
-LDFLAGS=
-#LDFLAGS="-fsanitize=address -fsanitize-address-use-after-scope"
-#LDFLAGS="-fsanitize=thread"
-LIBS="-lGL -lSDL2_image -lSDL2_ttf -lSDL2_mixer $(sdl2-config --libs) -ltbb"
-# note. -ltbb must be last in list
-WARNINGS="-Wall -Wextra -Wpedantic -Wfatal-errors \
+CFLAGS="-Wfatal-errors $(sdl2-config --cflags)"
+LIBS="-ltbb -lGL -lSDL2_image $(sdl2-config --libs)"
+WARNINGS="-Wall -Wextra -Wpedantic \
     -Wshadow -Wconversion -Wsign-conversion \
-    -Wno-unsafe-buffer-usage \
-    -Wno-unused-function -Wno-unused-parameter"
-OPTIMIZATION="-O3 -g"
-REMARKS=
-#REMARKS="-Rpass=inline"
-PROFILE=
-#PROFILE="-pg"
-
-CMD="$CC -o $BIN $SRC $PROFILE $REMARKS $OPTIMIZATION $CFLAGS $LDFLAGS $WARNINGS $LIBS"
+    -Wno-unused-variable -Wno-unused-function -Wno-unused-parameter"
+OPTIMIZATION="-O3"
+DEBUG="-g"
+if [[ "$1" == "release" ]]; then
+    DEBUG=""
+fi
+PROFILE=""
+if [[ "$1" == "profile" ]]; then
+    PROFILE="-pg"
+fi
+LDFLAGS=""
+if [[ "$1" == "sanitize" ]]; then
+    LDFLAGS="-fsanitize=address -fsanitize-address-use-after-scope"
+#    LDFLAGS="-fsanitize=thread"
+fi
+CMD="$CC -o $BIN $SRC $DEBUG $PROFILE $OPTIMIZATION $CFLAGS $LDFLAGS $WARNINGS $LIBS"
 echo $CMD
 $CMD
 echo
