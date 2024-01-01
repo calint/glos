@@ -1,6 +1,9 @@
 #pragma once
 
+#include <condition_variable>
 #include <iostream>
+#include <mutex>
+// inclusion order relevant
 //
 #include "metrics.hpp"
 //
@@ -64,6 +67,9 @@ public:
   int shader_program_ix_prev = shader_program_ix;
 
   inline void init() {
+    // set random number generator seed for deterministic behaviour
+    srand(0);
+
     if (net_enabled) {
       net.init();
     }
@@ -115,6 +121,267 @@ public:
     metrics.print(stderr);
 
     metrics.free();
+  }
+
+  inline void render(const unsigned render_frame_num) {
+    if (camera_follow_object) {
+      camera.look_at = camera_follow_object->position;
+    }
+
+    camera.update_matrix_wvp();
+
+    glUniformMatrix4fv(shaders::umtx_wvp, 1, GL_FALSE,
+                       glm::value_ptr(camera.Mvp));
+    glUniform3fv(shaders::ulht, 1, glm::value_ptr(ambient_light));
+    glClearColor(background_color.red, background_color.green,
+                 background_color.blue, 1.0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    grid.render(render_frame_num);
+
+    window.swap_buffers();
+  }
+
+  inline void run() {
+    const float rad_over_degree = 2.0f * glm::pi<float>() / 360.0f;
+    float rad_over_mouse_pixels = rad_over_degree * .02f;
+    float mouse_sensitivity = 1.5f;
+    bool mouse_mode = false;
+    unsigned render_frame_num = 0;
+    bool do_main_render = true;
+    bool print_grid = false;
+    bool resolve_collisions = true;
+
+    SDL_SetRelativeMouseMode(mouse_mode ? SDL_TRUE : SDL_FALSE);
+
+    metrics.fps.calculation_intervall_ms = 1000;
+    metrics.reset_timer();
+    metrics.print_headers(stderr);
+
+    if (net_enabled) {
+      // send initial signals
+      net.begin();
+    }
+
+    // synchronization of update and render thread
+    bool is_rendering = false;
+    std::mutex is_rendering_mutex{};
+    std::condition_variable is_rendering_cv{};
+
+    // while application is running
+    bool is_running = true;
+
+    // note. needed after 'application_init'
+    objects.apply_allocated_instances();
+
+    // the update grid thread
+    std::thread update_thread([&]() {
+      unsigned update_frame_num = 0;
+      while (is_running) {
+        update_frame_num++;
+        {
+          std::unique_lock<std::mutex> lock{is_rendering_mutex};
+          is_rendering_cv.wait(lock,
+                               [&is_rendering] { return not is_rendering; });
+
+          // printf("update %u\n", update_frame_num);
+
+          grid.clear();
+
+          // add all allocated objects to the grid
+          object **const end = objects.allocated_list_end();
+          for (object **it = objects.allocated_list(); it < end; ++it) {
+            object *obj = *it;
+            grid.add(obj);
+          }
+
+          is_rendering = true;
+          lock.unlock();
+          is_rendering_cv.notify_one();
+        }
+
+        if (print_grid) {
+          grid.print();
+        }
+
+        // in multiplayer mode use dt from server else previous frame
+        frame_context fc{net_enabled ? net.dt : metrics.fps.dt,
+                         update_frame_num};
+
+        grid.update(fc);
+
+        if (resolve_collisions) {
+          grid.resolve_collisions(fc);
+        }
+
+        // apply changes done at 'update' and 'resolve_collisions'
+        objects.apply_freed_instances();
+        objects.apply_allocated_instances();
+
+        // callback
+        application_at_frame_end(fc);
+
+        // apply changes done by application
+        objects.apply_freed_instances();
+        objects.apply_allocated_instances();
+
+        // update signals state
+        if (net_enabled) {
+          // receive signals from previous frame and send signals of current
+          // frame
+          net.at_frame_end();
+        } else {
+          net.states[net.active_state_ix] = net.next_state;
+        }
+      }
+      // in case render thread is waiting
+      is_rendering = true;
+      is_rendering_cv.notify_one();
+    });
+
+    // enter game loop
+    while (is_running) {
+      metrics.at_frame_begin();
+
+      // poll events
+      SDL_Event event;
+      while (SDL_PollEvent(&event)) {
+        switch (event.type) {
+        case SDL_WINDOWEVENT: {
+          switch (event.window.event) {
+          case SDL_WINDOWEVENT_SIZE_CHANGED: {
+            auto [w, h] = window.get_width_and_height();
+            camera.width = float(w);
+            camera.height = float(h);
+            glViewport(0, 0, w, h);
+            printf(" * window resize to  %u x %u\n", w, h);
+            break;
+          }
+          }
+          break;
+        }
+        case SDL_QUIT:
+          is_running = false;
+          break;
+        case SDL_MOUSEMOTION: {
+          if (event.motion.xrel != 0) {
+            net.next_state.lookangle_y += (float)event.motion.xrel *
+                                          rad_over_mouse_pixels *
+                                          mouse_sensitivity;
+          }
+          if (event.motion.yrel != 0) {
+            net.next_state.lookangle_x += (float)event.motion.yrel *
+                                          rad_over_mouse_pixels *
+                                          mouse_sensitivity;
+          }
+          break;
+        }
+        case SDL_KEYDOWN:
+          switch (event.key.keysym.sym) {
+          case SDLK_w:
+            net.next_state.keys |= 1;
+            break;
+          case SDLK_a:
+            net.next_state.keys |= 2;
+            break;
+          case SDLK_s:
+            net.next_state.keys |= 4;
+            break;
+          case SDLK_d:
+            net.next_state.keys |= 8;
+            break;
+          case SDLK_q:
+            net.next_state.keys |= 16;
+            break;
+          case SDLK_e:
+            net.next_state.keys |= 32;
+            break;
+          case SDLK_o:
+            net.next_state.keys |= 64;
+            break;
+          }
+          break;
+        case SDL_KEYUP:
+          switch (event.key.keysym.sym) {
+          case SDLK_w:
+            net.next_state.keys &= ~1u;
+            break;
+          case SDLK_a:
+            net.next_state.keys &= ~2u;
+            break;
+          case SDLK_s:
+            net.next_state.keys &= ~4u;
+            break;
+          case SDLK_d:
+            net.next_state.keys &= ~8u;
+            break;
+          case SDLK_q:
+            net.next_state.keys &= ~16u;
+            break;
+          case SDLK_e:
+            net.next_state.keys &= ~32u;
+            break;
+          case SDLK_o:
+            net.next_state.keys &= ~64u;
+            break;
+          case SDLK_SPACE:
+            mouse_mode = mouse_mode ? SDL_FALSE : SDL_TRUE;
+            SDL_SetRelativeMouseMode(mouse_mode ? SDL_TRUE : SDL_FALSE);
+            break;
+          case SDLK_3:
+            shader_program_ix++;
+            if (shader_program_ix >= shaders.programs_count()) {
+              shader_program_ix = 0;
+            }
+            break;
+          case SDLK_4:
+            print_grid = not print_grid;
+            break;
+          case SDLK_5:
+            do_main_render = not do_main_render;
+            break;
+          case SDLK_6:
+            resolve_collisions = not resolve_collisions;
+            break;
+          }
+          break;
+        }
+      }
+
+      // check if shader program has changed
+      if (shader_program_ix_prev != shader_program_ix) {
+        printf(" * switching to program at index %u\n", shader_program_ix);
+        shaders.use_program(shader_program_ix);
+        shader_program_ix_prev = shader_program_ix;
+      }
+
+      {
+        // don't render when grid is adding objects to cells
+        std::unique_lock<std::mutex> lock{is_rendering_mutex};
+        is_rendering_cv.wait(lock, [&is_rendering] { return is_rendering; });
+
+        render_frame_num++;
+        // printf("render %d\n", render_frame_num);
+
+        if (do_main_render) {
+          render(render_frame_num);
+        }
+
+        is_rendering = false;
+        lock.unlock();
+        is_rendering_cv.notify_one();
+      }
+
+      // metrics
+      metrics.allocated_objects = objects.allocated_list_len();
+      metrics.at_frame_end(stderr);
+    }
+    //---------------------------------------------------------------------free
+
+    // in case 'update' thread is waiting
+    is_rendering = false;
+    is_rendering_cv.notify_one();
+    update_thread.join();
   }
 };
 
