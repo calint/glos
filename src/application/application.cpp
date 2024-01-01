@@ -5,6 +5,7 @@ using namespace glm;
 //
 #include "objects/cube.hpp"
 #include "objects/santa.hpp"
+#include "objects/ship.hpp"
 #include "objects/sphere.hpp"
 //
 static void application_init_shaders();
@@ -19,6 +20,7 @@ void application_init() {
   printf(": %15s : %-9ld :\n", "santa", sizeof(santa));
   printf(": %15s : %-9ld :\n", "sphere", sizeof(sphere));
   printf(": %15s : %-9ld :\n", "sphere", sizeof(cube));
+  printf(": %15s : %-9ld :\n", "ship", sizeof(ship));
   printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
   puts("");
 
@@ -26,6 +28,7 @@ void application_init() {
   static_assert(sizeof(santa) <= objects_instance_size_B, "");
   static_assert(sizeof(sphere) <= objects_instance_size_B, "");
   static_assert(sizeof(cube) <= objects_instance_size_B, "");
+  static_assert(sizeof(ship) <= objects_instance_size_B, "");
 
   // load the objects and assign the indexes
   glob_skydome_ix = globs.load("assets/obj/skydome.obj", nullptr);
@@ -33,6 +36,8 @@ void application_init() {
   glob_santa_ix = globs.load("assets/obj/santa.obj", nullptr);
   glob_sphere_ix = globs.load("assets/obj/icosphere.obj", nullptr);
   glob_cube_ix = globs.load("assets/obj/cube.obj", "assets/obj/bv-cube.obj");
+  glob_ship_ix = globs.load("assets/obj/asteroids/ship.obj",
+                            "assets/obj/asteroids/ship.obj");
 
   // assumes grid is a square
   constexpr float world_size = grid_cell_size * grid_ncells_wide;
@@ -77,21 +82,21 @@ void application_init() {
   // }
 
   // setup the light
-  ambient_light = glm::normalize(glm::vec3{0, 1, 0});
+  ambient_light = normalize(vec3{1, 1, 1});
 
   // setup the camera
-  camera.type = camera::type::LOOK_AT;
-  camera.position = {0, 50, 50};
-  camera.look_at = {0, 0, 0};
+  // camera.type = camera::type::LOOK_AT;
+  // camera.position = {0, 50, 50};
+  // camera.look_at = {0, 0, 0};
 
-  // camera.type = camera::type::ORTHO;
-  // camera.position = {0, 50, 0};
-  // camera.look_at = {0, 0, -0.0001f};
+  camera.type = camera::type::ORTHO;
+  camera.position = {0, 50, 0};
+  camera.look_at = {0, 0, -0.0001f};
   // note. -0.0001f because of the math of 'look at'
-  camera.ortho_min_x = -10;
-  camera.ortho_min_y = -10;
-  camera.ortho_max_x = 10;
-  camera.ortho_max_y = 10;
+  camera.ortho_min_x = -20;
+  camera.ortho_min_y = -20;
+  camera.ortho_max_x = 20;
+  camera.ortho_max_y = 20;
 
   // fit the 'grid' size
   // camera.ortho_min_x = -80;
@@ -99,13 +104,13 @@ void application_init() {
   // camera.ortho_max_x = 80;
   // camera.ortho_max_y = 80;
 
-  for (float y = -80; y <= 80; y += 1) {
-    for (float x = -80; x <= 80; x += 1) {
-      sphere *o = new (objects.alloc()) sphere{};
-      o->position = {x, o->radius, y};
-      o->angular_velocity.y = radians(40.0f);
-    }
-  }
+  // for (float y = -80; y <= 80; y += 1) {
+  //   for (float x = -80; x <= 80; x += 1) {
+  //     sphere *o = new (objects.alloc()) sphere{};
+  //     o->position = {x, o->radius, y};
+  //     o->angular_velocity.y = radians(40.0f);
+  //   }
+  // }
 
   // {
   //   sphere *o = new (objects.alloc()) sphere{};
@@ -114,6 +119,12 @@ void application_init() {
   //   o->position = {-20, o->scale.y, 0};
   //   o->net_state = &net.states[1];
   // }
+
+  {
+    ship *o = new (objects.alloc()) ship{};
+    o->position.y = o->scale.y;
+    o->net_state = &net.states[1];
+  }
 }
 
 void application_at_frame_end(glos::frame_context const &fc) {}

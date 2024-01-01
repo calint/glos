@@ -11,7 +11,7 @@
 namespace glos {
 class net_state final {
 public:
-  unsigned keys;
+  uint64_t keys;
   float lookangle_y;
   float lookangle_x;
 };

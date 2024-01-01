@@ -20,7 +20,7 @@ static constexpr bool o1store_check_double_free = true;
 static constexpr bool o1store_check_free_limits = true;
 
 // debug volume normals (turn off)
-static constexpr bool object_planes_debug_normals = false;
+static constexpr bool object_planes_debug_normals = true;
 
 // window dimensions
 static constexpr int window_width = 1024;
@@ -38,6 +38,9 @@ static constexpr int objects_instance_size_B = 1024;
 // collision bits
 static constexpr uint32_t cb_none = 0;
 static constexpr uint32_t cb_hero = 1;
+static constexpr uint32_t cb_hero_bullet = 2;
+static constexpr uint32_t cb_asteroid = 4;
+
 
 // glob indexes (set at 'application.init()' when loading)
 static uint32_t glob_skydome_ix = 0;
@@ -45,3 +48,4 @@ static uint32_t glob_grid_ix = 0;
 static uint32_t glob_santa_ix = 0;
 static uint32_t glob_sphere_ix = 0;
 static uint32_t glob_cube_ix = 0;
+static uint32_t glob_ship_ix = 0;

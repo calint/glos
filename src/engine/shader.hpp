@@ -49,7 +49,7 @@ class shaders final {
   in vec2 vtex;
   out vec4 rgba;
   void main() {
-    float diff = max(dot(vnorm, ulht), 0);
+    float diff = max(dot(vnorm, ulht), 0.5);
     rgba = texture2D(utex, vtex) + diff * vrgba;
   }
 )";
