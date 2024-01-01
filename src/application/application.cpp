@@ -37,17 +37,6 @@ void application_init() {
 
   {
     object *o = new (objects.alloc()) object{};
-    o->name = "skydome";
-    o->glob_ix = glob_skydome_ix;
-    const glob &g = globs.at(o->glob_ix);
-    constexpr float skydome_scale = world_size / 2;
-    // note. 2 because model coordinates span is -1 to 1
-    o->scale = {skydome_scale, skydome_scale, skydome_scale};
-    o->radius = g.bounding_radius * skydome_scale;
-  }
-
-  {
-    object *o = new (objects.alloc()) object{};
     o->name = "grid";
     o->glob_ix = glob_grid_ix;
     const glob &g = globs.at(o->glob_ix);
@@ -55,6 +44,17 @@ void application_init() {
     // note. 2 because model coordinates span is -1 to 1
     o->scale = {grid_scale, grid_scale, grid_scale};
     o->radius = g.bounding_radius * grid_scale;
+  }
+
+  {
+    object *o = new (objects.alloc()) object{};
+    o->name = "skydome";
+    o->glob_ix = glob_skydome_ix;
+    const glob &g = globs.at(o->glob_ix);
+    constexpr float skydome_scale = world_size / 2;
+    // note. 2 because model coordinates span is -1 to 1
+    o->scale = {skydome_scale, skydome_scale, skydome_scale};
+    o->radius = g.bounding_radius * skydome_scale;
   }
 
   {
