@@ -24,6 +24,7 @@
 [ ]   const everything
 [ ]   constexpr everything
 [ ]   struct vertex used for sizeof only
+[ ] note about the absolute texture path in mtl filess
 [x]   rename 'node' to something better
       => moved into object
 [x] use object Mmw when updating volume::planes

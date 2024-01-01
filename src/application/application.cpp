@@ -27,12 +27,12 @@ void application_init() {
   static_assert(sizeof(sphere) <= objects_instance_size_B, "");
   static_assert(sizeof(cube) <= objects_instance_size_B, "");
 
-  // load the objects
-  glob_skydome_ix = globs.load("obj/skydome.obj", nullptr);
-  glob_grid_ix = globs.load("obj/grid.obj", nullptr);
-  glob_santa_ix = globs.load("obj/santa.obj", nullptr);
-  glob_sphere_ix = globs.load("obj/icosphere.obj", nullptr);
-  glob_cube_ix = globs.load("obj/cube.obj", "obj/bv-cube.obj");
+  // load the objects and assign the indexes
+  glob_skydome_ix = globs.load("assets/obj/skydome.obj", nullptr);
+  glob_grid_ix = globs.load("assets/obj/grid.obj", nullptr);
+  glob_santa_ix = globs.load("assets/obj/santa.obj", nullptr);
+  glob_sphere_ix = globs.load("assets/obj/icosphere.obj", nullptr);
+  glob_cube_ix = globs.load("assets/obj/cube.obj", "assets/obj/bv-cube.obj");
 
   // assumes grid is a square
   constexpr float world_size = grid_cell_size * grid_ncells_wide;
@@ -76,6 +76,7 @@ void application_init() {
     o->net_state = &net.states[1];
   }
 
+  // setup light
   ambient_light = glm::normalize(glm::vec3{0, 1, 0});
 
   // setup the camera
