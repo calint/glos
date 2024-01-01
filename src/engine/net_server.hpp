@@ -85,7 +85,7 @@ public:
     }
   }
 
-  inline void loop() {
+  inline void run() {
     printf(" * entering loop\n");
     constexpr size_t state_read_size = sizeof(net_state);
     uint64_t t0 = SDL_GetPerformanceCounter();

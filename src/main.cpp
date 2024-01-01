@@ -7,7 +7,7 @@ int main(int argc, char *argv[]) {
   // check if this instance is server
   if (argc > 1 && *argv[1] == 's') {
     glos::net_server.init();
-    glos::net_server.loop();
+    glos::net_server.run();
     glos::net_server.free();
     return 0;
   }
