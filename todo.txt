@@ -1,5 +1,5 @@
 [ ] implement sample game
-[ ] use a build system instead of make.sh
+[x] use a build system instead of make.sh
 [ ] halt development and tidy up
 [ ]   use uint32_t instead of unsigned int32_t etc
 [ ]   consider a more standard source layout without depending on include order
