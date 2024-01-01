@@ -60,7 +60,7 @@ public:
 
   // loads definition and optional bounding planes from 'obj' files
   inline void load(char const *obj_path, char const *bounding_planes_path) {
-    printf(" * loading glo from '%s'\n", obj_path);
+    printf(" * loading glob from '%s'\n", obj_path);
 
     std::ifstream file(obj_path);
     if (!file) {
@@ -289,7 +289,7 @@ public:
 private:
   inline void load_planes(char const *path) {
     // load from blender exported 'obj' file
-    printf(" * loading planes from '%s'\n", path);
+    printf("     * loading planes from '%s'\n", path);
     std::ifstream file(path);
     if (!file) {
       printf("!!! cannot open file '%s'\n", path);
@@ -353,7 +353,7 @@ private:
       // unknown token
       p = scan_to_including_newline(p);
     }
-    printf("     %zu planes\n", planes_normals.size());
+    printf("        %zu planes\n", planes_normals.size());
     // const size_t n = planes_points.size();
     // for (unsigned i = 0; i < n; i++) {
     //   printf(" p: %s  n: %s\n", glm::to_string(planes_points[i]).c_str(),

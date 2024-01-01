@@ -40,10 +40,10 @@ void application_init() {
     o->name = "skydome";
     o->glob_ix = glob_skydome_ix;
     const glob &g = globs.at(o->glob_ix);
-    const float skydome_scale = world_size / (2 * g.bounding_radius);
+    constexpr float skydome_scale = world_size / 2;
+    // note. 2 because model coordinates span is -1 to 1
     o->scale = {skydome_scale, skydome_scale, skydome_scale};
     o->radius = g.bounding_radius * skydome_scale;
-    // printf("skydome bounding radius: %0.3f\n", o->volume.radius);
   }
 
   {
@@ -51,8 +51,8 @@ void application_init() {
     o->name = "grid";
     o->glob_ix = glob_grid_ix;
     const glob &g = globs.at(o->glob_ix);
-    constexpr float grid_scale = world_size / 16;
-    // note. 16 is the model coordinates span from -8 to 8
+    constexpr float grid_scale = world_size / 2;
+    // note. 2 because model coordinates span is -1 to 1
     o->scale = {grid_scale, grid_scale, grid_scale};
     o->radius = g.bounding_radius * grid_scale;
   }
@@ -76,7 +76,7 @@ void application_init() {
   ambient_light = glm::normalize(glm::vec3{0, 1, 0});
 
   camera.type = camera::type::LOOK_AT;
-  camera.position = {0, 20, 20};
+  camera.position = {0, 50, 50};
   camera.look_at = {0, 0, 0};
 
   // camera.type = camera::type::ORTHO;
