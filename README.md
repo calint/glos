@@ -12,7 +12,7 @@ intention:
 * importing blender exported `obj` files
 * explore legacy opengl rendering
 * intuitive programming of game objects and logic
-* game code written in `src/app/` which is included by `src/main.cpp`
+* game code written in `src/application/`
 * collision detection
   - sphere vs sphere
   - sphere vs convex volume
