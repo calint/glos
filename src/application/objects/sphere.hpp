@@ -7,6 +7,7 @@ public:
     scale = {1, 1, 1};
     glob const &g = globs.at(glob_ix);
     radius = g.bounding_radius * 1; // r * scale
+    mass = 1;
     collision_bits = cb_hero;
     collision_mask = cb_hero;
   }
@@ -76,8 +77,8 @@ public:
   inline auto on_collision(object *o, frame_context const &fc)
       -> bool override {
     assert(not is_dead());
-    printf("%u: %s collision with %s\n", fc.tick, name.c_str(),
-           o->name.c_str());
+    // printf("%u: %s collision with %s\n", fc.tick, name.c_str(),
+    //        o->name.c_str());
     return false;
   }
 };

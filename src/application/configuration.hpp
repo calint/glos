@@ -20,7 +20,7 @@ static constexpr bool o1store_check_double_free = true;
 static constexpr bool o1store_check_free_limits = true;
 
 // debug volume normals (turn off)
-static constexpr bool object_planes_debug_normals = true;
+static constexpr bool object_planes_debug_normals = false;
 
 // window dimensions
 static constexpr int window_width = 512;

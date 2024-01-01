@@ -60,21 +60,21 @@ void application_init() {
     o->radius = g.bounding_radius * skydome_scale;
   }
 
-  {
-    cube *o = new (objects.alloc()) cube{};
-    o->name = "cube";
-    o->mass = 1;
-    o->position = {0, o->scale.y, 0};
-    o->net_state = &net.states[1];
-  }
+  // {
+  //   cube *o = new (objects.alloc()) cube{};
+  //   o->name = "cube";
+  //   o->mass = 1;
+  //   o->position = {0, o->scale.y, 0};
+  //   o->net_state = &net.states[1];
+  // }
 
-  {
-    sphere *o = new (objects.alloc()) sphere{};
-    o->name = "sphere";
-    o->mass = 1;
-    o->position = {6, o->scale.y, 0};
-    o->net_state = &net.states[1];
-  }
+  // {
+  //   sphere *o = new (objects.alloc()) sphere{};
+  //   o->name = "sphere";
+  //   o->mass = 1;
+  //   o->position = {6, o->scale.y, 0};
+  //   o->net_state = &net.states[1];
+  // }
 
   // setup the light
   ambient_light = glm::normalize(glm::vec3{0, 1, 0});
@@ -99,14 +99,20 @@ void application_init() {
   // camera.ortho_max_x = 80;
   // camera.ortho_max_y = 80;
 
-  // for (float y = -80; y <= 80; y += 1) {
-  //   for (float x = -80; x <= 80; x += 1) {
-  //     object *o = new (objects.alloc()) santa{};
-  //     o->name = "santa1";
-  //     o->physics_nxt.position = {x, o->volume.radius, y};
-  //     o->physics = o->physics_nxt;
-  //     o->net_state = &net.states[1];
-  //   }
+  for (float y = -80; y <= 80; y += 1) {
+    for (float x = -80; x <= 80; x += 1) {
+      sphere *o = new (objects.alloc()) sphere{};
+      o->position = {x, o->radius, y};
+      o->angular_velocity.y = radians(40.0f);
+    }
+  }
+
+  // {
+  //   sphere *o = new (objects.alloc()) sphere{};
+  //   o->name = "sphere";
+  //   o->mass = 1;
+  //   o->position = {-20, o->scale.y, 0};
+  //   o->net_state = &net.states[1];
   // }
 }
 

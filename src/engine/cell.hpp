@@ -169,7 +169,8 @@ private:
     const float relative_velocity_along_collision_normal =
         glm::dot(Oj->velocity - Oi->velocity, collision_normal);
 
-    if (relative_velocity_along_collision_normal >= 0) {
+    if (relative_velocity_along_collision_normal >= 0 or
+        std::isnan(relative_velocity_along_collision_normal)) {
       // objects are not moving towards each other
       if (synchronization_necessary) {
         Oi->release_lock();
@@ -194,9 +195,6 @@ private:
                           (Oi->mass + Oj->mass);
 
     Oi->velocity += impulse * Oj->mass * collision_normal;
-
-    // std::cout << Oi->name << ": new velocity: " << glm::to_string(Oi->velocity)
-    //           << "\n";
 
     if (synchronization_necessary) {
       Oi->release_lock();
