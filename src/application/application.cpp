@@ -22,19 +22,22 @@ void application_init() {
   printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
   puts("");
 
+  // assert that classes use fit in objects store slot
   static_assert(sizeof(santa) <= objects_instance_size_B, "");
   static_assert(sizeof(sphere) <= objects_instance_size_B, "");
   static_assert(sizeof(cube) <= objects_instance_size_B, "");
 
-  // the load order matches the 'glo_index_*' configuration
+  // load the objects
   glob_skydome_ix = globs.load("obj/skydome.obj", nullptr);
   glob_grid_ix = globs.load("obj/grid.obj", nullptr);
   glob_santa_ix = globs.load("obj/santa.obj", nullptr);
   glob_sphere_ix = globs.load("obj/icosphere.obj", nullptr);
   glob_cube_ix = globs.load("obj/cube.obj", "obj/bv-cube.obj");
 
+  // assumes grid is a square
   constexpr float world_size = grid_cell_size * grid_ncells_wide;
 
+  // setup the initial scene
   {
     object *o = new (objects.alloc()) object{};
     o->name = "grid";
@@ -75,6 +78,7 @@ void application_init() {
 
   ambient_light = glm::normalize(glm::vec3{0, 1, 0});
 
+  // setup the camera
   camera.type = camera::type::LOOK_AT;
   camera.position = {0, 50, 50};
   camera.look_at = {0, 0, 0};
