@@ -103,5 +103,5 @@ public:
   }
 };
 
-static metrics metrics{};
+inline metrics metrics{};
 } // namespace glos

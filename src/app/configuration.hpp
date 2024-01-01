@@ -1,6 +1,8 @@
 #pragma once
 // reviewed: 2023-12-22
 
+#include <cstdint>
+
 // definitions used by engine and application
 
 // grid dimensions
@@ -25,6 +27,7 @@ static constexpr int window_width = 512;
 static constexpr int window_height = 512;
 
 // number of players in networked mode
+inline bool use_net = false;
 static constexpr int net_players = 2;
 
 // number of preallocated objects

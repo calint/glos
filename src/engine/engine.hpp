@@ -16,6 +16,7 @@
 //
 #include "glo.hpp"
 //
+
 namespace glos {
 inline static void debug_render_wcs_line(const glm::vec3 &from_wcs,
                                          const glm::vec3 &to_wcs,
@@ -27,6 +28,12 @@ public:
   unsigned tick = 0;
 };
 } // namespace glos
+
+// application interface
+void application_init();
+void application_at_frame_end(glos::frame_context const &fc);
+void application_free();
+
 #include "object.hpp"
 //
 #include "grid.hpp"
@@ -42,9 +49,9 @@ static struct color {
   GLclampf blue;
 } background_color = {0, 0, 0};
 
-static glm::vec3 ambient_light = glm::normalize(glm::vec3{0, 1, 1});
+inline glm::vec3 ambient_light = glm::normalize(glm::vec3{0, 1, 1});
 
-static object *camera_follow_object = nullptr;
+inline object *camera_follow_object = nullptr;
 
 class engine final {
 public:

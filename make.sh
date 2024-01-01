@@ -13,7 +13,7 @@ set -e
 #CC="g++ -std=c++20 -Wno-changes-meaning -fanalyzer"
 #CC="g++ -std=c++20 -Wno-changes-meaning"
 CC="clang++ -std=c++20"
-SRC="src/main.cpp"
+SRC="src/main.cpp src/app/application.cpp"
 BIN="glos"
 CFLAGS="$(sdl2-config --cflags)"
 LDFLAGS=

@@ -195,8 +195,8 @@ private:
 
     Oi->velocity += impulse * Oj->mass * collision_normal;
 
-    std::cout << Oi->name << ": new velocity: " << glm::to_string(Oi->velocity)
-              << "\n";
+    // std::cout << Oi->name << ": new velocity: " << glm::to_string(Oi->velocity)
+    //           << "\n";
 
     if (synchronization_necessary) {
       Oi->release_lock();

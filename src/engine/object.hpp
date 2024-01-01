@@ -160,5 +160,5 @@ public:
   inline void apply_freed_instances() { store_.apply_free(); }
 };
 
-static objects objects{};
+inline objects objects{};
 } // namespace glos

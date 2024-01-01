@@ -130,5 +130,5 @@ public:
   }
 };
 
-static net_server net_server{};
+inline net_server net_server{};
 } // namespace glos

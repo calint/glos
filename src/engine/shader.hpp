@@ -258,5 +258,5 @@ private:
   }
 };
 
-static shaders shaders{};
+inline shaders shaders{};
 } // namespace glos

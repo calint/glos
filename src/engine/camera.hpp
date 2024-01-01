@@ -1,6 +1,10 @@
 #pragma once
 // reviewed: 2023-12-22
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/euler_angles.hpp>
+
 namespace glos {
 
 class camera final {
@@ -58,5 +62,5 @@ public:
   }
 };
 
-static camera camera{};
+inline camera camera{};
 } // namespace glos

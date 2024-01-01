@@ -34,5 +34,5 @@ public:
   // }
 };
 
-static sdl sdl{};
+inline sdl sdl{};
 } // namespace glos

@@ -1,4 +1,9 @@
 #pragma once
+
+#include "../configuration.hpp"
+//
+#include "../../engine/engine.hpp"
+
 class cube : public glos::object {
 public:
   inline cube() {

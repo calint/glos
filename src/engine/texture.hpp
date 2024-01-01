@@ -63,5 +63,5 @@ private:
   std::unordered_map<std::string, texture> store{};
 };
 
-static textures textures{};
+inline textures textures{};
 } // namespace glos

@@ -11,14 +11,11 @@
 #include <limits>
 #include <mutex>
 
-static bool use_net = false;
-
 // include order relevant
 #include "app/configuration.hpp"
 //
 #include "engine/engine.hpp"
 //
-#include "app/application.hpp"
 
 //----------------------------------------------------------------------- init
 inline static void main_init_shaders() {
@@ -118,7 +115,7 @@ int main(int argc, char *argv[]) {
 
   glos::engine.init();
 
-  application.init();
+  application_init();
 
   // apply objects allocated in 'application.init()'
   glos::objects.apply_allocated_instances();
@@ -214,7 +211,7 @@ int main(int argc, char *argv[]) {
       glos::objects.apply_allocated_instances();
 
       // callback
-      application.at_frame_end();
+      application_at_frame_end(fc);
 
       // apply changes done by application
       glos::objects.apply_freed_instances();
@@ -379,7 +376,7 @@ int main(int argc, char *argv[]) {
   is_rendering_cv.notify_one();
   update_thread.join();
 
-  application.free();
+  application_free();
   glos::engine.free();
   return 0;
 }

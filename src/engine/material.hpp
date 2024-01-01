@@ -116,5 +116,5 @@ public:
   }
 };
 
-static materials materials{};
+inline materials materials{};
 } // namespace glos
