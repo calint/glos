@@ -2,3 +2,4 @@
 /glos
 /gmon.out
 /cachegrind.out.*
+/build/

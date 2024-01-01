@@ -5,4 +5,4 @@ VALGRIND=
 #VALGRIND="valgrind --leak-check=full --track-origins=yes"
 #VALGRIND="valgrind --leak-check=full"
 #VALGRIND="valgrind --tool=cachegrind"
-./make.sh && $VALGRIND ./$BIN
+./build.sh && $VALGRIND ./$BIN
