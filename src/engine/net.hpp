@@ -25,6 +25,7 @@ public:
   int fd;
   const char *host = "127.0.0.1";
   uint16_t port = 8085;
+  bool enabled = false;
 
   inline void init() {
     struct sockaddr_in server;

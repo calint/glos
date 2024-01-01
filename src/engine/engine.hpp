@@ -58,8 +58,6 @@ inline glm::vec3 ambient_light = glm::normalize(glm::vec3{0, 1, 1});
 
 inline object *camera_follow_object = nullptr;
 
-inline bool net_enabled = false;
-
 class engine final {
 public:
   int shader_program_render_line = 0;
@@ -70,7 +68,7 @@ public:
     // set random number generator seed for deterministic behaviour
     srand(0);
 
-    if (net_enabled) {
+    if (net.enabled) {
       net.init();
     }
     metrics.init();
@@ -103,6 +101,19 @@ public:
 )";
       shader_program_render_line = shaders.load_program_from_source(vtx, frag);
     }
+
+    printf("class sizes:\n");
+    printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
+    printf(": %15s : %-9s :\n", "class", "bytes");
+    printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
+    printf(": %15s : %-9ld :\n", "object", sizeof(object));
+    printf(": %15s : %-9ld :\n", "glo", sizeof(glo));
+    printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
+
+    if (grid_threaded) {
+      printf("\nthreaded grid on %d cores\n\n",
+             std::thread::hardware_concurrency());
+    }
   }
 
   inline void free() {
@@ -114,7 +125,7 @@ public:
     shaders.free();
     window.free();
     sdl.free();
-    if (net_enabled) {
+    if (net.enabled) {
       net.free();
     }
 
@@ -158,7 +169,7 @@ public:
     metrics.reset_timer();
     metrics.print_headers(stderr);
 
-    if (net_enabled) {
+    if (net.enabled) {
       // send initial signals
       net.begin();
     }
@@ -205,7 +216,7 @@ public:
         }
 
         // in multiplayer mode use dt from server else previous frame
-        frame_context fc{net_enabled ? net.dt : metrics.fps.dt,
+        frame_context fc{net.enabled ? net.dt : metrics.fps.dt,
                          update_frame_num};
 
         grid.update(fc);
@@ -226,7 +237,7 @@ public:
         objects.apply_allocated_instances();
 
         // update signals state
-        if (net_enabled) {
+        if (net.enabled) {
           // receive signals from previous frame and send signals of current
           // frame
           net.at_frame_end();
