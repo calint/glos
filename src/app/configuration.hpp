@@ -39,7 +39,7 @@ static constexpr int objects_instance_size_B = 1024;
 static constexpr unsigned cb_none = 0;
 static constexpr unsigned cb_hero = 1;
 
-// glo indexes (are set at 'application.init()')
+// glob indexes (set at 'application.init()' when loading)
 static uint32_t glob_skydome_ix;
 static uint32_t glob_grid_ix;
 static uint32_t glob_santa_ix;

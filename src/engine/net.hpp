@@ -28,6 +28,9 @@ public:
   bool enabled = false;
 
   inline void init() {
+    if (not enabled) {
+      return;
+    }
     struct sockaddr_in server;
     fd = socket(AF_INET, SOCK_STREAM, 0);
     if (fd == -1) {
@@ -69,6 +72,9 @@ public:
   }
 
   inline void free() {
+    if (not enabled) {
+      return;
+    }
     if (fd) {
       close(fd);
       fd = 0;

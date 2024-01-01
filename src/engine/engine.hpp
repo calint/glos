@@ -70,9 +70,7 @@ public:
     // set random number generator seed for deterministic behaviour
     srand(0);
 
-    if (net.enabled) {
-      net.init();
-    }
+    net.init();
     metrics.init();
     sdl.init();
     window.init();
@@ -122,7 +120,6 @@ public:
 
   inline void free() {
     application_free();
-
     grid.free();
     objects.free();
     globs.free();
@@ -131,12 +128,8 @@ public:
     shaders.free();
     window.free();
     sdl.free();
-    if (net.enabled) {
-      net.free();
-    }
-
+    net.free();
     metrics.print(stderr);
-
     metrics.free();
   }
 
@@ -165,7 +158,7 @@ public:
     float mouse_sensitivity = 1.5f;
     bool mouse_mode = false;
     unsigned render_frame_num = 0;
-    bool do_main_render = true;
+    bool do_render = true;
     bool print_grid = false;
     bool resolve_collisions = true;
 
@@ -355,7 +348,7 @@ public:
             print_grid = not print_grid;
             break;
           case SDLK_5:
-            do_main_render = not do_main_render;
+            do_render = not do_render;
             break;
           case SDLK_6:
             resolve_collisions = not resolve_collisions;
@@ -380,7 +373,7 @@ public:
         render_frame_num++;
         // printf("render %d\n", render_frame_num);
 
-        if (do_main_render) {
+        if (do_render) {
           render(render_frame_num);
         }
 

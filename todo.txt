@@ -1,4 +1,5 @@
 [ ] implement sample game
+[ ] use a build system instead of make.sh
 [ ] halt development and tidy up
 [ ]   use uint32_t instead of unsigned int32_t etc
 [ ]   consider a more standard source layout without depending on include order
@@ -9,7 +10,8 @@
 [ ]   cmake or premake and automatically download dependencies using git submodules
 [x]   use glm::sin, cos etc
 [ ]   consider verbose self documenting code
-[ ]   move object::volume into physics
+[x]   move object::volume into physics
+      => moved into object
 [ ]   use c++ random number generator
 [ ]   review and delete obsolete notes
 [ ]   net_server as separate application
@@ -22,8 +24,9 @@
 [ ]   const everything
 [ ]   constexpr everything
 [ ]   struct vertex used for sizeof only
-[ ]   rename 'node' to something better
-[ ] use object Mmw when updating volume::planes
+[x]   rename 'node' to something better
+      => moved into object
+[x] use object Mmw when updating volume::planes
 [x] glo: after upload to gpu buffers can be deleted
 [x] glo: load obj and planes in a consistent way
 [ ] object size and content is not cache friendly. consider components
