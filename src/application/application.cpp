@@ -76,7 +76,7 @@ void application_init() {
     o->net_state = &net.states[1];
   }
 
-  // setup light
+  // setup the light
   ambient_light = glm::normalize(glm::vec3{0, 1, 0});
 
   // setup the camera
