@@ -69,7 +69,7 @@ static uint32_t glob_ix_power_up = 0;
 constexpr int asteroid_large_speed = 10;
 
 constexpr int asteroid_large_split = 4;
-constexpr int asteroid_large_split_speed = 10;
+constexpr int asteroid_large_split_speed = 8;
 constexpr int asteroid_large_split_angular_vel_deg = 60;
 
 constexpr int asteroid_medium_split = 4;
@@ -79,7 +79,10 @@ constexpr int asteroid_medium_split_angular_vel_deg = 100;
 constexpr float ship_turn_rate_deg = 120;
 constexpr float ship_speed = 6;
 constexpr float ship_bullet_speed = 17;
-constexpr uint32_t ship_bullet_fire_intervall_ms = 1000;
-constexpr uint8_t ship_bullet_level_1_bullets_fired = 5;
+constexpr uint32_t ship_bullet_fire_interval_ms = 1000;
+constexpr int ship_bullet_level_1_fire_count = 5;
 
-constexpr int power_up_chance_rem = 10;
+constexpr int bullet_fragment_angular_velocity_rnd = 360;
+
+constexpr int power_up_chance_rem = 5;
+constexpr uint32_t power_up_lifetime_ms = 30'000;

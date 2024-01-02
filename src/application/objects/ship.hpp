@@ -4,19 +4,18 @@
 
 class ship : public object {
   uint32_t ready_to_fire_at_ms = 0;
-  uint32_t bullet_fire_rate_ms = ship_bullet_fire_intervall_ms;
+  uint32_t bullet_fire_rate_ms = ship_bullet_fire_interval_ms;
   uint8_t bullet_level = 0;
 
 public:
   inline ship() {
     name = "hero";
-    mass = 150;
     glob_ix = glob_ix_ship;
     scale = {1, 1, 1};
-    glob const &g = globs.at(glob_ix);
-    radius = g.bounding_radius * 1; // r * scale
+    radius = globs.at(glob_ix).bounding_radius * scale.x;
     collision_bits = cb_hero;
     collision_mask = cb_asteroid | cb_power_up;
+    mass = 150;
   }
 
   inline auto update() -> bool override {
@@ -57,7 +56,7 @@ public:
             break;
           }
           case 1: {
-            for (int i = 0; i < ship_bullet_level_1_bullets_fired; i++) {
+            for (int i = 0; i < ship_bullet_level_1_fire_count; i++) {
               bullet *o = new (objects.alloc()) bullet{};
               o->angle = angle;
               mat4 M = get_updated_Mmw();
@@ -86,7 +85,7 @@ public:
       if (bullet_level == 0) {
         bullet_fire_rate_ms /= 2;
         if (bullet_fire_rate_ms < 100) {
-          bullet_fire_rate_ms = ship_bullet_fire_intervall_ms;
+          bullet_fire_rate_ms = ship_bullet_fire_interval_ms;
           ++bullet_level;
         }
       } else if (bullet_level == 1) {

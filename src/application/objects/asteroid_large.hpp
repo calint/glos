@@ -10,13 +10,12 @@ class asteroid_large : public object {
 public:
   inline asteroid_large() {
     name = "asteroid_large";
-    glob_ix = glob_ix_asteroid_large;
     scale = {2, 2, 2};
-    glob const &g = globs.at(glob_ix);
-    radius = g.bounding_radius * scale.x;
-    mass = 1;
+    glob_ix = glob_ix_asteroid_large;
+    radius = globs.at(glob_ix).bounding_radius * scale.x;
     collision_bits = cb_asteroid;
     collision_mask = cb_hero_bullet | cb_hero;
+    mass = 1500;
     asteroids_alive++;
   }
 
@@ -45,6 +44,7 @@ public:
       constexpr int r = asteroid_large_split_angular_vel_deg;
       ast->angular_velocity = vec3(radians(float(rand() % r - r / 2)));
     }
+
     return true;
   }
 };

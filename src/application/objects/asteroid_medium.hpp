@@ -12,11 +12,10 @@ public:
     name = "asteroid_medium";
     glob_ix = glob_ix_asteroid_medium;
     scale = {1, 1, 1};
-    glob const &g = globs.at(glob_ix);
-    radius = g.bounding_radius * scale.x;
-    mass = 1;
+    radius = globs.at(glob_ix).bounding_radius * scale.x;
     collision_bits = cb_asteroid;
     collision_mask = cb_hero_bullet | cb_hero;
+    mass = 1000;
     asteroids_alive++;
   }
 
@@ -43,9 +42,11 @@ public:
       constexpr int v = asteroid_medium_split_speed;
       ast->velocity = velocity + vec3(float(rand() % v - v / 2), 0,
                                       float(rand() % v - v / 2));
+
       constexpr int r = asteroid_medium_split_angular_vel_deg;
       ast->angular_velocity = vec3(radians(float(rand() % r - r / 2)));
     }
+
     return true;
   }
 };

@@ -10,11 +10,10 @@ public:
     name = "asteroid_small";
     glob_ix = glob_ix_asteroid_small;
     scale = {0.5f, 0.5f, 0.5f};
-    glob const &g = globs.at(glob_ix);
-    radius = g.bounding_radius * scale.x;
-    mass = 1;
+    radius = globs.at(glob_ix).bounding_radius * scale.x;
     collision_bits = cb_asteroid;
     collision_mask = cb_hero_bullet | cb_hero;
+    mass = 500;
     asteroids_alive++;
   }
 
