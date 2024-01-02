@@ -6,9 +6,9 @@
 // definitions used by engine and application
 
 // grid dimensions
-static constexpr int grid_cell_size = 20;
-static constexpr int grid_ncells_wide = 8;
-static constexpr int grid_ncells_high = 8;
+static constexpr int grid_cell_size = 10;
+static constexpr int grid_ncells_wide = 4;
+static constexpr int grid_ncells_high = 4;
 
 // multithreaded grid
 // note. in some cases multithreaded mode is a degradation of performance
