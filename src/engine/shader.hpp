@@ -21,7 +21,7 @@ class shaders final {
     inline void use() { glUseProgram(id); }
   };
 
-  inline static const char *vertex_shader_source = R"(
+  inline static char const *vertex_shader_source = R"(
   #version 330 core
   uniform mat4 umtx_mw;  // model-to-world-matrix
   uniform mat4 umtx_wvp; // world-to-view-to-projection
@@ -40,7 +40,7 @@ class shaders final {
   }
   )";
 
-  inline static const char *fragment_shader_source = R"(
+  inline static char const *fragment_shader_source = R"(
   #version 330 core
   uniform sampler2D utex;
   uniform vec3 ulht;
@@ -91,9 +91,8 @@ public:
     //        glIsEnabled(GL_CULL_FACE) ? "yes" : "no");
     // printf(": %10s : %-7s :\n", "zbuffer",
     //        glIsEnabled(GL_DEPTH_TEST) ? "yes" : "no");
-    // printf(": %10s : %-7s :\n", "blend", glIsEnabled(GL_BLEND) ? "yes" : "no");
-    // printf(":-%10s-:-%7s-:\n", "----------", "-------");
-    // puts("");
+    // printf(": %10s : %-7s :\n", "blend", glIsEnabled(GL_BLEND) ? "yes" :
+    // "no"); printf(":-%10s-:-%7s-:\n", "----------", "-------"); puts("");
 
     const int default_program_id =
         load_program_from_source(vertex_shader_source, fragment_shader_source);
