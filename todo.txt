@@ -28,7 +28,8 @@
 [ ] grid: static vs moving vs bullets vs scenery objects
 [ ] glo: optimize ranges by merging non-texture draws
 [ ] use string_view instead of const char*
-[ ] note about the absolute texture path in mtl filess
+[ ] note about the absolute texture path in mtl files
+[ ] consider inverting meaning of bool return value from 'update'
 [x]   rename 'node' to something better
       => moved into object
 [x] use object Mmw when updating volume::planes
