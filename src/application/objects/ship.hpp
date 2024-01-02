@@ -57,7 +57,7 @@ public:
             break;
           }
           case 1: {
-            for (int i = 0; i < ship_bullet_level_1_count; i++) {
+            for (int i = 0; i < ship_bullet_level_1_bullets_fired; i++) {
               bullet *o = new (objects.alloc()) bullet{};
               o->angle = angle;
               mat4 M = get_updated_Mmw();
