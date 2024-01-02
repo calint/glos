@@ -8,6 +8,8 @@ using namespace glm;
 #include "objects/ship.hpp"
 //
 static void application_init_shaders();
+static void create_asteroids(int num);
+static int level = 0;
 //
 void application_init() {
   application_init_shaders();
@@ -123,19 +125,28 @@ void application_init() {
     ship *o = new (objects.alloc()) ship{};
     o->net_state = &net.states[1];
   }
+}
 
-  for (int i = 0; i < 10; i++) {
-    asteroid_large *o = new (objects.alloc()) asteroid_large{};
-    o->position.x = rand() % 40 - 20;
-    o->position.z = rand() % 40 - 20;
-    o->velocity.x = rand() % 10 - 5;
-    o->velocity.z = rand() % 10 - 5;
+void application_at_frame_end(glos::frame_context const &fc) {
+  if (asteroids_alive == 0) {
+    level++;
+    create_asteroids(level);
   }
 }
 
-void application_at_frame_end(glos::frame_context const &fc) {}
-
 void application_free() {}
+
+static void create_asteroids(int num) {
+  constexpr int v = asteroid_large_speed;
+  constexpr int d = int(game_area_max_x - game_area_min_x);
+  for (int i = 0; i < num; i++) {
+    asteroid_large *o = new (objects.alloc()) asteroid_large{};
+    o->position.x = rand() % d - d / 2;
+    o->position.z = rand() % d - d / 2;
+    o->velocity.x = rand() % v - v / 2;
+    o->velocity.z = rand() % v - v / 2;
+  }
+}
 
 static void application_init_shaders() {
   {

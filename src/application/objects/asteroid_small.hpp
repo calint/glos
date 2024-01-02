@@ -1,6 +1,8 @@
 #pragma once
 
 #include "../configuration.hpp"
+//
+#include "../utils.hpp"
 
 class asteroid_small : public object {
 public:
@@ -13,7 +15,10 @@ public:
     mass = 1;
     collision_bits = cb_asteroid;
     collision_mask = cb_hero_bullet | cb_hero;
+    asteroids_alive++;
   }
+
+  inline ~asteroid_small() { asteroids_alive--; }
 
   inline auto update(frame_context const &fc) -> bool override {
     assert(not is_dead());
@@ -22,15 +27,7 @@ public:
       return true;
     }
 
-    if (position.x < game_area_min_x) {
-      position.x = -position.x;
-    } else if (position.x > game_area_max_x) {
-      position.x = -position.x;
-    } else if (position.z < game_area_min_z) {
-      position.z = -position.z;
-    } else if (position.z > game_area_max_z) {
-      position.z = -position.z;
-    }
+    game_area_roll(position);
 
     return false;
   }

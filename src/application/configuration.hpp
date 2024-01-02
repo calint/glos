@@ -59,3 +59,19 @@ static uint32_t glob_asteroid_large_ix = 0;
 static uint32_t glob_asteroid_medium_ix = 0;
 static uint32_t glob_asteroid_small_ix = 0;
 static uint32_t glob_fragment_ix = 0;
+
+// game constants
+constexpr int asteroid_large_speed = 10;
+
+constexpr int asteroid_large_split = 4;
+constexpr int asteroid_large_split_speed = 10;
+constexpr int asteroid_large_split_angular_vel_deg = 60;
+
+constexpr int asteroid_medium_split = 4;
+constexpr int asteroid_medium_split_speed = 12;
+constexpr int asteroid_medium_split_angular_vel_deg = 100;
+
+constexpr float ship_turn_rate_deg = 120;
+constexpr float ship_speed = 6;
+constexpr float ship_bullet_speed = 17;
+constexpr unsigned ship_bullet_fire_intervall_ms = 500;

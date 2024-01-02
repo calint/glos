@@ -27,20 +27,22 @@ public:
       return true;
     }
 
+    game_area_roll(position);
+
     angular_velocity = {0, 0, 0};
     const uint64_t keys = net_state->keys;
     glob_ix = glob_engine_off_ix;
     if (keys != 0) {
       // wasd keys
       if (keys & 1) {
-        velocity += 6.0f * vec3{-sin(angle.y), 0, -cos(angle.y)} * fc.dt;
+        velocity += ship_speed * vec3{-sin(angle.y), 0, -cos(angle.y)} * fc.dt;
         glob_ix = glob_engine_on_ix;
       }
       if (keys & 2) {
-        angular_velocity.y = radians(90.0f);
+        angular_velocity.y = radians(ship_turn_rate_deg);
       }
       if (keys & 8) {
-        angular_velocity.y = radians(-90.0f);
+        angular_velocity.y = radians(-ship_turn_rate_deg);
       }
       if (keys & 64) { // j
         if (ready_to_fire_at_ms < fc.ms) {
@@ -48,8 +50,8 @@ public:
           o->angle = angle;
           mat4 M = get_updated_Mmw();
           o->position = position;
-          o->velocity = -17.0f * vec3(M[2]);
-          ready_to_fire_at_ms = fc.ms + 500;
+          o->velocity = -ship_bullet_speed * vec3(M[2]);
+          ready_to_fire_at_ms = fc.ms + ship_bullet_fire_intervall_ms;
         }
       }
     }

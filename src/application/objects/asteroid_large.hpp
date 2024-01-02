@@ -3,6 +3,8 @@
 #include "../configuration.hpp"
 //
 #include "asteroid_medium.hpp"
+//
+#include "../utils.hpp"
 
 class asteroid_large : public object {
 public:
@@ -15,7 +17,10 @@ public:
     mass = 1;
     collision_bits = cb_asteroid;
     collision_mask = cb_hero_bullet | cb_hero;
+    asteroids_alive++;
   }
+
+  inline ~asteroid_large() { asteroids_alive--; }
 
   inline auto update(frame_context const &fc) -> bool override {
     assert(not is_dead());
@@ -24,15 +29,7 @@ public:
       return true;
     }
 
-    if (position.x < game_area_min_x) {
-      position.x = -position.x;
-    } else if (position.x > game_area_max_x) {
-      position.x = -position.x;
-    } else if (position.z < game_area_min_z) {
-      position.z = -position.z;
-    } else if (position.z > game_area_max_z) {
-      position.z = -position.z;
-    }
+    game_area_roll(position);
 
     return false;
   }
@@ -42,16 +39,15 @@ public:
     assert(not is_dead());
     printf("%u: %s collision with %s\n", fc.tick, name.c_str(),
            o->name.c_str());
-    for (int i = 0; i < 5; i++) {
+
+    for (int i = 0; i < asteroid_large_split; i++) {
       asteroid_medium *ast = new (objects.alloc()) asteroid_medium{};
       ast->position = position;
-      constexpr int v = 10;
+      constexpr int v = asteroid_large_split_speed;
       ast->velocity = velocity + vec3(float(rand() % v - v / 2), 0,
                                       float(rand() % v - v / 2));
-      constexpr int r = 60;
-      ast->angular_velocity = vec3(radians(float(rand() % r - r / 2)),
-                                   radians(float(rand() % r - r / 2)),
-                                   radians(float(rand() % r - r / 2)));
+      constexpr int r = asteroid_large_split_angular_vel_deg;
+      ast->angular_velocity = vec3(radians(float(rand() % r - r / 2)));
     }
     return true;
   }
