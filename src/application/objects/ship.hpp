@@ -65,7 +65,7 @@ public:
 
     assert(not is_dead());
 
-    printf("%u: %s collision with %s\n", frame_context.tick, name.c_str(),
+    printf("%u: %s collision with %s\n", frame_context.frame_num, name.c_str(),
            o->name.c_str());
 
     if (typeid(*o) == typeid(power_up)) {

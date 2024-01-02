@@ -12,18 +12,18 @@ public:
         // object is in several cells and may be called from multiple threads
 
         o->acquire_lock();
-        if (o->updated_at_tick == frame_context.tick) {
+        if (o->updated_at_tick == frame_context.frame_num) {
           o->release_lock();
           continue;
         }
-        o->updated_at_tick = frame_context.tick;
+        o->updated_at_tick = frame_context.frame_num;
         o->release_lock();
       } else {
         // object is in only one cell or can only be called from one thread
-        if (o->updated_at_tick == frame_context.tick) {
+        if (o->updated_at_tick == frame_context.frame_num) {
           continue;
         }
-        o->updated_at_tick = frame_context.tick;
+        o->updated_at_tick = frame_context.frame_num;
       }
 
       // only one thread at a time gets to this code

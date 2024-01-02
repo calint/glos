@@ -30,11 +30,12 @@ inline static void debug_render_wcs_line(const glm::vec3 &from_wcs,
                                          const glm::vec3 &to_wcs,
                                          const glm::vec3 &color);
 
+// information about the current frame
 class frame_context {
 public:
-  float dt = 0;
-  unsigned tick = 0;
-  unsigned ms = 0;
+  uint32_t frame_num = 0; // frame number (will rollover)
+  uint32_t ms = 0;        // current time since start in milliseconds
+  float dt = 0;           // frame delta time in seconds (time step)
 };
 
 inline frame_context frame_context{};
@@ -192,7 +193,7 @@ public:
 
     // the update grid thread
     std::thread update_thread([&]() {
-      unsigned update_frame_num = 0;
+      uint32_t update_frame_num = 0;
       while (is_running) {
         update_frame_num++;
         {
@@ -225,8 +226,11 @@ public:
         }
 
         // in multiplayer mode use dt from server else previous frame
-        frame_context = {net.enabled ? net.dt : metrics.fps.dt,
-                         update_frame_num, SDL_GetTicks()};
+        frame_context = {
+            update_frame_num,
+            SDL_GetTicks(),
+            net.enabled ? net.dt : metrics.fps.dt,
+        };
 
         // note. data racing between render and update is ok
 

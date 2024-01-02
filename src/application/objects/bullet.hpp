@@ -33,7 +33,7 @@ public:
 
   inline auto on_collision(object *o) -> bool override {
     assert(not is_dead());
-    printf("%u: %s collision with %s\n", frame_context.tick, name.c_str(),
+    printf("%u: %s collision with %s\n", frame_context.frame_num, name.c_str(),
            o->name.c_str());
 
     fragment *frg = new (objects.alloc()) fragment{};
