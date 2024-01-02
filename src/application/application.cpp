@@ -129,7 +129,7 @@ void application_init() {
   }
 }
 
-void application_at_frame_end(glos::frame_context const &fc) {
+void application_at_frame_end() {
   if (asteroids_alive == 0) {
     level++;
     create_asteroids(level);

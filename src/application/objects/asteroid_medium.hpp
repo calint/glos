@@ -22,10 +22,10 @@ public:
 
   inline ~asteroid_medium() { asteroids_alive--; }
 
-  inline auto update(frame_context const &fc) -> bool override {
+  inline auto update() -> bool override {
     assert(not is_dead());
 
-    if (object::update(fc)) {
+    if (object::update()) {
       return true;
     }
 
@@ -34,10 +34,9 @@ public:
     return false;
   }
 
-  inline auto on_collision(object *o, frame_context const &fc)
-      -> bool override {
+  inline auto on_collision(object *o) -> bool override {
     assert(not is_dead());
-    printf("%u: %s collision with %s\n", fc.tick, name.c_str(),
+    printf("%u: %s collision with %s\n", frame_context.tick, name.c_str(),
            o->name.c_str());
 
     for (int i = 0; i < asteroid_medium_split; i++) {

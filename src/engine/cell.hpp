@@ -6,29 +6,29 @@ public:
   std::vector<object *> ols{};
 
   // called from grid (possibly by multiple threads)
-  inline void update(frame_context const &fc) {
+  inline void update() {
     for (object *o : ols) {
       if (grid_threaded and o->is_overlaps_cells()) {
         // object is in several cells and may be called from multiple threads
 
         o->acquire_lock();
-        if (o->updated_at_tick == fc.tick) {
+        if (o->updated_at_tick == frame_context.tick) {
           o->release_lock();
           continue;
         }
-        o->updated_at_tick = fc.tick;
+        o->updated_at_tick = frame_context.tick;
         o->release_lock();
       } else {
         // object is in only one cell or can only be called from one thread
-        if (o->updated_at_tick == fc.tick) {
+        if (o->updated_at_tick == frame_context.tick) {
           continue;
         }
-        o->updated_at_tick = fc.tick;
+        o->updated_at_tick = frame_context.tick;
       }
 
       // only one thread at a time gets to this code
 
-      if (o->update(fc)) {
+      if (o->update()) {
         o->set_is_dead();
         objects.free(o);
         continue;
@@ -40,7 +40,7 @@ public:
   }
 
   // called from grid (possibly by multiple threads)
-  inline void resolve_collisions(frame_context const &fc) {
+  inline void resolve_collisions() {
     // thread safe because 'ols' does not change during 'resolve_collisions'
     const size_t len = ols.size();
     if (len == 0) {
@@ -66,13 +66,13 @@ public:
         // do the locking and lookup than just trying and only handling a
         // collision between 2 objects once
 
-        if (not are_bounding_spheres_in_collision(Oi, Oj, fc)) {
+        if (not are_bounding_spheres_in_collision(Oi, Oj)) {
           continue;
         }
 
         if (Oi->is_sphere and Oj->is_sphere) {
-          handle_sphere_collision(Oi, Oj, fc);
-          handle_sphere_collision(Oj, Oi, fc);
+          handle_sphere_collision(Oi, Oj);
+          handle_sphere_collision(Oj, Oi);
           continue;
         }
 
@@ -82,8 +82,8 @@ public:
           update_planes_world_coordinates(Oj);
           if (Oj->planes.is_in_collision_with_sphere(Oi->position,
                                                      Oi->radius)) {
-            dispatch_collision(Oi, Oj, fc);
-            dispatch_collision(Oj, Oi, fc);
+            dispatch_collision(Oi, Oj);
+            dispatch_collision(Oj, Oi);
           }
           continue;
         } else if (Oj->is_sphere) {
@@ -91,18 +91,18 @@ public:
           update_planes_world_coordinates(Oi);
           if (Oi->planes.is_in_collision_with_sphere(Oj->position,
                                                      Oj->radius)) {
-            dispatch_collision(Oj, Oi, fc);
-            dispatch_collision(Oi, Oj, fc);
+            dispatch_collision(Oj, Oi);
+            dispatch_collision(Oi, Oj);
           }
           continue;
         }
 
-        if (not are_bounding_planes_in_collision(Oi, Oj, fc)) {
+        if (not are_bounding_planes_in_collision(Oi, Oj)) {
           continue;
         }
 
-        dispatch_collision(Oi, Oj, fc);
-        dispatch_collision(Oj, Oi, fc);
+        dispatch_collision(Oi, Oj);
+        dispatch_collision(Oj, Oi);
       }
     }
   }
@@ -137,8 +137,7 @@ public:
   }
 
 private:
-  inline static void handle_sphere_collision(object *Oi, object *Oj,
-                                             frame_context const &fc) {
+  inline static void handle_sphere_collision(object *Oi, object *Oj) {
 
     // check if Oi is subscribed to collision with Oj
     if ((Oi->collision_mask & Oj->collision_bits) == 0) {
@@ -178,7 +177,7 @@ private:
       return;
     }
 
-    if (not Oi->is_dead() and Oi->on_collision(Oj, fc)) {
+    if (not Oi->is_dead() and Oi->on_collision(Oj)) {
       Oi->set_is_dead();
       objects.free(Oi);
       if (synchronization_necessary) {
@@ -201,8 +200,7 @@ private:
     }
   }
 
-  inline static void dispatch_collision(object *Osrc, object *Otrg,
-                                        frame_context const &fc) {
+  inline static void dispatch_collision(object *Osrc, object *Otrg) {
 
     // check if Oi is subscribed to collision with Oj
     if ((Osrc->collision_mask & Otrg->collision_bits) == 0) {
@@ -227,7 +225,7 @@ private:
 
     // only one thread at a time can be here
 
-    if (not Osrc->is_dead() and Osrc->on_collision(Otrg, fc)) {
+    if (not Osrc->is_dead() and Osrc->on_collision(Otrg)) {
       Osrc->set_is_dead();
       objects.free(Osrc);
     }
@@ -237,8 +235,7 @@ private:
     }
   }
 
-  inline static auto are_bounding_spheres_in_collision(object *o1, object *o2,
-                                                       frame_context const &fc)
+  inline static auto are_bounding_spheres_in_collision(object *o1, object *o2)
       -> bool {
 
     const glm::vec3 v = o2->position - o1->position;
@@ -267,8 +264,7 @@ private:
     }
   }
 
-  inline static auto are_bounding_planes_in_collision(object *o1, object *o2,
-                                                      frame_context const &fc)
+  inline static auto are_bounding_planes_in_collision(object *o1, object *o2)
       -> bool {
 
     update_planes_world_coordinates(o1);

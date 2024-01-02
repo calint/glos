@@ -21,10 +21,10 @@ public:
     collision_mask = cb_asteroid | cb_power_up;
   }
 
-  inline auto update(frame_context const &fc) -> bool override {
+  inline auto update() -> bool override {
     assert(not is_dead());
 
-    if (object::update(fc)) {
+    if (object::update()) {
       return true;
     }
 
@@ -36,7 +36,8 @@ public:
     if (keys != 0) {
       // wasd keys
       if (keys & 1) {
-        velocity += ship_speed * vec3{-sin(angle.y), 0, -cos(angle.y)} * fc.dt;
+        velocity += ship_speed * vec3{-sin(angle.y), 0, -cos(angle.y)} *
+                    frame_context.dt;
         glob_ix = glob_engine_on_ix;
       }
       if (keys & 2) {
@@ -46,13 +47,13 @@ public:
         angular_velocity.y = radians(-ship_turn_rate_deg);
       }
       if (keys & 64) { // j
-        if (ready_to_fire_at_ms < fc.ms) {
+        if (ready_to_fire_at_ms < frame_context.ms) {
           bullet *o = new (objects.alloc()) bullet{};
           o->angle = angle;
           mat4 M = get_updated_Mmw();
           o->position = position;
           o->velocity = -ship_bullet_speed * vec3(M[2]);
-          ready_to_fire_at_ms = fc.ms + bullet_fire_rate_ms;
+          ready_to_fire_at_ms = frame_context.ms + bullet_fire_rate_ms;
         }
       }
     }
@@ -60,12 +61,11 @@ public:
     return false;
   }
 
-  inline auto on_collision(object *o, frame_context const &fc)
-      -> bool override {
+  inline auto on_collision(object *o) -> bool override {
 
     assert(not is_dead());
 
-    printf("%u: %s collision with %s\n", fc.tick, name.c_str(),
+    printf("%u: %s collision with %s\n", frame_context.tick, name.c_str(),
            o->name.c_str());
 
     if (typeid(*o) == typeid(power_up)) {

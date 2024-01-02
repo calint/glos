@@ -14,14 +14,14 @@ public:
     collision_mask = cb_none;
   }
 
-  inline auto update(frame_context const &fc) -> bool override {
+  inline auto update() -> bool override {
     assert(not is_dead());
 
-    if (object::update(fc)) {
+    if (object::update()) {
       return true;
     }
 
-    if (death_time < fc.ms) {
+    if (death_time < frame_context.ms) {
       return true;
     }
 

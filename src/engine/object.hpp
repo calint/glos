@@ -48,8 +48,8 @@ public:
   }
 
   // returns true if object has died
-  inline virtual auto update(frame_context const &fc) -> bool {
-    const float dt = fc.dt;
+  inline virtual auto update() -> bool {
+    const float dt = frame_context.dt;
     velocity += acceleration * dt;
     position += velocity * dt;
     angle += angular_velocity * dt;
@@ -64,7 +64,7 @@ public:
   }
 
   // returns true if object has died
-  inline virtual auto on_collision(object *obj, frame_context const &fc)
+  inline virtual auto on_collision(object *obj)
       -> bool {
     return false;
   }

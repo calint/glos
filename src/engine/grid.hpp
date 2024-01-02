@@ -18,12 +18,12 @@ public:
   inline void free() {}
 
   // called from main
-  inline void update(frame_context const &fc) {
+  inline void update() {
     if (grid_threaded) {
       std::for_each(std::execution::par_unseq, std::begin(cells),
-                    std::end(cells), [&fc](cell(&row)[grid_ncells_wide]) {
+                    std::end(cells), [](cell(&row)[grid_ncells_wide]) {
                       for (cell &c : row) {
-                        c.update(fc);
+                        c.update();
                       }
                     });
 
@@ -40,19 +40,19 @@ public:
       cell *p = cells[0];
       unsigned i = ncells;
       while (i--) {
-        p->update(fc);
+        p->update();
         p++;
       }
     }
   }
 
   // called from main
-  inline void resolve_collisions(frame_context const &fc) {
+  inline void resolve_collisions() {
     if (grid_threaded) {
       std::for_each(std::execution::par_unseq, std::begin(cells),
-                    std::end(cells), [&fc](cell(&row)[grid_ncells_wide]) {
+                    std::end(cells), [](cell(&row)[grid_ncells_wide]) {
                       for (cell &c : row) {
-                        c.resolve_collisions(fc);
+                        c.resolve_collisions();
                       }
                     });
 
@@ -69,7 +69,7 @@ public:
       cell *p = cells[0];
       unsigned i = ncells;
       while (i--) {
-        p->resolve_collisions(fc);
+        p->resolve_collisions();
         p++;
       }
     }

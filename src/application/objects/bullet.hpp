@@ -15,10 +15,10 @@ public:
     collision_mask = cb_asteroid;
   }
 
-  inline auto update(frame_context const &fc) -> bool override {
+  inline auto update() -> bool override {
     assert(not is_dead());
 
-    if (object::update(fc)) {
+    if (object::update()) {
       return true;
     }
 
@@ -31,16 +31,15 @@ public:
     return false;
   }
 
-  inline auto on_collision(object *o, frame_context const &fc)
-      -> bool override {
+  inline auto on_collision(object *o) -> bool override {
     assert(not is_dead());
-    printf("%u: %s collision with %s\n", fc.tick, name.c_str(),
+    printf("%u: %s collision with %s\n", frame_context.tick, name.c_str(),
            o->name.c_str());
 
     fragment *frg = new (objects.alloc()) fragment{};
     frg->position = position;
     frg->angular_velocity = vec3(radians(float(rand() % 360 - 180)));
-    frg->death_time = fc.ms + 500;
+    frg->death_time = frame_context.ms + 500;
     frg->scale = {0.5f, 0.5f, 0.5f};
     frg->radius *= frg->scale.x;
 

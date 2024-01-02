@@ -36,11 +36,14 @@ public:
   unsigned tick = 0;
   unsigned ms = 0;
 };
+
+inline frame_context frame_context{};
+
 } // namespace glos
 
 // application interface
 void application_init();
-void application_at_frame_end(glos::frame_context const &fc);
+void application_at_frame_end();
 void application_free();
 
 #include "object.hpp"
@@ -222,15 +225,15 @@ public:
         }
 
         // in multiplayer mode use dt from server else previous frame
-        frame_context fc{net.enabled ? net.dt : metrics.fps.dt,
+        frame_context = {net.enabled ? net.dt : metrics.fps.dt,
                          update_frame_num, SDL_GetTicks()};
 
         // note. data racing between render and update is ok
 
-        grid.update(fc);
+        grid.update();
 
         if (resolve_collisions) {
-          grid.resolve_collisions(fc);
+          grid.resolve_collisions();
         }
 
         // apply changes done at 'update' and 'resolve_collisions'
@@ -238,7 +241,7 @@ public:
         objects.apply_allocated_instances();
 
         // callback
-        application_at_frame_end(fc);
+        application_at_frame_end();
 
         // apply changes done by application
         objects.apply_freed_instances();
