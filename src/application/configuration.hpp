@@ -78,7 +78,7 @@ constexpr int asteroid_medium_split_angular_vel_deg = 100;
 constexpr float ship_turn_rate_deg = 120;
 constexpr float ship_speed = 6;
 constexpr float ship_bullet_speed = 17;
-constexpr unsigned ship_bullet_fire_intervall_ms = 1000;
+constexpr uint32_t ship_bullet_fire_intervall_ms = 1000;
 constexpr uint8_t ship_bullet_level_1_count = 5;
 
 constexpr int power_up_chance_rem = 10;

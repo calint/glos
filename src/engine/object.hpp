@@ -29,8 +29,8 @@ public:
   uint32_t collision_bits = 0;    // mask & bits for collision subscription
   uint32_t collision_mask = 0;    // ...
   net_state *net_state = nullptr; // pointer to signals used by this object
-  unsigned rendered_at_tick = 0;  // avoids rendering same object twice
-  unsigned updated_at_tick = 0;   // avoids updating same object twice
+  uint32_t rendered_at_tick = 0;  // avoids rendering same object twice
+  uint32_t updated_at_tick = 0;   // avoids updating same object twice
   uint8_t grid_flags = 0;         // used by grid (overlaps, is_dead)
   std::vector<const object *> handled_collisions{};
   std::atomic_flag spinlock = ATOMIC_FLAG_INIT;
@@ -64,10 +64,7 @@ public:
   }
 
   // returns true if object has died
-  inline virtual auto on_collision(object *obj)
-      -> bool {
-    return false;
-  }
+  inline virtual auto on_collision(object *obj) -> bool { return false; }
 
   inline auto is_Mmw_valid() const -> bool {
     return position == Mmw_pos and angle == Mmw_agl and scale == Mmw_scl;

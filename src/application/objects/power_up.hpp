@@ -2,7 +2,7 @@
 
 class power_up : public object {
 public:
-  unsigned death_time_ms = 0;
+  uint32_t death_time_ms = 0;
 
   inline power_up() {
     name = "power_up";

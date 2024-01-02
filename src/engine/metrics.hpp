@@ -16,7 +16,7 @@ public:
     uint64_t timer_tick_at_start_of_frame = 0;
   } fps;
 
-  unsigned tick = 0;
+  uint32_t ms = 0;
   size_t buffered_vertex_data = 0;
   int buffered_texture_data = 0;
   int allocated_objects = 0;
@@ -49,7 +49,7 @@ public:
     fprintf(f,
             " %06u  %0.5f  %04d  %0.5f  %06u  %06u  %06u  %08u  %04u  "
             "%08zu  %08u\n",
-            tick, fps.dt, average_fps, net_lag, allocated_objects,
+            ms, fps.dt, average_fps, net_lag, allocated_objects,
             rendered_objects, rendered_glos, rendered_triangles, allocated_glos,
             buffered_vertex_data, buffered_texture_data);
   }
@@ -62,7 +62,7 @@ public:
     rendered_objects = 0;
     rendered_glos = 0;
     rendered_triangles = 0;
-    tick = SDL_GetTicks();
+    ms = SDL_GetTicks();
     net_lag = 0;
   }
 

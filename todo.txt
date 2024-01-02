@@ -1,9 +1,11 @@
 [o] implement sample game
 [x] use a build system instead of make.sh
+    => and also make.sh
 [ ] halt development and tidy up
-[ ]   use uint32_t instead of unsigned int32_t etc
-[ ]   consider a more standard source layout without depending on include order
+[ ]   use c++ random number generator
 [ ]   class private members at the bottom of the declaration
+[x]   use uint32_t instead of unsigned int32_t etc
+[ ]   consider a more standard source layout without depending on include order
 [ ]   use gl_element_array_buffer (where appropriate)
 [ ]   use glDebugMessageCallback
 [ ]   clang-tidy
@@ -12,7 +14,6 @@
 [ ]   consider verbose self documenting code
 [x]   move object::volume into physics
       => moved into object
-[ ]   use c++ random number generator
 [ ]   review and delete obsolete notes
 [ ]   net_server as separate application
 [o]   ref& const, bool const, etc

@@ -2,7 +2,7 @@
 
 class fragment : public object {
 public:
-  unsigned death_time = 0;
+  uint32_t death_time_ms = 0;
 
   inline fragment() {
     name = "fragment";
@@ -21,7 +21,7 @@ public:
       return true;
     }
 
-    if (death_time < frame_context.ms) {
+    if (death_time_ms < frame_context.ms) {
       return true;
     }
 

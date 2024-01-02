@@ -39,7 +39,7 @@ public:
     fragment *frg = new (objects.alloc()) fragment{};
     frg->position = position;
     frg->angular_velocity = vec3(radians(float(rand() % 360 - 180)));
-    frg->death_time = frame_context.ms + 500;
+    frg->death_time_ms = frame_context.ms + 500;
     frg->scale = {0.5f, 0.5f, 0.5f};
     frg->radius *= frg->scale.x;
 

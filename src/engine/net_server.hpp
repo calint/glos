@@ -102,7 +102,7 @@ public:
                   __LINE__, i);
           std::abort();
         }
-        if ((unsigned)n != state_read_size) {
+        if (unsigned(n) != state_read_size) {
           fprintf(stderr, "\n%s:%u: player %u: read was incomplete\n", __FILE__,
                   __LINE__, i);
           std::abort();

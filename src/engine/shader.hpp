@@ -58,17 +58,17 @@ class shaders final {
 
 public:
   // vertex attributes layout in shaders
-  static constexpr unsigned apos = 0;
-  static constexpr unsigned argba = 1;
-  static constexpr unsigned anorm = 2;
-  static constexpr unsigned atex = 3;
+  static constexpr GLuint apos = 0;
+  static constexpr GLuint argba = 1;
+  static constexpr GLuint anorm = 2;
+  static constexpr GLuint atex = 3;
   // uniform matrixes
-  static constexpr unsigned umtx_mw = 0;  // model->world matrix
-  static constexpr unsigned umtx_wvp = 1; // world->view->projection matrix
+  static constexpr GLint umtx_mw = 0;  // model->world matrix
+  static constexpr GLint umtx_wvp = 1; // world->view->projection matrix
   // uniform textures
-  static constexpr unsigned utex = 2; // texture mapper
+  static constexpr GLint utex = 2; // texture mapper
   // uniform ambient light
-  static constexpr unsigned ulht = 3; // light vector
+  static constexpr GLint ulht = 3; // light vector
 
   inline void init() {
     gl_check_error("init");
