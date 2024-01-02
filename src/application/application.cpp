@@ -9,7 +9,8 @@ using namespace glm;
 //
 static void application_init_shaders();
 static void create_asteroids(int num);
-inline static int level = 0;
+//
+static int level = 0;
 //
 void application_init() {
   application_init_shaders();
