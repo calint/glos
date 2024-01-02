@@ -95,6 +95,8 @@ public:
           bullet_fire_rate_ms = ship_bullet_fire_intervall_ms;
         }
       }
+    } else if (o->collision_bits & cb_asteroid) {
+      angle.y += radians(float(rand() % 45 - 22));
     }
 
     return false;

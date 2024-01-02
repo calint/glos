@@ -97,7 +97,7 @@ void application_init() {
 
   // setup the camera
   // camera.type = camera::type::LOOK_AT;
-  // camera.position = {0, 50, 50};
+  // camera.position = {0, 20, 20};
   // camera.look_at = {0, 0, 0};
 
   camera.type = camera::type::ORTHO;

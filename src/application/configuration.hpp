@@ -25,6 +25,8 @@ static constexpr bool object_planes_debug_normals = false;
 // window dimensions
 static constexpr int window_width = 1024;
 static constexpr int window_height = 1024;
+// vsync should be on
+static constexpr bool window_vsync = false;
 
 // number of players in networked mode
 static constexpr int net_players = 2;
