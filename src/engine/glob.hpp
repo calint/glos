@@ -82,7 +82,7 @@ public:
     }
 
     std::vector<float> vertex_buffer{};
-    std::vector<glm::vec3> vertices{};
+    std::vector<glm::vec3> positions{};
     std::vector<glm::vec3> normals{};
     std::vector<glm::vec2> texture_uv{};
 
@@ -151,9 +151,9 @@ public:
         float y = token_get_float(&ty);
         token tz = token_next(&p);
         float z = token_get_float(&tz);
-        vertices.emplace_back(x, y, z);
+        positions.emplace_back(x, y, z);
 
-        const float r = glm::length(vertices.back());
+        const float r = glm::length(positions.back());
         if (r > bounding_radius) {
           bounding_radius = r;
         }
@@ -186,7 +186,7 @@ public:
           token ix1_tkn = token_from_string_additional_delim(p, '/');
           p = ix1_tkn.end;
           const unsigned ix1 = token_get_uint(&ix1_tkn);
-          const glm::vec3 &vertex = vertices.at(ix1 - 1);
+          const glm::vec3 &position = positions.at(ix1 - 1);
 
           // texture
           token ix2_tkn = token_from_string_additional_delim(p, '/');
@@ -203,9 +203,9 @@ public:
 
           // add to buffer
           // position
-          vertex_buffer.push_back(vertex.x);
-          vertex_buffer.push_back(vertex.y);
-          vertex_buffer.push_back(vertex.z);
+          vertex_buffer.push_back(position.x);
+          vertex_buffer.push_back(position.y);
+          vertex_buffer.push_back(position.z);
           // color
           vertex_buffer.push_back(current_material.Kd.r);
           vertex_buffer.push_back(current_material.Kd.g);
@@ -237,7 +237,7 @@ public:
     printf("     %zu range%c   %lu vertices   %d triangles   %zu B   radius: "
            "%0.2f\n",
            ranges.size(), ranges.size() == 1 ? ' ' : 's',
-           vertex_buffer.size() / sizeof(vertex), ntriangles,
+           vertex_buffer.size() * sizeof(float) / sizeof(vertex), ntriangles,
            vertex_buffer.size() * sizeof(float), bounding_radius);
 
     metrics.allocated_glos++;
