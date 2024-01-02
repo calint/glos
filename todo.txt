@@ -25,6 +25,7 @@
 [ ]   const everything
 [ ]   constexpr everything
 [ ]   struct vertex used for sizeof only
+[ ] grid: static vs moving vs bullets vs scenery objects
 [ ] note about the absolute texture path in mtl filess
 [x]   rename 'node' to something better
       => moved into object
@@ -81,7 +82,6 @@
 [ ] shader: mtx_wvp * mtx_mw   is it better with mtx_mwvp?
 [x] use unique_ptr instead of new and delete
     => o1store for objects
-[ ] grid: static vs moving objects vs 'bullets'
 [ ] consider: https://github.com/alugowski/task-thread-pool for simple multithreading
 ------------------------------
 [x] dynamic pointer vector
