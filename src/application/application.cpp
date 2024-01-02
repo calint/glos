@@ -88,22 +88,6 @@ void application_init() {
   //   o->radius = g.bounding_radius * skydome_scale;
   // }
 
-  // {
-  //   cube *o = new (objects.alloc()) cube{};
-  //   o->name = "cube";
-  //   o->mass = 1;
-  //   o->position = {0, o->scale.y, 0};
-  //   o->net_state = &net.states[1];
-  // }
-
-  // {
-  //   sphere *o = new (objects.alloc()) sphere{};
-  //   o->name = "sphere";
-  //   o->mass = 1;
-  //   o->position = {6, o->scale.y, 0};
-  //   o->net_state = &net.states[1];
-  // }
-
   // setup the light
   ambient_light = normalize(vec3{1, 1, 1});
 
@@ -133,14 +117,6 @@ void application_init() {
   //     o->position = {x, o->radius, y};
   //     o->angular_velocity.y = radians(40.0f);
   //   }
-  // }
-
-  // {
-  //   sphere *o = new (objects.alloc()) sphere{};
-  //   o->name = "sphere";
-  //   o->mass = 1;
-  //   o->position = {-20, o->scale.y, 0};
-  //   o->net_state = &net.states[1];
   // }
 
   {

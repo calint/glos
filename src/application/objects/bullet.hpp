@@ -22,8 +22,9 @@ public:
       return true;
     }
 
-    if (position.y < -80 or position.x > 80 or position.y < -80 or
-        position.y > 80 or position.z < -80 or position.z > 80) {
+    if (position.x < game_area_min_x or position.x > game_area_max_x or
+        position.y < game_area_min_y or position.y > game_area_max_x or
+        position.z < game_area_min_z or position.z > game_area_max_z) {
       return true;
     }
 

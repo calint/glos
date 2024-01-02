@@ -21,11 +21,6 @@ public:
       return true;
     }
 
-    if (position.y < -80 or position.x > 80 or position.y < -80 or
-        position.y > 80 or position.z < -80 or position.z > 80) {
-      return true;
-    }
-
     if (death_time < fc.ms) {
       return true;
     }
