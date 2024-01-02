@@ -28,6 +28,7 @@ namespace glos {
 inline static void debug_render_wcs_line(const glm::vec3 &from_wcs,
                                          const glm::vec3 &to_wcs,
                                          const glm::vec3 &color);
+inline static void debug_render_bounding_sphere(const glm::mat4 &Mmw);
 
 // information about the current frame
 class frame_context {
@@ -45,6 +46,8 @@ inline frame_context frame_context{};
 void application_init();
 void application_at_frame_end();
 void application_free();
+
+inline uint32_t glob_ix_bounding_sphere = 0;
 
 #include "object.hpp"
 //
@@ -79,6 +82,7 @@ static constexpr uint32_t key_l = 256;
 class engine final {
 public:
   int shader_program_render_line = 0;
+  int shader_program_render_bounding_sphere = 0;
   int shader_program_ix = 0;
   int shader_program_ix_prev = shader_program_ix;
 
@@ -130,6 +134,9 @@ public:
       printf("\nthreaded grid on %d cores\n\n",
              std::thread::hardware_concurrency());
     }
+
+    glob_ix_bounding_sphere =
+        globs.load("assets/obj/bounding_sphere.obj", nullptr);
 
     application_init();
   }
@@ -391,6 +398,13 @@ public:
           case SDLK_6:
             resolve_collisions = not resolve_collisions;
             break;
+          case SDLK_7:
+            debug_object_planes_normals = not debug_object_planes_normals;
+            printf("debug normals: %d\n", debug_object_planes_normals);
+            break;
+          case SDLK_8:
+            debug_object_bounding_sphere = not debug_object_bounding_sphere;
+            break;
           }
           break;
         }
@@ -474,4 +488,12 @@ inline static void debug_render_wcs_line(const glm::vec3 &from_wcs,
 
   shaders.use_program(engine.shader_program_ix);
 }
+
+inline static void debug_render_bounding_sphere(const glm::mat4 &Mmw) {
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  globs.at(glob_ix_bounding_sphere).render(Mmw);
+  glDisable(GL_BLEND);
+}
+
 } // namespace glos

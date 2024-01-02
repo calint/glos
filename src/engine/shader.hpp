@@ -50,7 +50,7 @@ class shaders final {
   out vec4 rgba;
   void main() {
     float diff = max(dot(vnorm, ulht), 0.5);
-    rgba = texture2D(utex, vtex) + diff * vrgba;
+    rgba = vec4(vec3(texture2D(utex, vtex)) + diff * vec3(vrgba), vrgba.a);
   }
 )";
 
@@ -84,16 +84,16 @@ public:
     glEnable(GL_CULL_FACE);
     glFrontFace(GL_CCW);
 
-    printf(":-%10s-:-%7s-:\n", "----------", "-------");
-    printf(": %10s : %-7s :\n", "feature", "y/n");
-    printf(":-%10s-:-%7s-:\n", "----------", "-------");
-    printf(": %10s : %-7s :\n", "cull face",
-           glIsEnabled(GL_CULL_FACE) ? "yes" : "no");
-    printf(": %10s : %-7s :\n", "zbuffer",
-           glIsEnabled(GL_DEPTH_TEST) ? "yes" : "no");
-    printf(": %10s : %-7s :\n", "blend", glIsEnabled(GL_BLEND) ? "yes" : "no");
-    printf(":-%10s-:-%7s-:\n", "----------", "-------");
-    puts("");
+    // printf(":-%10s-:-%7s-:\n", "----------", "-------");
+    // printf(": %10s : %-7s :\n", "feature", "y/n");
+    // printf(":-%10s-:-%7s-:\n", "----------", "-------");
+    // printf(": %10s : %-7s :\n", "cull face",
+    //        glIsEnabled(GL_CULL_FACE) ? "yes" : "no");
+    // printf(": %10s : %-7s :\n", "zbuffer",
+    //        glIsEnabled(GL_DEPTH_TEST) ? "yes" : "no");
+    // printf(": %10s : %-7s :\n", "blend", glIsEnabled(GL_BLEND) ? "yes" : "no");
+    // printf(":-%10s-:-%7s-:\n", "----------", "-------");
+    // puts("");
 
     const int default_program_id =
         load_program_from_source(vertex_shader_source, fragment_shader_source);

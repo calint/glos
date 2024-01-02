@@ -42,8 +42,12 @@ public:
   inline virtual void render() {
     globs.at(glob_ix).render(get_updated_Mmw());
 
-    if (object_planes_debug_normals) {
+    if (debug_object_planes_normals) {
       planes.debug_render_normals();
+    }
+
+    if (debug_object_bounding_sphere) {
+      debug_render_bounding_sphere(debug_get_Mmw_for_bounding_sphere());
     }
   }
 
@@ -54,7 +58,7 @@ public:
     position += velocity * dt;
     angle += angular_velocity * dt;
 
-    if (object_planes_debug_normals) {
+    if (debug_object_planes_normals) {
       glm::mat4 const &M = get_updated_Mmw();
       glob const &g = globs.at(glob_ix);
       planes.update_model_to_world(g.planes_points, g.planes_normals, M,
@@ -84,6 +88,10 @@ public:
     glm::mat4 Mt = glm::translate(glm::mat4(1), Mmw_pos);
     Mmw = Mt * Mr * Ms;
     return Mmw;
+  }
+
+  inline auto debug_get_Mmw_for_bounding_sphere() -> glm::mat4 {
+    return glm::scale(glm::translate(glm::mat4(1), Mmw_pos), glm::vec3(radius));
   }
 
   inline auto is_collision_handled_and_if_not_add(object const *obj) -> bool {

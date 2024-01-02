@@ -19,8 +19,9 @@ static constexpr bool o1store_threaded = grid_threaded;
 static constexpr bool o1store_check_double_free = true;
 static constexpr bool o1store_check_free_limits = true;
 
-// debug volume normals (turn off)
-static constexpr bool object_planes_debug_normals = false;
+// render debugging
+inline bool debug_object_planes_normals = false;
+inline bool debug_object_bounding_sphere = false;
 
 // window dimensions
 static constexpr int window_width = 1024;
