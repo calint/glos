@@ -21,7 +21,13 @@ inline void game_area_roll(glm::vec3 &position) {
   }
 }
 
-inline void power_up_by_chance(const glm::vec3 &position) {
+inline auto is_outside_game_area(glm::vec3 const &position) {
+  return position.x < game_area_min_x or position.x > game_area_max_x or
+         position.y < game_area_min_y or position.y > game_area_max_y or
+         position.z < game_area_min_z or position.z > game_area_max_z;
+}
+
+inline void power_up_by_chance(glm::vec3 const &position) {
   if (rand() % power_up_chance_rem) {
     return;
   }

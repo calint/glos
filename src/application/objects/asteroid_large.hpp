@@ -13,7 +13,7 @@ public:
     glob_ix = glob_ix_asteroid_large;
     scale = {2, 2, 2};
     glob const &g = globs.at(glob_ix);
-    radius = g.bounding_radius * 2; // r * scale
+    radius = g.bounding_radius * scale.x;
     mass = 1;
     collision_bits = cb_asteroid;
     collision_mask = cb_hero_bullet | cb_hero;
@@ -23,8 +23,6 @@ public:
   inline ~asteroid_large() { asteroids_alive--; }
 
   inline auto update() -> bool override {
-    assert(not is_dead());
-
     if (object::update()) {
       return true;
     }
@@ -35,7 +33,6 @@ public:
   }
 
   inline auto on_collision(object *o) -> bool override {
-    assert(not is_dead());
     printf("%u: %s collision with %s\n", frame_context.frame_num, name.c_str(),
            o->name.c_str());
 

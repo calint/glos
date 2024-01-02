@@ -21,8 +21,6 @@ public:
   inline ~asteroid_small() { asteroids_alive--; }
 
   inline auto update() -> bool override {
-    assert(not is_dead());
-
     if (object::update()) {
       return true;
     }
@@ -33,7 +31,6 @@ public:
   }
 
   inline auto on_collision(object *o) -> bool override {
-    assert(not is_dead());
     printf("%u: %s collision with %s\n", frame_context.frame_num, name.c_str(),
            o->name.c_str());
 

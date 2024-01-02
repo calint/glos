@@ -18,13 +18,11 @@ public:
   }
 
   inline auto update() -> bool override {
-    assert(not is_dead());
-
     if (object::update()) {
       return true;
     }
 
-    if (frame_context.ms > death_time_ms) {
+    if (death_time_ms < frame_context.ms) {
       return true;
     }
 
