@@ -86,13 +86,16 @@ public:
            o->name.c_str());
 
     if (typeid(*o) == typeid(power_up)) {
-      bullet_fire_rate_ms /= 2;
-      if (bullet_fire_rate_ms < 100) {
-        ++bullet_level;
-        if (bullet_level > 1) {
-          bullet_level = 1;
-        } else {
+      if (bullet_level == 0) {
+        bullet_fire_rate_ms /= 2;
+        if (bullet_fire_rate_ms < 100) {
           bullet_fire_rate_ms = ship_bullet_fire_intervall_ms;
+          ++bullet_level;
+        }
+      } else if (bullet_level == 1) {
+        bullet_fire_rate_ms /= 2;
+        if (bullet_fire_rate_ms < 100) {
+          bullet_fire_rate_ms = 100;
         }
       }
     } else if (o->collision_bits & cb_asteroid) {
