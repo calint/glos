@@ -76,11 +76,11 @@ public:
   }
 
   // called from main
-  inline void render(unsigned const render_frame_num) {
+  inline void render() {
     cell *p = cells[0];
     unsigned i = ncells;
     while (i--) {
-      p->render(render_frame_num);
+      p->render();
       p++;
     }
   }

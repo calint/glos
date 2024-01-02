@@ -108,12 +108,12 @@ public:
   }
 
   // called from grid (from only one thread)
-  inline void render(unsigned const render_frame_num) {
+  inline void render() {
     for (object *o : ols) {
-      if (o->rendered_at_tick == render_frame_num) {
+      if (o->rendered_at_tick == frame_context.frame_num) {
         continue;
       }
-      o->rendered_at_tick = render_frame_num;
+      o->rendered_at_tick = frame_context.frame_num;
       o->render();
       metrics.rendered_objects++;
     }

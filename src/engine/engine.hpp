@@ -140,7 +140,7 @@ public:
     metrics.free();
   }
 
-  inline void render(const unsigned render_frame_num) {
+  inline void render() {
     if (camera_follow_object) {
       camera.look_at = camera_follow_object->position;
     }
@@ -154,7 +154,7 @@ public:
                  background_color.blue, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    grid.render(render_frame_num);
+    grid.render();
 
     window.swap_buffers();
   }
@@ -164,7 +164,6 @@ public:
     float rad_over_mouse_pixels = rad_over_degree * .02f;
     float mouse_sensitivity = 1.5f;
     bool mouse_mode = false;
-    unsigned render_frame_num = 0;
     bool do_render = true;
     bool print_grid = false;
     bool resolve_collisions = true;
@@ -193,9 +192,9 @@ public:
 
     // the update grid thread
     std::thread update_thread([&]() {
-      uint32_t update_frame_num = 0;
+      uint32_t frame_num = 0;
       while (is_running) {
-        update_frame_num++;
+        frame_num++;
         {
           // wait until render thread is done before removing and adding objects
           // to grid
@@ -215,6 +214,14 @@ public:
             grid.add(obj);
           }
 
+          // update frame context used throughout the frame
+          // in multiplayer mode use dt from server else previous frame
+          frame_context = {
+              frame_num,
+              SDL_GetTicks(),
+              net.enabled ? net.dt : metrics.fps.dt,
+          };
+
           // notify render thread to start rendering
           is_rendering = true;
           lock.unlock();
@@ -224,13 +231,6 @@ public:
         if (print_grid) {
           grid.print();
         }
-
-        // in multiplayer mode use dt from server else previous frame
-        frame_context = {
-            update_frame_num,
-            SDL_GetTicks(),
-            net.enabled ? net.dt : metrics.fps.dt,
-        };
 
         // note. data racing between render and update is ok
 
@@ -390,10 +390,8 @@ public:
         // note. render and update have acceptable data races on objects
         // position etc
 
-        render_frame_num++;
-
         if (do_render) {
-          render(render_frame_num);
+          render();
         }
 
         // notify update thread that rendering is done
