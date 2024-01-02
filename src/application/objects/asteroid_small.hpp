@@ -9,7 +9,7 @@ public:
     glob_ix = glob_asteroid_small_ix;
     scale = {0.5f, 0.5f, 0.5f};
     glob const &g = globs.at(glob_ix);
-    radius = g.bounding_radius * 0.5f; // r * scale
+    radius = g.bounding_radius * scale.x;
     mass = 1;
     collision_bits = cb_asteroid;
     collision_mask = cb_hero_bullet | cb_hero;

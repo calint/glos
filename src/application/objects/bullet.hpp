@@ -1,5 +1,7 @@
 #pragma once
 
+#include "fragment.hpp"
+
 class bullet : public object {
 public:
   inline bullet() {
@@ -33,6 +35,14 @@ public:
     assert(not is_dead());
     printf("%u: %s collision with %s\n", fc.tick, name.c_str(),
            o->name.c_str());
+
+    fragment *frg = new (objects.alloc()) fragment{};
+    frg->position = position;
+    frg->angular_velocity = vec3(radians(float(rand() % 360 - 180)));
+    frg->death_time = fc.ms + 500;
+    frg->scale = {0.5f, 0.5f, 0.5f};
+    frg->radius *= frg->scale.x;
+
     return true;
   }
 };

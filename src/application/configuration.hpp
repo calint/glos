@@ -35,6 +35,14 @@ static constexpr int objects_count = 32 * 1024;
 // maximum size of any object instance in bytes
 static constexpr int objects_instance_size_B = 1024;
 
+// dimensions
+static constexpr float game_area_min_x = -25;
+static constexpr float game_area_max_x = 25;
+static constexpr float game_area_min_y = -25;
+static constexpr float game_area_max_y = 25;
+static constexpr float game_area_min_z = -25;
+static constexpr float game_area_max_z = 25;
+
 // collision bits
 static constexpr uint32_t cb_none = 0;
 static constexpr uint32_t cb_hero = 1;
@@ -45,14 +53,9 @@ static constexpr uint32_t cb_asteroid = 4;
 static uint32_t glob_skydome_ix = 0;
 static uint32_t glob_grid_ix = 0;
 static uint32_t glob_ship_ix = 0;
+static uint32_t glob_ship_engine_on_ix = 0;
 static uint32_t glob_bullet_ix = 0;
 static uint32_t glob_asteroid_large_ix = 0;
 static uint32_t glob_asteroid_medium_ix = 0;
 static uint32_t glob_asteroid_small_ix = 0;
-
-static constexpr float game_area_min_x = -25;
-static constexpr float game_area_max_x = 25;
-static constexpr float game_area_min_y = -25;
-static constexpr float game_area_max_y = 25;
-static constexpr float game_area_min_z = -25;
-static constexpr float game_area_max_z = 25;
+static uint32_t glob_fragment_ix = 0;

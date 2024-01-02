@@ -1,6 +1,6 @@
 # Blender 3.6.2
 # www.blender.org
-mtllib ship.mtl
+mtllib ship_engine_on.mtl
 o ship
 v -0.000000 0.114983 0.146873
 v -0.943968 -0.503010 0.585538
@@ -20,6 +20,7 @@ vt 0.042154 0.130000
 s 0
 usemtl Material.001
 f 1/1/1 4/2/1 2/3/1
-f 1/4/2 2/5/2 3/6/2
 f 2/3/3 4/2/3 3/7/3
 f 3/7/4 4/2/4 1/1/4
+usemtl Material.002
+f 1/4/2 2/5/2 3/6/2

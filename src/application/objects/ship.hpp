@@ -4,12 +4,15 @@
 
 class ship : public object {
   unsigned ready_to_fire_at_ms = 0;
+  uint32_t glob_engine_on_ix = 0;
+  uint32_t glob_engine_off_ix = 0;
 
 public:
   inline ship() {
     name = "hero";
     mass = 150;
-    glob_ix = glob_ship_ix;
+    glob_engine_off_ix = glob_ix = glob_ship_ix;
+    glob_engine_on_ix = glob_ship_engine_on_ix;
     scale = {1, 1, 1};
     glob const &g = globs.at(glob_ix);
     radius = g.bounding_radius * 1; // r * scale
@@ -26,10 +29,12 @@ public:
 
     angular_velocity = {0, 0, 0};
     const uint64_t keys = net_state->keys;
+    glob_ix = glob_engine_off_ix;
     if (keys != 0) {
       // wasd keys
       if (keys & 1) {
         velocity += 6.0f * vec3{-sin(angle.y), 0, -cos(angle.y)} * fc.dt;
+        glob_ix = glob_engine_on_ix;
       }
       if (keys & 2) {
         angular_velocity.y = radians(90.0f);
@@ -44,7 +49,7 @@ public:
           mat4 M = get_updated_Mmw();
           o->position = position;
           o->velocity = -17.0f * vec3(M[2]);
-          ready_to_fire_at_ms = fc.ms + 1000;
+          ready_to_fire_at_ms = fc.ms + 500;
         }
       }
     }
