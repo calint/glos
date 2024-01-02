@@ -86,7 +86,8 @@ public:
     std::vector<glm::vec3> normals{};
     std::vector<glm::vec2> texture_uv{};
 
-    unsigned current_object_material_ix = 0;
+    std::string mtl_path = "";
+    unsigned current_material_ix = 0;
     unsigned vertex_buffer_ix = 0;
     unsigned vertex_buffer_ix_prv = 0;
     int first_o = 1;
@@ -100,8 +101,8 @@ public:
       if (token_equals(&tk, "mtllib")) {
         token t = token_next(&p);
         std::string file_name{t.content, t.content + token_size(&t)};
-        std::string path = base_dir_path + file_name;
-        materials.load(path.c_str());
+        mtl_path = base_dir_path + file_name;
+        materials.load(mtl_path.c_str());
         continue;
       }
       if (token_equals(&tk, "o") and first_o) {
@@ -118,8 +119,8 @@ public:
         bool found = false;
         for (unsigned i = 0; i < materials.store.size(); i++) {
           material &mtl = materials.store.at(i);
-          if (mtl.name == mtl_name) {
-            current_object_material_ix = i;
+          if (mtl.path == mtl_path and mtl.name == mtl_name) {
+            current_material_ix = i;
             found = true;
             break;
           }
@@ -127,14 +128,15 @@ public:
         if (not found) {
           fprintf(stderr, "\n%s:%u: could not find material\n", __FILE__,
                   __LINE__);
-          fprintf(stderr, "        name: '%s'\n\n", mtl_name.c_str());
+          fprintf(stderr, "        path: '%s'   name: '%s'\n\n",
+                  mtl_path.c_str(), mtl_name.c_str());
           fprintf(stderr, "\n\n");
           std::abort();
         }
         if (vertex_buffer_ix_prv != vertex_buffer_ix) {
           ranges.emplace_back(vertex_buffer_ix_prv,
                               vertex_buffer_ix - vertex_buffer_ix_prv,
-                              current_object_material_ix);
+                              current_material_ix);
           vertex_buffer_ix_prv = vertex_buffer_ix;
         }
       }
@@ -177,8 +179,8 @@ public:
       }
 
       if (token_equals(&tk, "f")) {
-        const material &current_object_material =
-            materials.store.at(current_object_material_ix);
+        const material &current_material =
+            materials.store.at(current_material_ix);
         for (unsigned i = 0; i < 3; i++) {
           // position
           token ix1_tkn = token_from_string_additional_delim(p, '/');
@@ -205,9 +207,9 @@ public:
           vertex_buffer.push_back(vertex.y);
           vertex_buffer.push_back(vertex.z);
           // color
-          vertex_buffer.push_back(current_object_material.Kd.x);
-          vertex_buffer.push_back(current_object_material.Kd.y);
-          vertex_buffer.push_back(current_object_material.Kd.z);
+          vertex_buffer.push_back(current_material.Kd.r);
+          vertex_buffer.push_back(current_material.Kd.g);
+          vertex_buffer.push_back(current_material.Kd.b);
           vertex_buffer.push_back(1); // opacity
           // normal
           vertex_buffer.push_back(normal.x);
@@ -225,7 +227,7 @@ public:
     // add the last material range
     ranges.emplace_back(vertex_buffer_ix_prv,
                         vertex_buffer_ix - vertex_buffer_ix_prv,
-                        current_object_material_ix);
+                        current_material_ix);
 
     int ntriangles = 0;
     for (const range &r : ranges) {
@@ -281,7 +283,6 @@ public:
       material &mtl = materials.store.at(unsigned(mtlrng.material_ix));
       if (not mtl.map_Kd.empty()) {
         mtl.texture_id = textures.get_id_or_load(mtl.map_Kd);
-        textures.get_id_or_load(mtl.map_Kd);
       }
     }
   }

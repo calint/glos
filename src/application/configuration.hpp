@@ -44,9 +44,6 @@ static constexpr uint32_t cb_asteroid = 4;
 // glob indexes (set at 'application.init()' when loading)
 static uint32_t glob_skydome_ix = 0;
 static uint32_t glob_grid_ix = 0;
-static uint32_t glob_santa_ix = 0;
-static uint32_t glob_sphere_ix = 0;
-static uint32_t glob_cube_ix = 0;
 static uint32_t glob_ship_ix = 0;
 static uint32_t glob_bullet_ix = 0;
 static uint32_t glob_asteroid_large_ix = 0;

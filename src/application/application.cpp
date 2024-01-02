@@ -4,10 +4,7 @@ using namespace glos;
 using namespace glm;
 //
 #include "objects/asteroid_large.hpp"
-#include "objects/cube.hpp"
-#include "objects/santa.hpp"
 #include "objects/ship.hpp"
-#include "objects/sphere.hpp"
 //
 static void application_init_shaders();
 //
@@ -18,38 +15,42 @@ void application_init() {
   printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
   printf(": %15s : %-9s :\n", "class", "bytes");
   printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
-  printf(": %15s : %-9ld :\n", "santa", sizeof(santa));
-  printf(": %15s : %-9ld :\n", "sphere", sizeof(sphere));
-  printf(": %15s : %-9ld :\n", "sphere", sizeof(cube));
   printf(": %15s : %-9ld :\n", "ship", sizeof(ship));
+  printf(": %15s : %-9ld :\n", "ship", sizeof(asteroid_large));
+  printf(": %15s : %-9ld :\n", "ship", sizeof(asteroid_medium));
+  printf(": %15s : %-9ld :\n", "ship", sizeof(asteroid_small));
+  printf(": %15s : %-9ld :\n", "ship", sizeof(bullet));
   printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
   puts("");
 
   // assert that classes use fit in objects store slot
-  static_assert(sizeof(santa) <= objects_instance_size_B, "");
-  static_assert(sizeof(sphere) <= objects_instance_size_B, "");
-  static_assert(sizeof(cube) <= objects_instance_size_B, "");
   static_assert(sizeof(ship) <= objects_instance_size_B, "");
+  static_assert(sizeof(asteroid_large) <= objects_instance_size_B, "");
+  static_assert(sizeof(asteroid_medium) <= objects_instance_size_B, "");
+  static_assert(sizeof(asteroid_small) <= objects_instance_size_B, "");
+  static_assert(sizeof(bullet) <= objects_instance_size_B, "");
 
   // load the objects and assign the indexes
   glob_skydome_ix = globs.load("assets/obj/skydome.obj", nullptr);
+
   glob_grid_ix = globs.load("assets/obj/grid.obj", nullptr);
-  glob_santa_ix = globs.load("assets/obj/santa.obj", nullptr);
-  glob_sphere_ix = globs.load("assets/obj/icosphere.obj", nullptr);
-  glob_cube_ix = globs.load("assets/obj/cube.obj", "assets/obj/bv-cube.obj");
+
   glob_ship_ix = globs.load("assets/obj/asteroids/ship.obj",
                             "assets/obj/asteroids/ship.obj");
-  glob_bullet_ix = globs.load("assets/obj/asteroids/bullet_1.obj",
-                              "assets/obj/asteroids/bullet_1.obj");
+
+  glob_bullet_ix = globs.load("assets/obj/asteroids/bullet.obj",
+                              "assets/obj/asteroids/bullet.obj");
   glob_asteroid_large_ix =
       globs.load("assets/obj/asteroids/asteroid_large.obj",
                  "assets/obj/asteroids/asteroid_large.obj");
+
   glob_asteroid_medium_ix =
       globs.load("assets/obj/asteroids/asteroid_medium.obj",
                  "assets/obj/asteroids/asteroid_medium.obj");
+
   glob_asteroid_small_ix =
-      globs.load("assets/obj/asteroids/asteroid_medium.obj",
-                 "assets/obj/asteroids/asteroid_medium.obj");
+      globs.load("assets/obj/asteroids/asteroid_small.obj",
+                 "assets/obj/asteroids/asteroid_small.obj");
 
   // assumes grid is a square
   constexpr float world_size = grid_cell_size * grid_ncells_wide;

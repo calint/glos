@@ -23,6 +23,7 @@ namespace glos {
 
 class material final {
 public:
+  std::string path = "";
   std::string name = "";
   float Ns = 0;
   glm::vec4 Ka{0, 0, 0, 0};
@@ -43,6 +44,7 @@ public:
   inline void free() { store.clear(); }
 
   inline void load(char const *path) {
+    printf("   * loading materials from '%s'\n", path);
     std::ifstream file(path);
     if (!file) {
       printf("*** cannot open file '%s'\n", path);
@@ -62,7 +64,9 @@ public:
         store.push_back({});
         token t = token_next(&p);
         const unsigned n = token_size(&t);
+        store.back().path = std::string{path};
         store.back().name = std::string{t.content, t.content + n};
+        printf("     * %s\n", store.back().name.c_str());
         continue;
       }
       if (token_equals(&tk, "Ns")) {

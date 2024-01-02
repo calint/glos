@@ -3,6 +3,7 @@
 #include <condition_variable>
 #include <iostream>
 #include <mutex>
+#include <glm/gtx/string_cast.hpp>
 
 // inclusion order relevant
 #include "../application/configuration.hpp"
