@@ -26,7 +26,8 @@
 [ ]   constexpr everything
 [ ]   struct vertex used for sizeof only
 [ ] grid: static vs moving vs bullets vs scenery objects
-[ ] glo: optimize ranges by merging non-texture drawsj
+[ ] glo: optimize ranges by merging non-texture draws
+[ ] use string_view instead of const char*
 [ ] note about the absolute texture path in mtl filess
 [x]   rename 'node' to something better
       => moved into object
