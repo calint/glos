@@ -66,8 +66,29 @@ void application_init() {
 
   glob_ix_power_up = globs.load("assets/obj/asteroids/power_up.obj", nullptr);
 
+  // setup the light
+  ambient_light = normalize(vec3{1, 1, 1});
+
+  {
+    ship *o = new (objects.alloc()) ship{};
+    o->net_state = &net.states[1];
+  }
+
+  camera.type = camera::type::ORTHO;
+  camera.position = {0, 50, 0};
+  camera.look_at = {0, 0, -0.0001f};
+  // note. -0.0001f because of the math of 'look at'
+  camera.ortho_min_x = -20;
+  camera.ortho_min_y = -20;
+  camera.ortho_max_x = 20;
+  camera.ortho_max_y = 20;
+
+  // camera.type = camera::type::LOOK_AT;
+  // camera.position = {0, 32, 0};
+  // camera.look_at = {0, 0, -0.00001f};
+
   // assumes grid is a square
-  constexpr float world_size = grid_cell_size * grid_ncells_wide;
+  // constexpr float world_size = grid_cell_size * grid_ncells_wide;
 
   // setup the initial scene
   // {
@@ -93,41 +114,6 @@ void application_init() {
   //   o->radius = g.bounding_radius * skydome_scale;
   // }
 
-  // setup the light
-  ambient_light = normalize(vec3{1, 1, 1});
-
-  // setup the camera
-  // camera.type = camera::type::LOOK_AT;
-  // camera.position = {0, 20, 20};
-  // camera.look_at = {0, 0, 0};
-
-  camera.type = camera::type::ORTHO;
-  camera.position = {0, 50, 0};
-  camera.look_at = {0, 0, -0.0001f};
-  // note. -0.0001f because of the math of 'look at'
-  camera.ortho_min_x = -20;
-  camera.ortho_min_y = -20;
-  camera.ortho_max_x = 20;
-  camera.ortho_max_y = 20;
-
-  // fit the 'grid' size
-  // camera.ortho_min_x = -80;
-  // camera.ortho_min_y = -80;
-  // camera.ortho_max_x = 80;
-  // camera.ortho_max_y = 80;
-
-  // for (float y = -80; y <= 80; y += 1) {
-  //   for (float x = -80; x <= 80; x += 1) {
-  //     sphere *o = new (objects.alloc()) sphere{};
-  //     o->position = {x, o->radius, y};
-  //     o->angular_velocity.y = radians(40.0f);
-  //   }
-  // }
-
-  {
-    ship *o = new (objects.alloc()) ship{};
-    o->net_state = &net.states[1];
-  }
 }
 
 void application_at_frame_end() {
