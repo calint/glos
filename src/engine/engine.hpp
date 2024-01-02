@@ -67,6 +67,16 @@ inline glm::vec3 ambient_light = glm::normalize(glm::vec3{0, 1, 1});
 
 inline object *camera_follow_object = nullptr;
 
+static constexpr uint32_t key_w = 1;
+static constexpr uint32_t key_a = 2;
+static constexpr uint32_t key_s = 4;
+static constexpr uint32_t key_d = 8;
+static constexpr uint32_t key_q = 16;
+static constexpr uint32_t key_e = 32;
+static constexpr uint32_t key_j = 64;
+static constexpr uint32_t key_k = 128;
+static constexpr uint32_t key_l = 256;
+
 class engine final {
 public:
   int shader_program_render_line = 0;
@@ -306,50 +316,62 @@ public:
         case SDL_KEYDOWN:
           switch (event.key.keysym.sym) {
           case SDLK_w:
-            net.next_state.keys |= 1u;
+            net.next_state.keys |= key_w;
             break;
           case SDLK_a:
-            net.next_state.keys |= 2u;
+            net.next_state.keys |= key_a;
             break;
           case SDLK_s:
-            net.next_state.keys |= 4u;
+            net.next_state.keys |= key_s;
             break;
           case SDLK_d:
-            net.next_state.keys |= 8u;
+            net.next_state.keys |= key_d;
             break;
           case SDLK_q:
-            net.next_state.keys |= 16u;
+            net.next_state.keys |= key_q;
             break;
           case SDLK_e:
-            net.next_state.keys |= 32u;
+            net.next_state.keys |= key_e;
             break;
           case SDLK_j:
-            net.next_state.keys |= 64u;
+            net.next_state.keys |= key_j;
+            break;
+          case SDLK_k:
+            net.next_state.keys |= key_k;
+            break;
+          case SDLK_l:
+            net.next_state.keys |= key_l;
             break;
           }
           break;
         case SDL_KEYUP:
           switch (event.key.keysym.sym) {
           case SDLK_w:
-            net.next_state.keys &= ~1u;
+            net.next_state.keys &= ~key_w;
             break;
           case SDLK_a:
-            net.next_state.keys &= ~2u;
+            net.next_state.keys &= ~key_a;
             break;
           case SDLK_s:
-            net.next_state.keys &= ~4u;
+            net.next_state.keys &= ~key_s;
             break;
           case SDLK_d:
-            net.next_state.keys &= ~8u;
+            net.next_state.keys &= ~key_d;
             break;
           case SDLK_q:
-            net.next_state.keys &= ~16u;
+            net.next_state.keys &= ~key_q;
             break;
           case SDLK_e:
-            net.next_state.keys &= ~32u;
+            net.next_state.keys &= ~key_e;
             break;
           case SDLK_j:
-            net.next_state.keys &= ~64u;
+            net.next_state.keys &= ~key_j;
+            break;
+          case SDLK_k:
+            net.next_state.keys &= ~key_k;
+            break;
+          case SDLK_l:
+            net.next_state.keys &= ~key_l;
             break;
           case SDLK_SPACE:
             mouse_mode = mouse_mode ? SDL_FALSE : SDL_TRUE;

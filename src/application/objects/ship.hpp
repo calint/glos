@@ -3,17 +3,15 @@
 #include "bullet.hpp"
 
 class ship : public object {
-  unsigned ready_to_fire_at_ms = 0;
-  uint32_t glob_engine_on_ix = 0;
-  uint32_t glob_engine_off_ix = 0;
-  unsigned bullet_fire_rate_ms = ship_bullet_fire_intervall_ms;
+  uint32_t ready_to_fire_at_ms = 0;
+  uint32_t bullet_fire_rate_ms = ship_bullet_fire_intervall_ms;
+  uint8_t bullet_level = 0;
 
 public:
   inline ship() {
     name = "hero";
     mass = 150;
-    glob_engine_off_ix = glob_ix = glob_ix_ship;
-    glob_engine_on_ix = glob_ix_ship_engine_on;
+    glob_ix = glob_ix_ship;
     scale = {1, 1, 1};
     glob const &g = globs.at(glob_ix);
     radius = g.bounding_radius * 1; // r * scale
@@ -32,32 +30,51 @@ public:
 
     angular_velocity = {0, 0, 0};
     const uint64_t keys = net_state->keys;
-    glob_ix = glob_engine_off_ix;
+    glob_ix = glob_ix_ship;
     if (keys != 0) {
       // wasd keys
-      if (keys & 1) {
+      if (keys & glos::key_w) {
         velocity += ship_speed * vec3{-sin(angle.y), 0, -cos(angle.y)} *
                     frame_context.dt;
-        glob_ix = glob_engine_on_ix;
+        glob_ix = glob_ix_ship_engine_on;
       }
-      if (keys & 2) {
+      if (keys & glos::key_a) {
         angular_velocity.y = radians(ship_turn_rate_deg);
       }
-      if (keys & 8) {
+      if (keys & glos::key_d) {
         angular_velocity.y = radians(-ship_turn_rate_deg);
       }
-      if (keys & 64) { // j
+      if (keys & glos::key_j) {
         if (ready_to_fire_at_ms < frame_context.ms) {
-          bullet *o = new (objects.alloc()) bullet{};
-          o->angle = angle;
-          mat4 M = get_updated_Mmw();
-          o->position = position;
-          o->velocity = -ship_bullet_speed * vec3(M[2]);
-          ready_to_fire_at_ms = frame_context.ms + bullet_fire_rate_ms;
+          switch (bullet_level) {
+          case 0: {
+            bullet *o = new (objects.alloc()) bullet{};
+            o->angle = angle;
+            mat4 M = get_updated_Mmw();
+            o->position = position;
+            o->velocity = -ship_bullet_speed * vec3(M[2]);
+            ready_to_fire_at_ms = frame_context.ms + bullet_fire_rate_ms;
+            break;
+          }
+          case 1: {
+            for (int i = 0; i < ship_bullet_level_1_count; i++) {
+              bullet *o = new (objects.alloc()) bullet{};
+              o->angle = angle;
+              mat4 M = get_updated_Mmw();
+              o->position = position;
+              o->velocity = -ship_bullet_speed * vec3(M[2]);
+              constexpr int ship_bullet_spread = 4;
+              constexpr int sp = ship_bullet_spread;
+              o->velocity.x += float(rand() % sp - sp / 2);
+              o->velocity.z += float(rand() % sp - sp / 2);
+            }
+            ready_to_fire_at_ms = frame_context.ms + bullet_fire_rate_ms;
+            break;
+          }
+          }
         }
       }
     }
-
     return false;
   }
 
@@ -70,8 +87,13 @@ public:
 
     if (typeid(*o) == typeid(power_up)) {
       bullet_fire_rate_ms /= 2;
-      if (bullet_fire_rate_ms < 200) {
-        bullet_fire_rate_ms = 200;
+      if (bullet_fire_rate_ms < 100) {
+        ++bullet_level;
+        if (bullet_level > 1) {
+          bullet_level = 1;
+        } else {
+          bullet_fire_rate_ms = ship_bullet_fire_intervall_ms;
+        }
       }
     }
 
