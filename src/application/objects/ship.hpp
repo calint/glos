@@ -95,7 +95,7 @@ public:
         }
       }
     } else if (o->collision_bits & cb_asteroid) {
-      angle.y += radians(float(rand() % 45 - 22));
+      angle.y += radians(rnd1(45));
     }
 
     return false;

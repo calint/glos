@@ -37,14 +37,12 @@ public:
 
     for (int i = 0; i < asteroid_medium_split; i++) {
       asteroid_small *ast = new (objects.alloc()) asteroid_small{};
-      ast->position = position;
-
-      constexpr int v = asteroid_medium_split_speed;
-      ast->velocity = velocity + vec3(float(rand() % v - v / 2), 0,
-                                      float(rand() % v - v / 2));
-
-      constexpr int r = asteroid_medium_split_angular_vel_deg;
-      ast->angular_velocity = vec3(radians(float(rand() % r - r / 2)));
+      const vec3 rp = vec3(rnd1(radius / 2), 0, rnd1(radius / 2));
+      ast->position = position + rp;
+      ast->velocity =
+          velocity + rnd2(asteroid_medium_split_speed) * normalize(rp);
+      ast->angular_velocity =
+          vec3(radians(rnd1(asteroid_medium_split_angular_vel_deg)));
     }
 
     return true;

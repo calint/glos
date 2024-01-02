@@ -66,27 +66,27 @@ static uint32_t glob_ix_fragment = 0;
 static uint32_t glob_ix_power_up = 0;
 
 // game constants
-constexpr int asteroid_large_speed = 10;
+static constexpr int asteroid_large_speed = 10;
 
-constexpr float asteroid_large_scale = 2;
-constexpr int asteroid_large_split = 4;
-constexpr int asteroid_large_split_speed = 8;
-constexpr int asteroid_large_split_angular_vel_deg = 60;
+static constexpr float asteroid_large_scale = 2;
+static constexpr int asteroid_large_split = 4;
+static constexpr float asteroid_large_split_speed = 6;
+static constexpr float asteroid_large_split_angular_vel_deg = 60;
 
-constexpr float asteroid_medium_scale = 1.2f;
-constexpr int asteroid_medium_split = 4;
-constexpr int asteroid_medium_split_speed = 12;
-constexpr int asteroid_medium_split_angular_vel_deg = 100;
+static constexpr float asteroid_medium_scale = 1.2f;
+static constexpr int asteroid_medium_split = 4;
+static constexpr float asteroid_medium_split_speed = 6;
+static constexpr float asteroid_medium_split_angular_vel_deg = 100;
 
-constexpr float asteroid_small_scale = 0.75f;
+static constexpr float asteroid_small_scale = 0.75f;
 
-constexpr float ship_turn_rate_deg = 120;
-constexpr float ship_speed = 6;
-constexpr float ship_bullet_speed = 17;
-constexpr uint32_t ship_bullet_fire_interval_ms = 1000;
-constexpr int ship_bullet_level_1_fire_count = 5;
+static constexpr float ship_turn_rate_deg = 120;
+static constexpr float ship_speed = 6;
+static constexpr float ship_bullet_speed = 17;
+static constexpr uint32_t ship_bullet_fire_interval_ms = 1'000;
+static constexpr int ship_bullet_level_1_fire_count = 5;
 
-constexpr int bullet_fragment_angular_velocity_rnd = 360;
+static constexpr int bullet_fragment_angular_velocity_rnd = 360;
 
-constexpr int power_up_chance_rem = 5;
-constexpr uint32_t power_up_lifetime_ms = 30'000;
+static constexpr int power_up_chance_rem = 5;
+static constexpr uint32_t power_up_lifetime_ms = 30'000;
