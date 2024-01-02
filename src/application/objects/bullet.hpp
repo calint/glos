@@ -32,7 +32,7 @@ public:
 
     fragment *frg = new (objects.alloc()) fragment{};
     frg->position = position;
-    constexpr int r = bullet_fragment_angular_velocity_rnd;
+    constexpr int r = bullet_fragment_agl_vel_rnd;
     frg->angular_velocity = vec3(radians(float(rand() % r - r / 2)));
     frg->death_time_ms = frame_context.ms + 500;
     frg->scale = {0.5f, 0.5f, 0.5f};

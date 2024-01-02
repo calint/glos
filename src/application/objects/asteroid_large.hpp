@@ -41,7 +41,7 @@ public:
       ast->position = position + rp;
       ast->velocity = velocity + rnd2(asteroid_large_split_speed) * normalize(rp);
       ast->angular_velocity =
-          vec3(radians(rnd1(asteroid_large_split_angular_vel_deg)));
+          vec3(radians(rnd1(asteroid_large_split_agl_vel_deg)));
     }
 
     return true;
