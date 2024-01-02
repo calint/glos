@@ -6,7 +6,7 @@ public:
 
   inline fragment() {
     name = "fragment";
-    glob_ix = glob_fragment_ix;
+    glob_ix = glob_ix_fragment;
     glob const &g = globs.at(glob_ix);
     radius = g.bounding_radius;
     mass = 1;

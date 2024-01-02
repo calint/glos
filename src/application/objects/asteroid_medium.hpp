@@ -10,7 +10,7 @@ class asteroid_medium : public object {
 public:
   inline asteroid_medium() {
     name = "asteroid_medium";
-    glob_ix = glob_asteroid_medium_ix;
+    glob_ix = glob_ix_asteroid_medium;
     scale = {1, 1, 1};
     glob const &g = globs.at(glob_ix);
     radius = g.bounding_radius * 1; // r * scale

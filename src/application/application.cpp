@@ -36,32 +36,34 @@ void application_init() {
   static_assert(sizeof(fragment) <= objects_instance_size_B, "");
 
   // load the objects and assign the indexes
-  glob_skydome_ix = globs.load("assets/obj/skydome.obj", nullptr);
+  glob_ix_skydome = globs.load("assets/obj/skydome.obj", nullptr);
 
-  glob_grid_ix = globs.load("assets/obj/grid.obj", nullptr);
+  glob_ix_grid = globs.load("assets/obj/grid.obj", nullptr);
 
-  glob_ship_ix = globs.load("assets/obj/asteroids/ship.obj",
+  glob_ix_ship = globs.load("assets/obj/asteroids/ship.obj",
                             "assets/obj/asteroids/ship.obj");
 
-  glob_ship_engine_on_ix =
+  glob_ix_ship_engine_on =
       globs.load("assets/obj/asteroids/ship_engine_on.obj",
                  "assets/obj/asteroids/ship_engine_on.obj");
 
-  glob_bullet_ix = globs.load("assets/obj/asteroids/bullet.obj",
+  glob_ix_bullet = globs.load("assets/obj/asteroids/bullet.obj",
                               "assets/obj/asteroids/bullet.obj");
-  glob_asteroid_large_ix =
+  glob_ix_asteroid_large =
       globs.load("assets/obj/asteroids/asteroid_large.obj",
                  "assets/obj/asteroids/asteroid_large.obj");
 
-  glob_asteroid_medium_ix =
+  glob_ix_asteroid_medium =
       globs.load("assets/obj/asteroids/asteroid_medium.obj",
                  "assets/obj/asteroids/asteroid_medium.obj");
 
-  glob_asteroid_small_ix =
+  glob_ix_asteroid_small =
       globs.load("assets/obj/asteroids/asteroid_small.obj",
                  "assets/obj/asteroids/asteroid_small.obj");
 
-  glob_fragment_ix = globs.load("assets/obj/asteroids/fragment.obj", nullptr);
+  glob_ix_fragment = globs.load("assets/obj/asteroids/fragment.obj", nullptr);
+
+  glob_ix_power_up = globs.load("assets/obj/asteroids/power_up.obj", nullptr);
 
   // assumes grid is a square
   constexpr float world_size = grid_cell_size * grid_ncells_wide;

@@ -6,7 +6,7 @@ class bullet : public object {
 public:
   inline bullet() {
     name = "bullet";
-    glob_ix = glob_bullet_ix;
+    glob_ix = glob_ix_bullet;
     scale = {1, 1, 1};
     glob const &g = globs.at(glob_ix);
     radius = g.bounding_radius * 1; // r * scale

@@ -1,9 +1,12 @@
 #pragma once
 
-#include "configuration.hpp"
 #include <atomic>
 #include <glm/glm.hpp>
-
+//
+#include "configuration.hpp"
+//
+#include "objects/power_up.hpp"
+//
 std::atomic<int> asteroids_alive{0};
 
 inline void game_area_roll(glm::vec3 &position) {
@@ -16,4 +19,14 @@ inline void game_area_roll(glm::vec3 &position) {
   } else if (position.z > game_area_max_z) {
     position.z = -position.z;
   }
+}
+
+inline void power_up_by_chance(const glm::vec3 &position) {
+  if (rand() % power_up_chance_rem) {
+    return;
+  }
+
+  power_up *obj = new (objects.alloc()) power_up{};
+  obj->position = position;
+  obj->angular_velocity.y = radians(90.0f);
 }

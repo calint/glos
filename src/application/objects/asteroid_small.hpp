@@ -8,7 +8,7 @@ class asteroid_small : public object {
 public:
   inline asteroid_small() {
     name = "asteroid_small";
-    glob_ix = glob_asteroid_small_ix;
+    glob_ix = glob_ix_asteroid_small;
     scale = {0.5f, 0.5f, 0.5f};
     glob const &g = globs.at(glob_ix);
     radius = g.bounding_radius * scale.x;
@@ -37,6 +37,9 @@ public:
     assert(not is_dead());
     printf("%u: %s collision with %s\n", fc.tick, name.c_str(),
            o->name.c_str());
+
+    power_up_by_chance(position);
+
     return true;
   }
 };

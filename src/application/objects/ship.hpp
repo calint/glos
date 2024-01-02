@@ -6,18 +6,19 @@ class ship : public object {
   unsigned ready_to_fire_at_ms = 0;
   uint32_t glob_engine_on_ix = 0;
   uint32_t glob_engine_off_ix = 0;
+  unsigned bullet_fire_rate_ms = ship_bullet_fire_intervall_ms;
 
 public:
   inline ship() {
     name = "hero";
     mass = 150;
-    glob_engine_off_ix = glob_ix = glob_ship_ix;
-    glob_engine_on_ix = glob_ship_engine_on_ix;
+    glob_engine_off_ix = glob_ix = glob_ix_ship;
+    glob_engine_on_ix = glob_ix_ship_engine_on;
     scale = {1, 1, 1};
     glob const &g = globs.at(glob_ix);
     radius = g.bounding_radius * 1; // r * scale
     collision_bits = cb_hero;
-    collision_mask = cb_asteroid;
+    collision_mask = cb_asteroid | cb_power_up;
   }
 
   inline auto update(frame_context const &fc) -> bool override {
@@ -51,7 +52,7 @@ public:
           mat4 M = get_updated_Mmw();
           o->position = position;
           o->velocity = -ship_bullet_speed * vec3(M[2]);
-          ready_to_fire_at_ms = fc.ms + ship_bullet_fire_intervall_ms;
+          ready_to_fire_at_ms = fc.ms + bullet_fire_rate_ms;
         }
       }
     }
@@ -61,9 +62,19 @@ public:
 
   inline auto on_collision(object *o, frame_context const &fc)
       -> bool override {
+
     assert(not is_dead());
+
     printf("%u: %s collision with %s\n", fc.tick, name.c_str(),
            o->name.c_str());
+
+    if (typeid(*o) == typeid(power_up)) {
+      bullet_fire_rate_ms /= 2;
+      if (bullet_fire_rate_ms < 200) {
+        bullet_fire_rate_ms = 200;
+      }
+    }
+
     return false;
   }
 };
