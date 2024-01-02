@@ -9,7 +9,7 @@ public:
   inline asteroid_small() {
     name = "asteroid_small";
     glob_ix = glob_ix_asteroid_small;
-    scale = {0.5f, 0.5f, 0.5f};
+    scale = vec3{asteroid_small_scale};
     radius = globs.at(glob_ix).bounding_radius * scale.x;
     collision_bits = cb_asteroid;
     collision_mask = cb_hero_bullet | cb_hero;

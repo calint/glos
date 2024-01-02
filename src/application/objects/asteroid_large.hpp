@@ -10,7 +10,7 @@ class asteroid_large : public object {
 public:
   inline asteroid_large() {
     name = "asteroid_large";
-    scale = {2, 2, 2};
+    scale = vec3{asteroid_large_scale};
     glob_ix = glob_ix_asteroid_large;
     radius = globs.at(glob_ix).bounding_radius * scale.x;
     collision_bits = cb_asteroid;

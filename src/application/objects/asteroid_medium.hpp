@@ -11,7 +11,7 @@ public:
   inline asteroid_medium() {
     name = "asteroid_medium";
     glob_ix = glob_ix_asteroid_medium;
-    scale = {1, 1, 1};
+    scale = vec3{asteroid_medium_scale};
     radius = globs.at(glob_ix).bounding_radius * scale.x;
     collision_bits = cb_asteroid;
     collision_mask = cb_hero_bullet | cb_hero;
