@@ -2,7 +2,6 @@
 
 #include <condition_variable>
 #include <glm/gtx/string_cast.hpp>
-#include <iostream>
 #include <mutex>
 
 // inclusion order relevant
