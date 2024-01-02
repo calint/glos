@@ -11,11 +11,11 @@ class object {
 public:
   object **alloc_ptr;             // initiated at allocate by 'o1store'
   std::string name{};             // instance name
-  uint32_t glob_ix = 0;            // glo index
+  uint32_t glob_ix = 0;           // glo index
   float radius = 0;               // bounding radius
   glm::vec3 scale{};              //
   planes planes{};                // bounding planes (if any)
-  bool is_sphere = true;          //
+  bool is_sphere = false;         //
   glm::mat4 Mmw{};                // model -> world matrix
   glm::vec3 Mmw_pos{};            // position of current Mmw matrix
   glm::vec3 Mmw_agl{};            // angle of current Mmw matrix

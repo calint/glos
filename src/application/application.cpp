@@ -3,6 +3,7 @@
 using namespace glos;
 using namespace glm;
 //
+#include "objects/asteroid_large.hpp"
 #include "objects/cube.hpp"
 #include "objects/santa.hpp"
 #include "objects/ship.hpp"
@@ -38,6 +39,17 @@ void application_init() {
   glob_cube_ix = globs.load("assets/obj/cube.obj", "assets/obj/bv-cube.obj");
   glob_ship_ix = globs.load("assets/obj/asteroids/ship.obj",
                             "assets/obj/asteroids/ship.obj");
+  glob_bullet_ix = globs.load("assets/obj/asteroids/bullet_1.obj",
+                              "assets/obj/asteroids/bullet_1.obj");
+  glob_asteroid_large_ix =
+      globs.load("assets/obj/asteroids/asteroid_large.obj",
+                 "assets/obj/asteroids/asteroid_large.obj");
+  glob_asteroid_medium_ix =
+      globs.load("assets/obj/asteroids/asteroid_medium.obj",
+                 "assets/obj/asteroids/asteroid_medium.obj");
+  glob_asteroid_small_ix =
+      globs.load("assets/obj/asteroids/asteroid_medium.obj",
+                 "assets/obj/asteroids/asteroid_medium.obj");
 
   // assumes grid is a square
   constexpr float world_size = grid_cell_size * grid_ncells_wide;
@@ -122,8 +134,15 @@ void application_init() {
 
   {
     ship *o = new (objects.alloc()) ship{};
-    o->position.y = o->scale.y;
     o->net_state = &net.states[1];
+  }
+
+  for (int i = 0; i < 10; i++) {
+    asteroid_large *o = new (objects.alloc()) asteroid_large{};
+    o->position.x = rand() % 40 - 20;
+    o->position.z = rand() % 40 - 20;
+    o->velocity.x = rand() % 10 - 5;
+    o->velocity.z = rand() % 10 - 5;
   }
 }
 

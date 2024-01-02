@@ -35,7 +35,7 @@ public:
     // update using signals state
     glm::vec3 &v = velocity;
     v = {0, 0, 0};
-    unsigned keys = net_state->keys;
+    uint64_t keys = net_state->keys;
     if (keys != 0) {
       // wasd keys
       if (keys & 1) {

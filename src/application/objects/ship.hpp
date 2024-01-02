@@ -1,10 +1,13 @@
 #pragma once
 
+#include "bullet.hpp"
+
 class ship : public object {
+  unsigned ready_to_fire_at_ms = 0;
+
 public:
   inline ship() {
     name = "hero";
-    is_sphere = false;
     mass = 150;
     glob_ix = glob_ship_ix;
     scale = {1, 1, 1};
@@ -26,13 +29,23 @@ public:
     if (keys != 0) {
       // wasd keys
       if (keys & 1) {
-        velocity += 4.0f * vec3{-sin(angle.y), 0, -cos(angle.y)} * fc.dt;
+        velocity += 6.0f * vec3{-sin(angle.y), 0, -cos(angle.y)} * fc.dt;
       }
       if (keys & 2) {
         angular_velocity.y = radians(90.0f);
       }
       if (keys & 8) {
         angular_velocity.y = radians(-90.0f);
+      }
+      if (keys & 64) { // j
+        if (ready_to_fire_at_ms < fc.ms) {
+          bullet *o = new (objects.alloc()) bullet{};
+          o->angle = angle;
+          mat4 M = get_updated_Mmw();
+          o->position = position;
+          o->velocity = -17.0f * vec3(M[2]);
+          ready_to_fire_at_ms = fc.ms + 1000;
+        }
       }
     }
 

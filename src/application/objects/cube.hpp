@@ -29,7 +29,7 @@ public:
     glm::vec3 &av = angular_velocity;
     v = {0, 0, 0};
     av = {0, 0, 0};
-    unsigned keys = net_state->keys;
+    uint64_t keys = net_state->keys;
     if (keys != 0) {
       // wasd keys
       if (keys & 1) {

@@ -33,6 +33,7 @@ class frame_context {
 public:
   float dt = 0;
   unsigned tick = 0;
+  unsigned ms = 0;
 };
 } // namespace glos
 
@@ -221,7 +222,7 @@ public:
 
         // in multiplayer mode use dt from server else previous frame
         frame_context fc{net.enabled ? net.dt : metrics.fps.dt,
-                         update_frame_num};
+                         update_frame_num, SDL_GetTicks()};
 
         // note. data racing between render and update is ok
 
@@ -297,25 +298,25 @@ public:
         case SDL_KEYDOWN:
           switch (event.key.keysym.sym) {
           case SDLK_w:
-            net.next_state.keys |= 1;
+            net.next_state.keys |= 1u;
             break;
           case SDLK_a:
-            net.next_state.keys |= 2;
+            net.next_state.keys |= 2u;
             break;
           case SDLK_s:
-            net.next_state.keys |= 4;
+            net.next_state.keys |= 4u;
             break;
           case SDLK_d:
-            net.next_state.keys |= 8;
+            net.next_state.keys |= 8u;
             break;
           case SDLK_q:
-            net.next_state.keys |= 16;
+            net.next_state.keys |= 16u;
             break;
           case SDLK_e:
-            net.next_state.keys |= 32;
+            net.next_state.keys |= 32u;
             break;
-          case SDLK_o:
-            net.next_state.keys |= 64;
+          case SDLK_j:
+            net.next_state.keys |= 64u;
             break;
           }
           break;
@@ -339,7 +340,7 @@ public:
           case SDLK_e:
             net.next_state.keys &= ~32u;
             break;
-          case SDLK_o:
+          case SDLK_j:
             net.next_state.keys &= ~64u;
             break;
           case SDLK_SPACE:
