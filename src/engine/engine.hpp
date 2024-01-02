@@ -69,15 +69,18 @@ inline glm::vec3 ambient_light = glm::normalize(glm::vec3{0, 1, 1});
 
 inline object *camera_follow_object = nullptr;
 
-static constexpr uint32_t key_w = 1;
-static constexpr uint32_t key_a = 2;
-static constexpr uint32_t key_s = 4;
-static constexpr uint32_t key_d = 8;
-static constexpr uint32_t key_q = 16;
-static constexpr uint32_t key_e = 32;
-static constexpr uint32_t key_j = 64;
-static constexpr uint32_t key_k = 128;
-static constexpr uint32_t key_l = 256;
+static constexpr uint32_t key_w = 1 << 0;
+static constexpr uint32_t key_a = 1 << 1;
+static constexpr uint32_t key_s = 1 << 2;
+static constexpr uint32_t key_d = 1 << 3;
+static constexpr uint32_t key_q = 1 << 4;
+static constexpr uint32_t key_e = 1 << 5;
+static constexpr uint32_t key_i = 1 << 6;
+static constexpr uint32_t key_j = 1 << 7;
+static constexpr uint32_t key_k = 1 << 8;
+static constexpr uint32_t key_l = 1 << 9;
+static constexpr uint32_t key_u = 1 << 10;
+static constexpr uint32_t key_o = 1 << 11;
 
 class engine final {
 public:
@@ -287,7 +290,7 @@ public:
       metrics.at_frame_begin();
 
       // poll events
-      SDL_Event event;
+      SDL_Event event = {0};
       while (SDL_PollEvent(&event)) {
         switch (event.type) {
         case SDL_WINDOWEVENT: {
@@ -347,6 +350,9 @@ public:
             break;
           case SDLK_l:
             net.next_state.keys |= key_l;
+            break;
+          case SDLK_i:
+            net.next_state.keys |= key_i;
             break;
           }
           break;
