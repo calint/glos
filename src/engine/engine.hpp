@@ -383,26 +383,25 @@ public:
             mouse_mode = mouse_mode ? SDL_FALSE : SDL_TRUE;
             SDL_SetRelativeMouseMode(mouse_mode ? SDL_TRUE : SDL_FALSE);
             break;
-          case SDLK_3:
+          case SDLK_F1:
+            print_grid = not print_grid;
+            break;
+          case SDLK_F2:
+            resolve_collisions = not resolve_collisions;
+            break;
+          case SDLK_F3:
+            do_render = not do_render;
+            break;
+          case SDLK_F4:
             shader_program_ix++;
             if (shader_program_ix >= shaders.programs_count()) {
               shader_program_ix = 0;
             }
             break;
-          case SDLK_4:
-            print_grid = not print_grid;
-            break;
-          case SDLK_5:
-            do_render = not do_render;
-            break;
-          case SDLK_6:
-            resolve_collisions = not resolve_collisions;
-            break;
-          case SDLK_7:
+          case SDLK_F5:
             debug_object_planes_normals = not debug_object_planes_normals;
-            printf("debug normals: %d\n", debug_object_planes_normals);
             break;
-          case SDLK_8:
+          case SDLK_F6:
             debug_object_bounding_sphere = not debug_object_bounding_sphere;
             break;
           }

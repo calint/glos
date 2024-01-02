@@ -66,8 +66,8 @@ public:
   inline void debug_render_normals() {
     const size_t n = world_positions.size();
     for (size_t i = 0; i < n; ++i) {
-      const glm::vec3 &pnt = world_positions[i];
-      const glm::vec3 &nml = world_normals[i];
+      const glm::vec3 &pnt = world_positions.at(i);
+      const glm::vec3 &nml = world_normals.at(i);
       debug_render_wcs_line(pnt, pnt + nml, {1, 0, 0});
     }
   }
