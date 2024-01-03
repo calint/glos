@@ -35,7 +35,7 @@ public:
   inline void update_matrix_wvp() {
     switch (type) {
     case type::LOOK_AT: {
-      const float aspect_ratio = height == 0 ? 1 : (width / height);
+      float const aspect_ratio = height == 0 ? 1 : (width / height);
       glm::mat4 Mv = glm::lookAt(position, look_at, {0, 1, 0});
       glm::mat4 Mp = glm::perspective(glm::radians(fov), aspect_ratio,
                                       near_plane, far_plane);
@@ -51,7 +51,7 @@ public:
       break;
     }
     case type::ANGLE: {
-      const float aspect_ratio = height == 0 ? 1 : (width / height);
+      float const aspect_ratio = height == 0 ? 1 : (width / height);
       glm::mat4 Mv = glm::eulerAngleXYZ(angle.x, angle.y, angle.z);
       glm::mat4 Mp = glm::perspective(glm::radians(fov), aspect_ratio,
                                       near_plane, far_plane);
