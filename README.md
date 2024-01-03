@@ -28,7 +28,7 @@ ubuntu packages used:
 * sdl2 related packages
 * opengl related packages
 
-# sample game
+## sample game
 * multiplayer enabled proof of concept
 * developed to test the framework
 
