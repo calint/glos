@@ -1,4 +1,4 @@
-[o] implement sample game
+[x] implement sample game
 [x] use a build system instead of make.sh
     => and also make.sh
 [ ] halt development and tidy up

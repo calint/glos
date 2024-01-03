@@ -141,7 +141,7 @@ void application_on_update_done() {
 
 void application_on_render_done() {
   char buf[256];
-  sprintf(buf, "score: %0.6d", score);
+  sprintf(buf, "score: %06d", score);
   hud.print(buf, SDL_Color{255, 0, 0, 255}, 60, 10);
 }
 
