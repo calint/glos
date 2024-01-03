@@ -35,3 +35,6 @@ ubuntu packages used:
 ![starting multiplayer mode](https://github.com/calint/glos/assets/1920811/ed27167b-525e-4696-8a0c-2cb2fb52ec14)
 
 ![multiplayer mode](https://github.com/calint/glos/assets/1920811/697dbe55-b3b0-41ef-8bfa-ab67666291c8)
+
+## todo
+* tidy the source in `src/engine`
