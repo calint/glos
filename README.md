@@ -31,6 +31,18 @@ ubuntu packages used:
 ## sample game
 * multiplayer enabled proof of concept
 * developed to test the framework
+* howto keys
+  - w: thrust
+  - a: rotate left
+  - d: rotate right
+  - j: fire
+  - F1: print cells
+  - F2: turn on/off collisions
+  - F3: turn on/off render
+  - F4: cycle through shaders
+  - F5: turn on/off normals
+  - F6: turn on/off bounding spheres
+  - F7: turn on/off hud
 
 ![starting multiplayer mode](https://github.com/calint/glos/assets/1920811/ed27167b-525e-4696-8a0c-2cb2fb52ec14)
 
