@@ -42,4 +42,4 @@ ubuntu packages used:
   - culling to view frustum
   - grid cell culling
   - object culling
-* and much more in ![todo.txt](https://github.com/calint/glos/todo.txt)
+* and much more in ![todo.txt](https://github.com/calint/glos/blob/master/todo.txt)
