@@ -35,11 +35,14 @@ public:
     printf("%u: %s collision with %s\n", frame_context.frame_num, name.c_str(),
            o->name.c_str());
 
+    score += 10;
+
     for (int i = 0; i < asteroid_large_split; i++) {
       asteroid_medium *ast = new (objects.alloc()) asteroid_medium{};
       const vec3 rp = vec3(rnd1(radius / 2), 0, rnd1(radius / 2));
       ast->position = position + rp;
-      ast->velocity = velocity + rnd2(asteroid_large_split_speed) * normalize(rp);
+      ast->velocity =
+          velocity + rnd2(asteroid_large_split_speed) * normalize(rp);
       ast->angular_velocity =
           vec3(radians(rnd1(asteroid_large_split_agl_vel_deg)));
     }

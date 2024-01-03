@@ -19,6 +19,8 @@
 //
 #include "camera.hpp"
 //
+#include "hud.hpp"
+//
 #include "material.hpp"
 //
 #include "glob.hpp"
@@ -44,7 +46,8 @@ inline frame_context frame_context{};
 
 // application interface
 void application_init();
-void application_at_frame_end();
+void application_on_update_done();
+void application_on_render_done();
 void application_free();
 
 inline uint32_t glob_ix_bounding_sphere = 0;
@@ -88,16 +91,17 @@ public:
   int shader_program_render_bounding_sphere = 0;
   int shader_program_ix = 0;
   int shader_program_ix_prev = shader_program_ix;
+  bool render_hud = true;
 
   inline void init() {
     // set random number generator seed for deterministic behaviour
     srand(0);
-
     net.init();
     metrics.init();
     sdl.init();
     window.init();
     shaders.init();
+    hud.init();
     textures.init();
     materials.init();
     globs.init();
@@ -151,6 +155,7 @@ public:
     globs.free();
     materials.free();
     textures.free();
+    hud.free();
     shaders.free();
     window.free();
     sdl.free();
@@ -174,6 +179,13 @@ public:
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     grid.render();
+
+    if (render_hud) {
+      shaders.use_program(hud.program_ix);
+      hud.render();
+      // hud.print("hello world", SDL_Color{255, 0, 0, 255}, 10, 10);
+      shaders.use_program(shader_program_ix);
+    }
 
     window.swap_buffers();
   }
@@ -264,7 +276,7 @@ public:
         objects.apply_allocated_instances();
 
         // callback
-        application_at_frame_end();
+        application_on_update_done();
 
         // apply changes done by application
         objects.apply_freed_instances();
@@ -410,6 +422,9 @@ public:
           case SDLK_F6:
             debug_object_bounding_sphere = not debug_object_bounding_sphere;
             break;
+          case SDLK_F7:
+            render_hud = not render_hud;
+            break;
           }
           break;
         }
@@ -433,6 +448,8 @@ public:
         if (do_render) {
           render();
         }
+
+        application_on_render_done();
 
         // notify update thread that rendering is done
         is_rendering = false;

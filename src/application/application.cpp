@@ -3,6 +3,8 @@
 using namespace glos;
 using namespace glm;
 //
+static int score = 0;
+//
 #include "objects/asteroid_large.hpp"
 #include "objects/fragment.hpp"
 #include "objects/ship.hpp"
@@ -69,7 +71,17 @@ void application_init() {
   glob_ix_power_up = globs.load("assets/obj/asteroids/power_up.obj", nullptr);
 
   // setup scene
-  {
+  if (net.enabled) {
+    // multiplayer mode
+    ship *p1 = new (objects.alloc()) ship{};
+    p1->position.x = -5;
+    p1->net_state = &net.states[1];
+
+    ship *p2 = new (objects.alloc()) ship{};
+    p2->position.x = 5;
+    p2->net_state = &net.states[2];
+  } else {
+    // single player mode
     ship *o = new (objects.alloc()) ship{};
     o->net_state = &net.states[1];
   }
@@ -116,13 +128,21 @@ void application_init() {
   //   o->scale = {skydome_scale, skydome_scale, skydome_scale};
   //   o->radius = g.bounding_radius * skydome_scale;
   // }
+
+  hud.load_font("assets/fonts/digital-7 (mono).ttf", 20);
 }
 
-void application_at_frame_end() {
+void application_on_update_done() {
   if (asteroids_alive == 0) {
     level++;
     create_asteroids(level);
   }
+}
+
+void application_on_render_done() {
+  char buf[256];
+  sprintf(buf, "score: %0.6d", score);
+  hud.print(buf, SDL_Color{255, 0, 0, 255}, 60, 10);
 }
 
 void application_free() {}

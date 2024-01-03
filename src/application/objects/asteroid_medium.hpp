@@ -35,6 +35,8 @@ public:
     printf("%u: %s collision with %s\n", frame_context.frame_num, name.c_str(),
            o->name.c_str());
 
+    score += 50;
+
     for (int i = 0; i < asteroid_medium_split; i++) {
       asteroid_small *ast = new (objects.alloc()) asteroid_small{};
       const vec3 rp = vec3(rnd1(radius / 2), 0, rnd1(radius / 2));

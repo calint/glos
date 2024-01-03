@@ -227,6 +227,10 @@ private:
     return str;
   }
 
+public:
+  //
+  // static functions
+  //
   inline static void gl_print_string(char const *name, const GLenum gl_str) {
     const char *str = (const char *)glGetString(gl_str);
     printf("%s=%s\n", name, str);

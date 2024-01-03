@@ -14,7 +14,7 @@ CC="clang++ -std=c++20"
 SRC="src/main.cpp src/application/application.cpp"
 BIN="glos"
 CFLAGS="-Wfatal-errors $(sdl2-config --cflags)"
-LIBS="-ltbb -lGL -lSDL2_image $(sdl2-config --libs)"
+LIBS="-ltbb -lGL -lSDL2_image -lSDL2_ttf $(sdl2-config --libs)"
 WARNINGS="-Wall -Wextra -Wpedantic \
     -Wshadow -Wconversion -Wsign-conversion \
     -Wno-unused-variable -Wno-unused-function -Wno-unused-parameter"

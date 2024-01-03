@@ -33,6 +33,8 @@ public:
     printf("%u: %s collision with %s\n", frame_context.frame_num, name.c_str(),
            o->name.c_str());
 
+    score += 100;
+
     power_up_by_chance(position);
 
     return true;
