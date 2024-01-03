@@ -38,3 +38,8 @@ ubuntu packages used:
 
 ## todo
 * tidy the source in `src/engine`
+* another sample game in a sandbox-like environment
+  - culling to view frustum
+  - grid cell culling
+  - object culling
+* and much more in ![todo.txt](https://github.com/calint/glos/todo.txt)
