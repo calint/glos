@@ -5,6 +5,7 @@
 [ ]   use c++ random number generator
 [ ]   class private members at the bottom of the declaration
 [x]   use uint32_t instead of unsigned int32_t etc
+      => class members fixed. in code less relevant
 [ ]   consider a more standard source layout without depending on include order
 [ ]   use gl_element_array_buffer (where appropriate)
 [ ]   use glDebugMessageCallback

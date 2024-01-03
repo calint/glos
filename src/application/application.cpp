@@ -8,7 +8,7 @@ using namespace glm;
 #include "objects/ship.hpp"
 //
 static void application_init_shaders();
-static void create_asteroids(int num);
+static void create_asteroids(int const num);
 //
 static int level = 0;
 //
@@ -68,12 +68,14 @@ void application_init() {
 
   glob_ix_power_up = globs.load("assets/obj/asteroids/power_up.obj", nullptr);
 
-  ambient_light = normalize(vec3{1, 1, 1});
-
+  // setup scene
   {
     ship *o = new (objects.alloc()) ship{};
     o->net_state = &net.states[1];
   }
+
+  // setup light and camera
+  ambient_light = normalize(vec3{1, 1, 1});
 
   camera.type = camera::type::ORTHO;
   camera.position = {0, 50, 0};
