@@ -86,7 +86,7 @@ static constexpr float ship_bullet_speed = 17;
 static constexpr uint32_t ship_bullet_fire_interval_ms = 1'000;
 static constexpr int ship_bullet_level_1_fire_count = 5;
 
-static constexpr int bullet_fragment_agl_vel_rnd = 360;
+static constexpr float bullet_fragment_agl_vel_rnd = 360;
 
 static constexpr int power_up_chance_rem = 5;
 static constexpr uint32_t power_up_lifetime_ms = 30'000;
