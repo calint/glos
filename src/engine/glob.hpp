@@ -75,7 +75,7 @@ public:
     std::string base_dir_path = "";
     {
       const std::string file_path = obj_path;
-      const size_t found = file_path.find_last_of("/\\");
+      const size_t found = file_path.find_last_of("/");
       if (found != std::string::npos) {
         base_dir_path = file_path.substr(0, found) + "/";
       }

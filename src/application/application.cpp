@@ -141,7 +141,7 @@ static void create_asteroids(int const num) {
 
 static void application_init_shaders() {
   {
-    const char *vtx = R"(
+    char const *vtx = R"(
 #version 330 core
 uniform mat4 umtx_mw; // model-to-world-matrix
 uniform mat4 umtx_wvp;// world-to-view-to-projection
@@ -155,7 +155,7 @@ void main() {
 }
     )";
 
-    const char *frag = R"(
+    char const *frag = R"(
 #version 330 core
 out vec4 rgba;
 void main() {
@@ -166,7 +166,7 @@ void main() {
     glos::shaders.load_program_from_source(vtx, frag);
   }
   {
-    const char *vtx = R"(
+    char const *vtx = R"(
 #version 330 core
 uniform mat4 umtx_mw; // model-to-world-matrix
 uniform mat4 umtx_wvp;// world-to-view-to-projection
@@ -179,7 +179,7 @@ void main() {
 }
     )";
 
-    const char *frag = R"(
+    char const *frag = R"(
 #version 330 core
 in vec4 vrgba;
 out vec4 rgba;
