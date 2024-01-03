@@ -30,6 +30,7 @@ ubuntu packages used:
 
 ## sample game
 * multiplayer enabled proof of concept
+* shoot asteroids and pick up power ups for the gun
 * developed to test the framework
 * source in `src/application/` and `assets/`
 * howto keys
@@ -38,20 +39,20 @@ ubuntu packages used:
   - d: rotate right
   - j: fire
   - F1: print cells
-  - F2: turn on/off collisions (this will make clients out-of-sync)
-  - F3: turn on/off render
+  - F2: collisions on/off (this will make clients out-of-sync)
+  - F3: render on/off
   - F4: cycle through shaders
-  - F5: turn on/off normals
-  - F6: turn on/off bounding spheres
-  - F7: turn on/off hud
+  - F5: render normals on/off
+  - F6: render bounding spheres on/off
+  - F7: hud on/off
 
 ![starting multiplayer mode](https://github.com/calint/glos/assets/1920811/ed27167b-525e-4696-8a0c-2cb2fb52ec14)
 
 ![multiplayer mode](https://github.com/calint/glos/assets/1920811/697dbe55-b3b0-41ef-8bfa-ab67666291c8)
 
 ## todo
-* tidy the source in `src/application`
-* tidy the source in `src/engine`
-* another sample game in a sandbox-like environment
+* tidy the source in `src/application/`
+* tidy the source in `src/engine/`
+* another sample game in a 3D sandbox-like environment
 * grid cells and objects culling to view frustum
 * and much more in ![todo.txt](https://github.com/calint/glos/blob/master/todo.txt)
