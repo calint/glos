@@ -66,7 +66,7 @@ static uint32_t glob_ix_fragment = 0;
 static uint32_t glob_ix_power_up = 0;
 
 // game constants
-static constexpr int asteroid_large_speed = 10;
+static constexpr float asteroid_large_speed = 10;
 
 static constexpr float asteroid_large_scale = 2;
 static constexpr int asteroid_large_split = 4;

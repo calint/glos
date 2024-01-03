@@ -20,21 +20,23 @@ void application_init() {
   printf(": %15s : %-9s :\n", "class", "bytes");
   printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
   printf(": %15s : %-9ld :\n", "ship", sizeof(ship));
-  printf(": %15s : %-9ld :\n", "asteroid L", sizeof(asteroid_large));
-  printf(": %15s : %-9ld :\n", "asteroid M", sizeof(asteroid_medium));
-  printf(": %15s : %-9ld :\n", "asteroid S", sizeof(asteroid_small));
+  printf(": %15s : %-9ld :\n", "asteroid_large", sizeof(asteroid_large));
+  printf(": %15s : %-9ld :\n", "asteroid_medium", sizeof(asteroid_medium));
+  printf(": %15s : %-9ld :\n", "asteroid_small", sizeof(asteroid_small));
   printf(": %15s : %-9ld :\n", "bullet", sizeof(bullet));
   printf(": %15s : %-9ld :\n", "fragment", sizeof(fragment));
+  printf(": %15s : %-9ld :\n", "power_up", sizeof(power_up));
   printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
   puts("");
 
   // assert that classes use fit in objects store slot
-  static_assert(sizeof(ship) <= objects_instance_size_B, "");
   static_assert(sizeof(asteroid_large) <= objects_instance_size_B, "");
   static_assert(sizeof(asteroid_medium) <= objects_instance_size_B, "");
   static_assert(sizeof(asteroid_small) <= objects_instance_size_B, "");
   static_assert(sizeof(bullet) <= objects_instance_size_B, "");
   static_assert(sizeof(fragment) <= objects_instance_size_B, "");
+  static_assert(sizeof(power_up) <= objects_instance_size_B, "");
+  static_assert(sizeof(ship) <= objects_instance_size_B, "");
 
   // load the objects and assign the indexes
   glob_ix_skydome = globs.load("assets/obj/skydome.obj", nullptr);
@@ -66,7 +68,6 @@ void application_init() {
 
   glob_ix_power_up = globs.load("assets/obj/asteroids/power_up.obj", nullptr);
 
-  // setup the light
   ambient_light = normalize(vec3{1, 1, 1});
 
   {
@@ -113,7 +114,6 @@ void application_init() {
   //   o->scale = {skydome_scale, skydome_scale, skydome_scale};
   //   o->radius = g.bounding_radius * skydome_scale;
   // }
-
 }
 
 void application_at_frame_end() {
@@ -125,15 +125,15 @@ void application_at_frame_end() {
 
 void application_free() {}
 
-static void create_asteroids(int num) {
-  constexpr int v = asteroid_large_speed;
-  constexpr int d = int(game_area_max_x - game_area_min_x);
+static void create_asteroids(int const num) {
+  constexpr float v = asteroid_large_speed;
+  constexpr float d = game_area_max_x - game_area_min_x;
   for (int i = 0; i < num; i++) {
     asteroid_large *o = new (objects.alloc()) asteroid_large{};
-    o->position.x = rand() % d - d / 2;
-    o->position.z = rand() % d - d / 2;
-    o->velocity.x = rand() % v - v / 2;
-    o->velocity.z = rand() % v - v / 2;
+    o->position.x = rnd1(d);
+    o->position.z = rnd1(d);
+    o->velocity.x = rnd1(v);
+    o->velocity.z = rnd1(v);
   }
 }
 
