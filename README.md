@@ -37,7 +37,7 @@ ubuntu packages used:
   - d: rotate right
   - j: fire
   - F1: print cells
-  - F2: turn on/off collisions (this will make clients out of sync)
+  - F2: turn on/off collisions (this will make clients out-of-sync)
   - F3: turn on/off render
   - F4: cycle through shaders
   - F5: turn on/off normals
