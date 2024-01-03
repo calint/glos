@@ -31,6 +31,7 @@ ubuntu packages used:
 ## sample game
 * multiplayer enabled proof of concept
 * developed to test the framework
+* source in `src/application/` and `assets/`
 * howto keys
   - w: thrust
   - a: rotate left
