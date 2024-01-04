@@ -1,11 +1,12 @@
 // reviewed: 2023-12-22
+// reviewed: 2024-01-04
 
 #include "engine/engine.hpp"
 
 //------------------------------------------------------------------------ main
 int main(int argc, char *argv[]) {
 
-  if (argc > 1 && *argv[1] == 's') {
+  if (argc > 1 and *argv[1] == 's') {
     // instance is a server
     glos::net_server.init();
     glos::net_server.run();
@@ -15,7 +16,7 @@ int main(int argc, char *argv[]) {
 
   puts("\nprogram glos\n");
 
-  if (argc > 1 && *argv[1] == 'c') {
+  if (argc > 1 and *argv[1] == 'c') {
     // multiplayer client, enable 'net'
     glos::net.enabled = true;
     if (argc > 2) {

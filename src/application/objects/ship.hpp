@@ -1,12 +1,9 @@
 #pragma once
+// reviewed: 2024-01-04
 
 #include "bullet.hpp"
 
 class ship : public object {
-  uint32_t ready_to_fire_at_ms = 0;
-  uint32_t bullet_fire_rate_ms = ship_bullet_fire_interval_ms;
-  uint8_t bullet_level = 0;
-
 public:
   inline ship() {
     name = "hero";
@@ -45,32 +42,7 @@ public:
       }
       if (keys & glos::key_j) {
         if (ready_to_fire_at_ms < frame_context.ms) {
-          switch (bullet_level) {
-          case 0: {
-            bullet *o = new (objects.alloc()) bullet{};
-            o->angle = angle;
-            mat4 M = get_updated_Mmw();
-            o->position = position;
-            o->velocity = -ship_bullet_speed * vec3(M[2]);
-            ready_to_fire_at_ms = frame_context.ms + bullet_fire_rate_ms;
-            break;
-          }
-          case 1: {
-            for (int i = 0; i < ship_bullet_level_1_fire_count; i++) {
-              bullet *o = new (objects.alloc()) bullet{};
-              o->angle = angle;
-              mat4 M = get_updated_Mmw();
-              o->position = position;
-              o->velocity = -ship_bullet_speed * vec3(M[2]);
-              constexpr int ship_bullet_spread = 4;
-              constexpr int sp = ship_bullet_spread;
-              o->velocity.x += float(rand() % sp - sp / 2);
-              o->velocity.z += float(rand() % sp - sp / 2);
-            }
-            ready_to_fire_at_ms = frame_context.ms + bullet_fire_rate_ms;
-            break;
-          }
-          }
+          fire();
         }
       }
     }
@@ -100,4 +72,37 @@ public:
 
     return false;
   }
+
+private:
+  inline void fire() {
+    switch (bullet_level) {
+    case 0: {
+      bullet *o = new (objects.alloc()) bullet{};
+      o->position = position;
+      o->angle = angle;
+      mat4 const &M = get_updated_Mmw();
+      o->velocity = -ship_bullet_speed * vec3(M[2]);
+      ready_to_fire_at_ms = frame_context.ms + bullet_fire_rate_ms;
+      break;
+    }
+    case 1: {
+      for (int i = 0; i < ship_bullet_level_1_fire_count; i++) {
+        bullet *o = new (objects.alloc()) bullet{};
+        o->position = position;
+        o->angle = angle;
+        mat4 const &M = get_updated_Mmw();
+        o->velocity = -ship_bullet_speed * vec3(M[2]);
+        constexpr float sp = ship_bullet_spread;
+        o->velocity.x += float(rnd1(sp));
+        o->velocity.z += float(rnd1(sp));
+      }
+      ready_to_fire_at_ms = frame_context.ms + bullet_fire_rate_ms;
+      break;
+    }
+    }
+  }
+
+  uint32_t ready_to_fire_at_ms = 0;
+  uint32_t bullet_fire_rate_ms = ship_bullet_fire_interval_ms;
+  uint8_t bullet_level = 0;
 };

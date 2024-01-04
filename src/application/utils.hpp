@@ -1,4 +1,5 @@
 #pragma once
+// reviewed: 2024-01-04
 
 #include <atomic>
 #include <glm/glm.hpp>
@@ -7,8 +8,6 @@
 //
 #include "objects/power_up.hpp"
 //
-std::atomic<int> asteroids_alive{0};
-
 inline void game_area_roll(glm::vec3 &position) {
   if (position.x < game_area_min_x or position.x > game_area_max_x) {
     position.x = -position.x;

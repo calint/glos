@@ -1,9 +1,14 @@
+// reviewed: 2024-01-04
+
 #include "../engine/engine.hpp"
-//
+
+// make common used namespace available in game code
 using namespace glos;
 using namespace glm;
-//
+// game state
+static int level = 0;
 static int score = 0;
+std::atomic<int> asteroids_alive{0};
 //
 #include "objects/asteroid_large.hpp"
 #include "objects/fragment.hpp"
@@ -11,8 +16,6 @@ static int score = 0;
 //
 static void application_init_shaders();
 static void create_asteroids(int const num);
-//
-static int level = 0;
 //
 void application_init() {
   application_init_shaders();
@@ -28,6 +31,7 @@ void application_init() {
   printf(": %15s : %-9ld :\n", "bullet", sizeof(bullet));
   printf(": %15s : %-9ld :\n", "fragment", sizeof(fragment));
   printf(": %15s : %-9ld :\n", "power_up", sizeof(power_up));
+  printf(": %15s : %-9ld :\n", "ship", sizeof(ship));
   printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
   puts("");
 

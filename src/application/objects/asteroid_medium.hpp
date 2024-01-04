@@ -1,4 +1,5 @@
 #pragma once
+// reviewed: 2024-01-04
 
 #include "../configuration.hpp"
 //
@@ -39,7 +40,8 @@ public:
 
     for (int i = 0; i < asteroid_medium_split; i++) {
       asteroid_small *ast = new (objects.alloc()) asteroid_small{};
-      const vec3 rp = vec3(rnd1(radius / 2), 0, rnd1(radius / 2));
+      const float rd2 = radius / 2;
+      const vec3 rp = vec3(rnd1(rd2), 0, rnd1(rd2));
       ast->position = position + rp;
       ast->velocity =
           velocity + rnd2(asteroid_medium_split_speed) * normalize(rp);

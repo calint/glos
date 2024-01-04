@@ -1,11 +1,8 @@
 #pragma once
+// reviewed: 2024-01-04
 
 class power_up : public object {
 public:
-  uint32_t death_time_ms = 0;
-  uint32_t scale_time_ms = 0;
-  bool scale_up = false;
-
   inline power_up() {
     name = "power_up";
     glob_ix = glob_ix_power_up;
@@ -44,4 +41,9 @@ public:
   }
 
   inline auto on_collision(object *o) -> bool override { return true; }
+
+private:
+  uint32_t death_time_ms = 0;
+  uint32_t scale_time_ms = 0;
+  bool scale_up = false;
 };

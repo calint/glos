@@ -1,4 +1,5 @@
 #pragma once
+// reviewed: 2024-01-04
 
 class fragment : public object {
 public:
@@ -7,7 +8,8 @@ public:
   inline fragment() {
     name = "fragment";
     glob_ix = glob_ix_fragment;
-    radius = globs.at(glob_ix).bounding_radius;
+    scale = {0.5f, 0.5f, 0.5f};
+    radius = globs.at(glob_ix).bounding_radius * scale.x;
     collision_bits = cb_none;
     collision_mask = cb_none;
     mass = 10;

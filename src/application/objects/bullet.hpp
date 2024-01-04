@@ -1,4 +1,5 @@
 #pragma once
+// reviewed: 2024-01-04
 
 #include "fragment.hpp"
 
@@ -34,8 +35,6 @@ public:
     frg->position = position;
     frg->angular_velocity = vec3(radians(rnd1(bullet_fragment_agl_vel_rnd)));
     frg->death_time_ms = frame_context.ms + 500;
-    frg->scale = {0.5f, 0.5f, 0.5f};
-    frg->radius = frg->radius * frg->scale.x;
 
     return true;
   }
