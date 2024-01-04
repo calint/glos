@@ -20,8 +20,8 @@
 * `texture` is stored in `textures` and can be shared by multiple `globs`
 * `camera` describes how the world is viewed in `window`
   - contains matrix used by `engine` at `render` to transform world coordinates to screen
-* `shaders` contains the opengl programs used for rendering
 * `window` is a sdl2 window displaying the rendered result
+* `shaders` contains the opengl programs used for rendering
 * `sdl` handles initiation and shutdown of sdl2
 * `net` and `net_server` handle single and multiplayer modes
   - synchronizes players signals
