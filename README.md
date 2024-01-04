@@ -54,4 +54,4 @@ ubuntu packages used:
 * tidy the source in `src/engine/`
 * another sample game in a 3D sandbox-like environment
 * grid cells and objects culling to view frustum
-* and much more in ![todo.txt](https://github.com/calint/glos/blob/master/todo.txt)
+* and much more in [todo.txt](https://github.com/calint/glos/blob/master/todo.txt)
