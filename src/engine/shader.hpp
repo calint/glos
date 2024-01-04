@@ -1,7 +1,8 @@
 #pragma once
 // reviewed: 2023-12-24
+// reviewed: 2024-01-04
 
-#include "metrics.hpp"
+#include <GLES3/gl3.h>
 #include <vector>
 
 namespace glos {
@@ -21,6 +22,7 @@ class shaders final {
     inline void use() { glUseProgram(id); }
   };
 
+  // default shader source
   inline static char const *vertex_shader_source = R"(
   #version 330 core
   uniform mat4 umtx_mw;  // model-to-world-matrix
@@ -84,43 +86,35 @@ public:
     glEnable(GL_CULL_FACE);
     glFrontFace(GL_CCW);
 
-    // printf(":-%10s-:-%7s-:\n", "----------", "-------");
-    // printf(": %10s : %-7s :\n", "feature", "y/n");
-    // printf(":-%10s-:-%7s-:\n", "----------", "-------");
-    // printf(": %10s : %-7s :\n", "cull face",
-    //        glIsEnabled(GL_CULL_FACE) ? "yes" : "no");
-    // printf(": %10s : %-7s :\n", "zbuffer",
-    //        glIsEnabled(GL_DEPTH_TEST) ? "yes" : "no");
-    // printf(": %10s : %-7s :\n", "blend", glIsEnabled(GL_BLEND) ? "yes" :
-    // "no"); printf(":-%10s-:-%7s-:\n", "----------", "-------"); puts("");
-
-    const int default_program_id =
+    int const default_program_ix =
         load_program_from_source(vertex_shader_source, fragment_shader_source);
 
-    programs.at(size_t(default_program_id)).use();
+    unsigned const def_prog_id = programs.at(size_t(default_program_ix)).id;
+    programs.at(size_t(default_program_ix)).use();
 
     printf("shader uniforms locations:\n");
     printf(":-%10s-:-%7s-:\n", "----------", "-------");
     printf(": %10s : %-7d :\n", "umtx_mw",
-           glGetUniformLocation(programs.at(0).id, "umtx_mw"));
+           glGetUniformLocation(def_prog_id, "umtx_mw"));
     printf(": %10s : %-7d :\n", "umtx_wvp",
-           glGetUniformLocation(programs.at(0).id, "umtx_wvp"));
+           glGetUniformLocation(def_prog_id, "umtx_wvp"));
     printf(": %10s : %-7d :\n", "utex",
-           glGetUniformLocation(programs.at(0).id, "utex"));
+           glGetUniformLocation(def_prog_id, "utex"));
     printf(": %10s : %-7d :\n", "ulht",
-           glGetUniformLocation(programs.at(0).id, "ulht"));
+           glGetUniformLocation(def_prog_id, "ulht"));
     printf(":-%10s-:-%7s-:\n", "----------", "-------");
+
     puts("");
     printf("shader attributes locations:\n");
     printf(":-%10s-:-%7s-:\n", "----------", "-------");
     printf(": %10s : %-7d :\n", "apos",
-           glGetAttribLocation(programs.at(0).id, "apos"));
+           glGetAttribLocation(def_prog_id, "apos"));
     printf(": %10s : %-7d :\n", "argba",
-           glGetAttribLocation(programs.at(0).id, "argba"));
+           glGetAttribLocation(def_prog_id, "argba"));
     printf(": %10s : %-7d :\n", "anorm",
-           glGetAttribLocation(programs.at(0).id, "anorm"));
+           glGetAttribLocation(def_prog_id, "anorm"));
     printf(": %10s : %-7d :\n", "atex",
-           glGetAttribLocation(programs.at(0).id, "atex"));
+           glGetAttribLocation(def_prog_id, "atex"));
     printf(":-%10s-:-%7s-:\n", "----------", "-------");
     puts("");
 
@@ -128,7 +122,7 @@ public:
   }
 
   inline void free() {
-    for (const program &p : programs) {
+    for (program const &p : programs) {
       glDeleteProgram(p.id);
     }
   }
@@ -136,9 +130,9 @@ public:
   auto load_program_from_source(char const *vert_src, char const *frag_src)
       -> int {
     gl_check_error("enter load_program_from_source");
-    const GLuint program_id = glCreateProgram();
-    const GLuint vertex_shader_id = compile(GL_VERTEX_SHADER, vert_src);
-    const GLuint fragment_shader_id = compile(GL_FRAGMENT_SHADER, frag_src);
+    GLuint const program_id = glCreateProgram();
+    GLuint const vertex_shader_id = compile(GL_VERTEX_SHADER, vert_src);
+    GLuint const fragment_shader_id = compile(GL_FRAGMENT_SHADER, frag_src);
     glAttachShader(program_id, vertex_shader_id);
     glAttachShader(program_id, fragment_shader_id);
     glLinkProgram(program_id);
@@ -155,6 +149,7 @@ public:
     glDeleteShader(fragment_shader_id);
 
     gl_check_error("exit load_program_from_source");
+
     programs.push_back({program_id});
 
     return int(programs.size() - 1);
@@ -170,7 +165,7 @@ public:
 
 private:
   inline static auto compile(GLenum shader_type, char const *src) -> GLuint {
-    const GLuint shader_id = glCreateShader(shader_type);
+    GLuint const shader_id = glCreateShader(shader_type);
     glShaderSource(shader_id, 1, &src, nullptr);
     glCompileShader(shader_id);
     GLint ok = 0;
