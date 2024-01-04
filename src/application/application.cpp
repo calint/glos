@@ -7,8 +7,9 @@ using namespace glos;
 using namespace glm;
 
 // game state
-static unsigned level = 0;
+static unsigned level = 0; // no racing
 static unsigned score = 0; // racing ok
+static unsigned score_prv = score;
 std::atomic<unsigned> asteroids_alive{0};
 
 // objects
@@ -148,9 +149,12 @@ void application_on_update_done() {
 }
 
 void application_on_render_done() {
-  char buf[256];
-  sprintf(buf, "score: %06d", score);
-  hud.print(buf, SDL_Color{255, 0, 0, 255}, 60, 10);
+  if (score != score_prv) {
+    score_prv = score;
+    char buf[256];
+    sprintf(buf, "score: %06d", score);
+    hud.print(buf, SDL_Color{255, 0, 0, 255}, 60, 10);
+  }
 }
 
 void application_free() {}
