@@ -1,9 +1,12 @@
 [x] implement sample game
 [x] use a build system instead of make.sh
     => and also make.sh
+[ ] planes::update_model_to_world could save frame_num from context to shorten
+    the decision if cached values are valids
 [ ] ? racing condition on net.states between where render thread and update thread
 [ ] halt development and tidy up
 [x]   review application code
+[x]   print out source location when std::abort()
 [ ]   use c++ random number generator
 [ ]   class private members at the bottom of the declaration
 [x]   use uint32_t instead of unsigned int32_t etc

@@ -141,7 +141,7 @@ public:
     if (!ok) {
       GLchar msg[1024];
       glGetProgramInfoLog(program_id, sizeof(msg), nullptr, msg);
-      printf("program linking error: %s\n", msg);
+      printf("%s:%d: program linking error: %s\n", __FILE__, __LINE__, msg);
       std::abort();
     }
 
@@ -173,7 +173,7 @@ private:
     if (!ok) {
       GLchar msg[1024];
       glGetShaderInfoLog(shader_id, sizeof(msg), NULL, msg);
-      printf("compile error in %s shader:\n%s\n",
+      printf("%s:%d: compile error in %s shader:\n%s\n", __FILE__, __LINE__,
              shader_name_for_type(shader_type), msg);
       std::abort();
     }
@@ -234,8 +234,8 @@ public:
   inline static void gl_check_error(char const *user_msg) {
     bool is_error = false;
     for (GLenum error = glGetError(); error; error = glGetError()) {
-      printf("!!! %s   glerror %x   %s\n", user_msg, error,
-             gl_get_error_string(error));
+      printf("%s:%d: opengl error %x in '%s'\n%s\n", __FILE__, __LINE__, error,
+             user_msg, gl_get_error_string(error));
       is_error = true;
     }
     if (is_error) {

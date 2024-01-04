@@ -50,20 +50,20 @@ inline static int token_equals(token *t, const char *str) {
   }
 }
 
-inline static float token_get_float(token *t) {
+inline static float token_get_float(token const *t) {
   float f = (float)atof(t->content); //? assuming file ends with whitespace
   return f;
 }
 
-inline static int token_get_int(token *t) {
+inline static int token_get_int(token const *t) {
   int i = atoi(t->content); //?  assuming file ends with whitespace
   return i;
 }
 
-inline static unsigned token_get_uint(token *t) {
+inline static unsigned token_get_uint(token const *t) {
   int i = atoi(t->content); //?  assuming file ends with whitespace, error?
   if (i < 0) {
-    //? break
+    printf("%s:%d: unexpected int\n", __FILE__, __LINE__);
     std::abort();
   }
   return (unsigned)i;

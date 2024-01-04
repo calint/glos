@@ -11,7 +11,7 @@ class sdl final {
 public:
   inline void init() {
     if (SDL_Init(SDL_INIT_VIDEO)) {
-      printf("%s %d: %s", __FILE__, __LINE__, SDL_GetError());
+      printf("%s:%d: %s\n", __FILE__, __LINE__, SDL_GetError());
       std::abort();
     }
   }

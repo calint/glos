@@ -34,7 +34,7 @@ public:
     struct sockaddr_in server;
     fd = socket(AF_INET, SOCK_STREAM, 0);
     if (fd == -1) {
-      fprintf(stderr, "\n%s:%u: ", __FILE__, __LINE__);
+      printf("%s:%d: ", __FILE__, __LINE__);
       perror("");
       std::abort();
     }
@@ -43,7 +43,7 @@ public:
     int result =
         setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, (char *)&flag, sizeof(int));
     if (result < 0) {
-      fprintf(stderr, "\n%s:%u: set TCP_NODELAY failed\n", __FILE__, __LINE__);
+      printf("%s:%d: cannot set TCP_NODELAY\n", __FILE__, __LINE__);
       std::abort();
     }
 
@@ -53,16 +53,16 @@ public:
 
     printf("[ net ] connecting to '%s' on port %u\n", host, port);
     if (connect(fd, (struct sockaddr *)&server, sizeof(server)) < 0) {
-      fprintf(stderr, "\n%s:%u: ", __FILE__, __LINE__);
+      printf("%s:%d: ", __FILE__, __LINE__);
       perror("");
       std::abort();
     }
     printf("[ net ] connected. waiting for go ahead\n");
     ssize_t n = recv(fd, &active_state_ix, sizeof(active_state_ix), 0);
     if (n <= 0) {
-      fprintf(stderr, "\n%s:%u: ", __FILE__, __LINE__);
+      printf("%s:%u: ", __FILE__, __LINE__);
       if (n == 0) {
-        fprintf(stderr, "server disconnected\n");
+        printf("server disconnected\n");
       } else {
         perror("");
       }
@@ -87,7 +87,7 @@ public:
     const uint64_t t0 = SDL_GetPerformanceCounter();
     // receive signals from previous frame
     if (recv(fd, states, sizeof(states), 0) < 0) {
-      fprintf(stderr, "\n%s:%u: ", __FILE__, __LINE__);
+      printf("%s:%d: ", __FILE__, __LINE__);
       perror("");
       std::abort();
     }
@@ -103,7 +103,7 @@ public:
 private:
   inline void send_state() {
     if (send(fd, &next_state, sizeof(next_state), 0) < 0) {
-      fprintf(stderr, "\n%s:%u: ", __FILE__, __LINE__);
+      printf("%s:%d: ", __FILE__, __LINE__);
       perror("");
       std::abort();
     }

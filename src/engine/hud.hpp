@@ -13,6 +13,8 @@ public:
 
   inline void init() {
     if (TTF_Init() != 0) {
+      printf("%s:%d: cannot initiate ttf: %s\n", __FILE__, __LINE__,
+             TTF_GetError());
       std::abort();
     }
 
@@ -83,7 +85,8 @@ public:
   inline void load_font(char const *ttf_path, int const size) {
     font = TTF_OpenFont(ttf_path, size);
     if (font == NULL) {
-      printf("unable to load font: %s\n", TTF_GetError());
+      printf("%s:%d: cannot load font '%s': %s\n", __FILE__, __LINE__, ttf_path,
+             TTF_GetError());
       std::abort();
     }
   }
@@ -105,14 +108,16 @@ public:
     //        SDL_GetPixelFormatName(text_surface->format->format));
 
     if (text_surface == nullptr) {
-      printf("could not render text: %s\n", SDL_GetError());
+      printf("%s:%d: cannot render text: %s\n", __FILE__, __LINE__,
+             SDL_GetError());
       std::abort();
     }
 
     SDL_Surface *converted_surface =
         SDL_ConvertSurfaceFormat(text_surface, SDL_PIXELFORMAT_RGBA8888, 0);
     if (converted_surface == NULL) {
-      printf("could not convert surface: %s\n", SDL_GetError());
+      printf("%s:%d: cannot convert surface: %s\n", __FILE__, __LINE__,
+             SDL_GetError());
       std::abort();
     }
 

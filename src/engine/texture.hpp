@@ -1,4 +1,5 @@
 #pragma once
+// reviewed: 2024-01-04
 
 #include "metrics.hpp"
 #include <GLES3/gl3.h>
@@ -19,7 +20,8 @@ public:
     printf(" * loading texture %u from '%s'\n", id, path.c_str());
     SDL_Surface *surface = IMG_Load(path.c_str());
     if (!surface) {
-      printf("!!! could not load image from '%s'\n", path.c_str());
+      printf("%s:%d: cannot load image from '%s'\n", __FILE__, __LINE__,
+             path.c_str());
       std::abort();
     }
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface->w, surface->h, 0, GL_RGB,
@@ -37,6 +39,7 @@ public:
 class textures final {
 public:
   inline void init() {}
+
   inline void free() {
     for (auto const &pair : store) {
       glDeleteTextures(1, &pair.second.id);
@@ -54,7 +57,8 @@ public:
     texture tex{};
     tex.load(path);
     metrics.buffered_texture_data += tex.size_B;
-    const GLuint id = tex.id;
+    // get id before moving tex
+    GLuint const id = tex.id;
     store.insert({path, std::move(tex)});
     return id;
   }

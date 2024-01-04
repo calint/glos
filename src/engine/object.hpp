@@ -1,5 +1,6 @@
 #pragma once
 // reviewed: 2023-12-22
+// reviewed: 2024-01-04
 
 #include "o1store.hpp"
 #include "planes.hpp"
@@ -11,26 +12,26 @@ class object {
 public:
   object **alloc_ptr;             // initiated at allocate by 'o1store'
   std::string name{};             // instance name
-  uint32_t glob_ix = 0;           // glo index
+  uint32_t glob_ix = 0;           // index in globs store
   float radius = 0;               // bounding radius
-  glm::vec3 scale{};              //
+  glm::vec3 scale{};              // in meters
   planes planes{};                // bounding planes (if any)
-  bool is_sphere = false;         //
+  bool is_sphere = false;         // if object can be considered a sphere
   glm::mat4 Mmw{};                // model -> world matrix
   glm::vec3 Mmw_pos{};            // position of current Mmw matrix
   glm::vec3 Mmw_agl{};            // angle of current Mmw matrix
   glm::vec3 Mmw_scl{};            // scale of current Mmw matrix
-  glm::vec3 position{};           //
-  glm::vec3 velocity{};           //
-  glm::vec3 acceleration{};       //
-  glm::vec3 angle{};              //
-  glm::vec3 angular_velocity{};   //
-  float mass = 0;                 //
+  glm::vec3 position{};           // in meters
+  glm::vec3 velocity{};           // in meters/second
+  glm::vec3 acceleration{};       // in meters/second^2
+  glm::vec3 angle{};              // in radians
+  glm::vec3 angular_velocity{};   // in radians/second
+  float mass = 0;                 // in kg
   uint32_t collision_bits = 0;    // mask & bits for collision subscription
   uint32_t collision_mask = 0;    // ...
   net_state *net_state = nullptr; // pointer to signals used by this object
-  uint32_t rendered_at_tick = 0;  // avoids rendering same object twice
-  uint32_t updated_at_tick = 0;   // avoids updating same object twice
+  uint32_t rendered_at_tick = 0;  // used by cell to avoid rendering twice
+  uint32_t updated_at_tick = 0;   // used by cell to avoid updating twice
   uint8_t grid_flags = 0;         // used by grid (overlaps, is_dead)
   std::vector<const object *> handled_collisions{};
   std::atomic_flag spinlock = ATOMIC_FLAG_INIT;
@@ -53,7 +54,7 @@ public:
 
   // returns true if object has died
   inline virtual auto update() -> bool {
-    const float dt = frame_context.dt;
+    float const dt = frame_context.dt;
     velocity += acceleration * dt;
     position += velocity * dt;
     angle += angular_velocity * dt;
@@ -64,6 +65,7 @@ public:
       planes.update_model_to_world(g.planes_points, g.planes_normals, M,
                                    position, angle, scale);
     }
+
     return false;
   }
 
@@ -98,9 +100,11 @@ public:
     const bool is_handled =
         std::find(handled_collisions.begin(), handled_collisions.end(), obj) !=
         handled_collisions.end();
+
     if (not is_handled) {
       handled_collisions.push_back(obj);
     }
+
     return is_handled;
   }
 
@@ -125,10 +129,6 @@ public:
 };
 
 class objects final {
-  o1store<object, objects_count, 0, objects_instance_size_B> store_{};
-  object **allocated_list_end_ = nullptr;
-  int allocated_list_len_ = 0;
-
 public:
   inline void init() {}
 
@@ -163,6 +163,11 @@ public:
   }
 
   inline void apply_freed_instances() { store_.apply_free(); }
+
+private:
+  o1store<object, objects_count, 0, objects_instance_size_B> store_{};
+  object **allocated_list_end_ = nullptr;
+  int allocated_list_len_ = 0;
 };
 
 inline objects objects{};

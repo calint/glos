@@ -64,7 +64,7 @@ public:
 
     std::ifstream file(obj_path);
     if (!file) {
-      printf("!!! cannot open file '%s'\n", obj_path);
+      printf("%s:%d: cannot open file '%s'\n", __FILE__, __LINE__, obj_path);
       std::abort();
     }
     std::stringstream buffer;
@@ -126,11 +126,8 @@ public:
           }
         }
         if (not found) {
-          fprintf(stderr, "\n%s:%u: could not find material\n", __FILE__,
-                  __LINE__);
-          fprintf(stderr, "        path: '%s'   name: '%s'\n\n",
-                  mtl_path.c_str(), mtl_name.c_str());
-          fprintf(stderr, "\n\n");
+          printf("%s:%d: cannot find material: path '%s' name '%s'\n", __FILE__,
+                 __LINE__, mtl_path.c_str(), mtl_name.c_str());
           std::abort();
         }
         if (vertex_buffer_ix_prv != vertex_buffer_ix) {
@@ -293,7 +290,7 @@ private:
     printf("     * loading planes from '%s'\n", path);
     std::ifstream file(path);
     if (!file) {
-      printf("!!! cannot open file '%s'\n", path);
+      printf("%s:%d: cannot open file '%s'\n", __FILE__, __LINE__, path);
       std::abort();
     }
     std::stringstream buffer;

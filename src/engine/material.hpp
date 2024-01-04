@@ -1,5 +1,6 @@
 #pragma once
 // reviewed: 2023-12-22
+// reviewed: 2024-01-04
 
 #include "token.h"
 
@@ -26,10 +27,10 @@ public:
   std::string path = "";
   std::string name = "";
   float Ns = 0;
-  glm::vec4 Ka{0, 0, 0, 0};
-  glm::vec4 Kd{0, 0, 0, 0};
-  glm::vec4 Ks{0, 0, 0, 0};
-  glm::vec4 Ke{0, 0, 0, 0};
+  glm::vec3 Ka{0};
+  glm::vec3 Kd{0};
+  glm::vec3 Ks{0};
+  glm::vec3 Ke{0};
   float Ni = 0;
   float d = 0;
   std::string map_Kd = "";
@@ -41,79 +42,78 @@ public:
   std::vector<material> store{};
 
   inline void init() {}
+
   inline void free() { store.clear(); }
 
   inline void load(char const *path) {
     printf("   * loading materials from '%s'\n", path);
     std::ifstream file(path);
-    if (!file) {
-      printf("*** cannot open file '%s'\n", path);
+    if (not file) {
+      printf("%s:%d: cannot open file '%s'\n", __FILE__, __LINE__, path);
       std::abort();
     }
     std::stringstream buffer;
     buffer << file.rdbuf();
-    std::string content = buffer.str();
+    std::string const content = buffer.str();
     const char *p = content.c_str();
     while (*p) {
-      token tk = token_next(&p);
-      if (token_starts_with(&tk, "#")) {
+      token t = token_next(&p);
+      if (token_starts_with(&t, "#")) {
         p = scan_to_including_newline(p);
         continue;
       }
-      if (token_starts_with(&tk, "newmtl")) {
+      if (token_starts_with(&t, "newmtl")) {
         store.push_back({});
-        token t = token_next(&p);
-        const unsigned n = token_size(&t);
+        token tk = token_next(&p);
+        const unsigned n = token_size(&tk);
         store.back().path = std::string{path};
-        store.back().name = std::string{t.content, t.content + n};
+        store.back().name = std::string{tk.content, tk.content + n};
         printf("     * %s\n", store.back().name.c_str());
         continue;
       }
-      if (token_equals(&tk, "Ns")) {
-        token t = token_next(&p);
-        float f = token_get_float(&t);
-        store.back().Ns = f;
+      if (token_equals(&t, "Ns")) {
+        token tk = token_next(&p);
+        store.back().Ns = token_get_float(&tk);
         continue;
       }
-      if (token_equals(&tk, "Ka") || token_equals(&tk, "Kd") ||
-          token_equals(&tk, "Ks") || token_equals(&tk, "Ke")) {
-        glm::vec4 v{};
+      if (token_equals(&t, "Ka") || token_equals(&t, "Kd") ||
+          token_equals(&t, "Ks") || token_equals(&t, "Ke")) {
+        glm::vec3 v{};
         token x = token_next(&p);
         v.x = token_get_float(&x);
         token y = token_next(&p);
         v.y = token_get_float(&y);
         token z = token_next(&p);
         v.z = token_get_float(&z);
-        if (token_equals(&tk, "Ka")) {
+        if (token_equals(&t, "Ka")) {
           store.back().Ka = v;
-        } else if (token_equals(&tk, "Kd")) {
+        } else if (token_equals(&t, "Kd")) {
           store.back().Kd = v;
-        } else if (token_equals(&tk, "Ks")) {
+        } else if (token_equals(&t, "Ks")) {
           store.back().Ks = v;
-        } else if (token_equals(&tk, "Ke")) {
+        } else if (token_equals(&t, "Ke")) {
           store.back().Ke = v;
         }
         continue;
       }
 
-      if (token_equals(&tk, "Ni")) {
-        token t = token_next(&p);
-        float f = token_get_float(&t);
-        store.back().Ni = f;
+      if (token_equals(&t, "Ni")) {
+        token const tk = token_next(&p);
+        store.back().Ni = token_get_float(&tk);
         continue;
       }
 
-      if (token_equals(&tk, "d")) {
-        token t = token_next(&p);
-        float f = token_get_float(&t);
-        store.back().d = f;
+      if (token_equals(&t, "d")) {
+        token tk = token_next(&p);
+        store.back().d = token_get_float(&tk);
         continue;
       }
 
-      if (token_equals(&tk, "map_Kd")) {
-        const token t = token_next(&p);
-        const unsigned n = token_size(&t);
-        store.back().map_Kd = std::string{t.content, t.content + n};
+      if (token_equals(&t, "map_Kd")) {
+        // texture path
+        const token tk = token_next(&p);
+        const unsigned n = token_size(&tk);
+        store.back().map_Kd = std::string{tk.content, tk.content + n};
         continue;
       }
     }

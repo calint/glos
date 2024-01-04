@@ -137,7 +137,7 @@ public:
     cell *p = cells[0];
     unsigned i = ncells;
     while (i--) {
-      printf(" %zu ", p->ols.size());
+      printf(" %d ", p->objects_count());
       if (!(i % grid_ncells_wide)) {
         printf("\n");
       }

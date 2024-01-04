@@ -1,13 +1,14 @@
 #pragma once
 // reviewed: 2023-12-22
+// reviewed: 2024-01-04
+
 namespace glos {
 class cell final {
 public:
-  std::vector<object *> ols{};
-
   // called from grid (possibly by multiple threads)
   inline void update() {
     for (object *o : ols) {
+      // check if object has already been updated by a different cell
       if (grid_threaded and o->is_overlaps_cells()) {
         // object is in several cells and may be called from multiple threads
 
@@ -18,6 +19,7 @@ public:
         }
         o->updated_at_tick = frame_context.frame_num;
         o->release_lock();
+
       } else {
         // object is in only one cell or can only be called from one thread
         if (o->updated_at_tick == frame_context.frame_num) {
@@ -26,9 +28,10 @@ public:
         o->updated_at_tick = frame_context.frame_num;
       }
 
-      // only one thread at a time gets to this code
+      // only one thread at a time is here
 
       if (o->update()) {
+        // object died during update
         o->set_is_dead();
         objects.free(o);
         continue;
@@ -70,6 +73,8 @@ public:
           continue;
         }
 
+        // bounding spheres are in collision
+
         if (Oi->is_sphere and Oj->is_sphere) {
           handle_sphere_collision(Oi, Oj);
           handle_sphere_collision(Oj, Oi);
@@ -86,6 +91,7 @@ public:
             dispatch_collision(Oj, Oi);
           }
           continue;
+
         } else if (Oj->is_sphere) {
           // Oi is not a sphere
           update_planes_world_coordinates(Oi);
@@ -96,6 +102,8 @@ public:
           }
           continue;
         }
+
+        // both objects are convex volumes
 
         if (not are_bounding_planes_in_collision(Oi, Oj)) {
           continue;
@@ -110,6 +118,7 @@ public:
   // called from grid (from only one thread)
   inline void render() {
     for (object *o : ols) {
+      // check if object has been rendered by another cell
       if (o->rendered_at_tick == frame_context.frame_num) {
         continue;
       }
@@ -127,7 +136,7 @@ public:
 
   inline void print() {
     int i = 0;
-    for (object *o : ols) {
+    for (object const *o : ols) {
       if (i++) {
         printf(", ");
       }
@@ -136,7 +145,11 @@ public:
     printf("\n");
   }
 
+  inline auto objects_count() const -> int { return int(ols.size()); }
+
 private:
+  std::vector<object *> ols{};
+
   inline static void handle_sphere_collision(object *Oi, object *Oj) {
 
     // check if Oi is subscribed to collision with Oj
@@ -144,8 +157,8 @@ private:
       return;
     }
 
-    // if object overlaps cells this code might be called by several threads at
-    // the same time
+    // if object overlaps cells and threaded grid then this code might be called
+    // by several threads at the same time
     const bool synchronization_necessary =
         grid_threaded and Oi->is_overlaps_cells();
 
@@ -241,7 +254,7 @@ private:
     const glm::vec3 v = o2->position - o1->position;
     const float d = o1->radius + o2->radius;
     const float dsq = d * d;
-    const float vsq = glm::dot(v, v);
+    const float vsq = glm::dot(v, v); // distance squared
     const float diff = vsq - dsq;
     return diff < 0;
   }
@@ -253,7 +266,7 @@ private:
       o->planes.acquire_lock();
     }
 
-    const glob &g = globs.at(o->glob_ix);
+    glob const &g = globs.at(o->glob_ix);
 
     o->planes.update_model_to_world(g.planes_points, g.planes_normals,
                                     o->get_updated_Mmw(), o->position, o->angle,
@@ -270,11 +283,11 @@ private:
     update_planes_world_coordinates(o1);
     update_planes_world_coordinates(o2);
 
-    if (o1->planes.is_in_collision_with_planes(o2->planes)) {
-      return true;
-    }
+    // planes can be update only once per 'resolve_collisions' pass because
+    // object state does not change
 
-    if (o2->planes.is_in_collision_with_planes(o1->planes)) {
+    if (o1->planes.is_in_collision_with_planes(o2->planes) or
+        o2->planes.is_in_collision_with_planes(o1->planes)) {
       return true;
     }
 
