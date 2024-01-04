@@ -18,6 +18,9 @@
 * `net` and `net_server` handle single and multiplayer modes
   - synchronizes players signals
   - limits frame rate of all players to the slowest client
+* `hud` is a heads-up-display rendered after the view
+* `metrics` keeps track of frame time and statistics
+* `token` is a helper to parse text
 
 ## multithreaded engine
 * update and render run on different threads
