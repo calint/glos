@@ -90,7 +90,7 @@ private:
       break;
     }
     case 1: {
-      for (int i = 0; i < ship_bullet_level_1_fire_count; i++) {
+      for (int i = 0; i < ship_bullet_level_1_fire_count; ++i) {
         bullet *o = new (objects.alloc()) bullet{};
         o->position = position;
         o->angle = angle;
