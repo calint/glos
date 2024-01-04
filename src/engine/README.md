@@ -5,13 +5,13 @@
   - `object` may overlap `grid` `cells`
   - `grid` runs an `update` pass then a `resolve_collisions` pass on `cells` in a parallel and unsequenced way
   - `cells` call `object` `update` and `on_collision`
-* `camera` describes how the world is viewed in `window`
-  - contains matrix used by `engine` at `render` to transform world coordinates to screen
 * `object` refers to a 3d model, `glob`, using an index in `globs`
 * `glob`
   - rendered using opengl and a transform matrix for model to world coordinates provided to its `render`
   - using indices, references `materials` and `textures` that are created at `load`
   - has a radius calculated at `load` and may be additionally bounded by a convex volume defined by `planes`
+* `camera` describes how the world is viewed in `window`
+  - contains matrix used by `engine` at `render` to transform world coordinates to screen
 * `planes` can detect collision with spheres and other `planes`
   - collision with spheres is done by checking if distance from sphere to all planes are less than radius 
   - collision with other `planes` is done by checking if any point in `planes` A is behind all `planes` B
