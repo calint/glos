@@ -1,12 +1,12 @@
 # overview
 * `engine` coordinates the subsystems
-* there is no explicit world class; however, the namespace `glos` contains instances of necessary objects to implement engine
+* there is no explicit world class; however, namespace `glos` contains instances of necessary objects to implement engine
 * space is partitioned in a `grid` of `cells` containing objects
   - an `object` may overlap `grid` `cells`
   - `grid` runs `update` and `on_collision` on objects in a parallel and unsequenced way
 * `camera` describes how the world is viewed in `window`
   - contains matrix used by `engine` at `render` that transforms world coordinates to view and screen space through projection 
-* `object` has a renderable reference to `glob` using an index in `globs`
+* `object` has a reference to `glob` using an index in `globs`
 * `glob` is an opengl renderable object
   - to render a glob, a transform matrix from model to world coordinates is provided to `render`
 * `glob` references, using indices, `materials` and `textures` that are created at `load`
