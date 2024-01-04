@@ -32,7 +32,7 @@
 * guarantees given by engine:
   - only one thread is active at a time in an object's `update` or `on_collision`
   - collision between two objects is handled only once, considering that collision between same two objects can be detected on several threads if both objects overlap `grid` `cells`
-* awareness that data races between update and render thread on `position`, `angle`, `scale`, `glob_ix` are assumed and ok
+* awareness that data races between update and render thread on `object` `position`, `angle`, `scale`, `glob_ix` are assumed and ok
 * attention is needed when objects are interacting with other objects during `update` or `on_collision` because the object being interacted with might be running code on another thread
   - suggestion is to use a synchronized message queue that is handled at `update`
 
