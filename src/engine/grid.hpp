@@ -13,7 +13,7 @@ public:
 
   inline void free() {}
 
-  // called from main
+  // called from engine
   inline void update() const {
     if (grid_threaded) {
       std::for_each(std::execution::par_unseq, std::begin(cells),
@@ -42,7 +42,7 @@ public:
     }
   }
 
-  // called from main
+  // called from engine
   inline void resolve_collisions() const {
     if (grid_threaded) {
       std::for_each(std::execution::par_unseq, std::begin(cells),
@@ -71,7 +71,7 @@ public:
     }
   }
 
-  // called from main
+  // called from engine
   inline void render() const {
     cell const *p = cells[0];
     unsigned i = ncells;
@@ -81,7 +81,7 @@ public:
     }
   }
 
-  // called from main
+  // called from engine
   inline void clear() {
     cell *p = cells[0];
     unsigned i = ncells;
