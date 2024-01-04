@@ -14,8 +14,8 @@
   - contains matrix used by `engine` at `render` to transform world coordinates to screen
 * `planes` can detect collision with spheres and other `planes`
   - collision with spheres is done by checking if distance from sphere to all planes is less than radius 
-  - collision with other `planes` is done by checking if any point in `planes` A is behind all `planes` B
-* `material` is stored in `materials` and are unique for a `glob`
+  - collision with other `planes` is done by checking if any point in `planes` A is behind all `planes` B and vice versa
+* `material` is stored in `materials` and are unique to a `glob`
 * `texture` is stored in `textures` and can be shared by multiple `globs`
 * `shaders` contains the opengl programs used for rendering
 * `window` is a sdl2 window displaying the rendered result
