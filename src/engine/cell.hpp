@@ -248,7 +248,8 @@ private:
     }
   }
 
-  inline static auto are_bounding_spheres_in_collision(object *o1, object *o2)
+  inline static auto are_bounding_spheres_in_collision(object const *o1,
+                                                       object const *o2)
       -> bool {
 
     const glm::vec3 v = o2->position - o1->position;
