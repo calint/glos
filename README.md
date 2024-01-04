@@ -51,7 +51,6 @@ ubuntu packages used:
 ![multiplayer mode](https://github.com/calint/glos/assets/1920811/697dbe55-b3b0-41ef-8bfa-ab67666291c8)
 
 ## todo
-* tidy the source in `src/application/`
 * tidy the source in `src/engine/`
 * another sample game in a 3D sandbox-like environment
 * grid cells and objects culling to view frustum

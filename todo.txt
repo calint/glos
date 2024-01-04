@@ -2,6 +2,7 @@
 [x] use a build system instead of make.sh
     => and also make.sh
 [ ] halt development and tidy up
+[x]   review application code
 [ ]   use c++ random number generator
 [ ]   class private members at the bottom of the declaration
 [x]   use uint32_t instead of unsigned int32_t etc
