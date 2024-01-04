@@ -1,12 +1,12 @@
 # overview
 * `engine` coordinates the subsystems
 * there is no explicit world class; however, namespace `glos` contains instances of necessary objects to implement engine
-* space is partitioned in a `grid` of `cells` containing objects
+* space is partitioned in a `grid` of `cells` containing `objects`
   - `object` may overlap `grid` `cells`
   - `grid` runs an `update` then a `resolve_collisions` pass on `cells`
   - the passes call `cells` in a parallel and unsequenced way
-  - `object` `update` is called every frame once by one thread
-  - `object` `on_collision` is called once for each collision with another `object` in that frame by one thread at a time
+  - `object` `update` is called once every frame
+  - `object` `on_collision` is called once for each collision with another `object` in that frame
 * `object` has reference to a 3d model, `glob`, using an index in `globs`
   - has state such as `position`, `angle`, `scale`, `velocity`, `acceleration`, `angular_velocity` etc
 * `glob`
