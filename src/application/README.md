@@ -21,3 +21,4 @@
 * updating objects and collisions resolutions are done on available cores
 * awareness of the nature of multithreaded application is recommended
 * in smaller applications multithreaded mode might degrade performance
+* occasionally it seems as if collision detection is not working because rendering is 2d of a 3d space thus objects might overlap in 2d but not in collision in 3d

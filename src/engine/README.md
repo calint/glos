@@ -28,6 +28,7 @@
   - limits frame rate of all players to the slowest client
 * `sdl` handles initiation and shutdown of sdl2
 * `metrics` keeps track of frame time and statistics
+* `o1store` is a template that implements O(1) alloc and free of preallocated objects
 * `token` is a helper to parse text
 
 ## multithreaded engine
