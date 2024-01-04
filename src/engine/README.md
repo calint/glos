@@ -14,7 +14,9 @@
 * `shaders` contains the opengl programs used for rendering
 * `window` is an sdl2 window displaying the rendered result
 * `sdl` handles initiation and shutdown of sdl2
-* `net` and `net_server` handle single and multiplayer modes by synchronizing player signals rendering at the rate of slowest client
+* `net` and `net_server` handle single and multiplayer modes
+  - synchronizes players signals
+  - limits frame rate of all players to the slowest client
 
 ## multithreaded engine
 * update and render run on different threads
