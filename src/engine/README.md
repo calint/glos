@@ -3,7 +3,8 @@
 * there is no explicit world class; however, namespace `glos` contains instances of necessary objects to implement engine
 * space is partitioned in a `grid` of `cells` containing objects
   - `object` may overlap `grid` `cells`
-  - `grid` runs an `update` then a `resolve_collisions` pass on `cells` in a parallel and unsequenced way
+  - `grid` runs an `update` then a `resolve_collisions` pass on `cells`
+  - the passes call the `cells` in parallel and unsequenced way
   - `cells` call `object` `update` in the update pass and `on_collision` when collision is detected in `resolve_collision` pass
   - `object` `update` is called by only one thread at a time
   - `object` `on_collision` is called by only one thread at a time and only once per frame for each collision with other `object`
