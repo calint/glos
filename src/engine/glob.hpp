@@ -39,8 +39,8 @@ public:
   inline void render(glm::mat4 const &mtx_mw) const {
     glUniformMatrix4fv(shaders::umtx_mw, 1, GL_FALSE, glm::value_ptr(mtx_mw));
     glBindVertexArray(vertex_array_id);
-    for (const range &mr : ranges) {
-      const material &m = materials.store.at(unsigned(mr.material_ix));
+    for (range const &mr : ranges) {
+      material const &m = materials.store.at(unsigned(mr.material_ix));
       glActiveTexture(GL_TEXTURE0);
       if (m.texture_id) {
         glUniform1i(shaders::utex, 0);
