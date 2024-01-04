@@ -54,7 +54,7 @@ static constexpr uint32_t cb_hero_bullet = 2;
 static constexpr uint32_t cb_asteroid = 4;
 static constexpr uint32_t cb_power_up = 8;
 
-// glob indexes (are set at 'application.init()' when loading)
+// glob indexes (are set by 'application_init()' when loading)
 static uint32_t glob_ix_skydome = 0;
 static uint32_t glob_ix_grid = 0;
 static uint32_t glob_ix_ship = 0;
