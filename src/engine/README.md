@@ -1,9 +1,10 @@
 # overview
 * `engine` coordinates the subsystems
 * there is no explicit world class; however, namespace `glos` contains instances of necessary objects to implement engine
-* space is partitioned in a `grid` of `cells` containing objects
-  - an `object` may overlap `grid` `cells`
-  - `grid` runs `update` and `on_collision` on objects in a parallel and unsequenced way
+* space is partitioned in a `grid` of `cells` containing *objects*
+  - `object` may overlap `grid` `cells`
+  - `grid` runs `update` then `resolve_collisions` on `cells` in a parallel and unsequenced way
+  - `cells` call `object` `update` and `on_collision`
 * `camera` describes how the world is viewed in `window`
   - contains matrix used by `engine` at `render` to transform world coordinates to screen
 * `object` refers to a 3d model, `glob`, using an index in `globs`
