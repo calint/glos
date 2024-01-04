@@ -1,11 +1,11 @@
 # table of contents
 * `main.cpp` entry point instantiating and running the engine
-* `engine/` engine code in namespace 'glos'
+* `engine/` engine code in namespace `glos`
 * `application/` user code that interfaces with the engine
 
 ## rationale
 * user should only have to write the code in `application/`
-* with time and applications engine will adapt to handle encountered scenarios
+* with time and applications, engine will adapt to handle encountered scenarios
 * engine code is simple and can easily be adapted to custom needs of application
 
 ## disclaimers
@@ -20,10 +20,9 @@
 * `inline` functions
   - all functions are requested to be inlined assuming compilers won't adhere to the hint when it does not make sense, such as big functions called from multiple locations
   - functions called from one location should be inlined
-* `Type const &inst` instead `const Type &inst`
-  - adheres to reading type from right to left
-* for consistency `const char *ptr` and other constant are written as `char const *ptr`
-* types are spelled out instead of `auto` for readability
+* right to left notation `Type const &inst` instead `const Type &inst`
+* for consistency constants are written after the type such as `const char *ptr` is written as `char const *ptr` and `const float x` as `float cont x`
+* types are spelled out instead of using `auto` for readability
 * `auto` is used when the type is too verbose, such as iterators
 * `unsigned` is used where negative values do not make sense
 * liberal use of public members in classes
