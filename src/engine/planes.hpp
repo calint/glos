@@ -24,7 +24,6 @@ public:
                                     glm::vec3 const &scl) {
     if (points.size() != 0 and
         (pos != Mmw_pos or agl != Mmw_agl or scl != Mmw_scl)) {
-      // printf("update points\n");
       // make a new matrix
       Mmw_pos = pos;
       Mmw_agl = agl;

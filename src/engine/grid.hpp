@@ -1,5 +1,6 @@
 #pragma once
 // reviewed: 2023-12-22
+// reviewed: 2024-01-04
 
 #include "cell.hpp"
 // #include "task_thread_pool.hpp"
@@ -7,12 +8,7 @@
 
 namespace glos {
 class grid final {
-  static constexpr int ncells = grid_ncells_wide * grid_ncells_high;
-  // task_thread_pool::task_thread_pool pool{};
-
 public:
-  cell cells[grid_ncells_high][grid_ncells_wide];
-
   inline void init() {}
 
   inline void free() {}
@@ -97,7 +93,13 @@ public:
 
   // called from main
   inline void add(object *o) {
+    o->clear_flags();
+    // note. flags need to be cleared before entering object 'update' or
+    // 'resolve_collisions' and this is an opportunity for that without a
+    // separate step in loop
+
     if (ncells == 1) {
+      // special case
       cells[0][0].add(o);
       return;
     }
@@ -105,34 +107,28 @@ public:
     constexpr float gw = grid_cell_size * grid_ncells_wide;
     constexpr float gh = grid_cell_size * grid_ncells_high;
 
-    const float r = o->radius;
+    float const r = o->radius;
 
-    const float xl = gw / 2 + o->position.x - r;
-    const float xr = gw / 2 + o->position.x + r;
-    const float zl = gh / 2 + o->position.z - r;
-    const float zr = gh / 2 + o->position.z + r;
+    // calculate min max x and z in cell array
+    float const xl = gw / 2 + o->position.x - r;
+    float const xr = gw / 2 + o->position.x + r;
+    float const zt = gh / 2 + o->position.z - r;
+    float const zb = gh / 2 + o->position.z + r;
 
-    int xil = (int)(xl / grid_cell_size);
-    int xir = (int)(xr / grid_cell_size);
-    int zil = (int)(zl / grid_cell_size);
-    int zir = (int)(zr / grid_cell_size);
+    int const xil = clamp(int(xl / grid_cell_size), 0, grid_ncells_wide);
+    int const xir = clamp(int(xr / grid_cell_size), 0, grid_ncells_wide);
+    int const zit = clamp(int(zt / grid_cell_size), 0, grid_ncells_high);
+    int const zib = clamp(int(zb / grid_cell_size), 0, grid_ncells_high);
 
-    xil = clamp(xil, 0, grid_ncells_wide);
-    xir = clamp(xir, 0, grid_ncells_wide);
-    zil = clamp(zil, 0, grid_ncells_high);
-    zir = clamp(zir, 0, grid_ncells_high);
-
-    for (int z = zil; z <= zir; z++) {
+    // add to grid
+    for (int z = zit; z <= zib; z++) {
       for (int x = xil; x <= xir; x++) {
         cell *c = &cells[z][x];
         c->add(o);
       }
     }
 
-    o->clear_flags();
-    // note. flags need to be cleared before entering 'update' or
-    // 'resolve_collisions'
-    if (xil != xir or zil != zir) {
+    if (xil != xir or zit != zib) {
       o->set_overlaps_cells();
     }
   }
@@ -151,14 +147,18 @@ public:
   }
 
 private:
+  static constexpr int ncells = grid_ncells_wide * grid_ncells_high;
+
+  // task_thread_pool::task_thread_pool pool{};
+
+  cell cells[grid_ncells_high][grid_ncells_wide];
+
   inline static int clamp(int i, int min, int max_plus_one) {
     if (i < min) {
       return min;
-    }
-
-    if (i >= max_plus_one)
+    } else if (i >= max_plus_one) {
       return max_plus_one - 1;
-
+    }
     return i;
   }
 };

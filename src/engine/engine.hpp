@@ -1,7 +1,7 @@
 #pragma once
+// reviewed: 2024-01-04
 
 #include <condition_variable>
-#include <glm/gtx/string_cast.hpp>
 #include <mutex>
 
 // inclusion order relevant
@@ -10,6 +10,8 @@
 #include "metrics.hpp"
 //
 #include "net.hpp"
+//
+#include "net_server.hpp"
 //
 #include "sdl.hpp"
 //
@@ -25,12 +27,13 @@
 //
 #include "glob.hpp"
 //
-
 namespace glos {
-inline static void debug_render_wcs_line(const glm::vec3 &from_wcs,
-                                         const glm::vec3 &to_wcs,
-                                         const glm::vec3 &color);
-inline static void debug_render_bounding_sphere(const glm::mat4 &Mmw);
+// debug rendering functions
+inline static void debug_render_wcs_line(glm::vec3 const &from_wcs,
+                                         glm::vec3 const &to_wcs,
+                                         glm::vec3 const &color);
+
+inline static void debug_render_bounding_sphere(glm::mat4 const &Mmw);
 
 // information about the current frame
 class frame_context {
@@ -40,38 +43,47 @@ public:
   float dt = 0;           // frame delta time in seconds (time step)
 };
 
+// globally accessible current frame info
 inline frame_context frame_context{};
 
 } // namespace glos
 
 // application interface
+// called at initiation
 void application_init();
+// called by update thread when an update is done
 void application_on_update_done();
+// called by render thread when a frame has been rendered
 void application_on_render_done();
+// called at shutdown
 void application_free();
 
+// a sphere used when debugging object bounding sphere
 inline uint32_t glob_ix_bounding_sphere = 0;
 
 #include "object.hpp"
 //
 #include "grid.hpp"
 //
-#include "net.hpp"
-//
-#include "net_server.hpp"
-//
 
 namespace glos {
-static struct color {
+
+struct color {
   GLclampf red;
   GLclampf green;
   GLclampf blue;
-} background_color = {0, 0, 0};
+};
 
+// color to clear screen with
+inline color background_color{0, 0, 0};
+
+// ambient light used by shader
 inline glm::vec3 ambient_light = glm::normalize(glm::vec3{0, 1, 1});
 
+// object the camera should follow
 inline object *camera_follow_object = nullptr;
 
+// signal bit corresponding to keyboard
 static constexpr uint32_t key_w = 1 << 0;
 static constexpr uint32_t key_a = 1 << 1;
 static constexpr uint32_t key_s = 1 << 2;
@@ -87,15 +99,21 @@ static constexpr uint32_t key_o = 1 << 11;
 
 class engine final {
 public:
+  // index of shader that renders world coordinate system line
   int shader_program_render_line = 0;
+  // index of shader that renders bounding sphere
   int shader_program_render_bounding_sphere = 0;
+  // index of current shader
   int shader_program_ix = 0;
-  int shader_program_ix_prev = shader_program_ix;
+  // index of previous shader
+  int shader_program_ix_prv = shader_program_ix;
+  // render heads-up-display
   bool render_hud = true;
 
   inline void init() {
     // set random number generator seed for deterministic behaviour
     srand(0);
+    // initiate subsystems
     net.init();
     metrics.init();
     sdl.init();
@@ -108,6 +126,7 @@ public:
     objects.init();
     grid.init();
 
+    // line rendering shader
     {
       const char *vtx = R"(
   #version 330 core
@@ -129,6 +148,7 @@ public:
       shader_program_render_line = shaders.load_program_from_source(vtx, frag);
     }
 
+    // info
     printf("class sizes:\n");
     printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
     printf(": %15s : %-9s :\n", "class", "bytes");
@@ -172,10 +192,13 @@ public:
     camera.update_matrix_wvp();
 
     glUniformMatrix4fv(shaders::umtx_wvp, 1, GL_FALSE,
-                       glm::value_ptr(camera.Mvp));
+                       glm::value_ptr(camera.Mwvp));
+
     glUniform3fv(shaders::ulht, 1, glm::value_ptr(ambient_light));
+
     glClearColor(background_color.red, background_color.green,
                  background_color.blue, 1.0);
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     grid.render();
@@ -183,7 +206,6 @@ public:
     if (render_hud) {
       shaders.use_program(hud.program_ix);
       hud.render();
-      // hud.print("hello world", SDL_Color{255, 0, 0, 255}, 10, 10);
       shaders.use_program(shader_program_ix);
     }
 
@@ -191,20 +213,26 @@ public:
   }
 
   inline void run() {
-    const float rad_over_degree = 2.0f * glm::pi<float>() / 360.0f;
-    float rad_over_mouse_pixels = rad_over_degree * .02f;
-    float mouse_sensitivity = 1.5f;
+    constexpr float rad_over_degree = 2.0f * glm::pi<float>() / 360.0f;
+
+    // mouse related variables
     bool mouse_mode = false;
+    float mouse_rad_over_pixels = rad_over_degree * .02f;
+    float mouse_sensitivity = 1.5f;
+
+    SDL_SetRelativeMouseMode(mouse_mode ? SDL_TRUE : SDL_FALSE);
+
+    // turn on/off subsystems
     bool do_render = true;
     bool print_grid = false;
     bool resolve_collisions = true;
 
-    SDL_SetRelativeMouseMode(mouse_mode ? SDL_TRUE : SDL_FALSE);
-
+    // initiate metrics
     metrics.fps.calculation_intervall_ms = 1000;
     metrics.reset_timer();
     metrics.print_headers(stderr);
 
+    // initiate networking
     if (net.enabled) {
       // send initial signals
       net.begin();
@@ -218,7 +246,7 @@ public:
     // while application is running
     bool is_running = true;
 
-    // note. needed after 'application_init'
+    // note. apply new objects after 'application_init'
     objects.apply_allocated_instances();
 
     // the update grid thread
@@ -246,7 +274,8 @@ public:
           }
 
           // update frame context used throughout the frame
-          // in multiplayer mode use dt from server else previous frame
+          // in multiplayer mode use dt from server else previous frame time
+          // step
           frame_context = {
               frame_num,
               SDL_GetTicks(),
@@ -263,7 +292,8 @@ public:
           grid.print();
         }
 
-        // note. data racing between render and update is ok
+        // note. data racing between render and update thread on objects
+        // position, angle, scale glob index is ok
 
         grid.update();
 
@@ -275,19 +305,20 @@ public:
         objects.apply_freed_instances();
         objects.apply_allocated_instances();
 
-        // callback
+        // callback application
         application_on_update_done();
 
         // apply changes done by application
         objects.apply_freed_instances();
         objects.apply_allocated_instances();
 
-        // update signals state
+        // update signals from network or local
         if (net.enabled) {
           // receive signals from previous frame and send signals of current
           // frame
-          net.at_frame_end();
+          net.at_update_done();
         } else {
+          // copy signals to active player
           net.states[net.active_state_ix] = net.next_state;
         }
       }
@@ -324,12 +355,12 @@ public:
         case SDL_MOUSEMOTION: {
           if (event.motion.xrel != 0) {
             net.next_state.lookangle_y += (float)event.motion.xrel *
-                                          rad_over_mouse_pixels *
+                                          mouse_rad_over_pixels *
                                           mouse_sensitivity;
           }
           if (event.motion.yrel != 0) {
             net.next_state.lookangle_x += (float)event.motion.yrel *
-                                          rad_over_mouse_pixels *
+                                          mouse_rad_over_pixels *
                                           mouse_sensitivity;
           }
           break;
@@ -431,10 +462,10 @@ public:
       }
 
       // check if shader program has changed
-      if (shader_program_ix_prev != shader_program_ix) {
+      if (shader_program_ix_prv != shader_program_ix) {
         printf(" * switching to program at index %u\n", shader_program_ix);
         shaders.use_program(shader_program_ix);
-        shader_program_ix_prev = shader_program_ix;
+        shader_program_ix_prv = shader_program_ix;
       }
 
       {
@@ -443,7 +474,7 @@ public:
         is_rendering_cv.wait(lock, [&is_rendering] { return is_rendering; });
 
         // note. render and update have acceptable data races on objects
-        // position etc
+        // position, angle, scale, glob index etc
 
         if (do_render) {
           render();
@@ -461,9 +492,9 @@ public:
       metrics.allocated_objects = objects.allocated_list_len();
       metrics.at_frame_end(stderr);
     }
-    //---------------------------------------------------------------------free
 
-    // in case 'update' thread is waiting
+    // exited game loop
+    // notify update thread in case it is waiting
     is_rendering = false;
     is_rendering_cv.notify_one();
     update_thread.join();
@@ -472,13 +503,11 @@ public:
 
 inline engine engine{};
 
-// debugging
-inline static void debug_render_wcs_line(const glm::vec3 &from_wcs,
-                                         const glm::vec3 &to_wcs,
-                                         const glm::vec3 &color) {
-  // std::cout << glm::to_string(from_wcs) << " to " << glm::to_string(to_wcs)
-  //           << std::endl;
-
+// debugging (highly inefficient) function for rendering world coordinate system
+// lines
+inline static void debug_render_wcs_line(glm::vec3 const &from_wcs,
+                                         glm::vec3 const &to_wcs,
+                                         glm::vec3 const &color) {
   GLuint vao = 0;
   glGenVertexArrays(1, &vao);
   glBindVertexArray(vao);
@@ -487,7 +516,7 @@ inline static void debug_render_wcs_line(const glm::vec3 &from_wcs,
   glGenBuffers(1, &vbo);
   glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
-  const glm::vec3 line_vertices[]{from_wcs, to_wcs};
+  glm::vec3 const line_vertices[]{from_wcs, to_wcs};
   glBufferData(GL_ARRAY_BUFFER, sizeof(line_vertices), line_vertices,
                GL_STATIC_DRAW);
   glEnableVertexAttribArray(0);
@@ -497,7 +526,7 @@ inline static void debug_render_wcs_line(const glm::vec3 &from_wcs,
 
   shaders.use_program(engine.shader_program_render_line);
 
-  glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(camera.Mvp));
+  glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(camera.Mwvp));
   glUniform3fv(1, 1, glm::value_ptr(color));
 
   glDrawArrays(GL_LINES, 0, 2);
@@ -511,7 +540,7 @@ inline static void debug_render_wcs_line(const glm::vec3 &from_wcs,
   shaders.use_program(engine.shader_program_ix);
 }
 
-inline static void debug_render_bounding_sphere(const glm::mat4 &Mmw) {
+inline static void debug_render_bounding_sphere(glm::mat4 const &Mmw) {
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   globs.at(glob_ix_bounding_sphere).render(Mmw);

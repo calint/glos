@@ -83,7 +83,7 @@ public:
 
   inline void begin() { send_state(); }
 
-  inline void at_frame_end() {
+  inline void at_update_done() {
     const uint64_t t0 = SDL_GetPerformanceCounter();
     // receive signals from previous frame
     if (recv(fd, states, sizeof(states), 0) < 0) {

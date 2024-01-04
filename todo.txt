@@ -1,6 +1,7 @@
 [x] implement sample game
 [x] use a build system instead of make.sh
     => and also make.sh
+[ ] ? racing condition on net.states between where render thread and update thread
 [ ] halt development and tidy up
 [x]   review application code
 [ ]   use c++ random number generator
