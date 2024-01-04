@@ -8,11 +8,11 @@
 [x]   review application code
 [x]   print out source location when std::abort()
 [ ]   use c++ random number generator
-[ ]   class private members at the bottom of the declaration
+[x]   class private members at the bottom of the declaration
 [x]   use uint32_t instead of unsigned int32_t etc
       => class members fixed. in code less relevant
 [ ]   consider a more standard source layout without depending on include order
-[ ]   use gl_element_array_buffer (where appropriate)
+[x]   use gl_element_array_buffer (where appropriate)
 [ ]   use glDebugMessageCallback
 [ ]   clang-tidy
 [ ]   cmake or premake and automatically download dependencies using git submodules
@@ -20,7 +20,7 @@
 [ ]   consider verbose self documenting code
 [x]   move object::volume into physics
       => moved into object
-[ ]   review and delete obsolete notes
+[x]   review and delete obsolete notes
 [ ]   net_server as separate application
 [o]   ref& const, bool const, etc
 [x]     arguments
