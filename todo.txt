@@ -22,12 +22,12 @@
       => moved into object
 [x]   review and delete obsolete notes
 [ ]   net_server as separate application
-[o]   ref& const, bool const, etc
+[x]   ref& const, bool const, etc
 [x]     arguments
-[ ]     code
+[x]     code
 [ ]   ++i instead of i++
-[ ]   friend cell to object?
-[ ]   const correctness
+[-]   friend cell to object?
+[x]   const correctness
 [ ]   const everything
 [ ]   constexpr everything
 [ ]   struct vertex used for sizeof only
@@ -37,8 +37,8 @@
 [ ] use string_view instead of const char*
 [ ] note about the absolute texture path in mtl files
 [ ] consider inverting meaning of bool return value from 'update'
-[x]   rename 'node' to something better
-      => moved into object
+[x] rename 'node' to something better
+    => moved into object
 [x] use object Mmw when updating volume::planes
 [x] glo: after upload to gpu buffers can be deleted
 [x] glo: load obj and planes in a consistent way

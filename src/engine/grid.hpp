@@ -14,11 +14,11 @@ public:
   inline void free() {}
 
   // called from main
-  inline void update() {
+  inline void update() const {
     if (grid_threaded) {
       std::for_each(std::execution::par_unseq, std::begin(cells),
-                    std::end(cells), [](cell(&row)[grid_ncells_wide]) {
-                      for (cell &c : row) {
+                    std::end(cells), [](cell const(&row)[grid_ncells_wide]) {
+                      for (cell const &c : row) {
                         c.update();
                       }
                     });
@@ -33,7 +33,7 @@ public:
       // pool.wait_for_tasks();
 
     } else {
-      cell *p = cells[0];
+      cell const *p = cells[0];
       unsigned i = ncells;
       while (i--) {
         p->update();
@@ -43,11 +43,11 @@ public:
   }
 
   // called from main
-  inline void resolve_collisions() {
+  inline void resolve_collisions() const {
     if (grid_threaded) {
       std::for_each(std::execution::par_unseq, std::begin(cells),
-                    std::end(cells), [](cell(&row)[grid_ncells_wide]) {
-                      for (cell &c : row) {
+                    std::end(cells), [](cell const(&row)[grid_ncells_wide]) {
+                      for (cell const &c : row) {
                         c.resolve_collisions();
                       }
                     });
@@ -62,7 +62,7 @@ public:
       // pool.wait_for_tasks();
 
     } else {
-      cell *p = cells[0];
+      cell const *p = cells[0];
       unsigned i = ncells;
       while (i--) {
         p->resolve_collisions();
@@ -72,8 +72,8 @@ public:
   }
 
   // called from main
-  inline void render() {
-    cell *p = cells[0];
+  inline void render() const {
+    cell const *p = cells[0];
     unsigned i = ncells;
     while (i--) {
       p->render();
@@ -133,11 +133,11 @@ public:
     }
   }
 
-  inline void print() {
-    cell *p = cells[0];
+  inline void print() const {
+    cell const *p = cells[0];
     unsigned i = ncells;
     while (i--) {
-      printf(" %d ", p->objects_count());
+      printf(" %zu ", p->objects_count());
       if (!(i % grid_ncells_wide)) {
         printf("\n");
       }

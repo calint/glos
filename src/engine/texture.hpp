@@ -11,7 +11,7 @@ namespace glos {
 class texture final {
 public:
   GLuint id = 0;
-  int size_B = 0;
+  size_t size_B = 0;
 
   inline void load(std::string const &path) {
     // load texture
@@ -26,7 +26,7 @@ public:
     }
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface->w, surface->h, 0, GL_RGB,
                  GL_UNSIGNED_BYTE, surface->pixels);
-    size_B = surface->w * surface->h * int(sizeof(uint32_t));
+    size_B = size_t(surface->w * surface->h) * sizeof(uint32_t);
     SDL_FreeSurface(surface);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);

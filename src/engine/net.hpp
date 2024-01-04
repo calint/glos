@@ -1,5 +1,6 @@
 #pragma once
 // reviewed: 2023-12-23
+// reviewed: 2024-01-04
 
 #include <arpa/inet.h>
 #include <netdb.h>
@@ -11,19 +12,18 @@
 namespace glos {
 class net_state final {
 public:
-  uint64_t keys;
-  float lookangle_y;
-  float lookangle_x;
+  uint64_t keys = 0;
+  float look_angle_y = 0;
+  float look_angle_x = 0;
 };
 
 class net final {
 public:
-  net_state next_state;
+  net_state next_state{};
   net_state states[net_players + 1];
   uint32_t active_state_ix = 1;
-  float dt;
-  int fd;
-  const char *host = "127.0.0.1";
+  float dt = 0;
+  char const *host = "127.0.0.1";
   uint16_t port = 8085;
   bool enabled = false;
 
@@ -57,8 +57,9 @@ public:
       perror("");
       std::abort();
     }
+
     printf("[ net ] connected. waiting for go ahead\n");
-    ssize_t n = recv(fd, &active_state_ix, sizeof(active_state_ix), 0);
+    ssize_t const n = recv(fd, &active_state_ix, sizeof(active_state_ix), 0);
     if (n <= 0) {
       printf("%s:%u: ", __FILE__, __LINE__);
       if (n == 0) {
@@ -84,7 +85,7 @@ public:
   inline void begin() { send_state(); }
 
   inline void at_update_done() {
-    const uint64_t t0 = SDL_GetPerformanceCounter();
+    uint64_t const t0 = SDL_GetPerformanceCounter();
     // receive signals from previous frame
     if (recv(fd, states, sizeof(states), 0) < 0) {
       printf("%s:%d: ", __FILE__, __LINE__);
@@ -94,14 +95,16 @@ public:
     // send current frame signals
     send_state();
     // get server dt from server state (using a float value)
-    dt = states[0].lookangle_x;
+    dt = states[0].look_angle_x;
     // calculate network used lag
-    const uint64_t t1 = SDL_GetPerformanceCounter();
-    metrics.net_lag = (float)(t1 - t0) / (float)SDL_GetPerformanceFrequency();
+    uint64_t const t1 = SDL_GetPerformanceCounter();
+    metrics.net_lag = float(t1 - t0) / float(SDL_GetPerformanceFrequency());
   }
 
 private:
-  inline void send_state() {
+  int fd = 0;
+
+  inline void send_state() const {
     if (send(fd, &next_state, sizeof(next_state), 0) < 0) {
       printf("%s:%d: ", __FILE__, __LINE__);
       perror("");

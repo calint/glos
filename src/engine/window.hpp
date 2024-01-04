@@ -49,7 +49,7 @@ public:
     SDL_DestroyWindow(sdl_window);
   }
 
-  inline void swap_buffers() { SDL_GL_SwapWindow(sdl_window); }
+  inline void swap_buffers() const { SDL_GL_SwapWindow(sdl_window); }
 
   inline auto get_width_and_height() const -> std::pair<int, int> {
     int w = 0;

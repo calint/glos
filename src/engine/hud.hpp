@@ -27,8 +27,8 @@ public:
     };
 
     GLuint quad_indices[] = {
-        2, 1, 0, // First Triangle (Top Left, Top Right, Bottom Right)
-        3, 2, 0  // Second Triangle (Top Left, Bottom Right, Bottom Left)
+        2, 1, 0, // first triangle
+        3, 2, 0  // second triangle
     };
 
     shaders::gl_check_error("hud::init entry");
@@ -91,7 +91,7 @@ public:
     }
   }
 
-  inline void render() {
+  inline void render() const {
     // glEnable(GL_BLEND);
     // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glBindVertexArray(VAO);
@@ -101,7 +101,7 @@ public:
     // glDisable(GL_BLEND);
   }
 
-  inline void print(char const *text, SDL_Color color, int x, int y) {
+  inline void print(char const *text, SDL_Color color, int x, int y) const {
     SDL_Surface *text_surface = TTF_RenderUTF8_Blended(font, text, color);
     // ARGB8888
     // printf("Surface Format: %s\n",

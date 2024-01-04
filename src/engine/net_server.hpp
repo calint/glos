@@ -1,5 +1,6 @@
 #pragma once
 // reviewed: 2023-12-23
+// reviewed: 2024-01-04
 
 #include "net.hpp"
 
@@ -31,6 +32,7 @@ public:
         std::abort();
       }
     }
+
     struct sockaddr_in server;
     server.sin_family = AF_INET;
     server.sin_addr.s_addr = INADDR_ANY;
@@ -89,7 +91,7 @@ public:
     uint64_t t0 = SDL_GetPerformanceCounter();
     while (true) {
       for (unsigned i = 1; i < net_players + 1; i++) {
-        const ssize_t n = recv(clients_fd[i], &state[i], state_read_size, 0);
+        ssize_t const n = recv(clients_fd[i], &state[i], state_read_size, 0);
         if (n == -1) {
           printf("%s:%d: player %u: ", __FILE__, __LINE__, i);
           perror("");
@@ -105,11 +107,11 @@ public:
           std::abort();
         }
       }
-      const uint64_t t1 = SDL_GetPerformanceCounter();
-      const float dt = (float)(t1 - t0) / (float)SDL_GetPerformanceFrequency();
+      uint64_t const t1 = SDL_GetPerformanceCounter();
+      float const dt = float(t1 - t0) / float(SDL_GetPerformanceFrequency());
       t0 = t1;
       // using state[0] to broadcast data from server to all players, such as dt
-      state[0].lookangle_x = dt;
+      state[0].look_angle_x = dt;
       for (unsigned i = 1; i < net_players + 1; i++) {
         ssize_t n = write(clients_fd[i], state, sizeof(state));
         if (n == -1 or n != sizeof(state)) {

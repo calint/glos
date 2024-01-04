@@ -57,33 +57,33 @@ public:
     std::string const content = buffer.str();
     const char *p = content.c_str();
     while (*p) {
-      token t = token_next(&p);
+      token const t = token_next(&p);
       if (token_starts_with(&t, "#")) {
         p = scan_to_including_newline(p);
         continue;
       }
       if (token_starts_with(&t, "newmtl")) {
         store.push_back({});
-        token tk = token_next(&p);
-        const unsigned n = token_size(&tk);
+        token const tk = token_next(&p);
+        unsigned const n = token_size(&tk);
         store.back().path = std::string{path};
         store.back().name = std::string{tk.content, tk.content + n};
         printf("     * %s\n", store.back().name.c_str());
         continue;
       }
       if (token_equals(&t, "Ns")) {
-        token tk = token_next(&p);
+        token const tk = token_next(&p);
         store.back().Ns = token_get_float(&tk);
         continue;
       }
       if (token_equals(&t, "Ka") || token_equals(&t, "Kd") ||
           token_equals(&t, "Ks") || token_equals(&t, "Ke")) {
         glm::vec3 v{};
-        token x = token_next(&p);
+        token const x = token_next(&p);
         v.x = token_get_float(&x);
-        token y = token_next(&p);
+        token const y = token_next(&p);
         v.y = token_get_float(&y);
-        token z = token_next(&p);
+        token const z = token_next(&p);
         v.z = token_get_float(&z);
         if (token_equals(&t, "Ka")) {
           store.back().Ka = v;
@@ -104,15 +104,15 @@ public:
       }
 
       if (token_equals(&t, "d")) {
-        token tk = token_next(&p);
+        token const tk = token_next(&p);
         store.back().d = token_get_float(&tk);
         continue;
       }
 
       if (token_equals(&t, "map_Kd")) {
         // texture path
-        const token tk = token_next(&p);
-        const unsigned n = token_size(&tk);
+        token const tk = token_next(&p);
+        unsigned const n = token_size(&tk);
         store.back().map_Kd = std::string{tk.content, tk.content + n};
         continue;
       }

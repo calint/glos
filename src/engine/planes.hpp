@@ -58,7 +58,7 @@ public:
     }
   }
 
-  inline void print() {
+  inline void print() const {
     const size_t n = world_points.size();
     for (size_t i = 0; i < n; ++i) {
       glm::vec3 const &pnt = world_points[i];
@@ -68,7 +68,7 @@ public:
     }
   }
 
-  inline void debug_render_normals() {
+  inline void debug_render_normals() const {
     size_t const n = world_points.size();
     for (size_t i = 0; i < n; ++i) {
       glm::vec3 const &pnt = world_points.at(i);

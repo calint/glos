@@ -354,14 +354,14 @@ public:
           break;
         case SDL_MOUSEMOTION: {
           if (event.motion.xrel != 0) {
-            net.next_state.lookangle_y += (float)event.motion.xrel *
-                                          mouse_rad_over_pixels *
-                                          mouse_sensitivity;
+            net.next_state.look_angle_y += (float)event.motion.xrel *
+                                           mouse_rad_over_pixels *
+                                           mouse_sensitivity;
           }
           if (event.motion.yrel != 0) {
-            net.next_state.lookangle_x += (float)event.motion.yrel *
-                                          mouse_rad_over_pixels *
-                                          mouse_sensitivity;
+            net.next_state.look_angle_x += (float)event.motion.yrel *
+                                           mouse_rad_over_pixels *
+                                           mouse_sensitivity;
           }
           break;
         }
@@ -489,7 +489,7 @@ public:
       }
 
       // metrics
-      metrics.allocated_objects = objects.allocated_list_len();
+      metrics.allocated_objects = uint32_t(objects.allocated_list_len());
       metrics.at_frame_end(stderr);
     }
 

@@ -6,7 +6,7 @@ namespace glos {
 class cell final {
 public:
   // called from grid (possibly by multiple threads)
-  inline void update() {
+  inline void update() const {
     for (object *o : ols) {
       // check if object has already been updated by a different cell
       if (grid_threaded and o->is_overlaps_cells()) {
@@ -43,7 +43,7 @@ public:
   }
 
   // called from grid (possibly by multiple threads)
-  inline void resolve_collisions() {
+  inline void resolve_collisions() const {
     // thread safe because 'ols' does not change during 'resolve_collisions'
     const size_t len = ols.size();
     if (len == 0) {
@@ -116,7 +116,7 @@ public:
   }
 
   // called from grid (from only one thread)
-  inline void render() {
+  inline void render() const {
     for (object *o : ols) {
       // check if object has been rendered by another cell
       if (o->rendered_at_tick == frame_context.frame_num) {
@@ -134,7 +134,7 @@ public:
   // called from grid (from only one thread)
   inline void add(object *o) { ols.push_back(o); }
 
-  inline void print() {
+  inline void print() const {
     int i = 0;
     for (object const *o : ols) {
       if (i++) {
@@ -145,7 +145,7 @@ public:
     printf("\n");
   }
 
-  inline auto objects_count() const -> int { return int(ols.size()); }
+  inline auto objects_count() const -> size_t { return ols.size(); }
 
 private:
   std::vector<object *> ols{};

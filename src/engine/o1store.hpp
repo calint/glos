@@ -159,7 +159,7 @@ public:
   }
 
   // returns the size of allocated heap memory in bytes
-  constexpr auto allocated_data_size_B() -> int {
+  constexpr auto allocated_data_size_B() const -> int {
     return InstanceSizeInBytes
                ? (Size * InstanceSizeInBytes + 3 * Size * sizeof(Type *))
                : (Size * sizeof(Type) + 3 * Size * sizeof(Type *));

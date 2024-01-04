@@ -19,7 +19,7 @@ class shaders final {
   public:
     GLuint id = 0;
 
-    inline void use() { glUseProgram(id); }
+    inline void use() const { glUseProgram(id); }
   };
 
   // default shader source
@@ -125,6 +125,7 @@ public:
     for (program const &p : programs) {
       glDeleteProgram(p.id);
     }
+    programs.clear();
   }
 
   auto load_program_from_source(char const *vert_src, char const *frag_src)
@@ -157,7 +158,7 @@ public:
 
   inline auto programs_count() const -> int { return int(programs.size()); }
 
-  inline void use_program(int const ix) { programs.at(size_t(ix)).use(); }
+  inline void use_program(int const ix) const { programs.at(size_t(ix)).use(); }
 
   inline auto program_id(int const ix) const -> GLuint {
     return programs.at(size_t(ix)).id;

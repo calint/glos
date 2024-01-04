@@ -33,7 +33,7 @@ public:
     glDeleteBuffers(1, &vertex_buffer_id);
     glDeleteVertexArrays(1, &vertex_array_id);
     metrics.buffered_vertex_data -= size_t(size_B);
-    metrics.allocated_glos--;
+    metrics.allocated_globs--;
   }
 
   inline void render(glm::mat4 const &mtx_mw) const {
@@ -49,13 +49,13 @@ public:
         glBindTexture(GL_TEXTURE_2D, 0);
       }
       glDrawArrays(GL_TRIANGLES, mr.vertex_begin, mr.vertex_count);
-      metrics.rendered_triangles += mr.vertex_count / 3;
+      metrics.rendered_triangles += uint32_t(mr.vertex_count) / 3;
       if (m.texture_id) {
         glBindTexture(GL_TEXTURE_2D, 0);
       }
     }
     glBindVertexArray(0);
-    metrics.rendered_glos++;
+    metrics.rendered_globs++;
   }
 
   // loads definition and optional bounding planes from 'obj' files
@@ -237,7 +237,7 @@ public:
            vertices.size() * sizeof(float) / sizeof(vertex), triangles_count,
            vertices.size() * sizeof(float), bounding_radius);
 
-    metrics.allocated_glos++;
+    metrics.allocated_globs++;
 
     if (bounding_planes_path) {
       load_planes(bounding_planes_path);
