@@ -18,6 +18,6 @@
 ## notes
 * engine is multithreaded (see `configuration.hpp` setting `grid_threaded`)
 * rendering is done in parallel with updating game objects
-* updating objects and collision detections are done on available cores
+* updating objects and collisions resolutions are done on available cores
 * awareness of the nature of multithreaded application is recommended
 * in smaller applications multithreaded mode might degrade performance
