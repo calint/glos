@@ -4,12 +4,12 @@
 * space is partitioned in a `grid` of `cells` containing objects
   - `object` may overlap `grid` `cells`
   - `grid` runs an `update` then a `resolve_collisions` pass on `cells`
-  - the passes call the `cells` in parallel and unsequenced way
-  - `cells` call `object` `update` in the update pass and `on_collision` when collision is detected in `resolve_collision` pass
+  - the passes call `cells` in parallel and unsequenced way
+  - `cells` call `object` `update` in the `update` pass and `on_collision` when collision is detected in `resolve_collision` pass
   - `object` `update` is called by only one thread at a time
   - `object` `on_collision` is called by only one thread at a time and only once per frame for each collision with other `object`
 * `object` refers to a 3d model, `glob`, using an index in `globs`
-  - has a state such as `position`, `angle`, `scale` etc
+  - has state such as `position`, `angle`, `scale` etc
 * `glob`
   - rendered using opengl and a transform matrix for model to world coordinates provided to its `render`
   - using indices, references `materials` and `textures` that are created at `load`
