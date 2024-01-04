@@ -11,7 +11,7 @@
 ## disclaimers
 * source in `hpp` files
   - gives compiler opportunity to optimize in a greater context
-  - increases compile time and is not scalable but this framework is meant for smallish applications
+  - increases compile time and is not scalable, however this framework is intended for smallish applications
 * use of `static` storage
   - gives compiler opportunity to optimize
 * include order relevant
@@ -21,7 +21,7 @@
   - all functions are requested to be inlined assuming compilers won't adhere to the hint when it does not make sense, such as big functions called from multiple locations
   - functions called from one location should be inlined
 * right to left notation `Type const &inst` instead of `const Type &inst`
-* for consistency, constants are written after the type such as `const char *ptr` is written as `char const *ptr` and `const float x` as `float cont x`
+* for consistency, constants are written after the type such as `char const *ptr` instead of `const char *ptr` and `float cont x` instead of `const float x`
 * types are spelled out instead of using `auto` for readability
 * `auto` is used when the type is too verbose, such as iterators
 * `unsigned` is used where negative values do not make sense
