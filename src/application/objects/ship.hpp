@@ -25,27 +25,31 @@ public:
     game_area_roll(position);
 
     angular_velocity = {0, 0, 0};
-    const uint64_t keys = net_state->keys;
     glob_ix = glob_ix_ship;
-    if (keys != 0) {
-      // wasd keys
-      if (keys & glos::key_w) {
-        velocity += ship_speed * vec3{-sin(angle.y), 0, -cos(angle.y)} *
-                    frame_context.dt;
-        glob_ix = glob_ix_ship_engine_on;
-      }
-      if (keys & glos::key_a) {
-        angular_velocity.y = radians(ship_turn_rate_deg);
-      }
-      if (keys & glos::key_d) {
-        angular_velocity.y = radians(-ship_turn_rate_deg);
-      }
-      if (keys & glos::key_j) {
-        if (ready_to_fire_at_ms < frame_context.ms) {
-          fire();
-        }
+
+    uint64_t const keys = net_state->keys;
+    if (not keys) {
+      return false;
+    }
+
+    // handle ship controls
+    if (keys & glos::key_w) {
+      velocity +=
+          ship_speed * vec3{-sin(angle.y), 0, -cos(angle.y)} * frame_context.dt;
+      glob_ix = glob_ix_ship_engine_on;
+    }
+    if (keys & glos::key_a) {
+      angular_velocity.y = radians(ship_turn_rate_deg);
+    }
+    if (keys & glos::key_d) {
+      angular_velocity.y = radians(-ship_turn_rate_deg);
+    }
+    if (keys & glos::key_j) {
+      if (ready_to_fire_at_ms < frame_context.ms) {
+        fire();
       }
     }
+
     return false;
   }
 
