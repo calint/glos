@@ -17,7 +17,7 @@
 * `material` is stored in `materials` and are unique for a `glob`
 * `texture` is stored in `textures` and can be shared by multiple `globs`
 * `shaders` contains the opengl programs used for rendering
-* `window` is an sdl2 window displaying the rendered result
+* `window` is a sdl2 window displaying the rendered result
 * `sdl` handles initiation and shutdown of sdl2
 * `net` and `net_server` handle single and multiplayer modes
   - synchronizes players signals
