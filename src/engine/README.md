@@ -13,13 +13,13 @@
   - rendered using opengl and a transform matrix for model to world coordinates provided to its `render`
   - using indices, references `materials` and `textures` that are created at `load`
   - has a radius calculated at `load` and may be additionally bounded by a convex volume defined by `planes`
-* `camera` describes how the world is viewed in `window`
-  - contains matrix used by `engine` at `render` to transform world coordinates to screen
 * `planes` can detect collision with spheres and other `planes`
   - collision with spheres is done by checking if distance from sphere center to all planes is less than radius or negative
   - collision with other `planes` is done by checking if any point in `planes` A is behind all `planes` B and vice versa
 * `material` is stored in `materials` and are unique to a `glob`
 * `texture` is stored in `textures` and can be shared by multiple `globs`
+* `camera` describes how the world is viewed in `window`
+  - contains matrix used by `engine` at `render` to transform world coordinates to screen
 * `shaders` contains the opengl programs used for rendering
 * `window` is a sdl2 window displaying the rendered result
 * `sdl` handles initiation and shutdown of sdl2
