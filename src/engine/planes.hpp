@@ -8,7 +8,7 @@ class planes final {
   // normals rotation matrix from model to world coordinate system
   glm::mat3 Nmw{};
 
-  // cached world coordinate system positions and normals
+  // cached world coordinate system points and normals
   std::vector<glm::vec3> world_points{};
   std::vector<glm::vec3> world_normals{};
   // the components used in the cached points and normals
@@ -16,7 +16,7 @@ class planes final {
   glm::vec3 Mmw_agl{};
   glm::vec3 Mmw_scl{};
   glm::vec3 Nmw_agl{};
-  // necessary because Nmw_agl is zero and so might be the object angle also
+  // necessary because Nmw_agl is zero and so might also be the object angle
   // before any changes
   bool first_update = true;
   //

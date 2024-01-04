@@ -1,6 +1,7 @@
 #pragma once
 // reviewed: 2023-12-22
 // reviewed: 2023-12-27
+// reviewed: 2024-01-04
 
 namespace glos {
 class window final {
@@ -14,14 +15,10 @@ public:
         SDL_CreateWindow("glos", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                          window_width, window_height, SDL_WINDOW_OPENGL);
     if (!sdl_window) {
-      printf("%s:%d: %s", __FILE__, __LINE__, SDL_GetError());
+      printf("%s:%d: %s\n", __FILE__, __LINE__, SDL_GetError());
       std::abort();
     }
 
-    // SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK,
-    //                     SDL_GL_CONTEXT_PROFILE_CORE);
-    // SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-    // SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
@@ -30,19 +27,16 @@ public:
 
     sdl_gl_context = SDL_GL_CreateContext(sdl_window);
     if (!sdl_gl_context) {
-      printf("%s:%d: %s", __FILE__, __LINE__, SDL_GetError());
+      printf("%s:%d: %s\n", __FILE__, __LINE__, SDL_GetError());
       std::abort();
     }
 
-    // sdl_renderer = SDL_CreateRenderer(
-    //     sdl_window, -1, SDL_RENDERER_ACCELERATED |
-    //     SDL_RENDERER_PRESENTVSYNC);
     sdl_renderer =
         SDL_CreateRenderer(sdl_window, -1,
                            SDL_RENDERER_ACCELERATED |
                                (window_vsync ? SDL_RENDERER_PRESENTVSYNC : 0));
     if (!sdl_renderer) {
-      printf("%s:%d: %s", __FILE__, __LINE__, SDL_GetError());
+      printf("%s:%d: %s\n", __FILE__, __LINE__, SDL_GetError());
       std::abort();
     }
 
@@ -66,9 +60,9 @@ public:
 
 private:
   inline static void gl_print_context_profile_and_version() {
-    int value;
+    int value = 0;
     if (SDL_GL_GetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, &value)) {
-      printf("%s:%d: %s", __FILE__, __LINE__, SDL_GetError());
+      printf("%s:%d: %s\n", __FILE__, __LINE__, SDL_GetError());
       std::abort();
     }
     printf("%-32s", "SDL_GL_CONTEXT_PROFILE_MASK");
@@ -87,19 +81,18 @@ private:
       break;
     default:
       perror("unknown option");
-      printf("%s:%d: %d", __FILE__, __LINE__, value);
-      std::abort();
+      printf("%s:%d: %d\n", __FILE__, __LINE__, value);
     }
     printf(" (%d)\n", value);
 
     if (SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &value)) {
-      printf("%s:%d: %s", __FILE__, __LINE__, SDL_GetError());
+      printf("%s:%d: %s\n", __FILE__, __LINE__, SDL_GetError());
       std::abort();
     }
     printf("%-32s  %d\n", "SDL_GL_CONTEXT_MAJOR_VERSION", value);
 
     if (SDL_GL_GetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, &value)) {
-      printf("%s:%d: %s", __FILE__, __LINE__, SDL_GetError());
+      printf("%s:%d: %s\n", __FILE__, __LINE__, SDL_GetError());
       std::abort();
     }
     printf("%-32s  %d\n", "SDL_GL_CONTEXT_MINOR_VERSION", value);
