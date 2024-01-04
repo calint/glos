@@ -21,12 +21,12 @@
 * `camera` describes how the world is viewed in `window`
   - contains matrix used by `engine` at `render` to transform world coordinates to screen
 * `window` is a double buffer sdl2 opengl window displaying the rendered result
-* `sdl` handles initiation and shutdown of sdl2
 * `shaders` contains the opengl programs used for rendering
 * `hud` is a heads-up-display rendered after the view
 * `net` and `net_server` handle single and multiplayer modes
   - synchronizes players signals
   - limits frame rate of all players to the slowest client
+* `sdl` handles initiation and shutdown of sdl2
 * `metrics` keeps track of frame time and statistics
 * `token` is a helper to parse text
 
