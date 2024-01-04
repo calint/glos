@@ -5,10 +5,10 @@
   - an `object` may overlap `grid` `cells`
   - `grid` runs `update` and `on_collision` on objects in a parallel and unsequenced way
 * `camera` describes how the world is viewed in `window`
-  - contains matrix used by `engine` at `render` that transforms world coordinates to view and screen space through projection 
+  - contains matrix used by `engine` at `render` to transform world coordinates to screen
 * `object` has a reference to `glob` using an index in `globs`
-* `glob` is an opengl renderable object
-  - to render a glob, a transform matrix from model to world coordinates is provided to `render`
+* `glob` can render using opengl
+  - to render, a transform matrix for model to world coordinates is provided to its `render`
 * `glob` references, using indices, `materials` and `textures` that are created at `load`
 * `glob` has a radius calculated at `load` and may be additionally bounded by a convex volume defined by `planes`
 * `shaders` contains the opengl programs used for rendering
