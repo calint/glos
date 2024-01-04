@@ -41,6 +41,7 @@
 * attention is needed when objects are interacting with other objects during `update` or `on_collision` because the object being interacted with might be running code on another thread
   - suggestion is to use a synchronized message queue that is handled at `update`
 
+## schematics
 ```
    update thread                    render thread
    -----------------------------    -----------------
