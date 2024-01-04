@@ -11,6 +11,7 @@
   - to render, a transform matrix for model to world coordinates is provided to its `render`
 * `glob` references, using indices, `materials` and `textures` that are created at `load`
 * `glob` has a radius calculated at `load` and may be additionally bounded by a convex volume defined by `planes`
+* `planes` can detect collision with spheres and other `planes`
 * `shaders` contains the opengl programs used for rendering
 * `window` is an sdl2 window displaying the rendered result
 * `sdl` handles initiation and shutdown of sdl2
