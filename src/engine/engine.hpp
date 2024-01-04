@@ -100,13 +100,13 @@ static constexpr uint32_t key_o = 1 << 11;
 class engine final {
 public:
   // index of shader that renders world coordinate system line
-  int shader_program_render_line = 0;
+  size_t shader_program_ix_render_line = 0;
   // index of shader that renders bounding sphere
-  int shader_program_render_bounding_sphere = 0;
+  size_t shader_program_ix_render_bounding_sphere = 0;
   // index of current shader
-  int shader_program_ix = 0;
+  size_t shader_program_ix = 0;
   // index of previous shader
-  int shader_program_ix_prv = shader_program_ix;
+  size_t shader_program_ix_prv = shader_program_ix;
   // render heads-up-display
   bool render_hud = true;
 
@@ -145,7 +145,7 @@ public:
     rgba = vec4(ucolor, 1);
   }
 )";
-      shader_program_render_line = shaders.load_program_from_source(vtx, frag);
+      shader_program_ix_render_line = shaders.load_program_from_source(vtx, frag);
     }
 
     // info
@@ -463,7 +463,7 @@ public:
 
       // check if shader program has changed
       if (shader_program_ix_prv != shader_program_ix) {
-        printf(" * switching to program at index %u\n", shader_program_ix);
+        printf(" * switching to program at index %zu\n", shader_program_ix);
         shaders.use_program(shader_program_ix);
         shader_program_ix_prv = shader_program_ix;
       }
@@ -524,7 +524,7 @@ inline static void debug_render_wcs_line(glm::vec3 const &from_wcs,
 
   camera.update_matrix_wvp();
 
-  shaders.use_program(engine.shader_program_render_line);
+  shaders.use_program(engine.shader_program_ix_render_line);
 
   glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(camera.Mwvp));
   glUniform3fv(1, 1, glm::value_ptr(color));

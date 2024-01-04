@@ -16,7 +16,6 @@ public:
   float radius = 0;               // bounding radius
   glm::vec3 scale{};              // in meters
   planes planes{};                // bounding planes (if any)
-  bool is_sphere = false;         // if object can be considered a sphere
   glm::mat4 Mmw{};                // model -> world matrix
   glm::vec3 Mmw_pos{};            // position of current Mmw matrix
   glm::vec3 Mmw_agl{};            // angle of current Mmw matrix
@@ -33,6 +32,7 @@ public:
   uint32_t rendered_at_tick = 0;  // used by cell to avoid rendering twice
   uint32_t updated_at_tick = 0;   // used by cell to avoid updating twice
   uint8_t grid_flags = 0;         // used by grid (overlaps, is_dead)
+  bool is_sphere = false;         // true if object can be considered a sphere
   std::vector<const object *> handled_collisions{};
   std::atomic_flag spinlock = ATOMIC_FLAG_INIT;
 
@@ -147,7 +147,9 @@ public:
 
   inline void free(object *o) { store_.free_instance(o); }
 
-  inline auto allocated_list_len() const -> int { return allocated_list_len_; }
+  inline auto allocated_list_len() const -> size_t {
+    return allocated_list_len_;
+  }
 
   inline auto allocated_list_end() const { return allocated_list_end_; }
 
@@ -167,7 +169,7 @@ public:
 private:
   o1store<object, objects_count, 0, objects_instance_size_B> store_{};
   object **allocated_list_end_ = nullptr;
-  int allocated_list_len_ = 0;
+  size_t allocated_list_len_ = 0;
 };
 
 inline objects objects{};

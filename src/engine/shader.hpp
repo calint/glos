@@ -86,11 +86,11 @@ public:
     glEnable(GL_CULL_FACE);
     glFrontFace(GL_CCW);
 
-    int const default_program_ix =
+    size_t const default_program_ix =
         load_program_from_source(vertex_shader_source, fragment_shader_source);
 
-    unsigned const def_prog_id = programs.at(size_t(default_program_ix)).id;
-    programs.at(size_t(default_program_ix)).use();
+    GLuint const def_prog_id = programs.at(default_program_ix).id;
+    programs.at(default_program_ix).use();
 
     printf("shader uniforms locations:\n");
     printf(":-%10s-:-%7s-:\n", "----------", "-------");
@@ -129,7 +129,7 @@ public:
   }
 
   auto load_program_from_source(char const *vert_src, char const *frag_src)
-      -> int {
+      -> size_t {
     gl_check_error("enter load_program_from_source");
     GLuint const program_id = glCreateProgram();
     GLuint const vertex_shader_id = compile(GL_VERTEX_SHADER, vert_src);
@@ -153,15 +153,15 @@ public:
 
     programs.push_back({program_id});
 
-    return int(programs.size() - 1);
+    return programs.size() - 1;
   }
 
-  inline auto programs_count() const -> int { return int(programs.size()); }
+  inline auto programs_count() const -> size_t { return programs.size(); }
 
-  inline void use_program(int const ix) const { programs.at(size_t(ix)).use(); }
+  inline void use_program(size_t const ix) const { programs.at(ix).use(); }
 
-  inline auto program_id(int const ix) const -> GLuint {
-    return programs.at(size_t(ix)).id;
+  inline auto program_id(size_t const ix) const -> GLuint {
+    return programs.at(ix).id;
   }
 
 private:

@@ -13,9 +13,9 @@
 
 #include <atomic>
 
-template <typename Type, const int Size, const int StoreId = 0,
-          const int InstanceSizeInBytes = 0>
-class o1store {
+template <typename Type, const size_t Size, const unsigned StoreId = 0,
+          const size_t InstanceSizeInBytes = 0>
+class o1store final {
   Type *all_ = nullptr;
   Type **free_bgn_ = nullptr;
   Type **free_ptr_ = nullptr;
@@ -135,8 +135,8 @@ public:
   inline auto allocated_list() const -> Type ** { return alloc_bgn_; }
 
   // returns length of list of allocated instances
-  inline auto allocated_list_len() const -> int {
-    return int(alloc_ptr_ - alloc_bgn_);
+  inline auto allocated_list_len() const -> size_t {
+    return size_t(alloc_ptr_ - alloc_bgn_);
   }
 
   // returns one past the end of allocated instances list
@@ -146,10 +146,10 @@ public:
   inline auto all_list() const -> Type * { return all_; }
 
   // returns the length of 'all' list
-  constexpr auto all_list_len() const -> int { return Size; }
+  constexpr auto all_list_len() const -> size_t { return Size; }
 
   // returns instance at index 'ix' from 'all' list
-  inline auto instance(int ix) const -> Type * {
+  inline auto instance(size_t ix) const -> Type * {
     if (!InstanceSizeInBytes) {
       return &all_[ix];
     }
@@ -159,7 +159,7 @@ public:
   }
 
   // returns the size of allocated heap memory in bytes
-  constexpr auto allocated_data_size_B() const -> int {
+  constexpr auto allocated_data_size_B() const -> size_t {
     return InstanceSizeInBytes
                ? (Size * InstanceSizeInBytes + 3 * Size * sizeof(Type *))
                : (Size * sizeof(Type) + 3 * Size * sizeof(Type *));

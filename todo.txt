@@ -7,7 +7,10 @@
 [ ] planes::update_model_to_world could save frame_num from context to shorten
     the decision if cached values are valids
 [ ] ? racing condition on net.states between where render thread and update thread
-[ ] halt development and tidy up
+[o] halt development and tidy up
+[x]   'unsigned' instead of 'int' where size cannot be negative
+      => in 64 bit architecture 'int' instead of 'unsigned' should be considered
+[x]   use size_t for sizes and indexes (assumes 64 bit architecture)
 [x]   review application code
 [x]   print out source location when std::abort()
 [ ]   use c++ random number generator

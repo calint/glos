@@ -7,9 +7,9 @@
 // definitions used by engine and application
 
 // grid dimensions
-static constexpr int grid_cell_size = 10;
-static constexpr int grid_ncells_wide = 4;
-static constexpr int grid_ncells_high = 4;
+static constexpr unsigned grid_cell_size = 10;
+static constexpr unsigned grid_ncells_wide = 4;
+static constexpr unsigned grid_ncells_high = 4;
 
 // multithreaded grid
 // note. in some cases multithreaded mode is a degradation of performance
@@ -25,19 +25,19 @@ inline bool debug_object_planes_normals = false;
 inline bool debug_object_bounding_sphere = false;
 
 // window dimensions
-static constexpr int window_width = 1024;
-static constexpr int window_height = 1024;
+static constexpr unsigned window_width = 1024;
+static constexpr unsigned window_height = 1024;
 // vsync should be on when not doing performance tests
 static constexpr bool window_vsync = true;
 
 // number of players in networked mode
-static constexpr int net_players = 2;
+static constexpr unsigned net_players = 2;
 
 // number of preallocated objects
-static constexpr int objects_count = 1024;
+static constexpr unsigned objects_count = 1024;
 
 // maximum size of any object instance in bytes
-static constexpr int objects_instance_size_B = 1024;
+static constexpr size_t objects_instance_size_B = 1024;
 
 // game area
 static constexpr float game_area_min_x = -22;
@@ -70,12 +70,12 @@ static uint32_t glob_ix_power_up = 0;
 static constexpr float asteroid_large_speed = 10;
 
 static constexpr float asteroid_large_scale = 2;
-static constexpr int asteroid_large_split = 4;
+static constexpr unsigned asteroid_large_split = 4;
 static constexpr float asteroid_large_split_speed = 6;
 static constexpr float asteroid_large_split_agl_vel_deg = 60;
 
 static constexpr float asteroid_medium_scale = 1.2f;
-static constexpr int asteroid_medium_split = 4;
+static constexpr unsigned asteroid_medium_split = 4;
 static constexpr float asteroid_medium_split_speed = 6;
 static constexpr float asteroid_medium_split_agl_vel_deg = 100;
 
@@ -85,7 +85,7 @@ static constexpr float ship_turn_rate_deg = 120;
 static constexpr float ship_speed = 6;
 static constexpr float ship_bullet_speed = 17;
 static constexpr uint32_t ship_bullet_fire_interval_ms = 1'000;
-static constexpr int ship_bullet_level_1_fire_count = 5;
+static constexpr unsigned ship_bullet_level_1_fire_count = 5;
 static constexpr float ship_bullet_spread = 4;
 
 static constexpr float bullet_fragment_agl_vel_rnd = 360;

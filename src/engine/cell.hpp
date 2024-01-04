@@ -135,7 +135,7 @@ public:
   inline void add(object *o) { ols.push_back(o); }
 
   inline void print() const {
-    int i = 0;
+    unsigned i = 0;
     for (object const *o : ols) {
       if (i++) {
         printf(", ");

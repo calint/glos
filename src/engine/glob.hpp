@@ -226,12 +226,12 @@ public:
     ranges.emplace_back(vertex_ix_prv, vertex_ix - vertex_ix_prv,
                         current_material_ix);
 
-    int triangles_count = 0;
+    unsigned triangles_count = 0;
     for (range const &r : ranges) {
-      triangles_count += r.vertex_count / 3;
+      triangles_count += unsigned(r.vertex_count / 3);
     }
 
-    printf("     %zu range%c   %lu vertices   %d triangles   %zu B   radius: "
+    printf("     %zu range%c   %lu vertices   %u triangles   %zu B   radius: "
            "%0.2f\n",
            ranges.size(), ranges.size() == 1 ? ' ' : 's',
            vertices.size() * sizeof(float) / sizeof(vertex), triangles_count,
@@ -272,7 +272,7 @@ public:
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-    size_B = int(vertices.size() * sizeof(float));
+    size_B = vertices.size() * sizeof(float);
 
     metrics.buffered_vertex_data += size_t(size_B);
 
@@ -288,7 +288,7 @@ private:
   GLuint vertex_array_id = 0;
   GLuint vertex_buffer_id = 0;
   std::vector<range> ranges{};
-  int size_B = 0;
+  size_t size_B = 0;
 
   inline void load_planes(char const *path) {
     // load from blender exported 'obj' file

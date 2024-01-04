@@ -5,17 +5,21 @@
 // make common used namespace available in game code
 using namespace glos;
 using namespace glm;
+
 // game state
-static int level = 0;
-static int score = 0;
-std::atomic<int> asteroids_alive{0};
-//
+static unsigned level = 0;
+static unsigned score = 0; // racing ok
+std::atomic<unsigned> asteroids_alive{0};
+
+// objects
 #include "objects/asteroid_large.hpp"
 #include "objects/fragment.hpp"
 #include "objects/ship.hpp"
-//
+
+// forward declarations
 static void application_init_shaders();
-static void create_asteroids(int const num);
+static void create_asteroids(unsigned const num);
+
 //
 void application_init() {
   application_init_shaders();
@@ -138,7 +142,7 @@ void application_init() {
 
 void application_on_update_done() {
   if (asteroids_alive == 0) {
-    level++;
+    ++level;
     create_asteroids(level);
   }
 }
@@ -151,10 +155,10 @@ void application_on_render_done() {
 
 void application_free() {}
 
-static void create_asteroids(int const num) {
+static void create_asteroids(unsigned const num) {
   constexpr float v = asteroid_large_speed;
   constexpr float d = game_area_max_x - game_area_min_x;
-  for (int i = 0; i < num; i++) {
+  for (unsigned i = 0; i < num; ++i) {
     asteroid_large *o = new (objects.alloc()) asteroid_large{};
     o->position.x = rnd1(d);
     o->position.z = rnd1(d);

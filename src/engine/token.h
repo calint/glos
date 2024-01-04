@@ -17,20 +17,22 @@ inline static unsigned token_size(token const *t) {
   return (unsigned)(t->content_end - t->content);
 }
 
-inline static int token_starts_with(token const *t, char const *str) {
+inline static bool token_starts_with(token const *t, char const *str) {
   return strncmp(str, t->content, strlen(str)) == 0;
 }
 
-inline static int token_equals(token const *t, char const *str) {
-  const char *p = t->content; //? stdlib
-  while (1) {
+inline static bool token_equals(token const *t, char const *str) {
+  char const *p = t->content;
+  while (true) {
     if (p == t->content_end) {
-      if (!*str)
-        return 1;
-      return 0;
+      if (!*str) {
+        return true;
+      }
+      return false;
     }
-    if (*p != *str)
-      return 0;
+    if (*p != *str) {
+      return false;
+    }
     ++p;
     ++str;
   }
@@ -156,4 +158,3 @@ inline static char const *scan_to_including_newline(char const *p) {
     ++p;
   }
 }
-
