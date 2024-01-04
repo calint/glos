@@ -52,7 +52,7 @@ public:
     printf(" * waiting for %d players to connect on port %d\n", net_players,
            port);
 
-    for (unsigned i = 1; i < net_players + 1; i++) {
+    for (unsigned i = 1; i < net_players + 1; ++i) {
       clients_fd[i] = accept(server_fd, NULL, NULL);
 
       if (clients_fd[i] == -1) {
@@ -76,7 +76,7 @@ public:
     printf(" * sending start\n");
 
     // send the assigned player index to clients
-    for (uint32_t i = 1; i < net_players + 1; i++) {
+    for (uint32_t i = 1; i < net_players + 1; ++i) {
       if (write(clients_fd[i], &i, sizeof(uint32_t)) == -1) {
         printf("%s:%d: could not start player %u: ", __FILE__, __LINE__, i);
         perror("");
@@ -90,7 +90,7 @@ public:
     constexpr size_t state_read_size = sizeof(net_state);
     uint64_t t0 = SDL_GetPerformanceCounter();
     while (true) {
-      for (unsigned i = 1; i < net_players + 1; i++) {
+      for (unsigned i = 1; i < net_players + 1; ++i) {
         ssize_t const n = recv(clients_fd[i], &state[i], state_read_size, 0);
         if (n == -1) {
           printf("%s:%d: player %u: ", __FILE__, __LINE__, i);
@@ -112,7 +112,7 @@ public:
       t0 = t1;
       // using state[0] to broadcast data from server to all players, such as dt
       state[0].look_angle_x = dt;
-      for (unsigned i = 1; i < net_players + 1; i++) {
+      for (unsigned i = 1; i < net_players + 1; ++i) {
         ssize_t n = write(clients_fd[i], state, sizeof(state));
         if (n == -1 or n != sizeof(state)) {
           printf("%s:%d: player %u: send failed\n", __FILE__, __LINE__, i);

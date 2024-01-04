@@ -15,7 +15,7 @@ public:
     collision_bits = cb_asteroid;
     collision_mask = cb_hero_bullet | cb_hero;
     mass = 500;
-    asteroids_alive++;
+    ++asteroids_alive;
   }
 
   inline ~asteroid_small() { asteroids_alive--; }

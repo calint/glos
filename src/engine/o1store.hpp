@@ -50,13 +50,13 @@ public:
 
     // write pointers to instances in the 'free' list
     Type *all_it = all_;
-    for (Type **free_it = free_bgn_; free_it < free_end_; free_it++) {
+    for (Type **free_it = free_bgn_; free_it < free_end_; ++free_it) {
       *free_it = all_it;
       if (InstanceSizeInBytes) {
         all_it = reinterpret_cast<Type *>(reinterpret_cast<char *>(all_it) +
                                           InstanceSizeInBytes);
       } else {
-        all_it++;
+        ++all_it;
       }
     }
   }
@@ -80,10 +80,10 @@ public:
       return nullptr;
     }
     Type *inst = *free_ptr_;
-    free_ptr_++;
+    ++free_ptr_;
     *alloc_ptr_ = inst;
     inst->alloc_ptr = alloc_ptr_;
-    alloc_ptr_++;
+    ++alloc_ptr_;
     if (o1store_threaded) {
       release_lock();
     }
@@ -102,7 +102,7 @@ public:
       }
     }
     if (o1store_check_double_free) {
-      for (Type **it = del_bgn_; it < del_ptr_; it++) {
+      for (Type **it = del_bgn_; it < del_ptr_; ++it) {
         if (*it == inst) {
           printf("%s:%d: store %d: double free\n", __FILE__, __LINE__, StoreId);
           std::abort();
@@ -110,7 +110,7 @@ public:
       }
     }
     *del_ptr_ = inst;
-    del_ptr_++;
+    ++del_ptr_;
     if (o1store_threaded) {
       release_lock();
     }
@@ -118,7 +118,7 @@ public:
 
   // deallocates the instances that have been freed
   void apply_free() {
-    for (Type **it = del_bgn_; it < del_ptr_; it++) {
+    for (Type **it = del_bgn_; it < del_ptr_; ++it) {
       Type *inst_deleted = *it;
       alloc_ptr_--;
       Type *inst_to_move = *alloc_ptr_;

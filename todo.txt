@@ -1,3 +1,6 @@
+[ ] consider inverting meaning of bool return value from 'update'
+[ ] object render culling using camera frustum, position and bounding sphere
+[ ] grid cell render culling
 [x] implement sample game
 [x] use a build system instead of make.sh
     => and also make.sh
@@ -17,7 +20,7 @@
 [ ]   clang-tidy
 [ ]   cmake or premake and automatically download dependencies using git submodules
 [x]   use glm::sin, cos etc
-[ ]   consider verbose self documenting code
+[x]   consider verbose self documenting code
 [x]   move object::volume into physics
       => moved into object
 [x]   review and delete obsolete notes
@@ -25,10 +28,10 @@
 [x]   ref& const, bool const, etc
 [x]     arguments
 [x]     code
-[ ]   ++i instead of i++
-[-]   friend cell to object?
+[x]   ++i instead of i++
+[ ]   friend cell to object?
 [x]   const correctness
-[ ]   const everything
+[x]   const everything
 [ ]   constexpr everything
 [ ]   struct vertex used for sizeof only
 [ ] grid: static vs moving vs bullets vs scenery objects
@@ -36,7 +39,6 @@
 [ ] glo: optimize ranges by merging non-texture draws
 [ ] use string_view instead of const char*
 [ ] note about the absolute texture path in mtl files
-[ ] consider inverting meaning of bool return value from 'update'
 [x] rename 'node' to something better
     => moved into object
 [x] use object Mmw when updating volume::planes
@@ -58,8 +60,6 @@
 [x] glos.get_by_index instead of name in constructors of game objects
 [x] node.glo maybe should be an index instead of a pointer in case glos
     are loaded during game play and vector reallocates
-[ ] object render culling using camera frustum, position and bounding sphere
-[ ] grid cell render culling
 [x] move 'collision_bits' and 'collision_mask' to 'object' and solve circular
     reference by implementation moving the implementation outside the 'grid_ifc'
     => no circular references

@@ -59,7 +59,7 @@ public:
     if (!fps.frame_count) {
       reset_timer();
     }
-    fps.frame_count++;
+    ++fps.frame_count;
     rendered_objects = 0;
     rendered_globs = 0;
     rendered_triangles = 0;

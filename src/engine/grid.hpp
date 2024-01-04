@@ -37,7 +37,7 @@ public:
       unsigned i = ncells;
       while (i--) {
         p->update();
-        p++;
+        ++p;
       }
     }
   }
@@ -66,7 +66,7 @@ public:
       unsigned i = ncells;
       while (i--) {
         p->resolve_collisions();
-        p++;
+        ++p;
       }
     }
   }
@@ -77,7 +77,7 @@ public:
     unsigned i = ncells;
     while (i--) {
       p->render();
-      p++;
+      ++p;
     }
   }
 
@@ -87,7 +87,7 @@ public:
     unsigned i = ncells;
     while (i--) {
       p->clear();
-      p++;
+      ++p;
     }
   }
 
@@ -121,8 +121,8 @@ public:
     int const zib = clamp(int(zb / grid_cell_size), 0, grid_ncells_high);
 
     // add to grid
-    for (int z = zit; z <= zib; z++) {
-      for (int x = xil; x <= xir; x++) {
+    for (int z = zit; z <= zib; ++z) {
+      for (int x = xil; x <= xir; ++x) {
         cell *c = &cells[z][x];
         c->add(o);
       }
@@ -141,7 +141,7 @@ public:
       if (!(i % grid_ncells_wide)) {
         printf("\n");
       }
-      p++;
+      ++p;
     }
     printf("------------------------\n");
   }

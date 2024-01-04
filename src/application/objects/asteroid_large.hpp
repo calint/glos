@@ -17,10 +17,10 @@ public:
     collision_bits = cb_asteroid;
     collision_mask = cb_hero_bullet | cb_hero;
     mass = 1500;
-    asteroids_alive++;
+    ++asteroids_alive;
   }
 
-  inline ~asteroid_large() { asteroids_alive--; }
+  inline ~asteroid_large() { --asteroids_alive; }
 
   inline auto update() -> bool override {
     if (object::update()) {

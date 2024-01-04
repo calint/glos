@@ -136,7 +136,7 @@ public:
     object **const end = store_.allocated_list_end();
     // note. important to get the 'end' outside the loop because objects may
     //       allocate new objects in the loop and that would change the 'end'
-    for (object **it = store_.allocated_list(); it < end; it++) {
+    for (object **it = store_.allocated_list(); it < end; ++it) {
       object *obj = *it;
       obj->~object(); // note. the freeing of the memory is done by 'o1store'
     }

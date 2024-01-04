@@ -49,8 +49,8 @@ public:
     if (len == 0) {
       return;
     }
-    for (unsigned i = 0; i < len - 1; i++) {
-      for (unsigned j = i + 1; j < len; j++) {
+    for (unsigned i = 0; i < len - 1; ++i) {
+      for (unsigned j = i + 1; j < len; ++j) {
 
         object *Oi = ols[i];
         object *Oj = ols[j];
@@ -124,7 +124,7 @@ public:
       }
       o->rendered_at_tick = frame_context.frame_num;
       o->render();
-      metrics.rendered_objects++;
+      ++metrics.rendered_objects;
     }
   }
 

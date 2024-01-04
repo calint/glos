@@ -55,7 +55,7 @@ public:
       }
     }
     glBindVertexArray(0);
-    metrics.rendered_globs++;
+    ++metrics.rendered_globs;
   }
 
   // loads definition and optional bounding planes from 'obj' files
@@ -118,7 +118,7 @@ public:
         token const t = token_next(&p);
         std::string mtl_name = {t.content, t.content + token_size(&t)};
         bool found = false;
-        for (unsigned i = 0; i < materials.store.size(); i++) {
+        for (unsigned i = 0; i < materials.store.size(); ++i) {
           material const &mtl = materials.store.at(i);
           if (mtl.path == mtl_path and mtl.name == mtl_name) {
             current_material_ix = i;
@@ -217,7 +217,7 @@ public:
           vertices.push_back(texture.x);
           vertices.push_back(texture.y);
 
-          vertex_ix++;
+          ++vertex_ix;
         }
         continue;
       }
@@ -237,7 +237,7 @@ public:
            vertices.size() * sizeof(float) / sizeof(vertex), triangles_count,
            vertices.size() * sizeof(float), bounding_radius);
 
-    metrics.allocated_globs++;
+    ++metrics.allocated_globs;
 
     if (bounding_planes_path) {
       load_planes(bounding_planes_path);

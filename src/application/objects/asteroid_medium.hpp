@@ -17,7 +17,7 @@ public:
     collision_bits = cb_asteroid;
     collision_mask = cb_hero_bullet | cb_hero;
     mass = 1000;
-    asteroids_alive++;
+    ++asteroids_alive;
   }
 
   inline ~asteroid_medium() { asteroids_alive--; }
@@ -38,7 +38,7 @@ public:
 
     score += 50;
 
-    for (int i = 0; i < asteroid_medium_split; i++) {
+    for (int i = 0; i < asteroid_medium_split; ++i) {
       asteroid_small *ast = new (objects.alloc()) asteroid_small{};
       const float rd2 = radius / 2;
       const vec3 rp = vec3(rnd1(rd2), 0, rnd1(rd2));

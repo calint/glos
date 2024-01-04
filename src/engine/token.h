@@ -31,8 +31,8 @@ inline static int token_equals(token const *t, char const *str) {
     }
     if (*p != *str)
       return 0;
-    p++;
-    str++;
+    ++p;
+    ++str;
   }
 }
 
@@ -64,7 +64,7 @@ inline static token token_next(char const **s) {
       break;
     if (!isspace(*p))
       break;
-    p++;
+    ++p;
   }
   t.content = p;
   while (1) {
@@ -94,7 +94,7 @@ inline static token token_next(char const **s) {
       break;
     if (*p == '<')
       break;
-    p++;
+    ++p;
   }
   t.content_end = p;
   while (1) {
@@ -102,7 +102,7 @@ inline static token token_next(char const **s) {
       break;
     if (!isspace(*p))
       break;
-    p++;
+    ++p;
   }
   *s = t.end = p;
   return t;
@@ -118,7 +118,7 @@ inline static token token_from_string_additional_delim(char const *s,
       break;
     if (!isspace(*p))
       break;
-    p++;
+    ++p;
   }
   t.content = p;
   while (1) {
@@ -127,11 +127,11 @@ inline static token token_from_string_additional_delim(char const *s,
     if (isspace(*p))
       break;
     if (*p == delim) {
-      p++;
+      ++p;
       t.end = t.content_end = p;
       return t;
     }
-    p++;
+    ++p;
   }
   t.content_end = p;
   while (1) {
@@ -139,7 +139,7 @@ inline static token token_from_string_additional_delim(char const *s,
       break;
     if (!isspace(*p))
       break;
-    p++;
+    ++p;
   }
   t.end = p;
   return t;
@@ -150,10 +150,10 @@ inline static char const *scan_to_including_newline(char const *p) {
     if (!*p)
       return p;
     if (*p == '\n') {
-      p++;
+      ++p;
       return p;
     }
-    p++;
+    ++p;
   }
 }
 

@@ -253,7 +253,7 @@ public:
     std::thread update_thread([&]() {
       uint32_t frame_num = 0;
       while (is_running) {
-        frame_num++;
+        ++frame_num;
         {
           // wait until render thread is done before removing and adding objects
           // to grid
@@ -442,7 +442,7 @@ public:
             do_render = not do_render;
             break;
           case SDLK_F4:
-            shader_program_ix++;
+            ++shader_program_ix;
             if (shader_program_ix >= shaders.programs_count()) {
               shader_program_ix = 0;
             }
