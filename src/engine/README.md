@@ -5,7 +5,7 @@
   - `object` may overlap `grid` `cells`
   - `grid` runs an `update` then a `resolve_collisions` pass on `cells`
   - the passes call `cells` in parallel and unsequenced way
-  - `cells` call `object` `update` in the `update` pass and `on_collision` when collision is detected in `resolve_collision` pass
+  - `cells` call `object` `update` in the `cell` `update` pass and `on_collision` when collision is detected in `resolve_collision` pass
   - `object` `update` is called by only one thread at a time
   - `object` `on_collision` is called by only one thread at a time and only once per frame for each collision with other `object`
 * `object` has reference to a 3d model, `glob`, using an index in `globs`
