@@ -85,7 +85,9 @@ private:
       o->position = position;
       o->angle = angle;
       mat4 const &M = get_updated_Mmw();
-      o->velocity = -ship_bullet_speed * vec3(M[2]);
+      vec3 const axis_z = normalize(vec3{M[2]});
+      // note. forward is in negative z-axis direction
+      o->velocity = -ship_bullet_speed * axis_z;
       ready_to_fire_at_ms = frame_context.ms + bullet_fire_rate_ms;
       break;
     }
@@ -95,7 +97,9 @@ private:
         o->position = position;
         o->angle = angle;
         mat4 const &M = get_updated_Mmw();
-        o->velocity = -ship_bullet_speed * vec3(M[2]);
+        vec3 const axis_z = normalize(vec3{M[2]});
+        // note. forward is in negative z-axis direction
+        o->velocity = -ship_bullet_speed * axis_z;
         constexpr float sp = ship_bullet_spread;
         o->velocity.x += float(rnd1(sp));
         o->velocity.z += float(rnd1(sp));
