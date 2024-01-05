@@ -9,8 +9,7 @@ intention:
   - server synchronizes clients signals
 * grid of cells that partition world space
   - update and collision detection of objects
-* multithreaded grid in single player mode
-* non multithreaded grid in multiplayer mode
+  - multithreaded
 * importing blender exported `obj` files
 * explore legacy opengl rendering
 * intuitive programming of game objects and logic
