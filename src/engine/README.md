@@ -19,7 +19,7 @@
 * `material` is stored in `materials` and are unique to a `glob`
 * `texture` is stored in `textures` and can be shared by multiple `globs`
 * `camera` describes how the world is viewed in `window`
-  - contains matrix used by `engine` at `render` to transform world coordinates to screen
+  - contains matrix used by `engine` at render to transform world coordinates to screen
 * `window` is a double buffer sdl2 opengl window displaying the rendered result
 * `shaders` contains the opengl programs used for rendering
 * `hud` is a heads-up-display rendered after the view
