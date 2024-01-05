@@ -294,7 +294,8 @@ public:
           };
 
           // printf("frame_context: frame=%i   dt=%f   ms=%lu\n",
-          //        frame_context.frame_num, frame_context.dt, frame_context.ms);
+          //        frame_context.frame_num, frame_context.dt,
+          //        frame_context.ms);
 
           // notify render thread to start rendering
           is_rendering = true;
@@ -345,7 +346,6 @@ public:
     // enter game loop
     while (is_running) {
       metrics.at_frame_begin();
-
       // poll events
       SDL_Event event = {0};
       while (SDL_PollEvent(&event)) {

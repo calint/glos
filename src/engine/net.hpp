@@ -99,7 +99,7 @@ public:
     uint64_t const t0 = SDL_GetPerformanceCounter();
     // receive signals from previous frame
     ssize_t const n = recv(fd, states, sizeof(states), 0);
-    if (n < 0) {
+    if (n == -1) {
       printf("%s:%d: ", __FILE__, __LINE__);
       perror("");
       std::abort();

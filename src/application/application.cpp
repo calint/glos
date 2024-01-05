@@ -146,7 +146,7 @@ void application_init() {
 void application_on_update_done() {
   if (asteroids_alive == 0) {
     ++level;
-    create_asteroids(level);
+    create_asteroids(level * asteroid_level);
   }
 }
 

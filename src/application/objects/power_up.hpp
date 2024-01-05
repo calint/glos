@@ -4,7 +4,11 @@
 class power_up : public object {
 public:
   inline power_up() {
-    name = "power_up";
+    ++counter;
+    name = "power_up_";
+    name.append(std::to_string(counter));
+    printf("%u: %lu: create %s\n", frame_context.frame_num, frame_context.ms,
+           name.c_str());
     glob_ix = glob_ix_power_up;
     scale = {0.5f, 0.5f, 0.5f};
     radius = globs.at(glob_ix).bounding_radius * scale.x;
@@ -13,6 +17,11 @@ public:
     collision_bits = cb_power_up;
     collision_mask = cb_hero;
     mass = 10;
+  }
+
+  inline ~power_up() override {
+    printf("%u: %lu: free %s\n", frame_context.frame_num, frame_context.ms,
+           name.c_str());
   }
 
   inline auto update() -> bool override {
@@ -40,7 +49,12 @@ public:
     return false;
   }
 
-  inline auto on_collision(object *o) -> bool override { return true; }
+  inline auto on_collision(object *o) -> bool override {
+    printf("%u: %lu: %s collision with %s\n", frame_context.frame_num,
+           frame_context.ms, name.c_str(), o->name.c_str());
+
+    return true;
+  }
 
 private:
   uint64_t death_time_ms = 0;

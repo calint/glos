@@ -9,19 +9,19 @@
 
 inline auto rnd1(float const plus_minus_range) -> float {
   int const r = rand();
-  printf("%u: rnd1: %d\n", frame_context.frame_num, r);
+  printf("%u: %lu: rnd1: %d\n", frame_context.frame_num, frame_context.ms, r);
   return float(r) / float(RAND_MAX) * plus_minus_range - plus_minus_range / 2;
 }
 
 inline auto rnd2(float const zero_to_range) -> float {
   int const r = rand();
-  printf("%u: rnd2: %d\n", frame_context.frame_num, r);
+  printf("%u: %lu: rnd2: %d\n", frame_context.frame_num, frame_context.ms, r);
   return float(r) / float(RAND_MAX) * zero_to_range;
 }
 
 inline auto rnd3(int const rem) -> bool {
   int const r = rand();
-  printf("%u: rnd3: %d\n", frame_context.frame_num, r);
+  printf("%u: %lu: rnd3: %d\n", frame_context.frame_num, frame_context.ms, r);
   return r % rem == 0;
 }
 
