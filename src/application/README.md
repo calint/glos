@@ -17,6 +17,7 @@
 
 ## notes
 * engine is multithreaded (see `configuration.hpp` setting `grid_threaded`)
+* multiplayer mode does not work with `grid_threaded` on because the clients do run in a deterministic way
 * rendering is done in parallel with updating game objects
 * updating objects and collisions resolutions are done on available cores
 * awareness of the nature of multithreaded application is recommended

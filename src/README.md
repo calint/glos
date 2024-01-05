@@ -25,7 +25,7 @@
 * types are spelled out for readability instead of using `auto`
 * `auto` is used when the type is too verbose, such as iterators
 * `unsigned` is used where negative values do not make sense
-* liberal use of public members in classes
+* use of public members in classes
   - public members are moved to private scope when not used outside the class
   - when change to a public member triggers other actions, accessors are written, and member is moved to private scope
 * `++i` instead of `i++`
