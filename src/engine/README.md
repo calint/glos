@@ -10,7 +10,7 @@
 * `object` has reference to a 3d model, `glob`, using an index in `globs`
   - has state such as `position`, `angle`, `scale`, `velocity`, `acceleration`, `angular_velocity` etc
 * `glob`
-  - `render` renders using opengl with a provided matrix for model to world coordinates transform
+  - `render` using opengl with a provided matrix for model to world coordinates transform
   - references `materials` and `textures` using indices set at `load`
   - has a radius calculated at `load` and may be additionally bounded by a convex volume defined by `planes`
 * `planes` can detect collision with spheres and other `planes`
