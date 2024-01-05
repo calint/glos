@@ -11,7 +11,7 @@ public:
     ++counter;
     name = "asteroid_small_";
     name.append(std::to_string(counter));
-    printf("%u: %lu: create %s\n", frame_context.frame_num, frame_context.ms,
+    printf("%lu: %lu: create %s\n", frame_context.frame_num, frame_context.ms,
            name.c_str());
     glob_ix = glob_ix_asteroid_small;
     scale = vec3{asteroid_small_scale};
@@ -23,7 +23,7 @@ public:
   }
 
   inline ~asteroid_small() override {
-    printf("%u: %lu: free %s\n", frame_context.frame_num, frame_context.ms,
+    printf("%lu: %lu: free %s\n", frame_context.frame_num, frame_context.ms,
            name.c_str());
     --asteroids_alive;
   }
@@ -39,7 +39,7 @@ public:
   }
 
   inline auto on_collision(object *o) -> bool override {
-    printf("%u: %lu: %s collision with %s\n", frame_context.frame_num,
+    printf("%lu: %lu: %s collision with %s\n", frame_context.frame_num,
            frame_context.ms, name.c_str(), o->name.c_str());
 
     score += 100;

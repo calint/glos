@@ -29,8 +29,8 @@ public:
   uint32_t collision_bits = 0;    // mask & bits for collision subscription
   uint32_t collision_mask = 0;    // ...
   net_state *net_state = nullptr; // pointer to signals used by this object
-  uint32_t rendered_at_tick = 0;  // used by cell to avoid rendering twice
-  uint32_t updated_at_tick = 0;   // used by cell to avoid updating twice
+  uint64_t rendered_at_tick = 0;  // used by cell to avoid rendering twice
+  uint64_t updated_at_tick = 0;   // used by cell to avoid updating twice
   uint8_t grid_flags = 0;         // used by grid (overlaps, is_dead)
   bool is_sphere = false;         // true if object can be considered a sphere
   std::vector<const object *> handled_collisions{};

@@ -9,7 +9,7 @@ public:
     ++counter;
     name = "hero_";
     name.append(std::to_string(counter));
-    printf("%u: %lu: create %s\n", frame_context.frame_num, frame_context.ms,
+    printf("%lu: %lu: create %s\n", frame_context.frame_num, frame_context.ms,
            name.c_str());
     glob_ix = glob_ix_ship;
     scale = {1, 1, 1};
@@ -20,7 +20,7 @@ public:
   }
 
   inline ~ship() override {
-    printf("%u: %lu: free %s\n", frame_context.frame_num, frame_context.ms,
+    printf("%lu: %lu: free %s\n", frame_context.frame_num, frame_context.ms,
            name.c_str());
   }
 
@@ -63,7 +63,7 @@ public:
   }
 
   inline auto on_collision(object *o) -> bool override {
-    printf("%u: %lu: %s collision with %s\n", frame_context.frame_num,
+    printf("%lu: %lu: %s collision with %s\n", frame_context.frame_num,
            frame_context.ms, name.c_str(), o->name.c_str());
 
     if (typeid(*o) == typeid(power_up)) {

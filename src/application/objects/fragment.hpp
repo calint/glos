@@ -9,7 +9,7 @@ public:
     ++counter;
     name = "fragment_";
     name.append(std::to_string(counter));
-    printf("%u: %lu: create %s\n", frame_context.frame_num, frame_context.ms,
+    printf("%lu: %lu: create %s\n", frame_context.frame_num, frame_context.ms,
            name.c_str());
     glob_ix = glob_ix_fragment;
     scale = {0.5f, 0.5f, 0.5f};
@@ -20,7 +20,7 @@ public:
   }
 
   inline ~fragment() override {
-    printf("%u: %lu: free %s\n", frame_context.frame_num, frame_context.ms,
+    printf("%lu: %lu: free %s\n", frame_context.frame_num, frame_context.ms,
            name.c_str());
   }
 

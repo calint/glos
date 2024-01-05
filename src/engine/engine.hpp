@@ -38,7 +38,7 @@ inline static void debug_render_bounding_sphere(glm::mat4 const &Mmw);
 // information about the current frame
 class frame_context {
 public:
-  uint32_t frame_num = 0; // frame number (will rollover)
+  uint64_t frame_num = 0; // frame number (will rollover)
   uint64_t ms = 0;        // current time since start in milliseconds
   float dt = 0;           // frame delta time in seconds (time step)
 };
@@ -198,51 +198,12 @@ public:
     metrics.free();
   }
 
-  inline void render() {
-    if (camera_follow_object) {
-      camera.look_at = camera_follow_object->position;
-    }
-
-    camera.update_matrix_wvp();
-
-    glUniformMatrix4fv(shaders::umtx_wvp, 1, GL_FALSE,
-                       glm::value_ptr(camera.Mwvp));
-
-    glUniform3fv(shaders::ulht, 1, glm::value_ptr(ambient_light));
-
-    glClearColor(background_color.red, background_color.green,
-                 background_color.blue, 1.0);
-
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    grid.render();
-
-    if (render_hud) {
-      shaders.use_program(hud.program_ix);
-      hud.render();
-      shaders.use_program(shader_program_ix);
-    }
-
-    window.swap_buffers();
-  }
-
   inline void run() {
-    constexpr float rad_over_degree = 2.0f * glm::pi<float>() / 360.0f;
-
-    // mouse related variables
-    bool mouse_mode = false;
-    float mouse_rad_over_pixels = rad_over_degree * .02f;
-    float mouse_sensitivity = 1.5f;
-
     SDL_SetRelativeMouseMode(mouse_mode ? SDL_TRUE : SDL_FALSE);
-
-    // turn on/off subsystems
-    bool do_render = true;
-    bool print_grid = false;
-    bool resolve_collisions = true;
 
     // initiate metrics
     metrics.fps.calculation_intervall_ms = 1000;
+    // metrics.enable_print = true;
     metrics.reset_timer();
     metrics.print_headers(stderr);
 
@@ -252,25 +213,274 @@ public:
       net.begin();
     }
 
-    // synchronization of update and render thread
-    bool is_rendering = false;
-    std::mutex is_rendering_mutex{};
-    std::condition_variable is_rendering_cv{};
+    // enter game loop
+    while (is_running) {
+      metrics.at_frame_begin();
 
-    // while application is running
-    bool is_running = true;
+      handle_events();
 
-    // the update grid thread
-    std::thread update_thread([&]() {
-      uint32_t frame_num = 0;
+      // check if quit was received
+      if (not is_running) {
+        break;
+      }
+
+      update();
+
+      render();
+
+      metrics.allocated_objects = uint32_t(objects.allocated_list_len());
+      metrics.at_frame_end(stderr);
+    }
+  }
+
+private:
+  static constexpr float rad_over_degree = 2.0f * glm::pi<float>() / 360.0f;
+  uint64_t frame_num = 0;
+  bool resolve_collisions = true;
+  bool print_grid = false;
+  bool is_running = true;
+  bool do_render = true;
+  bool mouse_mode = false;
+  float mouse_rad_over_pixels = rad_over_degree * .02f;
+  float mouse_sensitivity = 1.5f;
+  // synchronization of update and render thread
+  bool is_rendering = false;
+  std::mutex is_rendering_mutex{};
+  std::condition_variable is_rendering_cv{};
+
+  inline void update() {
+    ++frame_num;
+
+    grid.clear();
+
+    // add all allocated objects to the grid
+    object **const end = objects.allocated_list_end();
+    for (object **it = objects.allocated_list(); it < end; ++it) {
+      object *obj = *it;
+      grid.add(obj);
+    }
+
+    // update frame context used throughout the frame
+    // in multiplayer mode use dt and ms from server
+    // in single player mode use dt from previous frame and current ms
+
+    frame_context = {
+        frame_num,
+        net.enabled ? net.ms : SDL_GetTicks64(),
+        net.enabled ? net.dt : metrics.fps.dt,
+    };
+
+    if (print_grid) {
+      grid.print();
+    }
+
+    grid.update();
+
+    if (resolve_collisions) {
+      grid.resolve_collisions();
+    }
+
+    // apply changes done at 'update' and 'resolve_collisions'
+    objects.apply_freed_instances();
+    objects.apply_allocated_instances();
+
+    // callback application
+    application_on_update_done();
+
+    // apply changes done by application
+    objects.apply_freed_instances();
+    objects.apply_allocated_instances();
+
+    // update signals from network or local
+    if (net.enabled) {
+      // receive signals from previous frame and send signals 'net.next_state'
+      // of current frame
+      net.at_update_done();
+    } else {
+      // copy signals to active player
+      net.states[net.active_state_ix] = net.next_state;
+    }
+  }
+
+  inline void render() {
+    // check if shader program has changed
+    if (shader_program_ix_prv != shader_program_ix) {
+      printf(" * switching to program at index %zu\n", shader_program_ix);
+      shaders.use_program(shader_program_ix);
+      shader_program_ix_prv = shader_program_ix;
+    }
+
+    if (do_render) {
+      if (camera_follow_object) {
+        camera.look_at = camera_follow_object->position;
+      }
+
+      camera.update_matrix_wvp();
+
+      glUniformMatrix4fv(shaders::umtx_wvp, 1, GL_FALSE,
+                         glm::value_ptr(camera.Mwvp));
+
+      glUniform3fv(shaders::ulht, 1, glm::value_ptr(ambient_light));
+
+      glClearColor(background_color.red, background_color.green,
+                   background_color.blue, 1.0);
+
+      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+      grid.render();
+
+      if (render_hud) {
+        shaders.use_program(hud.program_ix);
+        hud.render();
+        shaders.use_program(shader_program_ix);
+      }
+
+      window.swap_buffers();
+    }
+
+    application_on_render_done();
+  }
+
+  inline void handle_events() {
+    // poll events
+    SDL_Event event = {0};
+    while (SDL_PollEvent(&event)) {
+      switch (event.type) {
+      case SDL_WINDOWEVENT: {
+        switch (event.window.event) {
+        case SDL_WINDOWEVENT_SIZE_CHANGED: {
+          auto [w, h] = window.get_width_and_height();
+          camera.width = float(w);
+          camera.height = float(h);
+          glViewport(0, 0, w, h);
+          printf(" * window resize to  %u x %u\n", w, h);
+          break;
+        }
+        }
+        break;
+      }
+      case SDL_QUIT:
+        is_running = false;
+        break;
+      case SDL_MOUSEMOTION: {
+        if (event.motion.xrel != 0) {
+          net.next_state.look_angle_y += (float)event.motion.xrel *
+                                         mouse_rad_over_pixels *
+                                         mouse_sensitivity;
+        }
+        if (event.motion.yrel != 0) {
+          net.next_state.look_angle_x += (float)event.motion.yrel *
+                                         mouse_rad_over_pixels *
+                                         mouse_sensitivity;
+        }
+        break;
+      }
+      case SDL_KEYDOWN:
+        switch (event.key.keysym.sym) {
+        case SDLK_w:
+          net.next_state.keys |= key_w;
+          break;
+        case SDLK_a:
+          net.next_state.keys |= key_a;
+          break;
+        case SDLK_s:
+          net.next_state.keys |= key_s;
+          break;
+        case SDLK_d:
+          net.next_state.keys |= key_d;
+          break;
+        case SDLK_q:
+          net.next_state.keys |= key_q;
+          break;
+        case SDLK_e:
+          net.next_state.keys |= key_e;
+          break;
+        case SDLK_j:
+          net.next_state.keys |= key_j;
+          break;
+        case SDLK_k:
+          net.next_state.keys |= key_k;
+          break;
+        case SDLK_l:
+          net.next_state.keys |= key_l;
+          break;
+        case SDLK_i:
+          net.next_state.keys |= key_i;
+          break;
+        }
+        break;
+      case SDL_KEYUP:
+        switch (event.key.keysym.sym) {
+        case SDLK_w:
+          net.next_state.keys &= ~key_w;
+          break;
+        case SDLK_a:
+          net.next_state.keys &= ~key_a;
+          break;
+        case SDLK_s:
+          net.next_state.keys &= ~key_s;
+          break;
+        case SDLK_d:
+          net.next_state.keys &= ~key_d;
+          break;
+        case SDLK_q:
+          net.next_state.keys &= ~key_q;
+          break;
+        case SDLK_e:
+          net.next_state.keys &= ~key_e;
+          break;
+        case SDLK_j:
+          net.next_state.keys &= ~key_j;
+          break;
+        case SDLK_k:
+          net.next_state.keys &= ~key_k;
+          break;
+        case SDLK_l:
+          net.next_state.keys &= ~key_l;
+          break;
+        case SDLK_SPACE:
+          mouse_mode = mouse_mode ? SDL_FALSE : SDL_TRUE;
+          SDL_SetRelativeMouseMode(mouse_mode ? SDL_TRUE : SDL_FALSE);
+          break;
+        case SDLK_F1:
+          print_grid = not print_grid;
+          break;
+        case SDLK_F2:
+          resolve_collisions = not resolve_collisions;
+          break;
+        case SDLK_F3:
+          do_render = not do_render;
+          break;
+        case SDLK_F4:
+          ++shader_program_ix;
+          if (shader_program_ix >= shaders.programs_count()) {
+            shader_program_ix = 0;
+          }
+          break;
+        case SDLK_F5:
+          debug_object_planes_normals = not debug_object_planes_normals;
+          break;
+        case SDLK_F6:
+          debug_object_bounding_sphere = not debug_object_bounding_sphere;
+          break;
+        case SDLK_F7:
+          render_hud = not render_hud;
+          break;
+        }
+        break;
+      }
+    }
+  }
+
+  void update_thread() {
+    std::thread update_thread([this]() {
       while (is_running) {
         ++frame_num;
         {
           // wait until render thread is done before removing and adding objects
           // to grid
           std::unique_lock<std::mutex> lock{is_rendering_mutex};
-          is_rendering_cv.wait(lock,
-                               [&is_rendering] { return not is_rendering; });
+          is_rendering_cv.wait(lock, [this] { return not is_rendering; });
 
           // render thread is done and waiting for grid to remove and add
           // objects
@@ -342,181 +552,24 @@ public:
       is_rendering = true;
       is_rendering_cv.notify_one();
     });
+  }
 
-    // enter game loop
-    while (is_running) {
-      metrics.at_frame_begin();
-      // poll events
-      SDL_Event event = {0};
-      while (SDL_PollEvent(&event)) {
-        switch (event.type) {
-        case SDL_WINDOWEVENT: {
-          switch (event.window.event) {
-          case SDL_WINDOWEVENT_SIZE_CHANGED: {
-            auto [w, h] = window.get_width_and_height();
-            camera.width = float(w);
-            camera.height = float(h);
-            glViewport(0, 0, w, h);
-            printf(" * window resize to  %u x %u\n", w, h);
-            break;
-          }
-          }
-          break;
-        }
-        case SDL_QUIT:
-          is_running = false;
-          break;
-        case SDL_MOUSEMOTION: {
-          if (event.motion.xrel != 0) {
-            net.next_state.look_angle_y += (float)event.motion.xrel *
-                                           mouse_rad_over_pixels *
-                                           mouse_sensitivity;
-          }
-          if (event.motion.yrel != 0) {
-            net.next_state.look_angle_x += (float)event.motion.yrel *
-                                           mouse_rad_over_pixels *
-                                           mouse_sensitivity;
-          }
-          break;
-        }
-        case SDL_KEYDOWN:
-          switch (event.key.keysym.sym) {
-          case SDLK_w:
-            net.next_state.keys |= key_w;
-            break;
-          case SDLK_a:
-            net.next_state.keys |= key_a;
-            break;
-          case SDLK_s:
-            net.next_state.keys |= key_s;
-            break;
-          case SDLK_d:
-            net.next_state.keys |= key_d;
-            break;
-          case SDLK_q:
-            net.next_state.keys |= key_q;
-            break;
-          case SDLK_e:
-            net.next_state.keys |= key_e;
-            break;
-          case SDLK_j:
-            net.next_state.keys |= key_j;
-            break;
-          case SDLK_k:
-            net.next_state.keys |= key_k;
-            break;
-          case SDLK_l:
-            net.next_state.keys |= key_l;
-            break;
-          case SDLK_i:
-            net.next_state.keys |= key_i;
-            break;
-          }
-          break;
-        case SDL_KEYUP:
-          switch (event.key.keysym.sym) {
-          case SDLK_w:
-            net.next_state.keys &= ~key_w;
-            break;
-          case SDLK_a:
-            net.next_state.keys &= ~key_a;
-            break;
-          case SDLK_s:
-            net.next_state.keys &= ~key_s;
-            break;
-          case SDLK_d:
-            net.next_state.keys &= ~key_d;
-            break;
-          case SDLK_q:
-            net.next_state.keys &= ~key_q;
-            break;
-          case SDLK_e:
-            net.next_state.keys &= ~key_e;
-            break;
-          case SDLK_j:
-            net.next_state.keys &= ~key_j;
-            break;
-          case SDLK_k:
-            net.next_state.keys &= ~key_k;
-            break;
-          case SDLK_l:
-            net.next_state.keys &= ~key_l;
-            break;
-          case SDLK_SPACE:
-            mouse_mode = mouse_mode ? SDL_FALSE : SDL_TRUE;
-            SDL_SetRelativeMouseMode(mouse_mode ? SDL_TRUE : SDL_FALSE);
-            break;
-          case SDLK_F1:
-            print_grid = not print_grid;
-            break;
-          case SDLK_F2:
-            resolve_collisions = not resolve_collisions;
-            break;
-          case SDLK_F3:
-            do_render = not do_render;
-            break;
-          case SDLK_F4:
-            ++shader_program_ix;
-            if (shader_program_ix >= shaders.programs_count()) {
-              shader_program_ix = 0;
-            }
-            break;
-          case SDLK_F5:
-            debug_object_planes_normals = not debug_object_planes_normals;
-            break;
-          case SDLK_F6:
-            debug_object_bounding_sphere = not debug_object_bounding_sphere;
-            break;
-          case SDLK_F7:
-            render_hud = not render_hud;
-            break;
-          }
-          break;
-        }
-      }
+  void render_thread_body() {
+    // wait for update thread to remove and add objects to grid
+    std::unique_lock<std::mutex> lock{is_rendering_mutex};
+    is_rendering_cv.wait(lock, [this] { return is_rendering; });
 
-      // check if quit was received
-      if (not is_running) {
-        break;
-      }
+    // note. render and update have acceptable data races on objects
+    // position, angle, scale, glob index etc
 
-      // check if shader program has changed
-      if (shader_program_ix_prv != shader_program_ix) {
-        printf(" * switching to program at index %zu\n", shader_program_ix);
-        shaders.use_program(shader_program_ix);
-        shader_program_ix_prv = shader_program_ix;
-      }
-
-      {
-        // wait for update thread to remove and add objects to grid
-        std::unique_lock<std::mutex> lock{is_rendering_mutex};
-        is_rendering_cv.wait(lock, [&is_rendering] { return is_rendering; });
-
-        // note. render and update have acceptable data races on objects
-        // position, angle, scale, glob index etc
-
-        if (do_render) {
-          render();
-        }
-
-        application_on_render_done();
-
-        // notify update thread that rendering is done
-        is_rendering = false;
-        lock.unlock();
-        is_rendering_cv.notify_one();
-      }
-
-      // metrics
-      metrics.allocated_objects = uint32_t(objects.allocated_list_len());
-      metrics.at_frame_end(stderr);
+    if (do_render) {
+      render();
     }
 
-    // exited game loop
-    // notify update thread in case it is waiting
+    // notify update thread that rendering is done
     is_rendering = false;
+    lock.unlock();
     is_rendering_cv.notify_one();
-    update_thread.join();
   }
 };
 

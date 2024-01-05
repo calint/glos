@@ -3,3 +3,5 @@
 /gmon.out
 /cachegrind.out.*
 /build/
+/log1
+/log2
