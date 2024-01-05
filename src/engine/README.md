@@ -12,7 +12,7 @@
 * `glob`
   - `render` using opengl with a provided matrix for model to world coordinates transform
   - references `materials` and `textures` using indices set at `load`
-  - has a radius calculated at `load` and may be additionally bounded by a convex volume defined by `planes`
+  - has bounding radius calculated at `load` and may be additionally bounded by a convex volume defined by `planes`
 * `planes` can detect collision with spheres and other `planes`
   - collision with spheres is done by checking if distance from sphere center to all planes is less than radius or negative
   - collision with other `planes` is done by checking if any point in `planes` A is behind all `planes` B or vice versa
