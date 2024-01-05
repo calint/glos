@@ -6,11 +6,13 @@
 class ship : public object {
 public:
   inline ship() {
-    ++counter;
     name = "hero_";
-    name.append(std::to_string(counter));
-    printf("%lu: %lu: create %s\n", frame_context.frame_num, frame_context.ms,
-           name.c_str());
+    if (debug_multiplayer) {
+      ++counter;
+      name.append(std::to_string(counter));
+      printf("%lu: %lu: create %s\n", frame_context.frame_num, frame_context.ms,
+             name.c_str());
+    }
     glob_ix = glob_ix_ship;
     scale = {1, 1, 1};
     radius = globs.at(glob_ix).bounding_radius * scale.x;
@@ -20,8 +22,10 @@ public:
   }
 
   inline ~ship() override {
-    printf("%lu: %lu: free %s\n", frame_context.frame_num, frame_context.ms,
-           name.c_str());
+    if (debug_multiplayer) {
+      printf("%lu: %lu: free %s\n", frame_context.frame_num, frame_context.ms,
+             name.c_str());
+    }
   }
 
   inline auto update() -> bool override {
@@ -63,9 +67,10 @@ public:
   }
 
   inline auto on_collision(object *o) -> bool override {
-    printf("%lu: %lu: %s collision with %s\n", frame_context.frame_num,
-           frame_context.ms, name.c_str(), o->name.c_str());
-
+    if (debug_multiplayer) {
+      printf("%lu: %lu: %s collision with %s\n", frame_context.frame_num,
+             frame_context.ms, name.c_str(), o->name.c_str());
+    }
     if (typeid(*o) == typeid(power_up)) {
       if (bullet_level == 0) {
         bullet_fire_rate_ms /= 2;

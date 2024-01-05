@@ -46,6 +46,8 @@ public:
 // globally accessible current frame info
 inline frame_context frame_context{};
 
+// a sphere used when debugging object bounding sphere (set at init)
+inline uint32_t glob_ix_bounding_sphere = 0;
 } // namespace glos
 
 // application interface
@@ -58,9 +60,6 @@ void application_on_update_done();
 void application_on_render_done();
 // called at shutdown
 void application_free();
-
-// a sphere used when debugging object bounding sphere (set at init)
-inline uint32_t glob_ix_bounding_sphere = 0;
 
 //
 #include "object.hpp"
@@ -127,6 +126,10 @@ public:
     globs.init();
     objects.init();
     grid.init();
+
+    if (not debug_multiplayer) {
+      metrics.enable_print = true;
+    }
 
     // line rendering shader
     {
@@ -218,7 +221,9 @@ public:
       printf(" * waiting for render\n");
       {
         std::unique_lock<std::mutex> lock{is_rendering_mutex};
-        is_rendering_cv.wait(lock, [this] { return not is_rendering; });
+        if (not is_rendering) {
+          is_rendering_cv.wait(lock, [this] { return not is_rendering; });
+        }
       }
       printf(" * waiting for render done\n");
     }
@@ -327,6 +332,7 @@ private:
   }
 
   inline void render() {
+    // printf("render frame %lu\n", frame_context.frame_num);
     // check if shader program has changed
     if (shader_program_ix_prv != shader_program_ix) {
       printf(" * switching to program at index %zu\n", shader_program_ix);
@@ -500,7 +506,6 @@ private:
     printf(" * starting update thread\n");
     update_thread = std::thread([this]() {
       while (true) {
-        ++frame_num;
         {
           // wait until render thread is done before removing and adding objects
           // to grid
@@ -511,6 +516,8 @@ private:
             printf(" * update thread done\n");
             return;
           }
+
+          // printf("update frame %lu\n", frame_num);
 
           // render thread is done and waiting for grid to remove and add
           // objects
@@ -527,49 +534,13 @@ private:
           // update frame context used throughout the frame
           // in multiplayer mode use dt and ms from server
           // in single player mode use dt from previous frame and current ms
+          ++frame_num;
+
           frame_context = {
               frame_num,
               net.enabled ? net.ms : SDL_GetTicks64(),
               net.enabled ? net.dt : metrics.fps.dt,
           };
-
-          // printf("frame_context: frame=%i   dt=%f   ms=%lu\n",
-          //        frame_context.frame_num, frame_context.dt,
-          //        frame_context.ms);
-
-          if (print_grid) {
-            grid.print();
-          }
-
-          // note. data racing between render and update thread on objects
-          // position, angle, scale glob index is ok
-
-          grid.update();
-
-          if (resolve_collisions) {
-            grid.resolve_collisions();
-          }
-
-          // apply changes done at 'update' and 'resolve_collisions'
-          objects.apply_freed_instances();
-          objects.apply_allocated_instances();
-
-          // callback application
-          application_on_update_done();
-
-          // apply changes done by application
-          objects.apply_freed_instances();
-          objects.apply_allocated_instances();
-
-          // update signals from network or local
-          if (net.enabled) {
-            // receive signals from previous frame and send signals of current
-            // frame
-            net.at_update_done();
-          } else {
-            // copy signals to active player
-            net.states[net.active_state_ix] = net.next_state;
-          }
 
           // notify render thread to start rendering
           is_rendering = true;
@@ -577,39 +548,39 @@ private:
           is_rendering_cv.notify_one();
         }
 
-        // if (print_grid) {
-        //   grid.print();
-        // }
+        if (print_grid) {
+          grid.print();
+        }
 
-        // // note. data racing between render and update thread on objects
-        // // position, angle, scale glob index is ok
+        // note. data racing between render and update thread on objects
+        // position, angle, scale glob index is ok
 
-        // grid.update();
+        grid.update();
 
-        // if (resolve_collisions) {
-        //   grid.resolve_collisions();
-        // }
+        if (resolve_collisions) {
+          grid.resolve_collisions();
+        }
 
-        // // apply changes done at 'update' and 'resolve_collisions'
-        // objects.apply_freed_instances();
-        // objects.apply_allocated_instances();
+        // apply changes done at 'update' and 'resolve_collisions'
+        objects.apply_freed_instances();
+        objects.apply_allocated_instances();
 
-        // // callback application
-        // application_on_update_done();
+        // callback application
+        application_on_update_done();
 
-        // // apply changes done by application
-        // objects.apply_freed_instances();
-        // objects.apply_allocated_instances();
+        // apply changes done by application
+        objects.apply_freed_instances();
+        objects.apply_allocated_instances();
 
-        // // update signals from network or local
-        // if (net.enabled) {
-        //   // receive signals from previous frame and send signals of current
-        //   // frame
-        //   net.at_update_done();
-        // } else {
-        //   // copy signals to active player
-        //   net.states[net.active_state_ix] = net.next_state;
-        // }
+        // update signals from network or local
+        if (net.enabled) {
+          // receive signals from previous frame and send signals of current
+          // frame
+          net.at_update_done();
+        } else {
+          // copy signals to active player
+          net.states[net.active_state_ix] = net.next_state;
+        }
       }
     });
   }

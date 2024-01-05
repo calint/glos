@@ -25,11 +25,14 @@ static constexpr bool o1store_check_free_limits = false;
 inline bool debug_object_planes_normals = false;
 inline bool debug_object_bounding_sphere = false;
 
+// debug log
+static constexpr bool debug_multiplayer = true;
+
 // window dimensions
 static constexpr unsigned window_width = 1024;
 static constexpr unsigned window_height = 1024;
 // vsync should be 'true' when not doing performance tests
-static constexpr bool window_vsync = true;
+static constexpr bool window_vsync = false;
 
 // number of players in networked mode
 static constexpr unsigned net_players = 2;

@@ -106,7 +106,7 @@ public:
     uint64_t t0 = SDL_GetPerformanceCounter();
     while (true) {
       for (unsigned i = 1; i < net_players + 1; ++i) {
-        ssize_t const n = recv(clients_fd[i], &state[i], sizeof(net_state), 0);
+        ssize_t const n = recv(clients_fd[i], &state[i], sizeof(state[i]), 0);
         if (n == -1) {
           printf("%s:%d: player %u: ", __FILE__, __LINE__, i);
           perror("");
@@ -132,7 +132,7 @@ public:
       state[0].keys = SDL_GetTicks64();
 
       for (unsigned i = 1; i < net_players + 1; ++i) {
-        ssize_t const n = write(clients_fd[i], state, sizeof(state));
+        ssize_t const n = send(clients_fd[i], state, sizeof(state), 0);
         if (n == -1 or size_t(n) != sizeof(state)) {
           printf("%s:%d: player %u: send failed\n", __FILE__, __LINE__, i);
           std::abort();
