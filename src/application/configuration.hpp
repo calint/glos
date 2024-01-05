@@ -15,6 +15,7 @@ static constexpr unsigned grid_ncells_high = 4;
 // note. in some cases multithreaded mode is a degradation of performance
 static constexpr bool grid_threaded = false;
 static constexpr bool o1store_threaded = grid_threaded;
+static constexpr bool update_threaded = true;
 
 // o1store debugging
 static constexpr bool o1store_check_double_free = false;
@@ -27,7 +28,7 @@ inline bool debug_object_bounding_sphere = false;
 // window dimensions
 static constexpr unsigned window_width = 1024;
 static constexpr unsigned window_height = 1024;
-// vsync should be on when not doing performance tests
+// vsync should be 'true' when not doing performance tests
 static constexpr bool window_vsync = true;
 
 // number of players in networked mode
