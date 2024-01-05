@@ -43,7 +43,7 @@ public:
   inline auto on_collision(object *o) -> bool override { return true; }
 
 private:
-  uint32_t death_time_ms = 0;
-  uint32_t scale_time_ms = 0;
+  uint64_t death_time_ms = 0;
+  uint64_t scale_time_ms = 0;
   bool scale_up = false;
 };

@@ -28,7 +28,7 @@
 #include "glob.hpp"
 //
 namespace glos {
-// debug rendering functions
+// debugging functions
 inline static void debug_render_wcs_line(glm::vec3 const &from_wcs,
                                          glm::vec3 const &to_wcs,
                                          glm::vec3 const &color);
@@ -39,7 +39,7 @@ inline static void debug_render_bounding_sphere(glm::mat4 const &Mmw);
 class frame_context {
 public:
   uint32_t frame_num = 0; // frame number (will rollover)
-  uint32_t ms = 0;        // current time since start in milliseconds
+  uint64_t ms = 0;        // current time since start in milliseconds
   float dt = 0;           // frame delta time in seconds (time step)
 };
 
@@ -49,6 +49,7 @@ inline frame_context frame_context{};
 } // namespace glos
 
 // application interface
+
 // called at initiation
 void application_init();
 // called by update thread when an update is done
@@ -58,9 +59,10 @@ void application_on_render_done();
 // called at shutdown
 void application_free();
 
-// a sphere used when debugging object bounding sphere
+// a sphere used when debugging object bounding sphere (set at init)
 inline uint32_t glob_ix_bounding_sphere = 0;
 
+//
 #include "object.hpp"
 //
 #include "grid.hpp"
@@ -114,8 +116,8 @@ public:
     // set random number generator seed for deterministic behaviour
     srand(0);
     // initiate subsystems
-    net.init();
     metrics.init();
+    net.init();
     sdl.init();
     window.init();
     shaders.init();
@@ -145,7 +147,8 @@ public:
     rgba = vec4(ucolor, 1);
   }
 )";
-      shader_program_ix_render_line = shaders.load_program_from_source(vtx, frag);
+      shader_program_ix_render_line =
+          shaders.load_program_from_source(vtx, frag);
     }
 
     // info
@@ -158,14 +161,24 @@ public:
     printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
 
     if (grid_threaded) {
-      printf("\nthreaded grid on %d cores\n\n",
+      printf("\nthreaded grid on %u cores\n\n",
              std::thread::hardware_concurrency());
     }
 
     glob_ix_bounding_sphere =
         globs.load("assets/obj/bounding_sphere.obj", nullptr);
 
+    // intiate 'frame_context' in case 'application_init' needs time
+    frame_context = {
+        0,
+        net.enabled ? net.ms : SDL_GetTicks64(),
+        net.enabled ? net.dt : metrics.fps.dt,
+    };
+
     application_init();
+
+    // apply new objects create at 'application_init'
+    objects.apply_allocated_instances();
   }
 
   inline void free() {
@@ -246,9 +259,6 @@ public:
     // while application is running
     bool is_running = true;
 
-    // note. apply new objects after 'application_init'
-    objects.apply_allocated_instances();
-
     // the update grid thread
     std::thread update_thread([&]() {
       uint32_t frame_num = 0;
@@ -274,11 +284,11 @@ public:
           }
 
           // update frame context used throughout the frame
-          // in multiplayer mode use dt from server else previous frame time
-          // step
+          // in multiplayer mode use dt and ms from server
+          // in single player mode use dt from previous frame and current ms
           frame_context = {
               frame_num,
-              SDL_GetTicks(),
+              net.enabled ? net.ms : SDL_GetTicks64(),
               net.enabled ? net.dt : metrics.fps.dt,
           };
 
@@ -459,6 +469,11 @@ public:
           }
           break;
         }
+      }
+
+      // check if quit was received
+      if (not is_running) {
+        break;
       }
 
       // check if shader program has changed

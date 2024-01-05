@@ -25,6 +25,8 @@ static void create_asteroids(unsigned const num);
 void application_init() {
   application_init_shaders();
 
+  printf("\ntime in ms: %lu\n\n", frame_context.ms);
+
   printf("class sizes:\n");
   printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
   printf(": %15s : %-9s :\n", "class", "bytes");

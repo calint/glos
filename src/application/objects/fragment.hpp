@@ -3,7 +3,7 @@
 
 class fragment : public object {
 public:
-  uint32_t death_time_ms = 0;
+  uint64_t death_time_ms = 0;
 
   inline fragment() {
     name = "fragment";

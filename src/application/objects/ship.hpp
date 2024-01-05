@@ -110,7 +110,7 @@ private:
     }
   }
 
-  uint32_t ready_to_fire_at_ms = 0;
-  uint32_t bullet_fire_rate_ms = ship_bullet_fire_interval_ms;
+  uint64_t ready_to_fire_at_ms = 0;
+  uint64_t bullet_fire_rate_ms = ship_bullet_fire_interval_ms;
   uint8_t bullet_level = 0;
 };

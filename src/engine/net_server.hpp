@@ -3,6 +3,7 @@
 // reviewed: 2024-01-04
 
 #include "net.hpp"
+#include <chrono>
 
 namespace glos {
 class net_server final {
@@ -18,6 +19,11 @@ private:
 
 public:
   inline void init() {
+    if (SDL_Init(SDL_INIT_TIMER)) {
+      printf("%s:%d: %s\n", __FILE__, __LINE__, SDL_GetError());
+      std::abort();
+    }
+
     server_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (server_fd == -1) {
       printf("%s:%d: cannot create socket\n", __FILE__, __LINE__);
@@ -75,10 +81,15 @@ public:
 
     printf(" * sending start\n");
 
+    net_init_packet nip{};
+    nip.ms = SDL_GetTicks64();
     // send the assigned player index to clients
     for (uint32_t i = 1; i < net_players + 1; ++i) {
-      if (write(clients_fd[i], &i, sizeof(uint32_t)) == -1) {
-        printf("%s:%d: could not start player %u: ", __FILE__, __LINE__, i);
+      // send initial packet to clients
+      nip.player_ix = i;
+      if (write(clients_fd[i], &nip, sizeof(nip)) == -1) {
+        printf("%s:%d: could not send initial packet to player %u: ", __FILE__,
+               __LINE__, i);
         perror("");
         std::abort();
       }
@@ -101,7 +112,7 @@ public:
           printf("%s:%d: player %u: disconnected\n", __FILE__, __LINE__, i);
           std::abort();
         }
-        if (unsigned(n) != state_read_size) {
+        if (size_t(n) != state_read_size) {
           printf("%s:%d: player %u: read was incomplete\n", __FILE__, __LINE__,
                  i);
           std::abort();
@@ -110,8 +121,11 @@ public:
       uint64_t const t1 = SDL_GetPerformanceCounter();
       float const dt = float(t1 - t0) / float(SDL_GetPerformanceFrequency());
       t0 = t1;
-      // using state[0] to broadcast data from server to all players, such as dt
+
+      // using state[0] to broadcast data from server to all players
       state[0].look_angle_x = dt;
+      state[0].keys = SDL_GetTicks64();
+
       for (unsigned i = 1; i < net_players + 1; ++i) {
         ssize_t n = write(clients_fd[i], state, sizeof(state));
         if (n == -1 or n != sizeof(state)) {
@@ -125,6 +139,7 @@ public:
   inline void free() {
     close(server_fd);
     server_fd = 0;
+    SDL_Quit();
   }
 };
 
