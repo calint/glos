@@ -293,6 +293,9 @@ public:
               net.enabled ? net.dt : metrics.fps.dt,
           };
 
+          // printf("frame_context: frame=%i   dt=%f   ms=%lu\n",
+          //        frame_context.frame_num, frame_context.dt, frame_context.ms);
+
           // notify render thread to start rendering
           is_rendering = true;
           lock.unlock();

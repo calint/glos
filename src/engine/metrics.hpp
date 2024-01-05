@@ -27,6 +27,7 @@ public:
   uint32_t average_fps = 0;
   uint32_t rendered_triangles = 0;
   float net_lag = 0;
+  bool enable_print = false;
 
   inline void init() {}
 
@@ -39,6 +40,9 @@ public:
   }
 
   inline void print_headers(FILE *f) const {
+    if (not enable_print) {
+      return;
+    }
     fprintf(f,
             " %6s  %7s  %4s  %7s  %6s  %6s  %6s  %8s  "
             "%4s  %8s  %8s\n",
@@ -47,6 +51,9 @@ public:
   }
 
   inline void print(FILE *f) const {
+    if (not enable_print) {
+      return;
+    }
     fprintf(f,
             " %06u  %0.5f  %04u  %0.5f  %06u  %06u  %06u  %08u  %04u  "
             "%08zu  %08zu\n",

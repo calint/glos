@@ -10,7 +10,9 @@
 class asteroid_large : public object {
 public:
   inline asteroid_large() {
-    name = "asteroid_large";
+    ++counter;
+    name = "asteroid_large_";
+    name.append(std::to_string(counter));
     scale = vec3{asteroid_large_scale};
     glob_ix = glob_ix_asteroid_large;
     radius = globs.at(glob_ix).bounding_radius * scale.x;

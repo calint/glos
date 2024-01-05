@@ -60,7 +60,6 @@ public:
 
     for (unsigned i = 1; i < net_players + 1; ++i) {
       clients_fd[i] = accept(server_fd, NULL, NULL);
-
       if (clients_fd[i] == -1) {
         printf("%s:%d: ", __FILE__, __LINE__);
         perror("");
@@ -87,9 +86,15 @@ public:
     for (uint32_t i = 1; i < net_players + 1; ++i) {
       // send initial packet to clients
       nip.player_ix = i;
-      if (write(clients_fd[i], &nip, sizeof(nip)) == -1) {
+      ssize_t n = write(clients_fd[i], &nip, sizeof(nip));
+      if (n == -1) {
         printf("%s:%d: could not send initial packet to player %u: ", __FILE__,
                __LINE__, i);
+        perror("");
+        std::abort();
+      }
+      if (size_t(n) != sizeof(nip)) {
+        printf("%s:%d: incomplete send to player %u: ", __FILE__, __LINE__, i);
         perror("");
         std::abort();
       }
@@ -98,11 +103,10 @@ public:
 
   inline void run() {
     printf(" * entering loop\n");
-    constexpr size_t state_read_size = sizeof(net_state);
     uint64_t t0 = SDL_GetPerformanceCounter();
     while (true) {
       for (unsigned i = 1; i < net_players + 1; ++i) {
-        ssize_t const n = recv(clients_fd[i], &state[i], state_read_size, 0);
+        ssize_t const n = recv(clients_fd[i], &state[i], sizeof(net_state), 0);
         if (n == -1) {
           printf("%s:%d: player %u: ", __FILE__, __LINE__, i);
           perror("");
@@ -112,12 +116,13 @@ public:
           printf("%s:%d: player %u: disconnected\n", __FILE__, __LINE__, i);
           std::abort();
         }
-        if (size_t(n) != state_read_size) {
+        if (size_t(n) != sizeof(net_state)) {
           printf("%s:%d: player %u: read was incomplete\n", __FILE__, __LINE__,
                  i);
           std::abort();
         }
       }
+
       uint64_t const t1 = SDL_GetPerformanceCounter();
       float const dt = float(t1 - t0) / float(SDL_GetPerformanceFrequency());
       t0 = t1;
@@ -127,8 +132,8 @@ public:
       state[0].keys = SDL_GetTicks64();
 
       for (unsigned i = 1; i < net_players + 1; ++i) {
-        ssize_t n = write(clients_fd[i], state, sizeof(state));
-        if (n == -1 or n != sizeof(state)) {
+        ssize_t const n = write(clients_fd[i], state, sizeof(state));
+        if (n == -1 or size_t(n) != sizeof(state)) {
           printf("%s:%d: player %u: send failed\n", __FILE__, __LINE__, i);
           std::abort();
         }

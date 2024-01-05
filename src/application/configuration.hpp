@@ -13,7 +13,7 @@ static constexpr unsigned grid_ncells_high = 4;
 
 // multithreaded grid
 // note. in some cases multithreaded mode is a degradation of performance
-static constexpr bool grid_threaded = true;
+static constexpr bool grid_threaded = false;
 static constexpr bool o1store_threaded = grid_threaded;
 
 // o1store debugging
@@ -92,3 +92,5 @@ static constexpr float bullet_fragment_agl_vel_rnd = 360;
 
 static constexpr int power_up_chance_rem = 5;
 static constexpr uint32_t power_up_lifetime_ms = 30'000;
+
+static std::atomic<unsigned> counter = 0;

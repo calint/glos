@@ -8,7 +8,9 @@
 class asteroid_small : public object {
 public:
   inline asteroid_small() {
-    name = "asteroid_small";
+    ++counter;
+    name = "asteroid_small_";
+    name.append(std::to_string(counter));
     glob_ix = glob_ix_asteroid_small;
     scale = vec3{asteroid_small_scale};
     radius = globs.at(glob_ix).bounding_radius * scale.x;

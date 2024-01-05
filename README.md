@@ -7,8 +7,10 @@ intention:
   - synchronized client input signals
   - clients render at the rate of the slowest client
   - server synchronizes clients signals
-* multithreaded grid of cells that partition world space
+* grid of cells that partition world space
   - update and collision detection of objects
+* multithreaded grid in single player mode
+* non multithreaded grid in multiplayer mode
 * importing blender exported `obj` files
 * explore legacy opengl rendering
 * intuitive programming of game objects and logic
@@ -30,6 +32,7 @@ ubuntu packages used:
 
 ## sample game
 * multiplayer enabled proof of concept
+  - `grid_threaded` must be `false` for deterministic behavior
 * shoot asteroids and pick up power ups for the gun
 * developed to test the framework
 * source in `src/application/` and `assets/`

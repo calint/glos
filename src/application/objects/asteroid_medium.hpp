@@ -10,7 +10,9 @@
 class asteroid_medium : public object {
 public:
   inline asteroid_medium() {
-    name = "asteroid_medium";
+    ++counter;
+    name = "asteroid_medium_";
+    name.append(std::to_string(counter));
     glob_ix = glob_ix_asteroid_medium;
     scale = vec3{asteroid_medium_scale};
     radius = globs.at(glob_ix).bounding_radius * scale.x;

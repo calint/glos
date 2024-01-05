@@ -7,6 +7,24 @@
 #include "objects/power_up.hpp"
 //
 
+inline auto rnd1(float const plus_minus_range) -> float {
+  int const r = rand();
+  printf("%u: rnd1: %d\n", frame_context.frame_num, r);
+  return float(r) / float(RAND_MAX) * plus_minus_range - plus_minus_range / 2;
+}
+
+inline auto rnd2(float const zero_to_range) -> float {
+  int const r = rand();
+  printf("%u: rnd2: %d\n", frame_context.frame_num, r);
+  return float(r) / float(RAND_MAX) * zero_to_range;
+}
+
+inline auto rnd3(int const rem) -> bool {
+  int const r = rand();
+  printf("%u: rnd3: %d\n", frame_context.frame_num, r);
+  return r % rem == 0;
+}
+
 inline void game_area_roll(glm::vec3 &position) {
   if (position.x < game_area_min_x or position.x > game_area_max_x) {
     position.x = -position.x;
@@ -26,20 +44,11 @@ inline auto is_outside_game_area(glm::vec3 const &position) -> bool {
 }
 
 inline void power_up_by_chance(glm::vec3 const &position) {
-  if (rand() % power_up_chance_rem) {
+  if (rnd3(power_up_chance_rem)) {
     return;
   }
 
   power_up *obj = new (objects.alloc()) power_up{};
   obj->position = position;
   obj->angular_velocity.y = radians(90.0f);
-}
-
-inline auto rnd1(float const plus_minus_range) -> float {
-  return float(rand()) / float(RAND_MAX) * plus_minus_range -
-         plus_minus_range / 2;
-}
-
-inline auto rnd2(float const zero_to_range) -> float {
-  return float(rand()) / float(RAND_MAX) * zero_to_range;
 }
