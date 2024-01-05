@@ -3,8 +3,7 @@
 // reviewed: 2023-12-27
 // reviewed: 2024-01-04
 
-#include <SDL.h>
-#include <SDL_image.h>
+#include <SDL2/SDL.h>
 
 namespace glos {
 class sdl final {
