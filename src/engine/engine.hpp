@@ -168,11 +168,12 @@ public:
     glob_ix_bounding_sphere =
         globs.load("assets/obj/bounding_sphere.obj", nullptr);
 
-    // intiate 'frame_context' in case 'application_init' needs time
+    // initiate 'frame_context' with current time from server or local timer
+    // incase 'application_init' needs time
     frame_context = {
         0,
         net.enabled ? net.ms : SDL_GetTicks64(),
-        net.enabled ? net.dt : metrics.fps.dt,
+        0,
     };
 
     application_init();
