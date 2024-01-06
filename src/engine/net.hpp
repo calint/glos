@@ -109,7 +109,9 @@ public:
       std::abort();
     }
     // send current frame signals
+
     send_state();
+    
     // get server dt from server state (using a float value)
     dt = states[0].look_angle_x;
     ms = states[0].keys;

@@ -1,6 +1,9 @@
+[ ] net_server: read/write instead of recv(...,0) and send(...,0)
 [ ] net: when server disconnects there is no print out
+    => use fflush(stdout); before terminating
 [ ] object: update Mmw if it will be rendered
-[ ] engine: review mutexes and why initial waiting for render can hang without the 'if'
+[x] engine: review mutexes and why initial waiting for render can hang without the 'if'
+    => bug in predicate
 [x] engine: frame_context.ms in network mode should be from server
 [x] frame_context: 64 bit ms time
 [ ] consider inverting meaning of bool return value from 'update'

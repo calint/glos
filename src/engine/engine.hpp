@@ -221,9 +221,7 @@ public:
       printf(" * waiting for render\n");
       {
         std::unique_lock<std::mutex> lock{is_rendering_mutex};
-        if (not is_rendering) {
-          is_rendering_cv.wait(lock, [this] { return not is_rendering; });
-        }
+        is_rendering_cv.wait(lock, [this] { return is_rendering; });
       }
       printf(" * waiting for render done\n");
     }
@@ -510,9 +508,8 @@ private:
           // wait until render thread is done before removing and adding objects
           // to grid
           std::unique_lock<std::mutex> lock{is_rendering_mutex};
-          if (is_rendering) { //? why is this necessary to avoid occasional dead-lock
-            is_rendering_cv.wait(lock, [this] { return not is_rendering; });
-          }
+          is_rendering_cv.wait(lock, [this] { return not is_rendering; });
+
           if (not is_running) {
             printf(" * update thread done\n");
             return;
