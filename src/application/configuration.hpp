@@ -107,5 +107,5 @@ static constexpr float bullet_fragment_agl_vel_rnd = 360;
 static constexpr int power_up_chance_rem = 5;
 static constexpr unsigned power_up_lifetime_ms = 30'000;
 
-// used with 'debug_multiplayer'
+// used when 'debug_multiplayer' is on
 static std::atomic<unsigned> counter = 0;
