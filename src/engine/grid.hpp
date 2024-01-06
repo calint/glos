@@ -152,7 +152,7 @@ private:
 
   cell cells[grid_ncells_high][grid_ncells_wide];
 
-  inline static int clamp(int i, int min, int max_plus_one) {
+  static inline int clamp(int i, int min, int max_plus_one) {
     if (i < min) {
       return min;
     } else if (i >= max_plus_one) {

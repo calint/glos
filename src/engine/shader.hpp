@@ -154,7 +154,7 @@ public:
   inline void use_program(size_t const ix) const { programs.at(ix).use(); }
 
 private:
-  inline static auto compile(GLenum const shader_type, char const *src)
+  static inline auto compile(GLenum const shader_type, char const *src)
       -> GLuint {
     GLuint const shader_id = glCreateShader(shader_type);
     glShaderSource(shader_id, 1, &src, nullptr);

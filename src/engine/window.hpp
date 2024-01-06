@@ -66,7 +66,7 @@ private:
   SDL_Renderer *sdl_renderer = nullptr;
   SDL_GLContext sdl_gl_context = nullptr;
 
-  inline static void gl_print_context_profile_and_version() {
+  static inline void gl_print_context_profile_and_version() {
     int value = 0;
     if (SDL_GL_GetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, &value)) {
       fprintf(stderr, "\n%s:%d: cannot get opengl attribute: %s\n", __FILE__,

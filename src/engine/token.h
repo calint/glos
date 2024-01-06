@@ -10,15 +10,15 @@ typedef struct token {
 #define token_def                                                              \
   (token) { NULL, NULL, NULL, NULL }
 
-inline static unsigned token_size(token const *t) {
+static inline unsigned token_size(token const *t) {
   return (unsigned)(t->content_end - t->content);
 }
 
-inline static bool token_starts_with(token const *t, char const *str) {
+static inline bool token_starts_with(token const *t, char const *str) {
   return strncmp(str, t->content, strlen(str)) == 0;
 }
 
-inline static bool token_equals(token const *t, char const *str) {
+static inline bool token_equals(token const *t, char const *str) {
   char const *p = t->content;
   while (true) {
     if (p == t->content_end) {
@@ -35,17 +35,17 @@ inline static bool token_equals(token const *t, char const *str) {
   }
 }
 
-inline static float token_get_float(token const *t) {
+static inline float token_get_float(token const *t) {
   float f = (float)atof(t->content); //? assuming file ends with whitespace
   return f;
 }
 
-inline static int token_get_int(token const *t) {
+static inline int token_get_int(token const *t) {
   int i = atoi(t->content); //?  assuming file ends with whitespace
   return i;
 }
 
-inline static unsigned token_get_uint(token const *t) {
+static inline unsigned token_get_uint(token const *t) {
   int i = atoi(t->content); //?  assuming file ends with whitespace, error?
   if (i < 0) {
     fprintf(stderr, "\n%s:%d: unexpected int\n", __FILE__, __LINE__);
@@ -55,7 +55,7 @@ inline static unsigned token_get_uint(token const *t) {
   return (unsigned)i;
 }
 
-inline static token token_next(char const **s) {
+static inline token token_next(char const **s) {
   const char *p = *s;
   token t;
   t.begin = p;
@@ -108,7 +108,7 @@ inline static token token_next(char const **s) {
   return t;
 }
 
-inline static token token_from_string_additional_delim(char const *s,
+static inline token token_from_string_additional_delim(char const *s,
                                                        char delim) {
   const char *p = s;
   token t;
@@ -145,7 +145,7 @@ inline static token token_from_string_additional_delim(char const *s,
   return t;
 }
 
-inline static char const *scan_to_including_newline(char const *p) {
+static inline char const *scan_to_including_newline(char const *p) {
   while (1) {
     if (!*p)
       return p;

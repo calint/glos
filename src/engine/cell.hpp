@@ -151,7 +151,7 @@ public:
 private:
   std::vector<object *> ols{};
 
-  inline static void handle_sphere_collision(object *Oi, object *Oj) {
+  static inline void handle_sphere_collision(object *Oi, object *Oj) {
 
     // check if Oi is subscribed to collision with Oj
     if ((Oi->collision_mask & Oj->collision_bits) == 0) {
@@ -215,7 +215,7 @@ private:
     }
   }
 
-  inline static void dispatch_collision(object *Osrc, object *Otrg) {
+  static inline void dispatch_collision(object *Osrc, object *Otrg) {
 
     // check if Osrc is subscribed to collision with Otrg
     if ((Osrc->collision_mask & Otrg->collision_bits) == 0) {
@@ -250,7 +250,7 @@ private:
     }
   }
 
-  inline static auto are_bounding_spheres_in_collision(object const *o1,
+  static inline auto are_bounding_spheres_in_collision(object const *o1,
                                                        object const *o2)
       -> bool {
 
@@ -262,7 +262,7 @@ private:
     return diff < 0;
   }
 
-  inline static void update_planes_world_coordinates(object *o) {
+  static inline void update_planes_world_coordinates(object *o) {
     bool const synchronize = threaded_grid and o->is_overlaps_cells();
 
     if (synchronize) {
@@ -280,7 +280,7 @@ private:
     }
   }
 
-  inline static auto are_bounding_planes_in_collision(object *o1, object *o2)
+  static inline auto are_bounding_planes_in_collision(object *o1, object *o2)
       -> bool {
 
     update_planes_world_coordinates(o1);

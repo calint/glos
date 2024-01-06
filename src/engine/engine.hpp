@@ -51,11 +51,11 @@
 //
 namespace glos {
 // debugging functions
-inline static void debug_render_wcs_line(glm::vec3 const &from_wcs,
+static inline void debug_render_wcs_line(glm::vec3 const &from_wcs,
                                          glm::vec3 const &to_wcs,
                                          glm::vec3 const &color);
 
-inline static void debug_render_bounding_sphere(glm::mat4 const &Mmw);
+static inline void debug_render_bounding_sphere(glm::mat4 const &Mmw);
 
 // information about the current frame
 class frame_context {
@@ -586,7 +586,7 @@ inline engine engine{};
 
 // debugging (highly inefficient) function for rendering world coordinate system
 // lines
-inline static void debug_render_wcs_line(glm::vec3 const &from_wcs,
+static inline void debug_render_wcs_line(glm::vec3 const &from_wcs,
                                          glm::vec3 const &to_wcs,
                                          glm::vec3 const &color) {
   GLuint vao = 0;
@@ -622,7 +622,7 @@ inline static void debug_render_wcs_line(glm::vec3 const &from_wcs,
   shaders.use_program(engine.shader_program_ix);
 }
 
-inline static void debug_render_bounding_sphere(glm::mat4 const &Mmw) {
+static inline void debug_render_bounding_sphere(glm::mat4 const &Mmw) {
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   globs.at(glob_ix_bounding_sphere).render(Mmw);
