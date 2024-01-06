@@ -1,4 +1,9 @@
 #pragma once
+// reviewed: 2024-01-06
+
+//
+//! colors do not get converted correctly. color 'red' works though.
+//
 
 #include "shader.hpp"
 
@@ -15,7 +20,7 @@ public:
       std::abort();
     }
 
-    GLfloat quad_vertices[] = {
+    constexpr GLfloat quad_vertices[] = {
         // positions  // texture coords
         -1.0f, 1.0f,  0.0f, 0.0f, // top left
         1.0f,  1.0f,  1.0f, 0.0f, // top right
@@ -23,12 +28,13 @@ public:
         -1.0f, -1.0f, 0.0f, 1.0f  // bottom left
     };
 
-    GLuint quad_indices[] = {
+    constexpr GLuint quad_indices[] = {
         2, 1, 0, // first triangle
         3, 2, 0  // second triangle
     };
 
     shaders::gl_check_error("hud::init entry");
+
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
 
@@ -67,6 +73,7 @@ public:
 
     program_ix = shaders.load_program_from_source(vertex_shader_source,
                                                   fragment_shader_source);
+
     shaders::gl_check_error("hud::init exit");
   }
 
@@ -140,22 +147,23 @@ private:
   GLuint VAO = 0;
   GLuint EBO = 0;
   GLuint hud_texture = 0;
-  GLsizei texture_width = 256;
-  GLsizei texture_height = 256;
   TTF_Font *font = nullptr;
 
-  const char *vertex_shader_source = R"(
+  static constexpr GLsizei texture_width = 256;
+  static constexpr GLsizei texture_height = 256;
+
+  static inline char const *vertex_shader_source = R"(
     #version 330 core
     layout(location = 0) in vec2 position;
     layout(location = 1) in vec2 tex_coord;
     out vec2 v_tex_coord;
     void main() {
-        gl_Position = vec4(position, 0.0, 1.0);
+        gl_Position = vec4(position, 0, 1.0);
         v_tex_coord = tex_coord;
     }
 )";
 
-  const char *fragment_shader_source = R"(
+  static inline char const *fragment_shader_source = R"(
     #version 330 core
     in vec2 v_tex_coord;
     out vec4 frag_color;

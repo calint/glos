@@ -244,7 +244,9 @@ public:
       load_planes(bounding_planes_path);
     }
 
+    //
     // upload to opengl
+    //
     glGenVertexArrays(1, &vertex_array_id);
     glBindVertexArray(vertex_array_id);
 
