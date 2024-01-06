@@ -3,9 +3,6 @@
 // reviewed: 2024-01-04
 // reviewed: 2024-01-06
 
-#include <arpa/inet.h>
-#include <netinet/tcp.h>
-
 namespace glos {
 
 // client state

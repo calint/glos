@@ -5,10 +5,6 @@
 #include "material.hpp"
 #include "shader.hpp"
 #include "texture.hpp"
-#include <cstdio>
-#include <glm/gtc/type_ptr.hpp>
-#include <string>
-#include <vector>
 
 namespace glos {
 class glob final {

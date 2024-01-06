@@ -3,10 +3,6 @@
 // reviewed: 2024-01-04
 // reviewed: 2024-01-06
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/euler_angles.hpp>
-
 namespace glos {
 class camera final {
 public:

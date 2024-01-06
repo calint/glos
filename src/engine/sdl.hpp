@@ -4,8 +4,6 @@
 // reviewed: 2024-01-04
 // reviewed: 2024-01-06
 
-#include <SDL2/SDL.h>
-
 namespace glos {
 class sdl final {
 public:

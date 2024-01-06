@@ -2,8 +2,6 @@
 // reviewed: 2024-01-04
 // reviewed: 2024-01-06
 
-#include <glm/gtx/string_cast.hpp>
-
 namespace glos {
 class planes final {
 public:

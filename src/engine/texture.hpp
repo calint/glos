@@ -3,10 +3,6 @@
 // reviewed: 2024-01-06
 
 #include "metrics.hpp"
-#include <GLES3/gl3.h>
-#include <SDL2/SDL_image.h>
-#include <string>
-#include <unordered_map>
 
 namespace glos {
 class texture final {

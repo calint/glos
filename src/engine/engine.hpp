@@ -1,8 +1,29 @@
 #pragma once
 // reviewed: 2024-01-04
 
+// all includes used by the subsystems
+#include <GLES3/gl3.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
+#include <algorithm>
+#include <arpa/inet.h>
+#include <atomic>
 #include <condition_variable>
+#include <execution>
+#include <fstream>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/euler_angles.hpp>
+#include <glm/gtx/string_cast.hpp>
 #include <mutex>
+#include <netinet/tcp.h>
+#include <sstream>
+#include <string>
+#include <unordered_map>
+#include <vector>
+// #include "task_thread_pool.hpp"
 
 // inclusion order relevant
 #include "../application/configuration.hpp"

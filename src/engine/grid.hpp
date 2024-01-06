@@ -4,8 +4,6 @@
 // reviewed: 2024-01-06
 
 #include "cell.hpp"
-// #include "task_thread_pool.hpp"
-#include <execution>
 
 namespace glos {
 class grid final {

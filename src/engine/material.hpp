@@ -5,12 +5,6 @@
 
 #include "token.h"
 
-#include <fstream>
-#include <glm/glm.hpp>
-#include <sstream>
-#include <string>
-#include <vector>
-
 namespace glos {
 
 // newmtl texture

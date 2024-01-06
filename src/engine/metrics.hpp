@@ -2,8 +2,6 @@
 // reviewed: 2023-12-22
 // reviewed: 2024-01-04
 
-#include <SDL2/SDL.h>
-
 namespace glos {
 class metrics final {
 public:

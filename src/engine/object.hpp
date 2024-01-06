@@ -4,7 +4,6 @@
 
 #include "o1store.hpp"
 #include "planes.hpp"
-#include <algorithm>
 
 namespace glos {
 

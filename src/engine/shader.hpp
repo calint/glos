@@ -2,9 +2,6 @@
 // reviewed: 2023-12-24
 // reviewed: 2024-01-04
 
-#include <GLES3/gl3.h>
-#include <vector>
-
 namespace glos {
 
 struct vertex {
