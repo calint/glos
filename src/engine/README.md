@@ -34,8 +34,8 @@
 * `token` is a helper to parse text
 
 ## multithreaded engine
-* configuration`update_threaded` enables update and render run on different threads
-* configuration `grid_threaded` enables `update` and `resolve_collisions` off `grid` `cells` to run on available cores in parallel and unsequenced order
+* configuration`update_threaded` enables update and render to run on different threads
+* configuration `grid_threaded` enables `update` and `resolve_collisions` of `grid` `cells` to run on available cores in parallel and unsequenced order
 * guarantees given by engine:
   - only one thread is active at a time in an object's `update` or `on_collision`
   - collision between two objects is handled only once, considering that collision between same two objects can be detected on several threads if both objects overlap `grid` `cells`
