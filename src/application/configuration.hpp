@@ -2,8 +2,6 @@
 // reviewed: 2023-12-22
 // reviewed: 2024-01-04
 
-#include <cstdint>
-
 //
 // definitions used by engine
 //
