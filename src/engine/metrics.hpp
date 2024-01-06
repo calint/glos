@@ -42,7 +42,7 @@ public:
     if (not enable_print) {
       return;
     }
-    fprintf(f, " %6s  %7s  %5s  %7s  %7s  %6s  %6s  %6s  %9s\n", "ms", "dt",
+    fprintf(f, " %6s  %7s  %5s  %7s  %7s  %6s  %6s  %6s  %9s\n", "ms", "dt_ms",
             "fps", "upd_ms", "netlag", "nobj", "drw_o", "drw_g", "drw_t");
   }
 
@@ -52,8 +52,8 @@ public:
     }
 
     fprintf(f, " %06lu  %0.5f  %05u  %0.5f  %0.5f  %06u  %06u  %06u  %09u\n",
-            ms, dt, fps.average_during_last_interval, update_pass_ms, net_lag,
-            allocated_objects, rendered_objects, rendered_globs,
+            ms, dt * 1000, fps.average_during_last_interval, update_pass_ms,
+            net_lag, allocated_objects, rendered_objects, rendered_globs,
             rendered_triangles);
   }
 
@@ -97,7 +97,8 @@ public:
       return;
     }
 
-    fps.average_during_last_interval = fps.frame_count * 1000 / dt_interval;
+    fps.average_during_last_interval =
+        uint32_t(fps.frame_count * 1000 / dt_interval);
     fps.time_at_start_of_interval_ms = t1;
     reset_timer();
 

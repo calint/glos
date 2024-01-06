@@ -183,9 +183,10 @@ public:
     printf(": %15s : %-9ld :\n", "object", sizeof(object));
     printf(": %15s : %-9ld :\n", "glo", sizeof(glob));
     printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
+    puts("");
 
     if (threaded_grid) {
-      printf("\nthreaded grid on %u cores\n\n",
+      printf("threaded grid on %u cores\n\n",
              std::thread::hardware_concurrency());
     }
 
