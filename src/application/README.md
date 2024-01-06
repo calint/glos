@@ -3,7 +3,7 @@
 * `application.cpp` contains game logic and implements interface to engine
   - `application_init()` called at init
   - `application_on_update_done()` called after objects have been updated and collisions resolved
-  - `application_on_render_done()` called when render frame is done
+  - `application_on_render_done()` called when render frame is done. may not create or change state of objects in multiplayer mode
   - `application_free()` called when application exits (can be empty assuming resources are reclaimed by operating system)
 * `objects/` contains the game objects
   - `asteroid_large`
