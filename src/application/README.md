@@ -2,7 +2,7 @@
 * `configuration.hpp` contains constants and global variables used by engine and game
 * `application.cpp` contains game logic and implements interface to engine
   - `application_init()` called at init
-  - `application_on_update_done()` called after objects have been updated and collisions resolved
+  - `application_on_update_done()` called after objects have been updated and collisions resolved. may create and change state of objects
   - `application_on_render_done()` called when render frame is done. may not create or change state of objects in multiplayer mode
   - `application_free()` called when application exits (can be empty assuming resources are reclaimed by operating system)
 * `objects/` contains the game objects
@@ -18,8 +18,8 @@
 ## notes
 * engine is multithreaded (see `configuration.hpp` setting `threaded_grid` and `threaded_update`)
 * `threaded_grid` must be off in multiplayer mode for clients to run in a  deterministic way
-  - updating objects and collisions resolutions are done on available cores
-  - awareness of the nature of multithreaded application is recommended
-  - in smaller applications multithreaded mode might degrade performance
+* updating objects and collisions resolutions can in single player mode be done on available cores by turning `threaded_grid` on
+* awareness of the nature of multithreaded application is recommended
+* in smaller applications multithreaded mode might degrade performance
 * `threaded_update` turns on rendering and update running in parallel which is not thread safe but acceptable
 * occasionally it seems as if collision detection is not working because rendering is 2d of a 3d space thus objects might overlap in 2d but not in collision in 3d
