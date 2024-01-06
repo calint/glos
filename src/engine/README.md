@@ -4,14 +4,14 @@
 * space is partitioned in a `grid` of `cells` containing `objects`
   - `object` may overlap `grid` `cells`
   - `grid` runs `update` then `resolve_collisions` pass on `cells`
-  - the passes call `cells` in a non-deterministic, parallel and unsequenced way when `grid_threaded` is on
+  - when `grid_threaded` is on the passes call `cells` in a non-deterministic, parallel and unsequenced way
   - `grid_threaded` must be off in multiplayer applications
   - `object` `update` is called once every frame
   - `object` `on_collision` is called once for each collision with another `object` in that frame
 * `object` has reference to a 3d model, `glob`, using an index in `globs`
   - has state such as `position`, `angle`, `scale`, `velocity`, `acceleration`, `angular_velocity` etc
 * `glob`
-  - `render` using opengl with a provided matrix for model to world coordinates transform
+  - `render` using opengl with a provided model to world coordinates transform matrix
   - references `materials` and `textures` using indices set at `load`
   - has bounding radius calculated at `load` and may be additionally bounded by a convex volume defined by `planes`
 * `planes` can detect collision with spheres and other `planes`
@@ -23,26 +23,27 @@
   - contains matrix used by `engine` at render to transform world coordinates to screen
 * `window` is a double buffer sdl2 opengl window displaying the rendered result
 * `shaders` contains the opengl programs used for rendering
-* `hud` is a heads-up-display rendered after the view
+* `hud` is a heads-up-display rendered after the frame has been completed
 * `net` and `net_server` handle single and multiplayer modes
   - synchronizes players signals
   - limits frame rate of all players to the slowest client
+  - clients must run in a deterministic way thus `grid_threaded` must be off
 * `sdl` handles initiation and shutdown of sdl2
 * `metrics` keeps track of frame time and statistics
-* `o1store` is a template that implements O(1) alloc and free of preallocated objects
+* `o1store` template that implements O(1) alloc and free of preallocated objects
 * `token` is a helper to parse text
 
 ## multithreaded engine
-* update and render run on different threads
-* additionally, update thread runs `update` and `resolve_collisions` on `grid` `cells` on available cores in parallel and unsequenced order
+* configuration`update_threaded` enables update and render run on different threads
+* configuration `grid_threaded` enables `update` and `resolve_collisions` off `grid` `cells` to run on available cores in parallel and unsequenced order
 * guarantees given by engine:
   - only one thread is active at a time in an object's `update` or `on_collision`
   - collision between two objects is handled only once, considering that collision between same two objects can be detected on several threads if both objects overlap `grid` `cells`
-* awareness that data races between update and render thread on `object` `position`, `angle`, `scale`, `glob_ix` are assumed and ok
+* `update_threaded` creates data races between update and render thread on `object` `position`, `angle`, `scale`, `glob_ix` and may be acceptable
 * attention is needed when objects are interacting with other objects during `update` or `on_collision` because the object being interacted with might be running code on another thread
-  - suggestion is to use a synchronized message queue that is handled at `update`
 
 ## schematics
+regarding `update_threaded` and `grid_threaded`
 ```
    update thread                    render thread
    -----------------------------    -----------------
