@@ -2,13 +2,10 @@
 // reviewed: 2023-12-22
 // reviewed: 2023-12-27
 // reviewed: 2024-01-04
+// reviewed: 2024-01-06
 
 namespace glos {
 class window final {
-  SDL_Window *sdl_window = nullptr;
-  SDL_Renderer *sdl_renderer = nullptr;
-  SDL_GLContext sdl_gl_context = nullptr;
-
 public:
   inline void init() {
     sdl_window =
@@ -28,7 +25,7 @@ public:
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
     sdl_gl_context = SDL_GL_CreateContext(sdl_window);
-    if (!sdl_gl_context) {
+    if (not sdl_gl_context) {
       fprintf(stderr, "\n%s:%d: cannot create gl context: %s\n", __FILE__,
               __LINE__, SDL_GetError());
       fflush(stderr);
@@ -39,7 +36,7 @@ public:
         SDL_CreateRenderer(sdl_window, -1,
                            SDL_RENDERER_ACCELERATED |
                                (window_vsync ? SDL_RENDERER_PRESENTVSYNC : 0));
-    if (!sdl_renderer) {
+    if (not sdl_renderer) {
       fprintf(stderr, "\n%s:%d: cannot create renderer: %s\n", __FILE__,
               __LINE__, SDL_GetError());
       fflush(stderr);
@@ -65,6 +62,10 @@ public:
   }
 
 private:
+  SDL_Window *sdl_window = nullptr;
+  SDL_Renderer *sdl_renderer = nullptr;
+  SDL_GLContext sdl_gl_context = nullptr;
+
   inline static void gl_print_context_profile_and_version() {
     int value = 0;
     if (SDL_GL_GetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, &value)) {
