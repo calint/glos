@@ -94,6 +94,7 @@ public:
     if (threaded_o1store) {
       acquire_lock();
     }
+
     if (o1store_check_free_limits) {
       if (del_ptr_ >= del_end_) {
         fprintf(stderr, "\n%s:%d: store %u: free overrun\n", __FILE__, __LINE__,
@@ -102,6 +103,7 @@ public:
         std::abort();
       }
     }
+
     if (o1store_check_double_free) {
       for (Type **it = del_bgn_; it < del_ptr_; ++it) {
         if (*it == inst) {
@@ -112,8 +114,10 @@ public:
         }
       }
     }
+
     *del_ptr_ = inst;
     ++del_ptr_;
+
     if (threaded_o1store) {
       release_lock();
     }

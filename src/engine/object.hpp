@@ -1,6 +1,7 @@
 #pragma once
 // reviewed: 2023-12-22
 // reviewed: 2024-01-04
+// reviewed: 2024-01-06
 
 #include "o1store.hpp"
 #include "planes.hpp"
@@ -37,8 +38,8 @@ public:
   std::atomic_flag lock_get_updated_Mmw = ATOMIC_FLAG_INIT;
 
   inline virtual ~object() {}
-  // note. 'delete obj' may not be used because memory is managed by 'o1store'
-  //       destructor is invoked in the 'objects.apply_free'
+  // note. 'delete obj;' may not be used because memory is managed by 'o1store'
+  //       destructor is invoked in the 'objects.apply_free()'
 
   inline virtual void render() {
     globs.at(glob_ix).render(get_updated_Mmw());
@@ -77,18 +78,20 @@ public:
   }
 
   // synchronized in multithreaded because both update and render thread access
-  // it
+  // it in a non-deterministic way breaking multiplayer mode
   inline auto get_updated_Mmw() -> glm::mat4 const & {
     if (threaded_grid or threaded_update) {
       while (lock_get_updated_Mmw.test_and_set(std::memory_order_acquire)) {
       }
     }
+
     if (is_Mmw_valid()) {
       if (threaded_grid or threaded_update) {
         lock_get_updated_Mmw.clear(std::memory_order_release);
       }
       return Mmw;
     }
+
     // save the state of the matrix
     Mmw_pos = position;
     Mmw_agl = angle;
@@ -98,13 +101,15 @@ public:
     glm::mat4 Mr = glm::eulerAngleXYZ(Mmw_agl.x, Mmw_agl.y, Mmw_agl.z);
     glm::mat4 Mt = glm::translate(glm::mat4(1), Mmw_pos);
     Mmw = Mt * Mr * Ms;
+
     if (threaded_grid or threaded_update) {
       lock_get_updated_Mmw.clear(std::memory_order_release);
     }
+
     return Mmw;
   }
 
-  inline auto debug_get_Mmw_for_bounding_sphere() -> glm::mat4 {
+  inline auto debug_get_Mmw_for_bounding_sphere() const -> glm::mat4 {
     return glm::scale(glm::translate(glm::mat4(1), Mmw_pos), glm::vec3(radius));
   }
 
@@ -142,17 +147,19 @@ public:
 
 class objects final {
 public:
-  inline void init() {}
+  inline void init() {
+    // initiate list size and end pointer
+    apply_allocated_instances();
+  }
 
   inline void free() {
     object **const end = store_.allocated_list_end();
     // note. important to get the 'end' outside the loop because objects may
-    //       allocate new objects in the loop and that would change the 'end'
+    //       allocate new objects in the loop and that would change 'end'
     for (object **it = store_.allocated_list(); it < end; ++it) {
       object *obj = *it;
-      obj->~object(); // note. the freeing of the memory is done by 'o1store'
+      obj->~object(); // note. the freeing of memory is done by 'o1store'
     }
-    //? what if destructors created new objects
   }
 
   inline auto alloc() -> object * { return store_.allocate_instance(); }

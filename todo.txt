@@ -1,3 +1,4 @@
+[ ] objects.free(): what if destructors created new objects
 [ ] net_server: read/write instead of recv(...,0) and send(...,0)
 [ ] net: when server disconnects there is no print out
     => use fflush(stdout); before terminating
