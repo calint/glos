@@ -14,7 +14,7 @@ public:
 
   // called from engine
   inline void update() const {
-    if (grid_threaded) {
+    if (threaded_grid) {
       std::for_each(std::execution::par_unseq, std::begin(cells),
                     std::end(cells), [](cell const(&row)[grid_ncells_wide]) {
                       for (cell const &c : row) {
@@ -43,7 +43,7 @@ public:
 
   // called from engine
   inline void resolve_collisions() const {
-    if (grid_threaded) {
+    if (threaded_grid) {
       std::for_each(std::execution::par_unseq, std::begin(cells),
                     std::end(cells), [](cell const(&row)[grid_ncells_wide]) {
                       for (cell const &c : row) {

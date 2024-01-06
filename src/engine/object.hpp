@@ -79,12 +79,12 @@ public:
   // synchronized in multithreaded because both update and render thread access
   // it
   inline auto get_updated_Mmw() -> glm::mat4 const & {
-    if (grid_threaded or update_threaded) {
+    if (threaded_grid or threaded_update) {
       while (lock_get_updated_Mmw.test_and_set(std::memory_order_acquire)) {
       }
     }
     if (is_Mmw_valid()) {
-      if (grid_threaded or update_threaded) {
+      if (threaded_grid or threaded_update) {
         lock_get_updated_Mmw.clear(std::memory_order_release);
       }
       return Mmw;
@@ -98,7 +98,7 @@ public:
     glm::mat4 Mr = glm::eulerAngleXYZ(Mmw_agl.x, Mmw_agl.y, Mmw_agl.z);
     glm::mat4 Mt = glm::translate(glm::mat4(1), Mmw_pos);
     Mmw = Mt * Mr * Ms;
-    if (grid_threaded or update_threaded) {
+    if (threaded_grid or threaded_update) {
       lock_get_updated_Mmw.clear(std::memory_order_release);
     }
     return Mmw;

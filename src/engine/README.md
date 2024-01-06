@@ -4,8 +4,8 @@
 * space is partitioned in a `grid` of `cells` containing `objects`
   - `object` may overlap `grid` `cells`
   - `grid` runs `update` then `resolve_collisions` pass on `cells`
-  - when `grid_threaded` is on the passes call `cells` in a non-deterministic, parallel and unsequenced way
-  - `grid_threaded` must be off in multiplayer applications
+  - when `threaded_grid` is on the passes call `cells` in a non-deterministic, parallel and unsequenced way
+  - `threaded_grid` must be off in multiplayer applications
   - `object` `update` is called once every frame
   - `object` `on_collision` is called once for each collision with another `object` in that frame
 * `object` has reference to a 3d model, `glob`, using an index in `globs`
@@ -27,23 +27,23 @@
 * `net` and `net_server` handle single and multiplayer modes
   - synchronizes players signals
   - limits frame rate of all players to the slowest client
-  - clients must run in a deterministic way thus `grid_threaded` must be off
+  - clients must run in a deterministic way thus `threaded_grid` must be off
 * `sdl` handles initiation and shutdown of sdl2
 * `metrics` keeps track of frame time and statistics
 * `o1store` template that implements O(1) alloc and free of preallocated objects
 * `token` is a helper to parse text
 
 ## multithreaded engine
-* configuration`update_threaded` enables update and render to run on different threads
-* configuration `grid_threaded` enables `update` and `resolve_collisions` of `grid` `cells` to run on available cores in parallel and unsequenced order
+* configuration`threaded_update` enables update and render to run on different threads
+* configuration `threaded_grid` enables `update` and `resolve_collisions` of `grid` `cells` to run on available cores in parallel and unsequenced order
 * guarantees given by engine:
   - only one thread is active at a time in an object's `update` or `on_collision`
   - collision between two objects is handled only once, considering that collision between same two objects can be detected on several threads if both objects overlap `grid` `cells`
-* `update_threaded` creates data races between update and render thread on `object` `position`, `angle`, `scale`, `glob_ix` and may be acceptable
+* `threaded_update` creates data races between update and render thread on `object` `position`, `angle`, `scale`, `glob_ix` and may be acceptable
 * attention is needed when objects are interacting with other objects during `update` or `on_collision` because the object being interacted with might be running code on other threads
 
 ## schematics
-regarding `update_threaded` and `grid_threaded`
+regarding `threaded_update` and `threaded_grid`
 ```
    update thread                    render thread
    -----------------------------    -----------------

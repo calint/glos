@@ -184,7 +184,7 @@ public:
     printf(": %15s : %-9ld :\n", "glo", sizeof(glob));
     printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
 
-    if (grid_threaded) {
+    if (threaded_grid) {
       printf("\nthreaded grid on %u cores\n\n",
              std::thread::hardware_concurrency());
     }
@@ -223,32 +223,35 @@ public:
   }
 
   inline void run() {
-    SDL_SetRelativeMouseMode(mouse_mode ? SDL_TRUE : SDL_FALSE);
-
-    // initiate metrics
-    metrics.fps.calculation_intervall_ms = 1000;
-    // metrics.enable_print = true;
-    metrics.reset_timer();
-    metrics.print_headers(stderr);
-
-    // initiate networking
     if (net.enabled) {
+      // initiate networking
       // send initial signals
       net.begin();
     }
 
-    if (update_threaded) {
+    if (threaded_update) {
+      // update runs as separate thread
       start_update_thread();
+      // wait for update before rendering first frame
       {
         std::unique_lock<std::mutex> lock{is_rendering_mutex};
         is_rendering_cv.wait(lock, [this] { return is_rendering; });
       }
     }
 
+    // initiate metrics
+    metrics.fps.calculation_interval_ms = 1000;
+    metrics.enable_print = metrics_print;
+    metrics.reset_timer();
+    metrics.print_headers(stderr);
+
+    SDL_SetRelativeMouseMode(mouse_mode ? SDL_TRUE : SDL_FALSE);
+
     // enter game loop
     while (true) {
       metrics.at_frame_begin();
 
+      // read keyboard, mouse and handle window events
       handle_events();
 
       // check if quit was received
@@ -256,7 +259,7 @@ public:
         break;
       }
 
-      if (update_threaded) {
+      if (threaded_update) {
         render_thread_loop_body();
       } else {
         // single threaded mode
@@ -269,7 +272,7 @@ public:
       metrics.at_frame_end(stderr);
     }
 
-    if (update_threaded) {
+    if (threaded_update) {
       std::unique_lock<std::mutex> lock{is_rendering_mutex};
       is_rendering = false;
       lock.unlock();

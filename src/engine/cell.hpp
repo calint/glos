@@ -10,7 +10,7 @@ public:
   inline void update() const {
     for (object *o : ols) {
       // check if object has already been updated by a different cell
-      if (grid_threaded and o->is_overlaps_cells()) {
+      if (threaded_grid and o->is_overlaps_cells()) {
         // object is in several cells and may be called from multiple threads
 
         o->acquire_lock();
@@ -160,7 +160,7 @@ private:
 
     // if object overlaps cells and threaded grid then this code might be called
     // by several threads at the same time
-    const bool synchronize = grid_threaded and Oi->is_overlaps_cells();
+    const bool synchronize = threaded_grid and Oi->is_overlaps_cells();
 
     if (synchronize) {
       Oi->acquire_lock();
@@ -224,7 +224,7 @@ private:
 
     // if object overlaps cells this code might be called by several threads at
     // the same time
-    const bool synchronize = grid_threaded and Osrc->is_overlaps_cells();
+    const bool synchronize = threaded_grid and Osrc->is_overlaps_cells();
 
     if (synchronize) {
       Osrc->acquire_lock();
@@ -263,7 +263,7 @@ private:
   }
 
   inline static void update_planes_world_coordinates(object *o) {
-    bool const synchronize = grid_threaded and o->is_overlaps_cells();
+    bool const synchronize = threaded_grid and o->is_overlaps_cells();
 
     if (synchronize) {
       o->planes.acquire_lock();

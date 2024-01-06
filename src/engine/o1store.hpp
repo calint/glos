@@ -69,11 +69,11 @@ public:
   // allocates an instance
   // returns nullptr if instance could not be allocated
   auto allocate_instance() -> Type * {
-    if (o1store_threaded) {
+    if (threaded_o1store) {
       acquire_lock();
     }
     if (free_ptr_ >= free_end_) {
-      if (o1store_threaded) {
+      if (threaded_o1store) {
         release_lock();
       }
       return nullptr;
@@ -83,7 +83,7 @@ public:
     *alloc_ptr_ = inst;
     inst->alloc_ptr = alloc_ptr_;
     ++alloc_ptr_;
-    if (o1store_threaded) {
+    if (threaded_o1store) {
       release_lock();
     }
     return inst;
@@ -91,7 +91,7 @@ public:
 
   // adds instance to list of instances to be freed with 'apply_free()'
   void free_instance(Type *inst) {
-    if (o1store_threaded) {
+    if (threaded_o1store) {
       acquire_lock();
     }
     if (o1store_check_free_limits) {
@@ -114,7 +114,7 @@ public:
     }
     *del_ptr_ = inst;
     ++del_ptr_;
-    if (o1store_threaded) {
+    if (threaded_o1store) {
       release_lock();
     }
   }

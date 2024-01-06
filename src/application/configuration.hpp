@@ -6,6 +6,9 @@
 
 // definitions used by engine and application
 
+// metrics print to console
+static constexpr bool metrics_print = true;
+
 // grid dimensions
 static constexpr unsigned grid_cell_size = 10;
 static constexpr unsigned grid_ncells_wide = 4;
@@ -13,11 +16,14 @@ static constexpr unsigned grid_ncells_high = 4;
 
 // multithreaded grid
 // note. in some cases multithreaded mode is a degradation of performance
-// note. multiplayer mode cannot use 'grid_threaded' because of the
+// note. multiplayer mode cannot use 'threaded_grid' because of the
 //       non-deterministic behavior
-static constexpr bool grid_threaded = false;
-static constexpr bool o1store_threaded = grid_threaded;
-static constexpr bool update_threaded = true;
+static constexpr bool threaded_grid = false;
+static constexpr bool threaded_o1store = threaded_grid;
+static constexpr bool threaded_update = true;
+
+// multiplayer debugging output
+static constexpr bool debug_multiplayer = false;
 
 // o1store debugging (assertions should be on in development)
 static constexpr bool o1store_check_double_free = false;
@@ -26,9 +32,6 @@ static constexpr bool o1store_check_free_limits = false;
 // render debugging (runtime modifiable)
 inline bool debug_object_planes_normals = false;
 inline bool debug_object_bounding_sphere = false;
-
-// debug log of objects events and generated random numbers (should be off)
-static constexpr bool debug_multiplayer = true;
 
 // window dimensions
 static constexpr unsigned window_width = 1024;

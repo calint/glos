@@ -31,7 +31,7 @@ ubuntu packages used:
 
 ## sample game
 * multiplayer enabled proof of concept
-  - `grid_threaded` must be `false` for deterministic behavior
+  - `threaded_grid` must be `false` for deterministic behavior
 * shoot asteroids and pick up power ups for the gun
 * developed to test the framework
 * source in `src/application/` and `assets/`

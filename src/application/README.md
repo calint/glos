@@ -16,10 +16,10 @@
 * `utils.hpp` utility functions used by game and game objects
 
 ## notes
-* engine is multithreaded (see `configuration.hpp` setting `grid_threaded`)
-* `grid_threaded` must be off in multiplayer mode for clients to run in a  deterministic way
+* engine is multithreaded (see `configuration.hpp` setting `threaded_grid` and `threaded_update`)
+* `threaded_grid` must be off in multiplayer mode for clients to run in a  deterministic way
   - updating objects and collisions resolutions are done on available cores
   - awareness of the nature of multithreaded application is recommended
   - in smaller applications multithreaded mode might degrade performance
-* `update_threaded` turns on rendering and update running in parallel which is not thread safe but acceptable
+* `threaded_update` turns on rendering and update running in parallel which is not thread safe but acceptable
 * occasionally it seems as if collision detection is not working because rendering is 2d of a 3d space thus objects might overlap in 2d but not in collision in 3d
