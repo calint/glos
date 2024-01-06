@@ -193,7 +193,7 @@ public:
         globs.load("assets/obj/bounding_sphere.obj", nullptr);
 
     // initiate 'frame_context' with current time from server or local timer
-    // incase 'application_init' needs time
+    // incase 'application_init()' needs time
     frame_context = {
         0,
         net.enabled ? net.ms : SDL_GetTicks64(),
@@ -202,8 +202,12 @@ public:
 
     application_init();
 
-    // apply new objects create at 'application_init'
+    // apply new objects create at 'application_init()'
     objects.apply_allocated_instances();
+
+    printf("\nglobs: %u   vertex data: %zu B  texture data: %zu B\n\n",
+           metrics.allocated_globs, metrics.buffered_vertex_data,
+           metrics.buffered_texture_data);
   }
 
   inline void free() {
@@ -353,11 +357,11 @@ private:
     // in single player mode use dt from previous frame and current ms
     ++frame_num;
 
-    frame_context = {
-        frame_num,
-        net.enabled ? net.ms : SDL_GetTicks64(),
-        net.enabled ? net.dt : metrics.fps.dt,
-    };
+    if (net.enabled) {
+      frame_context = {frame_num, net.ms, net.dt};
+    } else {
+      frame_context = {frame_num, SDL_GetTicks64(), metrics.dt};
+    }
   }
 
   inline void update_pass_2() {
@@ -397,7 +401,6 @@ private:
   }
 
   inline void start_update_thread() {
-    printf(" * starting update thread\n");
     update_thread = std::thread([this]() {
       while (true) {
         {
@@ -407,7 +410,6 @@ private:
           is_rendering_cv.wait(lock, [this] { return not is_rendering; });
 
           if (not is_running) {
-            printf(" * update thread done\n");
             return;
           }
 
