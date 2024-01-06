@@ -14,7 +14,7 @@
 [x] use a build system instead of make.sh
     => and also make.sh
 [ ] planes::update_model_to_world could save frame_num from context to shorten
-    the decision if cached values are valids
+    the decision if cached values are valid
 [ ] ? racing condition on net.states between where render thread and update thread
 [o] halt development and tidy up
 [x]   'unsigned' instead of 'int' where size cannot be negative
