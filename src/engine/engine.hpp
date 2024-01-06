@@ -368,7 +368,7 @@ private:
       net.at_update_done();
     } else {
       // copy signals to active player
-      net.states[net.active_state_ix] = net.next_state;
+      net.states[net.player_ix] = net.next_state;
     }
   }
 
