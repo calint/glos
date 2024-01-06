@@ -33,16 +33,16 @@ public:
         3, 2, 0  // second triangle
     };
 
-    glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
 
-    glGenBuffers(1, &VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(quad_vertices), quad_vertices,
                  GL_STATIC_DRAW);
 
-    glGenBuffers(1, &EBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glGenBuffers(1, &ebo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(quad_indices), quad_indices,
                  GL_STATIC_DRAW);
 
@@ -57,8 +57,8 @@ public:
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-    glGenTextures(1, &hud_texture);
-    glBindTexture(GL_TEXTURE_2D, hud_texture);
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture_width, texture_height, 0,
                  GL_RGBA, GL_UNSIGNED_BYTE, NULL);
     // Set texture parameters
@@ -76,10 +76,10 @@ public:
   inline void free() {
     TTF_CloseFont(font);
     TTF_Quit();
-    glDeleteBuffers(1, &VBO);
-    glDeleteBuffers(1, &EBO);
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteTextures(1, &hud_texture);
+    glDeleteBuffers(1, &vbo);
+    glDeleteBuffers(1, &ebo);
+    glDeleteVertexArrays(1, &vao);
+    glDeleteTextures(1, &texture);
   }
 
   inline void load_font(char const *ttf_path, int const size) {
@@ -95,8 +95,8 @@ public:
   inline void render() const {
     // glEnable(GL_BLEND);
     // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glBindVertexArray(VAO);
-    glBindTexture(GL_TEXTURE_2D, hud_texture);
+    glBindVertexArray(vao);
+    glBindTexture(GL_TEXTURE_2D, texture);
     glUniform1i(0, 0); // sets uniform "utex" to texture unit 0
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     // glDisable(GL_BLEND);
@@ -124,7 +124,7 @@ public:
       std::abort();
     }
 
-    glBindTexture(GL_TEXTURE_2D, hud_texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
     // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, convertedSurface->w,
     //              convertedSurface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE,
     //              convertedSurface->pixels);
@@ -139,10 +139,10 @@ public:
   }
 
 private:
-  GLuint VBO = 0;
-  GLuint VAO = 0;
-  GLuint EBO = 0;
-  GLuint hud_texture = 0;
+  GLuint vbo = 0;
+  GLuint vao = 0;
+  GLuint ebo = 0;
+  GLuint texture = 0;
   TTF_Font *font = nullptr;
 
   static constexpr GLsizei texture_width = 256;

@@ -1,5 +1,6 @@
 #pragma once
 // reviewed: 2024-01-04
+// reviewed: 2024-01-06
 
 // all includes used by the subsystems
 #include <GLES3/gl3.h>
@@ -67,11 +68,13 @@ public:
 // globally accessible current frame info
 inline frame_context frame_context{};
 
-// a sphere used when debugging object bounding sphere (set at init)
+// a sphere used when debugging object bounding sphere (set at 'init()')
 inline uint32_t glob_ix_bounding_sphere = 0;
 } // namespace glos
 
+//
 // application interface
+//
 
 // called at initiation
 void application_init();
@@ -105,7 +108,7 @@ inline glm::vec3 ambient_light = glm::normalize(glm::vec3{0, 1, 1});
 // object the camera should follow
 inline object *camera_follow_object = nullptr;
 
-// signal bit corresponding to keyboard
+// signal bit corresponding to keyboard key
 static constexpr uint32_t key_w = 1 << 0;
 static constexpr uint32_t key_a = 1 << 1;
 static constexpr uint32_t key_s = 1 << 2;
@@ -135,6 +138,7 @@ public:
   inline void init() {
     // set random number generator seed for deterministic behaviour
     srand(0);
+
     // initiate subsystems
     metrics.init();
     net.init();
@@ -148,13 +152,9 @@ public:
     objects.init();
     grid.init();
 
-    if (not debug_multiplayer) {
-      metrics.enable_print = true;
-    }
-
     // line rendering shader
     {
-      const char *vtx = R"(
+      constexpr char const *vtx = R"(
   #version 330 core
   uniform mat4 umtx_wvp; // world-to-view-to-projection
   layout(location = 0) in vec3 apos; // world coordinates
@@ -163,7 +163,7 @@ public:
   }
   )";
 
-      const char *frag = R"(
+      constexpr char const *frag = R"(
   #version 330 core
   uniform vec3 ucolor;
   out vec4 rgba;
@@ -222,20 +222,19 @@ public:
     window.free();
     sdl.free();
     net.free();
-    metrics.print(stderr);
     metrics.free();
   }
 
   inline void run() {
     if (net.enabled) {
-      // initiate networking
-      // send initial signals
+      // initiate networking by sending initial signals
       net.begin();
     }
 
     if (threaded_update) {
       // update runs as separate thread
       start_update_thread();
+
       // wait for update before rendering first frame
       {
         std::unique_lock<std::mutex> lock{is_rendering_mutex};
@@ -295,6 +294,7 @@ private:
   bool mouse_mode = false;
   float mouse_rad_over_pixels = rad_over_degree * .02f;
   float mouse_sensitivity = 1.5f;
+
   // synchronization of update and render thread
   std::thread update_thread{};
   bool is_rendering = false;
@@ -302,7 +302,6 @@ private:
   std::condition_variable is_rendering_cv{};
 
   inline void render() {
-    // printf("render frame %lu\n", frame_context.frame_num);
     // check if shader program has changed
     if (shader_program_ix_prv != shader_program_ix) {
       printf(" * switching to program at index %zu\n", shader_program_ix);
@@ -378,7 +377,7 @@ private:
       grid.resolve_collisions();
     }
 
-    // apply changes done at 'update' and 'resolve_collisions'
+    // apply changes done at 'update()' and 'resolve_collisions()'
     objects.apply_freed_instances();
     objects.apply_allocated_instances();
 
@@ -413,7 +412,6 @@ private:
             return;
           }
 
-          // the synchronized between render and update pass
           update_pass_1();
 
           // notify render thread to start rendering
@@ -447,7 +445,7 @@ private:
 
   inline void handle_events() {
     // poll events
-    SDL_Event event = {0};
+    SDL_Event event = {};
     while (SDL_PollEvent(&event)) {
       switch (event.type) {
       case SDL_WINDOWEVENT: {
@@ -593,6 +591,7 @@ inline static void debug_render_wcs_line(glm::vec3 const &from_wcs,
   glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
   glm::vec3 const line_vertices[]{from_wcs, to_wcs};
+
   glBufferData(GL_ARRAY_BUFFER, sizeof(line_vertices), line_vertices,
                GL_STATIC_DRAW);
   glEnableVertexAttribArray(0);
