@@ -218,12 +218,10 @@ public:
 
     if (update_threaded) {
       start_update_thread();
-      printf(" * waiting for render\n");
       {
         std::unique_lock<std::mutex> lock{is_rendering_mutex};
         is_rendering_cv.wait(lock, [this] { return is_rendering; });
       }
-      printf(" * waiting for render done\n");
     }
 
     // enter game loop
@@ -240,7 +238,9 @@ public:
       if (update_threaded) {
         render_thread_loop_body();
       } else {
-        update();
+        // single threaded mode
+        update_pass_1();
+        update_pass_2();
         render();
       }
 
@@ -249,13 +249,11 @@ public:
     }
 
     if (update_threaded) {
-      printf(" * stopping update thread\n");
       std::unique_lock<std::mutex> lock{is_rendering_mutex};
       is_rendering = false;
       lock.unlock();
       is_rendering_cv.notify_one();
       update_thread.join();
-      printf(" * update thread stopped\n");
     }
   }
 
@@ -274,60 +272,6 @@ private:
   bool is_rendering = false;
   std::mutex is_rendering_mutex{};
   std::condition_variable is_rendering_cv{};
-
-  inline void update() {
-    ++frame_num;
-
-    grid.clear();
-
-    // add all allocated objects to the grid
-    object **const end = objects.allocated_list_end();
-    for (object **it = objects.allocated_list(); it < end; ++it) {
-      object *obj = *it;
-      grid.add(obj);
-    }
-
-    // update frame context used throughout the frame
-    // in multiplayer mode use dt and ms from server
-    // in single player mode use dt from previous frame and current ms
-
-    frame_context = {
-        frame_num,
-        net.enabled ? net.ms : SDL_GetTicks64(),
-        net.enabled ? net.dt : metrics.fps.dt,
-    };
-
-    if (print_grid) {
-      grid.print();
-    }
-
-    grid.update();
-
-    if (resolve_collisions) {
-      grid.resolve_collisions();
-    }
-
-    // apply changes done at 'update' and 'resolve_collisions'
-    objects.apply_freed_instances();
-    objects.apply_allocated_instances();
-
-    // callback application
-    application_on_update_done();
-
-    // apply changes done by application
-    objects.apply_freed_instances();
-    objects.apply_allocated_instances();
-
-    // update signals from network or local
-    if (net.enabled) {
-      // receive signals from previous frame and send signals 'net.next_state'
-      // of current frame
-      net.at_update_done();
-    } else {
-      // copy signals to active player
-      net.states[net.active_state_ix] = net.next_state;
-    }
-  }
 
   inline void render() {
     // printf("render frame %lu\n", frame_context.frame_num);
@@ -367,6 +311,112 @@ private:
     }
 
     application_on_render_done();
+  }
+
+  inline void update_pass_1() {
+    // remove all objects from grid
+    grid.clear();
+
+    // add all allocated objects to the grid
+    object **const end = objects.allocated_list_end();
+    for (object **it = objects.allocated_list(); it < end; ++it) {
+      object *obj = *it;
+      grid.add(obj);
+    }
+
+    // update frame context used throughout the frame
+    // in multiplayer mode use dt and ms from server
+    // in single player mode use dt from previous frame and current ms
+    ++frame_num;
+
+    frame_context = {
+        frame_num,
+        net.enabled ? net.ms : SDL_GetTicks64(),
+        net.enabled ? net.dt : metrics.fps.dt,
+    };
+  }
+
+  inline void update_pass_2() {
+    if (print_grid) {
+      grid.print();
+    }
+
+    // note. data racing between render and update thread on objects
+    // position, angle, scale glob index is ok
+
+    grid.update();
+
+    if (resolve_collisions) {
+      grid.resolve_collisions();
+    }
+
+    // apply changes done at 'update' and 'resolve_collisions'
+    objects.apply_freed_instances();
+    objects.apply_allocated_instances();
+
+    // callback application
+    application_on_update_done();
+
+    // apply changes done by application
+    objects.apply_freed_instances();
+    objects.apply_allocated_instances();
+
+    // update signals from network or local
+    if (net.enabled) {
+      // receive signals from previous frame and send signals of current
+      // frame
+      net.at_update_done();
+    } else {
+      // copy signals to active player
+      net.states[net.active_state_ix] = net.next_state;
+    }
+  }
+
+  inline void start_update_thread() {
+    printf(" * starting update thread\n");
+    update_thread = std::thread([this]() {
+      while (true) {
+        {
+          // wait until render thread is done before removing and adding objects
+          // to grid
+          std::unique_lock<std::mutex> lock{is_rendering_mutex};
+          is_rendering_cv.wait(lock, [this] { return not is_rendering; });
+
+          if (not is_running) {
+            printf(" * update thread done\n");
+            return;
+          }
+
+          // the synchronized between render and update pass
+          update_pass_1();
+
+          // notify render thread to start rendering
+          is_rendering = true;
+          lock.unlock();
+          is_rendering_cv.notify_one();
+        }
+
+        // running in parallel with render thread
+        update_pass_2();
+      }
+    });
+  }
+
+  void render_thread_loop_body() {
+    // wait for update thread to remove and add objects to grid
+
+    std::unique_lock<std::mutex> lock{is_rendering_mutex};
+    is_rendering_cv.wait(lock, [this] { return is_rendering; });
+
+    // note. render and update have acceptable data races on objects
+    // position, angle, scale, glob index etc
+
+    render();
+
+    // notify update thread that rendering is done
+    is_rendering = false;
+    lock.unlock();
+    is_rendering_cv.notify_one();
   }
 
   inline void handle_events() {
@@ -498,106 +548,6 @@ private:
         break;
       }
     }
-  }
-
-  void start_update_thread() {
-    printf(" * starting update thread\n");
-    update_thread = std::thread([this]() {
-      while (true) {
-        {
-          // wait until render thread is done before removing and adding objects
-          // to grid
-          std::unique_lock<std::mutex> lock{is_rendering_mutex};
-          is_rendering_cv.wait(lock, [this] { return not is_rendering; });
-
-          if (not is_running) {
-            printf(" * update thread done\n");
-            return;
-          }
-
-          // printf("update frame %lu\n", frame_num);
-
-          // render thread is done and waiting for grid to remove and add
-          // objects
-
-          grid.clear();
-
-          // add all allocated objects to the grid
-          object **const end = objects.allocated_list_end();
-          for (object **it = objects.allocated_list(); it < end; ++it) {
-            object *obj = *it;
-            grid.add(obj);
-          }
-
-          // update frame context used throughout the frame
-          // in multiplayer mode use dt and ms from server
-          // in single player mode use dt from previous frame and current ms
-          ++frame_num;
-
-          frame_context = {
-              frame_num,
-              net.enabled ? net.ms : SDL_GetTicks64(),
-              net.enabled ? net.dt : metrics.fps.dt,
-          };
-
-          // notify render thread to start rendering
-          is_rendering = true;
-          lock.unlock();
-          is_rendering_cv.notify_one();
-        }
-
-        if (print_grid) {
-          grid.print();
-        }
-
-        // note. data racing between render and update thread on objects
-        // position, angle, scale glob index is ok
-
-        grid.update();
-
-        if (resolve_collisions) {
-          grid.resolve_collisions();
-        }
-
-        // apply changes done at 'update' and 'resolve_collisions'
-        objects.apply_freed_instances();
-        objects.apply_allocated_instances();
-
-        // callback application
-        application_on_update_done();
-
-        // apply changes done by application
-        objects.apply_freed_instances();
-        objects.apply_allocated_instances();
-
-        // update signals from network or local
-        if (net.enabled) {
-          // receive signals from previous frame and send signals of current
-          // frame
-          net.at_update_done();
-        } else {
-          // copy signals to active player
-          net.states[net.active_state_ix] = net.next_state;
-        }
-      }
-    });
-  }
-
-  void render_thread_loop_body() {
-    // wait for update thread to remove and add objects to grid
-
-    std::unique_lock<std::mutex> lock{is_rendering_mutex};
-    is_rendering_cv.wait(lock, [this] { return is_rendering; });
-
-    // note. render and update have acceptable data races on objects
-    // position, angle, scale, glob index etc
-
-    render();
-
-    // notify update thread that rendering is done
-    is_rendering = false;
-    lock.unlock();
-    is_rendering_cv.notify_one();
   }
 };
 
