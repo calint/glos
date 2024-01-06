@@ -36,10 +36,6 @@ static constexpr unsigned window_height = 1024;
 static constexpr bool window_vsync = false;
 // note. vsync should be 'true' when not doing performance tests
 
-//
-// application configuration
-//
-
 // number of players in networked mode
 static constexpr unsigned net_players = 2;
 
