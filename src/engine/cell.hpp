@@ -1,6 +1,7 @@
 #pragma once
 // reviewed: 2023-12-22
 // reviewed: 2024-01-04
+// reviewed: 2024-01-06
 
 namespace glos {
 class cell final {
@@ -45,7 +46,7 @@ public:
   // called from grid (possibly by multiple threads)
   inline void resolve_collisions() const {
     // thread safe because 'ols' does not change during 'resolve_collisions'
-    const size_t len = ols.size();
+    size_t const len = ols.size();
     if (len == 0) {
       return;
     }
@@ -159,15 +160,14 @@ private:
 
     // if object overlaps cells and threaded grid then this code might be called
     // by several threads at the same time
-    const bool synchronization_necessary =
-        grid_threaded and Oi->is_overlaps_cells();
+    const bool synchronize = grid_threaded and Oi->is_overlaps_cells();
 
-    if (synchronization_necessary) {
+    if (synchronize) {
       Oi->acquire_lock();
     }
 
     if (Oi->is_collision_handled_and_if_not_add(Oj)) {
-      if (synchronization_necessary) {
+      if (synchronize) {
         Oi->release_lock();
       }
       return;
@@ -175,25 +175,27 @@ private:
 
     // only one thread at a time can be here
 
-    const glm::vec3 collision_normal =
+    glm::vec3 const collision_normal =
         glm::normalize(Oj->position - Oi->position);
 
-    const float relative_velocity_along_collision_normal =
+    float const relative_velocity_along_collision_normal =
         glm::dot(Oj->velocity - Oi->velocity, collision_normal);
 
     if (relative_velocity_along_collision_normal >= 0 or
         std::isnan(relative_velocity_along_collision_normal)) {
+
       // objects are not moving towards each other
-      if (synchronization_necessary) {
+      if (synchronize) {
         Oi->release_lock();
       }
       return;
     }
 
     if (not Oi->is_dead() and Oi->on_collision(Oj)) {
+      // object has died
       Oi->set_is_dead();
       objects.free(Oi);
-      if (synchronization_necessary) {
+      if (synchronize) {
         Oi->release_lock();
       }
       return;
@@ -202,35 +204,34 @@ private:
     // resolve collision between the spheres
 
     constexpr float restitution = 1;
-    const float impulse = (1.0f + restitution) *
+    float const impulse = (1.0f + restitution) *
                           relative_velocity_along_collision_normal /
                           (Oi->mass + Oj->mass);
 
     Oi->velocity += impulse * Oj->mass * collision_normal;
 
-    if (synchronization_necessary) {
+    if (synchronize) {
       Oi->release_lock();
     }
   }
 
   inline static void dispatch_collision(object *Osrc, object *Otrg) {
 
-    // check if Oi is subscribed to collision with Oj
+    // check if Osrc is subscribed to collision with Otrg
     if ((Osrc->collision_mask & Otrg->collision_bits) == 0) {
       return;
     }
 
     // if object overlaps cells this code might be called by several threads at
     // the same time
-    const bool synchronization_necessary =
-        grid_threaded and Osrc->is_overlaps_cells();
+    const bool synchronize = grid_threaded and Osrc->is_overlaps_cells();
 
-    if (synchronization_necessary) {
+    if (synchronize) {
       Osrc->acquire_lock();
     }
 
     if (Osrc->is_collision_handled_and_if_not_add(Otrg)) {
-      if (synchronization_necessary) {
+      if (synchronize) {
         Osrc->release_lock();
       }
       return;
@@ -239,11 +240,12 @@ private:
     // only one thread at a time can be here
 
     if (not Osrc->is_dead() and Osrc->on_collision(Otrg)) {
+      // object died
       Osrc->set_is_dead();
       objects.free(Osrc);
     }
 
-    if (synchronization_necessary) {
+    if (synchronize) {
       Osrc->release_lock();
     }
   }
@@ -252,18 +254,18 @@ private:
                                                        object const *o2)
       -> bool {
 
-    const glm::vec3 v = o2->position - o1->position;
-    const float d = o1->radius + o2->radius;
-    const float dsq = d * d;
-    const float vsq = glm::dot(v, v); // distance squared
-    const float diff = vsq - dsq;
+    glm::vec3 const v = o2->position - o1->position;
+    float const d = o1->radius + o2->radius;
+    float const dsq = d * d;
+    float const vsq = glm::dot(v, v); // distance squared
+    float const diff = vsq - dsq;
     return diff < 0;
   }
 
   inline static void update_planes_world_coordinates(object *o) {
-    const bool needs_synchronization = grid_threaded and o->is_overlaps_cells();
+    bool const synchronize = grid_threaded and o->is_overlaps_cells();
 
-    if (needs_synchronization) {
+    if (synchronize) {
       o->planes.acquire_lock();
     }
 
@@ -273,7 +275,7 @@ private:
                                     o->get_updated_Mmw(), o->position, o->angle,
                                     o->scale);
 
-    if (needs_synchronization) {
+    if (synchronize) {
       o->planes.release_lock();
     }
   }
@@ -285,7 +287,7 @@ private:
     update_planes_world_coordinates(o2);
 
     // planes can be update only once per 'resolve_collisions' pass because
-    // object state does not change
+    // bounding volume object state does not change (spheres do)
 
     if (o1->planes.is_in_collision_with_planes(o2->planes) or
         o2->planes.is_in_collision_with_planes(o1->planes)) {
