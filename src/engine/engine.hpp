@@ -266,8 +266,10 @@ public:
         render_thread_loop_body();
       } else {
         // single threaded mode
+        metrics.update_begin();
         update_pass_1();
         update_pass_2();
+        metrics.update_end();
         render();
       }
 
@@ -412,6 +414,8 @@ private:
             return;
           }
 
+          metrics.update_begin();
+
           update_pass_1();
 
           // notify render thread to start rendering
@@ -422,6 +426,8 @@ private:
 
         // running in parallel with render thread
         update_pass_2();
+
+        metrics.update_end();
       }
     });
   }

@@ -6,9 +6,6 @@
 
 // definitions used by engine and application
 
-// metrics print to console
-static constexpr bool metrics_print = true;
-
 // grid dimensions
 static constexpr unsigned grid_cell_size = 10;
 static constexpr unsigned grid_ncells_wide = 4;
@@ -22,12 +19,15 @@ static constexpr bool threaded_grid = false;
 static constexpr bool threaded_o1store = threaded_grid;
 static constexpr bool threaded_update = true;
 
-// multiplayer debugging output
-static constexpr bool debug_multiplayer = false;
-
 // o1store debugging (assertions should be on in development)
 static constexpr bool o1store_check_double_free = false;
 static constexpr bool o1store_check_free_limits = false;
+
+// metrics print to console
+static constexpr bool metrics_print = true;
+
+// multiplayer debugging output
+static constexpr bool debug_multiplayer = false;
 
 // render debugging (runtime modifiable)
 inline bool debug_object_planes_normals = false;
