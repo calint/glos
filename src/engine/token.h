@@ -51,7 +51,8 @@ inline static int token_get_int(token const *t) {
 inline static unsigned token_get_uint(token const *t) {
   int i = atoi(t->content); //?  assuming file ends with whitespace, error?
   if (i < 0) {
-    printf("%s:%d: unexpected int\n", __FILE__, __LINE__);
+    fprintf(stderr, "\n%s:%d: unexpected int\n", __FILE__, __LINE__);
+    fflush(stderr);
     std::abort();
   }
   return (unsigned)i;

@@ -63,8 +63,10 @@ public:
     printf(" * loading glob from '%s'\n", obj_path);
 
     std::ifstream file(obj_path);
-    if (!file) {
-      printf("%s:%d: cannot open file '%s'\n", __FILE__, __LINE__, obj_path);
+    if (not file) {
+      fprintf(stderr, "\n%s:%d: cannot open file '%s'\n", __FILE__, __LINE__,
+              obj_path);
+      fflush(stderr);
       std::abort();
     }
     std::stringstream buffer;
@@ -127,8 +129,10 @@ public:
           }
         }
         if (not found) {
-          printf("%s:%d: cannot find material: path '%s'   name '%s'\n",
-                 __FILE__, __LINE__, mtl_path.c_str(), mtl_name.c_str());
+          fprintf(stderr,
+                  "\n%s:%d: cannot find material: path '%s' name '%s'\n",
+                  __FILE__, __LINE__, mtl_path.c_str(), mtl_name.c_str());
+          fflush(stderr);
           std::abort();
         }
 
@@ -295,7 +299,9 @@ private:
     printf("     * loading planes from '%s'\n", path);
     std::ifstream file(path);
     if (!file) {
-      printf("%s:%d: cannot open file '%s'\n", __FILE__, __LINE__, path);
+      fprintf(stderr, "\n%s:%d: cannot open file '%s'\n", __FILE__, __LINE__,
+              path);
+      fflush(stderr);
       std::abort();
     }
     std::stringstream buffer;

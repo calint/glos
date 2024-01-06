@@ -12,7 +12,8 @@ public:
 
   inline void init() {
     if (SDL_Init(SDL_INIT_TIMER)) {
-      fprintf(stderr, "\n%s:%d: %s\n", __FILE__, __LINE__, SDL_GetError());
+      fprintf(stderr, "\n%s:%d: cannot initiate sdl timer: %s\n", __FILE__,
+              __LINE__, SDL_GetError());
       fflush(stderr);
       std::abort();
     }

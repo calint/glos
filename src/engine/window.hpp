@@ -14,8 +14,10 @@ public:
     sdl_window =
         SDL_CreateWindow("glos", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                          window_width, window_height, SDL_WINDOW_OPENGL);
-    if (!sdl_window) {
-      printf("%s:%d: %s\n", __FILE__, __LINE__, SDL_GetError());
+    if (not sdl_window) {
+      fprintf(stderr, "\n%s:%d: cannot create window: %s\n", __FILE__, __LINE__,
+              SDL_GetError());
+      fflush(stderr);
       std::abort();
     }
 
@@ -27,7 +29,9 @@ public:
 
     sdl_gl_context = SDL_GL_CreateContext(sdl_window);
     if (!sdl_gl_context) {
-      printf("%s:%d: %s\n", __FILE__, __LINE__, SDL_GetError());
+      fprintf(stderr, "\n%s:%d: cannot create gl context: %s\n", __FILE__,
+              __LINE__, SDL_GetError());
+      fflush(stderr);
       std::abort();
     }
 
@@ -36,7 +40,9 @@ public:
                            SDL_RENDERER_ACCELERATED |
                                (window_vsync ? SDL_RENDERER_PRESENTVSYNC : 0));
     if (!sdl_renderer) {
-      printf("%s:%d: %s\n", __FILE__, __LINE__, SDL_GetError());
+      fprintf(stderr, "\n%s:%d: cannot create renderer: %s\n", __FILE__,
+              __LINE__, SDL_GetError());
+      fflush(stderr);
       std::abort();
     }
 
@@ -62,7 +68,9 @@ private:
   inline static void gl_print_context_profile_and_version() {
     int value = 0;
     if (SDL_GL_GetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, &value)) {
-      printf("%s:%d: %s\n", __FILE__, __LINE__, SDL_GetError());
+      fprintf(stderr, "\n%s:%d: cannot get opengl attribute: %s\n", __FILE__,
+              __LINE__, SDL_GetError());
+      fflush(stderr);
       std::abort();
     }
     printf("%-32s", "SDL_GL_CONTEXT_PROFILE_MASK");
@@ -86,13 +94,17 @@ private:
     printf(" (%d)\n", value);
 
     if (SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &value)) {
-      printf("%s:%d: %s\n", __FILE__, __LINE__, SDL_GetError());
+      fprintf(stderr, "\n%s:%d: cannot get opengl attribute: %s\n", __FILE__,
+              __LINE__, SDL_GetError());
+      fflush(stderr);
       std::abort();
     }
     printf("%-32s  %d\n", "SDL_GL_CONTEXT_MAJOR_VERSION", value);
 
     if (SDL_GL_GetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, &value)) {
-      printf("%s:%d: %s\n", __FILE__, __LINE__, SDL_GetError());
+      fprintf(stderr, "\n%s:%d: cannot get opengl attribute: %s\n", __FILE__,
+              __LINE__, SDL_GetError());
+      fflush(stderr);
       std::abort();
     }
     printf("%-32s  %d\n", "SDL_GL_CONTEXT_MINOR_VERSION", value);

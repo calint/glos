@@ -40,8 +40,9 @@ public:
     del_ptr_ = del_bgn_ = static_cast<Type **>(calloc(Size, sizeof(Type *)));
 
     if (!all_ or !free_bgn_ or !alloc_bgn_ or !del_bgn_) {
-      printf("%s:%d: store %d: cannot allocate arrays\n", __FILE__, __LINE__,
-             StoreId);
+      fprintf(stderr, "\n%s:%d: store %u: cannot allocate arrays\n", __FILE__,
+              __LINE__, StoreId);
+      fflush(stderr);
       std::abort();
     }
 
@@ -97,14 +98,18 @@ public:
     }
     if (o1store_check_free_limits) {
       if (del_ptr_ >= del_end_) {
-        printf("%s:%d: store %d: free overrun\n", __FILE__, __LINE__, StoreId);
+        fprintf(stderr, "\n%s:%d: store %u: free overrun\n", __FILE__, __LINE__,
+                StoreId);
+        fflush(stderr);
         std::abort();
       }
     }
     if (o1store_check_double_free) {
       for (Type **it = del_bgn_; it < del_ptr_; ++it) {
         if (*it == inst) {
-          printf("%s:%d: store %d: double free\n", __FILE__, __LINE__, StoreId);
+          fprintf(stderr, "\n%s:%d: store %u: double free\n", __FILE__,
+                  __LINE__, StoreId);
+          fflush(stderr);
           std::abort();
         }
       }

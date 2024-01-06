@@ -19,9 +19,10 @@ public:
     glBindTexture(GL_TEXTURE_2D, id);
     printf(" * loading texture %u from '%s'\n", id, path.c_str());
     SDL_Surface *surface = IMG_Load(path.c_str());
-    if (!surface) {
-      printf("%s:%d: cannot load image from '%s'\n", __FILE__, __LINE__,
-             path.c_str());
+    if (not surface) {
+      fprintf(stderr, "\n%s:%d: cannot load image from '%s'\n", __FILE__,
+              __LINE__, path.c_str());
+      fflush(stderr);
       std::abort();
     }
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface->w, surface->h, 0, GL_RGB,

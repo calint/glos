@@ -49,7 +49,9 @@ public:
     printf("   * loading materials from '%s'\n", path);
     std::ifstream file(path);
     if (not file) {
-      printf("%s:%d: cannot open file '%s'\n", __FILE__, __LINE__, path);
+      fprintf(stderr, "\n%s:%d: cannot open file '%s'\n", __FILE__, __LINE__,
+              path);
+      fflush(stderr);
       std::abort();
     }
     std::stringstream buffer;
