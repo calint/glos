@@ -1,6 +1,7 @@
 #pragma once
 // reviewed: 2023-12-22
 // reviewed: 2024-01-04
+// reviewed: 2024-01-06
 
 #include "cell.hpp"
 // #include "task_thread_pool.hpp"
@@ -91,12 +92,12 @@ public:
     }
   }
 
-  // called from main
+  // called from engine
   inline void add(object *o) {
     o->clear_flags();
-    // note. flags need to be cleared before entering object 'update' or
+    // note. flags need to be cleared before object 'update' or
     // 'resolve_collisions' and this is an opportunity for that without a
-    // separate step in loop
+    // separate pass in the loop
 
     if (ncells == 1) {
       // special case
@@ -120,7 +121,7 @@ public:
     int const zit = clamp(int(zt / grid_cell_size), 0, grid_ncells_high);
     int const zib = clamp(int(zb / grid_cell_size), 0, grid_ncells_high);
 
-    // add to grid
+    // add to cells
     for (int z = zit; z <= zib; ++z) {
       for (int x = xil; x <= xir; ++x) {
         cell *c = &cells[z][x];
