@@ -40,7 +40,7 @@
   - only one thread is active at a time in an object's `update` or `on_collision`
   - collision between two objects is handled only once, considering that collision between same two objects can be detected on several threads if both objects overlap `grid` `cells`
 * `update_threaded` creates data races between update and render thread on `object` `position`, `angle`, `scale`, `glob_ix` and may be acceptable
-* attention is needed when objects are interacting with other objects during `update` or `on_collision` because the object being interacted with might be running code on another thread
+* attention is needed when objects are interacting with other objects during `update` or `on_collision` because the object being interacted with might be running code on other threads
 
 ## schematics
 regarding `update_threaded` and `grid_threaded`
