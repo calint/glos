@@ -4,7 +4,9 @@
 
 #include <cstdint>
 
-// definitions used by engine and application
+//
+// definitions used by engine
+//
 
 // grid dimensions
 static constexpr unsigned grid_cell_size = 10;
@@ -48,6 +50,10 @@ static constexpr unsigned objects_count = 1024;
 // maximum size of any object instance in bytes
 static constexpr size_t objects_instance_size_B = 1024;
 
+//
+// definitions used by game
+//
+
 // game area
 static constexpr float game_area_min_x = -22;
 static constexpr float game_area_max_x = 22;
@@ -75,11 +81,10 @@ static uint32_t glob_ix_asteroid_small = 0;
 static uint32_t glob_ix_fragment = 0;
 static uint32_t glob_ix_power_up = 0;
 
-// game constants
+
 static constexpr unsigned asteroid_level = 10;
 
 static constexpr float asteroid_large_speed = 10;
-
 static constexpr float asteroid_large_scale = 2;
 static constexpr unsigned asteroid_large_split = 10;
 static constexpr float asteroid_large_split_speed = 6;
