@@ -33,8 +33,6 @@ public:
         3, 2, 0  // second triangle
     };
 
-    shaders::gl_check_error("hud::init entry");
-
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
 
@@ -73,8 +71,6 @@ public:
 
     program_ix = shaders.load_program_from_source(vertex_shader_source,
                                                   fragment_shader_source);
-
-    shaders::gl_check_error("hud::init exit");
   }
 
   inline void free() {

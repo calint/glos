@@ -74,7 +74,7 @@ private:
       fflush(stderr);
       std::abort();
     }
-    printf("%-32s", "SDL_GL_CONTEXT_PROFILE_MASK");
+    printf("SDL_GL_CONTEXT_PROFILE_MASK = ");
     switch (value) {
     case SDL_GL_CONTEXT_PROFILE_CORE:
       printf("SDL_GL_CONTEXT_PROFILE_CORE");
@@ -100,7 +100,7 @@ private:
       fflush(stderr);
       std::abort();
     }
-    printf("%-32s  %d\n", "SDL_GL_CONTEXT_MAJOR_VERSION", value);
+    printf("SDL_GL_CONTEXT_MAJOR_VERSION = %d\n", value);
 
     if (SDL_GL_GetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, &value)) {
       fprintf(stderr, "\n%s:%d: cannot get opengl attribute: %s\n", __FILE__,
@@ -108,7 +108,7 @@ private:
       fflush(stderr);
       std::abort();
     }
-    printf("%-32s  %d\n", "SDL_GL_CONTEXT_MINOR_VERSION", value);
+    printf("SDL_GL_CONTEXT_MINOR_VERSION = %d\n", value);
   }
 };
 

@@ -1,6 +1,7 @@
 #pragma once
 // reviewed: 2023-12-24
 // reviewed: 2024-01-04
+// reviewed: 2024-01-06
 
 namespace glos {
 
@@ -20,7 +21,7 @@ class shaders final {
   };
 
   // default shader source
-  inline static char const *vertex_shader_source = R"(
+  static inline char const *vertex_shader_source = R"(
   #version 330 core
   uniform mat4 umtx_mw;  // model-to-world-matrix
   uniform mat4 umtx_wvp; // world-to-view-to-projection
@@ -39,7 +40,7 @@ class shaders final {
   }
   )";
 
-  inline static char const *fragment_shader_source = R"(
+  static inline char const *fragment_shader_source = R"(
   #version 330 core
   uniform sampler2D utex;
   uniform vec3 ulht;
@@ -70,8 +71,6 @@ public:
   static constexpr GLint ulht = 3; // light vector
 
   inline void init() {
-    gl_check_error("init");
-
     puts("");
     gl_print_string("GL_VENDOR", GL_VENDOR);
     gl_print_string("GL_RENDERER", GL_RENDERER);
@@ -114,8 +113,6 @@ public:
            glGetAttribLocation(def_prog_id, "atex"));
     printf(":-%10s-:-%7s-:\n", "----------", "-------");
     puts("");
-
-    gl_check_error("after init");
   }
 
   inline void free() {
@@ -127,7 +124,6 @@ public:
 
   auto load_program_from_source(char const *vert_src, char const *frag_src)
       -> size_t {
-    gl_check_error("enter load_program_from_source");
     GLuint const program_id = glCreateProgram();
     GLuint const vertex_shader_id = compile(GL_VERTEX_SHADER, vert_src);
     GLuint const fragment_shader_id = compile(GL_FRAGMENT_SHADER, frag_src);
@@ -148,8 +144,6 @@ public:
     glDeleteShader(vertex_shader_id);
     glDeleteShader(fragment_shader_id);
 
-    gl_check_error("exit load_program_from_source");
-
     programs.push_back({program_id});
 
     return programs.size() - 1;
@@ -159,12 +153,9 @@ public:
 
   inline void use_program(size_t const ix) const { programs.at(ix).use(); }
 
-  inline auto program_id(size_t const ix) const -> GLuint {
-    return programs.at(ix).id;
-  }
-
 private:
-  inline static auto compile(GLenum shader_type, char const *src) -> GLuint {
+  inline static auto compile(GLenum const shader_type, char const *src)
+      -> GLuint {
     GLuint const shader_id = glCreateShader(shader_type);
     glShaderSource(shader_id, 1, &src, nullptr);
     glCompileShader(shader_id);
@@ -181,72 +172,17 @@ private:
     return shader_id;
   }
 
-  inline static auto gl_get_error_string(GLenum const gl_error) -> const
-      char * {
-    const char *str = nullptr;
-    switch (gl_error) {
-    case GL_NO_ERROR:
-      str = "GL_NO_ERROR";
-      break;
-    case GL_INVALID_ENUM:
-      str = "GL_INVALID_ENUM";
-      break;
-    case GL_INVALID_VALUE:
-      str = "GL_INVALID_VALUE";
-      break;
-    case GL_INVALID_OPERATION:
-      str = "GL_INVALID_OPERATION";
-      break;
-#if defined __gl_h_ || defined __gl3_h_
-    case GL_OUT_OF_MEMORY:
-      str = "GL_OUT_OF_MEMORY";
-      break;
-    case GL_INVALID_FRAMEBUFFER_OPERATION:
-      str = "GL_INVALID_FRAMEBUFFER_OPERATION";
-      break;
-#endif
-#if defined __gl_h_
-    case GL_STACK_OVERFLOW:
-      str = "GL_STACK_OVERFLOW";
-      break;
-    case GL_STACK_UNDERFLOW:
-      str = "GL_STACK_UNDERFLOW";
-      break;
-    case GL_TABLE_TOO_LARGE:
-      str = "GL_TABLE_TOO_LARGE";
-      break;
-#endif
-    default:
-      str = "(ERROR: Unknown Error Enum)";
-      break;
-    }
-    return str;
-  }
-
 public:
   //
   // static functions
   //
-  inline static void gl_print_string(char const *name, const GLenum gl_str) {
-    const char *str = (const char *)glGetString(gl_str);
-    printf("%s=%s\n", name, str);
+  static inline void gl_print_string(char const *name, GLenum const gl_str) {
+    char const *str = (char const *)glGetString(gl_str);
+    printf("%s = %s\n", name, str);
   }
 
-  inline static void gl_check_error(char const *user_msg) {
-    bool is_error = false;
-    for (GLenum error = glGetError(); error; error = glGetError()) {
-      fprintf(stderr, "\n%s:%d: opengl error %x in '%s'\n%s\n", __FILE__,
-              __LINE__, error, user_msg, gl_get_error_string(error));
-      is_error = true;
-    }
-    if (is_error) {
-      fflush(stderr);
-      std::abort();
-    }
-  }
-
-  inline static auto shader_name_for_type(GLenum const shader_type) -> const
-      char * {
+  static inline auto shader_name_for_type(GLenum const shader_type)
+      -> char const * {
     switch (shader_type) {
     case GL_VERTEX_SHADER:
       return "vertex";
