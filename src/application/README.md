@@ -17,9 +17,9 @@
 
 ## notes
 * engine is multithreaded (see `configuration.hpp` setting `grid_threaded`)
-* multiplayer mode does not work with `grid_threaded` on because the clients do run in a deterministic way
-* rendering is done in parallel with updating game objects
-* updating objects and collisions resolutions are done on available cores
-* awareness of the nature of multithreaded application is recommended
-* in smaller applications multithreaded mode might degrade performance
+* `grid_threaded` must be off in multiplayer mode for clients to run in a  deterministic way
+  - updating objects and collisions resolutions are done on available cores
+  - awareness of the nature of multithreaded application is recommended
+  - in smaller applications multithreaded mode might degrade performance
+* `update_threaded` turns on rendering and update running in parallel which is not thread safe but acceptable
 * occasionally it seems as if collision detection is not working because rendering is 2d of a 3d space thus objects might overlap in 2d but not in collision in 3d
