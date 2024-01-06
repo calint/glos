@@ -98,27 +98,27 @@ public:
 
 private:
   inline void fire() {
+    mat4 const &M = get_updated_Mmw();
+    vec3 const forward_vec = -normalize(vec3{M[2]});
+    // note. M[2] is third column: z-axis
+    // note. forward for object model space is negative z
+
     switch (bullet_level) {
     case 0: {
       bullet *o = new (objects.alloc()) bullet{};
-      o->position = position;
+      o->position = position + forward_vec;
       o->angle = angle;
-      mat4 const &M = get_updated_Mmw();
-      vec3 const axis_z = normalize(vec3{M[2]});
       // note. forward is in negative z-axis direction
-      o->velocity = -ship_bullet_speed * axis_z;
+      o->velocity = ship_bullet_speed * forward_vec;
       ready_to_fire_at_ms = frame_context.ms + bullet_fire_rate_ms;
       break;
     }
     case 1: {
       for (unsigned i = 0; i < ship_bullet_level_1_fire_count; ++i) {
         bullet *o = new (objects.alloc()) bullet{};
-        o->position = position;
+        o->position = position + forward_vec;
         o->angle = angle;
-        mat4 const &M = get_updated_Mmw();
-        vec3 const axis_z = normalize(vec3{M[2]});
-        // note. forward is in negative z-axis direction
-        o->velocity = -ship_bullet_speed * axis_z;
+        o->velocity = ship_bullet_speed * forward_vec;
         constexpr float sp = ship_bullet_spread;
         o->velocity.x += float(rnd1(sp));
         o->velocity.z += float(rnd1(sp));
