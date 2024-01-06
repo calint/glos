@@ -1,9 +1,8 @@
 #pragma once
 // reviewed: 2023-12-22
 // reviewed: 2024-01-04
+// reviewed: 2024-01-06
 
-#include "material.hpp"
-#include "shader.hpp"
 #include "texture.hpp"
 
 namespace glos {
@@ -25,10 +24,10 @@ public:
   std::vector<glm::vec3> planes_points{};
   std::vector<glm::vec3> planes_normals{};
 
-  inline void free() {
+  inline void free() const {
     glDeleteBuffers(1, &vertex_buffer_id);
     glDeleteVertexArrays(1, &vertex_array_id);
-    metrics.buffered_vertex_data -= size_t(size_B);
+    metrics.buffered_vertex_data -= size_B;
     metrics.allocated_globs--;
   }
 
@@ -36,7 +35,7 @@ public:
     glUniformMatrix4fv(shaders::umtx_mw, 1, GL_FALSE, glm::value_ptr(mtx_mw));
     glBindVertexArray(vertex_array_id);
     for (range const &mr : ranges) {
-      material const &m = materials.store.at(unsigned(mr.material_ix));
+      material const &m = materials.store.at(size_t(mr.material_ix));
       glActiveTexture(GL_TEXTURE0);
       if (m.texture_id) {
         glUniform1i(shaders::utex, 0);
@@ -58,14 +57,14 @@ public:
   inline void load(char const *obj_path, char const *bounding_planes_path) {
     printf(" * loading glob from '%s'\n", obj_path);
 
-    std::ifstream file(obj_path);
+    std::ifstream file{obj_path};
     if (not file) {
       fprintf(stderr, "\n%s:%d: cannot open file '%s'\n", __FILE__, __LINE__,
               obj_path);
       fflush(stderr);
       std::abort();
     }
-    std::stringstream buffer;
+    std::stringstream buffer{};
     buffer << file.rdbuf();
     std::string content = buffer.str();
     char const *p = content.c_str();
@@ -99,7 +98,8 @@ public:
       }
       if (token_equals(&tk, "mtllib")) {
         token const t = token_next(&p);
-        std::string const file_name{t.content, t.content + token_size(&t)};
+        unsigned const n = token_size(&t);
+        std::string const file_name{t.content, t.content + n};
         mtl_path = base_dir_path + file_name;
         materials.load(mtl_path.c_str());
         continue;
@@ -107,14 +107,15 @@ public:
       if (token_equals(&tk, "o") and first_obj) {
         first_obj = false;
         token const t = token_next(&p);
-        const unsigned n = token_size(&t);
+        unsigned const n = token_size(&t);
         name = std::string{t.content, t.content + n};
         printf("     %s\n", name.c_str());
         continue;
       }
       if (token_equals(&tk, "usemtl")) {
         token const t = token_next(&p);
-        std::string mtl_name = {t.content, t.content + token_size(&t)};
+        unsigned const n = token_size(&t);
+        std::string mtl_name = {t.content, t.content + n};
         bool found = false;
         for (unsigned i = 0; i < materials.store.size(); ++i) {
           material const &mtl = materials.store.at(i);
@@ -274,10 +275,10 @@ public:
 
     size_B = vertices.size() * sizeof(float);
 
-    metrics.buffered_vertex_data += size_t(size_B);
+    metrics.buffered_vertex_data += size_B;
 
     for (range const &mtlrng : ranges) {
-      material &mtl = materials.store.at(unsigned(mtlrng.material_ix));
+      material &mtl = materials.store.at(size_t(mtlrng.material_ix));
       if (not mtl.map_Kd.empty()) {
         mtl.texture_id = textures.get_id_or_load(mtl.map_Kd);
       }
@@ -293,14 +294,14 @@ private:
   inline void load_planes(char const *path) {
     // load from blender exported 'obj' file
     printf("     * loading planes from '%s'\n", path);
-    std::ifstream file(path);
-    if (!file) {
+    std::ifstream file{path};
+    if (not file) {
       fprintf(stderr, "\n%s:%d: cannot open file '%s'\n", __FILE__, __LINE__,
               path);
       fflush(stderr);
       std::abort();
     }
-    std::stringstream buffer;
+    std::stringstream buffer{};
     buffer << file.rdbuf();
     std::string content = buffer.str();
     char const *p = content.c_str();
@@ -369,7 +370,7 @@ public:
   inline void init() {}
 
   inline void free() {
-    for (glob &g : store) {
+    for (glob const &g : store) {
       g.free();
     }
   }
