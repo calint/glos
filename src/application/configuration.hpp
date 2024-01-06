@@ -13,11 +13,13 @@ static constexpr unsigned grid_ncells_high = 4;
 
 // multithreaded grid
 // note. in some cases multithreaded mode is a degradation of performance
+// note. multiplayer mode cannot use 'grid_threaded' because of the
+//       non-deterministic behavior
 static constexpr bool grid_threaded = false;
 static constexpr bool o1store_threaded = grid_threaded;
 static constexpr bool update_threaded = true;
 
-// o1store debugging
+// o1store debugging (assertions should be on in development)
 static constexpr bool o1store_check_double_free = false;
 static constexpr bool o1store_check_free_limits = false;
 
@@ -25,14 +27,18 @@ static constexpr bool o1store_check_free_limits = false;
 inline bool debug_object_planes_normals = false;
 inline bool debug_object_bounding_sphere = false;
 
-// debug log
+// debug log of objects events and generated random numbers (should be off)
 static constexpr bool debug_multiplayer = true;
 
 // window dimensions
 static constexpr unsigned window_width = 1024;
 static constexpr unsigned window_height = 1024;
-// vsync should be 'true' when not doing performance tests
 static constexpr bool window_vsync = false;
+// note. vsync should be 'true' when not doing performance tests
+
+//
+// application configuration
+//
 
 // number of players in networked mode
 static constexpr unsigned net_players = 2;
@@ -53,10 +59,10 @@ static constexpr float game_area_max_z = 22;
 
 // collision bits
 static constexpr uint32_t cb_none = 0;
-static constexpr uint32_t cb_hero = 1;
-static constexpr uint32_t cb_hero_bullet = 2;
-static constexpr uint32_t cb_asteroid = 4;
-static constexpr uint32_t cb_power_up = 8;
+static constexpr uint32_t cb_hero = 1 << 0;
+static constexpr uint32_t cb_hero_bullet = 1 << 1;
+static constexpr uint32_t cb_asteroid = 1 << 2;
+static constexpr uint32_t cb_power_up = 1 << 3;
 
 // glob indexes (are set by 'application_init()' when loading)
 static uint32_t glob_ix_skydome = 0;
@@ -90,13 +96,14 @@ static constexpr float asteroid_small_scale = 0.75f;
 static constexpr float ship_turn_rate_deg = 120;
 static constexpr float ship_speed = 6;
 static constexpr float ship_bullet_speed = 17;
-static constexpr uint32_t ship_bullet_fire_interval_ms = 1'000;
+static constexpr unsigned ship_bullet_fire_interval_ms = 1'000;
 static constexpr unsigned ship_bullet_level_1_fire_count = 5;
 static constexpr float ship_bullet_spread = 4;
 
 static constexpr float bullet_fragment_agl_vel_rnd = 360;
 
 static constexpr int power_up_chance_rem = 5;
-static constexpr uint32_t power_up_lifetime_ms = 30'000;
+static constexpr unsigned power_up_lifetime_ms = 30'000;
 
+// used with 'debug_multiplayer'
 static std::atomic<unsigned> counter = 0;
