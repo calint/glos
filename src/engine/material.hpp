@@ -1,6 +1,7 @@
 #pragma once
 // reviewed: 2023-12-22
 // reviewed: 2024-01-04
+// reviewed: 2024-01-06
 
 #include "token.h"
 
@@ -11,6 +12,7 @@
 #include <vector>
 
 namespace glos {
+
 // newmtl texture
 // Ns 96.078431
 // Ka 1.000000 1.000000 1.000000
@@ -54,13 +56,14 @@ public:
       fflush(stderr);
       std::abort();
     }
-    std::stringstream buffer;
+    std::stringstream buffer{};
     buffer << file.rdbuf();
     std::string const content = buffer.str();
-    const char *p = content.c_str();
+    char const *p = content.c_str();
     while (*p) {
       token const t = token_next(&p);
       if (token_starts_with(&t, "#")) {
+        // comment line
         p = scan_to_including_newline(p);
         continue;
       }
@@ -78,8 +81,8 @@ public:
         store.back().Ns = token_get_float(&tk);
         continue;
       }
-      if (token_equals(&t, "Ka") || token_equals(&t, "Kd") ||
-          token_equals(&t, "Ks") || token_equals(&t, "Ke")) {
+      if (token_equals(&t, "Ka") or token_equals(&t, "Kd") or
+          token_equals(&t, "Ks") or token_equals(&t, "Ke")) {
         glm::vec3 v{};
         token const x = token_next(&p);
         v.x = token_get_float(&x);
