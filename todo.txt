@@ -1,7 +1,8 @@
 [ ] objects.free(): what if destructors created new objects
 [ ] net_server: read/write instead of recv(...,0) and send(...,0)
-[ ] net: when server disconnects there is no print out
+[x] net: when server disconnects there is no print out
     => use fflush(stdout); before terminating
+    => fflush(stderr)
 [ ] object: update Mmw if it will be rendered
 [x] engine: review mutexes and why initial waiting for render can hang without the 'if'
     => bug in predicate
@@ -47,8 +48,8 @@
 [ ]   constexpr everything
 [ ]   struct vertex used for sizeof only
 [ ] grid: static vs moving vs bullets vs scenery objects
-[ ] glo::load: better printout
-[ ] glo: optimize ranges by merging non-texture draws
+[ ] glob::load: better printout
+[ ] glob: optimize ranges by merging non-texture draws
 [ ] use string_view instead of const char*
 [ ] note about the absolute texture path in mtl files
 [x] rename 'node' to something better
@@ -119,18 +120,18 @@
 [x]     to objects
 [ ]     center/scale/position
 [x]   faces to ccw
-[ ] draw bounding volume
+[x] draw bounding volume
 [x]   sphere
-[ ]   box
-[ ]   planes
+[-]   box
+[x]   planes
 [x] multiple materials in render
-[o] collision detection 
-[o]   bounding volume
+[x] collision detection 
+[x]   bounding volume
 [x]     sphere
 [x]       vs sphere
 [x]       vs plane
 [-]       vs box
-[o]     planes
+[x]     planes
 [-]       vs box
 [x]       vs planes
 [-]     box
@@ -142,9 +143,10 @@
 [-]       boolean ops
 [o] collision physics/animatics
 [x]   sphere vs sphere
-[ ]   box vs box
+[-]   box vs box
 [ ]   sphere vs plane
-[ ]   sphere vs box
+[-]   sphere vs box
+[ ]   planes vs planes
 [x] grid
 [x]   render
 [ ]     cull
@@ -166,9 +168,9 @@
 [ ]   script
 [ ]     path
 [ ]     focus
-[ ] hud
-[ ]   console
-[ ] draw text
+[x] hud
+[x]   console
+[x] draw text
 [x] mouse
 [x]   fps controls
 [ ]   alternative controls
