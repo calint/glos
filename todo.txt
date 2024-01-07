@@ -1,4 +1,5 @@
 [o] profile
+[ ] fix itm anti-pattern
 [ ] object: changing glob_ix should invalidate planes
 [ ] object::get_updated_Mmw_matrix: also compare with frame_context.frame_num in
     a non synchronized statement
@@ -51,7 +52,7 @@
 [ ] grid: static vs moving vs bullets vs scenery objects
 [ ] note about the absolute texture path in mtl files
 [ ] object size and content is not cache friendly. consider components
-[ ] volume::planes - ability to store some extra points without normals for use
+[x] volume::planes - ability to store some extra points without normals for use
     in collision detection
 [ ] use "moving towards each other" vector to cull collision detection
 [ ] multiple collision detection convex volumes per object
