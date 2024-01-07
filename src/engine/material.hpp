@@ -122,10 +122,9 @@ public:
                                         std::string const &name) const
       -> size_t {
 
-    auto it =
-        std::find_if(store.cbegin(), store.cend(), [&](material const &mtl) {
-          return mtl.path == path and mtl.name == name;
-        });
+    auto it = std::ranges::find_if(store, [&](material const &mtl) {
+      return mtl.path == path and mtl.name == name;
+    });
 
     if (it == store.cend()) {
       fprintf(stderr, "\n%s:%d: cannot find material: path '%s' name '%s'\n",
