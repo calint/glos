@@ -32,7 +32,6 @@ public:
       // only one thread at a time is here
 
       if (o->update()) {
-        // object died during update
         o->is_dead = true;
         objects.free(o);
         continue;
