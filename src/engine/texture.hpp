@@ -46,7 +46,7 @@ public:
     store.clear();
   };
 
-  inline auto get_id_or_load(std::string const &path) -> GLuint {
+  inline auto find_id_or_load(std::string const &path) -> GLuint {
     auto it = store.find(path);
     if (it != store.end()) {
       return it->second.id;

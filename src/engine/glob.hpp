@@ -269,7 +269,7 @@ public:
     for (range const &mtlrng : ranges) {
       material &mtl = materials.store.at(size_t(mtlrng.material_ix));
       if (not mtl.map_Kd.empty()) {
-        mtl.texture_id = textures.get_id_or_load(mtl.map_Kd);
+        mtl.texture_id = textures.find_id_or_load(mtl.map_Kd);
       }
     }
   }
