@@ -62,6 +62,7 @@ public:
 
   ~o1store() {
     free(all_);
+    free(alloc_bgn_);
     free(free_bgn_);
     free(del_bgn_);
   }

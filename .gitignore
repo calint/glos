@@ -1,6 +1,7 @@
 /Debug/
 /glos
 /gmon.out
+/perf.data
 /cachegrind.out.*
 /build/
 /log1

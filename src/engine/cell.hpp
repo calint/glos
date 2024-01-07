@@ -47,7 +47,7 @@ public:
   inline void resolve_collisions() const {
     // thread safe because 'ols' does not change during 'resolve_collisions'
     size_t const len = ols.size();
-    if (len == 0) {
+    if (len < 2) {
       return;
     }
     for (unsigned i = 0; i < len - 1; ++i) {

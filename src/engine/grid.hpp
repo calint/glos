@@ -5,6 +5,7 @@
 // reviewed: 2024-01-07
 
 #include "cell.hpp"
+// #include "task_thread_pool.hpp"
 
 namespace glos {
 class grid final {
@@ -14,7 +15,7 @@ public:
   inline void free() {}
 
   // called from engine
-  inline void update() const {
+  inline void update() {
     if (threaded_grid) {
       std::for_each(std::execution::par_unseq, std::begin(cells),
                     std::end(cells), [](auto const &row) {
@@ -22,6 +23,16 @@ public:
                         c.update();
                       }
                     });
+
+      // for (auto const &row : cells) {
+      //   pool.submit_detach([&row]() {
+      //     for (cell const &c : row) {
+      //       c.update();
+      //     }
+      //   });
+      // }
+      // pool.wait_for_tasks();
+
       return;
     }
 
@@ -33,7 +44,7 @@ public:
   }
 
   // called from engine
-  inline void resolve_collisions() const {
+  inline void resolve_collisions() {
     if (threaded_grid) {
       std::for_each(std::execution::par_unseq, std::begin(cells),
                     std::end(cells), [](auto const &row) {
@@ -41,6 +52,16 @@ public:
                         c.resolve_collisions();
                       }
                     });
+
+      // for (auto const &row : cells) {
+      //   pool.submit_detach([&row]() {
+      //     for (cell const &c : row) {
+      //       c.resolve_collisions();
+      //     }
+      //   });
+      // }
+      // pool.wait_for_tasks();
+
       return;
     }
 
@@ -123,6 +144,7 @@ public:
 
 private:
   std::array<std::array<cell, grid_columns>, grid_rows> cells{};
+  // task_thread_pool::task_thread_pool pool{};
 
   static inline auto clamp(int const i, int const max_plus_one) -> unsigned {
     if (i < 0) {
