@@ -114,21 +114,12 @@ private:
   std::vector<const object *> handled_collisions{};
   std::atomic_flag spinlock = ATOMIC_FLAG_INIT;
   std::atomic_flag lock_get_updated_Mmw = ATOMIC_FLAG_INIT;
-  uint8_t grid_flags = 0; // used by grid (overlaps, is_dead)
+  bool overlaps_cells = false; // used by grid to flag cell overlap
+  bool is_dead = false; // used by cell to avoid events on dead objects
 
   inline auto is_Mmw_valid() const -> bool {
     return position == Mmw_pos and angle == Mmw_agl and scale == Mmw_scl;
   }
-
-  inline auto is_overlaps_cells() const -> bool { return grid_flags & 1; }
-
-  inline void set_overlaps_cells() { grid_flags |= 1; }
-
-  inline auto is_dead() const -> bool { return grid_flags & 2; }
-
-  inline void set_is_dead() { grid_flags |= 2; }
-
-  inline void clear_flags() { grid_flags = 0; }
 
   inline void clear_handled_collisions() { handled_collisions.clear(); }
 
@@ -144,7 +135,7 @@ private:
   }
 
   inline void update_planes_world_coordinates() {
-    bool const synchronize = threaded_grid and is_overlaps_cells();
+    bool const synchronize = threaded_grid and overlaps_cells;
 
     if (synchronize) {
       planes.acquire_lock();

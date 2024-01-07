@@ -92,13 +92,13 @@ public:
 
   // called from engine
   inline void add(object *o) {
-    o->clear_flags();
     // note. flags need to be cleared before object 'update' or
     // 'resolve_collisions' and this is an opportunity for that without a
     // separate pass in the loop
 
     if (grid_columns == 1 and grid_rows == 1) {
       // special case
+      o->overlaps_cells = false;
       cells[0][0].add(o);
       return;
     }
@@ -128,7 +128,9 @@ public:
     }
 
     if (xil != xir or zit != zib) {
-      o->set_overlaps_cells();
+      o->overlaps_cells = true;
+    } else {
+      o->overlaps_cells = false;
     }
   }
 

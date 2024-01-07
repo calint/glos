@@ -10,7 +10,7 @@ public:
   inline void update() const {
     for (object *o : ols) {
       // check if object has already been updated by a different cell
-      if (threaded_grid and o->is_overlaps_cells()) {
+      if (threaded_grid and o->overlaps_cells) {
         // object is in several cells and may be called from multiple threads
 
         o->acquire_lock();
@@ -33,7 +33,7 @@ public:
 
       if (o->update()) {
         // object died during update
-        o->set_is_dead();
+        o->is_dead = true;
         objects.free(o);
         continue;
       }
@@ -160,7 +160,7 @@ private:
 
     // if object overlaps cells and threaded grid then this code might be called
     // by several threads at the same time
-    const bool synchronize = threaded_grid and Oi->is_overlaps_cells();
+    const bool synchronize = threaded_grid and Oi->overlaps_cells;
 
     if (synchronize) {
       Oi->acquire_lock();
@@ -191,9 +191,9 @@ private:
       return;
     }
 
-    if (not Oi->is_dead() and Oi->on_collision(Oj)) {
+    if (not Oi->is_dead and Oi->on_collision(Oj)) {
       // object has died
-      Oi->set_is_dead();
+      Oi->is_dead = true;
       objects.free(Oi);
       if (synchronize) {
         Oi->release_lock();
@@ -224,7 +224,7 @@ private:
 
     // if object overlaps cells this code might be called by several threads at
     // the same time
-    const bool synchronize = threaded_grid and Osrc->is_overlaps_cells();
+    const bool synchronize = threaded_grid and Osrc->overlaps_cells;
 
     if (synchronize) {
       Osrc->acquire_lock();
@@ -239,9 +239,8 @@ private:
 
     // only one thread at a time can be here
 
-    if (not Osrc->is_dead() and Osrc->on_collision(Otrg)) {
-      // object died
-      Osrc->set_is_dead();
+    if (not Osrc->is_dead and Osrc->on_collision(Otrg)) {
+      Osrc->is_dead = true;
       objects.free(Osrc);
     }
 

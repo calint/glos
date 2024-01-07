@@ -123,17 +123,6 @@ static constexpr uint32_t key_o = 1 << 11;
 
 class engine final {
 public:
-  // index of shader that renders world coordinate system line
-  size_t shader_program_ix_render_line = 0;
-  // index of shader that renders bounding sphere
-  size_t shader_program_ix_render_bounding_sphere = 0;
-  // index of current shader
-  size_t shader_program_ix = 0;
-  // index of previous shader
-  size_t shader_program_ix_prv = shader_program_ix;
-  // render heads-up-display
-  bool render_hud = hud_enabled;
-
   inline void init() {
     // set random number generator seed for deterministic behaviour
     srand(0);
@@ -263,6 +252,7 @@ public:
       }
 
       if (threaded_update) {
+        // update runs in separate
         render_thread_loop_body();
       } else {
         // single threaded mode
@@ -287,6 +277,9 @@ public:
   }
 
 private:
+  friend void debug_render_wcs_line(glm::vec3 const &, glm::vec3 const &,
+                                    glm::vec3 const &);
+
   static constexpr float rad_over_degree = 2.0f * glm::pi<float>() / 360.0f;
   uint64_t frame_num = 0;
   bool resolve_collisions = true;
@@ -296,6 +289,14 @@ private:
   bool mouse_mode = false;
   float mouse_rad_over_pixels = rad_over_degree * .02f;
   float mouse_sensitivity = 1.5f;
+  // index of shader that renders world coordinate system line
+  size_t shader_program_ix_render_line = 0;
+  // index of current shader
+  size_t shader_program_ix = 0;
+  // index of previous shader
+  size_t shader_program_ix_prv = shader_program_ix;
+  // render heads-up-display
+  bool render_hud = hud_enabled;
 
   // synchronization of update and render thread
   std::thread update_thread{};
@@ -304,6 +305,9 @@ private:
   std::condition_variable is_rendering_cv{};
 
   inline void render() {
+    if (not do_render) {
+      return;
+    }
     // check if shader program has changed
     if (shader_program_ix_prv != shader_program_ix) {
       printf(" * switching to program at index %zu\n", shader_program_ix);
@@ -311,35 +315,33 @@ private:
       shader_program_ix_prv = shader_program_ix;
     }
 
-    if (do_render) {
-      if (camera_follow_object) {
-        camera.look_at = camera_follow_object->position;
-      }
+    if (camera_follow_object) {
+      camera.look_at = camera_follow_object->position;
+    }
 
-      camera.update_matrix_wvp();
+    camera.update_matrix_wvp();
 
-      glUniformMatrix4fv(shaders::umtx_wvp, 1, GL_FALSE,
-                         glm::value_ptr(camera.Mwvp));
+    glUniformMatrix4fv(shaders::umtx_wvp, 1, GL_FALSE,
+                       glm::value_ptr(camera.Mwvp));
 
-      glUniform3fv(shaders::ulht, 1, glm::value_ptr(ambient_light));
+    glUniform3fv(shaders::ulht, 1, glm::value_ptr(ambient_light));
 
-      glClearColor(background_color.red, background_color.green,
-                   background_color.blue, 1.0);
+    glClearColor(background_color.red, background_color.green,
+                 background_color.blue, 1.0);
 
-      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-      grid.render();
+    grid.render();
 
-      if (render_hud) {
-        shaders.use_program(hud.program_ix);
-        hud.render();
-        shaders.use_program(shader_program_ix);
-      }
-
-      window.swap_buffers();
+    if (render_hud) {
+      shaders.use_program(hud.program_ix);
+      hud.render();
+      shaders.use_program(shader_program_ix);
     }
 
     application_on_render_done();
+
+    window.swap_buffers();
   }
 
   inline void update_pass_1() {
