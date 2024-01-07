@@ -2,6 +2,7 @@
 // reviewed: 2023-12-22
 // reviewed: 2024-01-04
 // reviewed: 2024-01-06
+// reviewed: 2024-01-07
 
 #include "cell.hpp"
 
@@ -16,27 +17,17 @@ public:
   inline void update() const {
     if (threaded_grid) {
       std::for_each(std::execution::par_unseq, std::begin(cells),
-                    std::end(cells), [](cell const(&row)[grid_ncells_wide]) {
+                    std::end(cells), [](auto const &row) {
                       for (cell const &c : row) {
                         c.update();
                       }
                     });
+      return;
+    }
 
-      // for (int i = 0; i < grid_ncells_high; i++) {
-      //   pool.submit_detach([&fc, &row = cells[i]]() {
-      //     for (int j = 0; j < grid_ncells_wide; j++) {
-      //       row[j].update(fc);
-      //     }
-      //   });
-      // }
-      // pool.wait_for_tasks();
-
-    } else {
-      cell const *p = cells[0];
-      unsigned i = ncells;
-      while (i--) {
-        p->update();
-        ++p;
+    for (auto const &row : cells) {
+      for (cell const &c : row) {
+        c.update();
       }
     }
   }
@@ -45,48 +36,36 @@ public:
   inline void resolve_collisions() const {
     if (threaded_grid) {
       std::for_each(std::execution::par_unseq, std::begin(cells),
-                    std::end(cells), [](cell const(&row)[grid_ncells_wide]) {
+                    std::end(cells), [](auto const &row) {
                       for (cell const &c : row) {
                         c.resolve_collisions();
                       }
                     });
+      return;
+    }
 
-      // for (int i = 0; i < grid_ncells_high; i++) {
-      //   pool.submit_detach([&fc, &row = cells[i]]() {
-      //     for (int j = 0; j < grid_ncells_wide; j++) {
-      //       row[j].resolve_collisions(fc);
-      //     }
-      //   });
-      // }
-      // pool.wait_for_tasks();
-
-    } else {
-      cell const *p = cells[0];
-      unsigned i = ncells;
-      while (i--) {
-        p->resolve_collisions();
-        ++p;
+    for (auto const &row : cells) {
+      for (cell const &c : row) {
+        c.resolve_collisions();
       }
     }
   }
 
   // called from engine
   inline void render() const {
-    cell const *p = cells[0];
-    unsigned i = ncells;
-    while (i--) {
-      p->render();
-      ++p;
+    for (auto const &row : cells) {
+      for (cell const &c : row) {
+        c.render();
+      }
     }
   }
 
   // called from engine
   inline void clear() {
-    cell *p = cells[0];
-    unsigned i = ncells;
-    while (i--) {
-      p->clear();
-      ++p;
+    for (auto &row : cells) {
+      for (cell &c : row) {
+        c.clear();
+      }
     }
   }
 
@@ -97,7 +76,7 @@ public:
     // 'resolve_collisions' and this is an opportunity for that without a
     // separate pass in the loop
 
-    if (ncells == 1) {
+    if (grid_ncells_wide == 1 and grid_ncells_high == 1) {
       // special case
       cells[0][0].add(o);
       return;
@@ -114,16 +93,16 @@ public:
     float const zt = gh / 2 + o->position.z - r;
     float const zb = gh / 2 + o->position.z + r;
 
-    int const xil = clamp(int(xl / grid_cell_size), 0, grid_ncells_wide);
-    int const xir = clamp(int(xr / grid_cell_size), 0, grid_ncells_wide);
-    int const zit = clamp(int(zt / grid_cell_size), 0, grid_ncells_high);
-    int const zib = clamp(int(zb / grid_cell_size), 0, grid_ncells_high);
+    unsigned const xil = clamp(int(xl / grid_cell_size), grid_ncells_wide);
+    unsigned const xir = clamp(int(xr / grid_cell_size), grid_ncells_wide);
+    unsigned const zit = clamp(int(zt / grid_cell_size), grid_ncells_high);
+    unsigned const zib = clamp(int(zb / grid_cell_size), grid_ncells_high);
 
     // add to cells
-    for (int z = zit; z <= zib; ++z) {
-      for (int x = xil; x <= xir; ++x) {
-        cell *c = &cells[z][x];
-        c->add(o);
+    for (unsigned z = zit; z <= zib; ++z) {
+      for (unsigned x = xil; x <= xir; ++x) {
+        cell &c = cells[z][x];
+        c.add(o);
       }
     }
 
@@ -133,32 +112,25 @@ public:
   }
 
   inline void print() const {
-    cell const *p = cells[0];
-    unsigned i = ncells;
-    while (i--) {
-      printf(" %zu ", p->objects_count());
-      if (!(i % grid_ncells_wide)) {
-        printf("\n");
+    for (auto const &row : cells) {
+      for (cell const &c : row) {
+        printf(" %04zu ", c.objects_count());
       }
-      ++p;
+      printf("\n");
     }
     printf("------------------------\n");
   }
 
 private:
-  static constexpr unsigned ncells = grid_ncells_wide * grid_ncells_high;
+  std::array<std::array<cell, grid_ncells_wide>, grid_ncells_high> cells{};
 
-  // task_thread_pool::task_thread_pool pool{};
-
-  cell cells[grid_ncells_high][grid_ncells_wide];
-
-  static inline int clamp(int i, int min, int max_plus_one) {
-    if (i < min) {
-      return min;
+  static inline auto clamp(int const i, int const max_plus_one) -> unsigned {
+    if (i < 0) {
+      return 0;
     } else if (i >= max_plus_one) {
-      return max_plus_one - 1;
+      return unsigned(max_plus_one - 1);
     }
-    return i;
+    return unsigned(i);
   }
 };
 
