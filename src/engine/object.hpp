@@ -81,10 +81,10 @@ public:
   // it in a non-deterministic way breaking multiplayer mode
   inline auto get_updated_Mmw() -> glm::mat4 const & {
     // synchronize if render and update run on different threads; both racing
-    // for this or is in a threaded grid and object overlaps cells in which
-    // case several threads race for this
-    bool const synchronize =
-        threaded_update or (threaded_grid and is_overlaps_cells());
+    // for this
+    // in threaded grid objects in different cells, running on different
+    // threads, might access this
+    bool const synchronize = threaded_update or threaded_grid;
 
     if (synchronize) {
       while (lock_get_updated_Mmw.test_and_set(std::memory_order_acquire)) {

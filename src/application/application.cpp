@@ -81,20 +81,22 @@ void application_init() {
 
   glob_ix_power_up = globs.load("assets/obj/asteroids/power_up.obj", nullptr);
 
-  // setup scene
-  if (net.enabled) {
-    // multiplayer mode
-    ship *p1 = new (objects.alloc()) ship{};
-    p1->position.x = -5;
-    p1->net_state = &net.states[1];
+  if (create_players) {
+    // setup scene
+    if (net.enabled) {
+      // multiplayer mode
+      ship *p1 = new (objects.alloc()) ship{};
+      p1->position.x = -5;
+      p1->net_state = &net.states[1];
 
-    ship *p2 = new (objects.alloc()) ship{};
-    p2->position.x = 5;
-    p2->net_state = &net.states[2];
-  } else {
-    // single player mode
-    ship *o = new (objects.alloc()) ship{};
-    o->net_state = &net.states[1];
+      ship *p2 = new (objects.alloc()) ship{};
+      p2->position.x = 5;
+      p2->net_state = &net.states[2];
+    } else {
+      // single player mode
+      ship *o = new (objects.alloc()) ship{};
+      o->net_state = &net.states[1];
+    }
   }
 
   // setup light and camera
