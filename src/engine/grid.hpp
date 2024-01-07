@@ -17,8 +17,8 @@ public:
   // called from engine
   inline void update() {
     if (threaded_grid) {
-      std::for_each(std::execution::par_unseq, std::begin(cells),
-                    std::end(cells), [](auto const &row) {
+      std::for_each(std::execution::par_unseq, std::cbegin(cells),
+                    std::cend(cells), [](auto const &row) {
                       for (cell const &c : row) {
                         c.update();
                       }
@@ -46,8 +46,8 @@ public:
   // called from engine
   inline void resolve_collisions() {
     if (threaded_grid) {
-      std::for_each(std::execution::par_unseq, std::begin(cells),
-                    std::end(cells), [](auto const &row) {
+      std::for_each(std::execution::par_unseq, std::cbegin(cells),
+                    std::cend(cells), [](auto const &row) {
                       for (cell const &c : row) {
                         c.resolve_collisions();
                       }
