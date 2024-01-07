@@ -1,6 +1,5 @@
 [x] consider inverting meaning of bool return value from 'update' and 'on_collision'
 [o] profile
-[ ] fix itm anti-pattern
 [ ] object: changing glob_ix should invalidate planes
 [ ] object::get_updated_Mmw_matrix: also compare with frame_context.frame_num in
     a non synchronized statement
@@ -30,7 +29,8 @@
 [x]   class private members at the bottom of the declaration
 [x]   use uint32_t instead of unsigned int32_t etc
       => class members fixed. in code less relevant
-[ ]   consider a more standard source layout without depending on include order
+[-]   consider a more standard source layout without depending on include order
+      => source in hpp and the concept of the program being one file is kept
 [x]   use gl_element_array_buffer (where appropriate)
 [ ]   use glDebugMessageCallback
 [ ]   clang-tidy
@@ -51,6 +51,7 @@
 [x]   const everything
 [ ]   constexpr everything
 [ ]   struct vertex used for sizeof only
+[ ] fix itm anti-pattern
 [ ] note about the absolute texture path in mtl files
 [ ] object size and content is not cache friendly. consider components
 [x] volume::planes - ability to store some extra points without normals for use
