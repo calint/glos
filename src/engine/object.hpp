@@ -16,10 +16,6 @@ public:
   float radius = 0;               // bounding radius
   glm::vec3 scale{};              // in meters
   planes planes{};                // bounding planes (if any)
-  glm::mat4 Mmw{};                // model -> world matrix
-  glm::vec3 Mmw_pos{};            // position of current Mmw matrix
-  glm::vec3 Mmw_agl{};            // angle of current Mmw matrix
-  glm::vec3 Mmw_scl{};            // scale of current Mmw matrix
   glm::vec3 position{};           // in meters
   glm::vec3 velocity{};           // in meters/second
   glm::vec3 acceleration{};       // in meters/second^2
@@ -29,13 +25,7 @@ public:
   uint32_t collision_bits = 0;    // mask & bits for collision subscription
   uint32_t collision_mask = 0;    // ...
   net_state *net_state = nullptr; // pointer to signals used by this object
-  uint64_t rendered_at_tick = 0;  // used by cell to avoid rendering twice
-  uint64_t updated_at_tick = 0;   // used by cell to avoid updating twice
-  uint8_t grid_flags = 0;         // used by grid (overlaps, is_dead)
   bool is_sphere = false;         // true if object can be considered a sphere
-  std::vector<const object *> handled_collisions{};
-  std::atomic_flag spinlock = ATOMIC_FLAG_INIT;
-  std::atomic_flag lock_get_updated_Mmw = ATOMIC_FLAG_INIT;
 
   inline virtual ~object() {}
   // note. 'delete obj;' may not be used because memory is managed by 'o1store'
@@ -73,17 +63,13 @@ public:
   // returns true if object has died
   inline virtual auto on_collision(object *obj) -> bool { return false; }
 
-  inline auto is_Mmw_valid() const -> bool {
-    return position == Mmw_pos and angle == Mmw_agl and scale == Mmw_scl;
-  }
-
   // synchronized in multithreaded because both update and render thread access
   // it in a non-deterministic way breaking multiplayer mode
   inline auto get_updated_Mmw() -> glm::mat4 const & {
     // synchronize if render and update run on different threads; both racing
     // for this
-    // in threaded grid objects in different cells, running on different
-    // threads, might access this
+    // in threaded grid when objects in different cells running on different
+    // threads might race for this
     bool const synchronize = threaded_update or threaded_grid;
 
     if (synchronize) {
@@ -115,9 +101,36 @@ public:
     return Mmw;
   }
 
-  inline auto debug_get_Mmw_for_bounding_sphere() const -> glm::mat4 {
-    return glm::scale(glm::translate(glm::mat4(1), Mmw_pos), glm::vec3(radius));
+private:
+  friend class grid;
+  friend class cell;
+
+  glm::mat4 Mmw{};               // model -> world matrix
+  glm::vec3 Mmw_pos{};           // position of current Mmw matrix
+  glm::vec3 Mmw_agl{};           // angle of current Mmw matrix
+  glm::vec3 Mmw_scl{};           // scale of current Mmw matrix
+  uint64_t rendered_at_tick = 0; // used by cell to avoid rendering twice
+  uint64_t updated_at_tick = 0;  // used by cell to avoid updating twice
+  std::vector<const object *> handled_collisions{};
+  std::atomic_flag spinlock = ATOMIC_FLAG_INIT;
+  std::atomic_flag lock_get_updated_Mmw = ATOMIC_FLAG_INIT;
+  uint8_t grid_flags = 0; // used by grid (overlaps, is_dead)
+
+  inline auto is_Mmw_valid() const -> bool {
+    return position == Mmw_pos and angle == Mmw_agl and scale == Mmw_scl;
   }
+
+  inline auto is_overlaps_cells() const -> bool { return grid_flags & 1; }
+
+  inline void set_overlaps_cells() { grid_flags |= 1; }
+
+  inline auto is_dead() const -> bool { return grid_flags & 2; }
+
+  inline void set_is_dead() { grid_flags |= 2; }
+
+  inline void clear_flags() { grid_flags = 0; }
+
+  inline void clear_handled_collisions() { handled_collisions.clear(); }
 
   inline auto is_collision_handled_and_if_not_add(object const *obj) -> bool {
     bool const found =
@@ -130,17 +143,26 @@ public:
     return found;
   }
 
-  inline void clear_handled_collisions() { handled_collisions.clear(); }
+  inline void update_planes_world_coordinates() {
+    bool const synchronize = threaded_grid and is_overlaps_cells();
 
-  inline auto is_dead() const -> bool { return grid_flags & 2; }
+    if (synchronize) {
+      planes.acquire_lock();
+    }
 
-  inline void set_is_dead() { grid_flags |= 2; }
+    glob const &g = globs.at(glob_ix);
+    glm::mat4 const &M = get_updated_Mmw();
+    planes.update_model_to_world(g.planes_points, g.planes_normals, M, Mmw_pos,
+                                 Mmw_agl, Mmw_scl);
 
-  inline auto is_overlaps_cells() const -> bool { return grid_flags & 1; }
+    if (synchronize) {
+      planes.release_lock();
+    }
+  }
 
-  inline void set_overlaps_cells() { grid_flags |= 1; }
-
-  inline void clear_flags() { grid_flags = 0; }
+  inline auto debug_get_Mmw_for_bounding_sphere() const -> glm::mat4 {
+    return glm::scale(glm::translate(glm::mat4(1), Mmw_pos), glm::vec3(radius));
+  }
 
   inline void acquire_lock() {
     while (spinlock.test_and_set(std::memory_order_acquire)) {

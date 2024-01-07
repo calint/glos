@@ -85,7 +85,7 @@ public:
         // sphere vs planes
         if (Oi->is_sphere) {
           // Oj is not a sphere
-          update_planes_world_coordinates(Oj);
+          Oj->update_planes_world_coordinates();
           if (Oj->planes.is_in_collision_with_sphere(Oi->position,
                                                      Oi->radius)) {
             dispatch_collision(Oi, Oj);
@@ -95,7 +95,7 @@ public:
 
         } else if (Oj->is_sphere) {
           // Oi is not a sphere
-          update_planes_world_coordinates(Oi);
+          Oi->update_planes_world_coordinates();
           if (Oi->planes.is_in_collision_with_sphere(Oj->position,
                                                      Oj->radius)) {
             dispatch_collision(Oj, Oi);
@@ -262,35 +262,17 @@ private:
     return diff < 0;
   }
 
-  static inline void update_planes_world_coordinates(object *o) {
-    bool const synchronize = threaded_grid and o->is_overlaps_cells();
-
-    if (synchronize) {
-      o->planes.acquire_lock();
-    }
-
-    glob const &g = globs.at(o->glob_ix);
-
-    o->planes.update_model_to_world(g.planes_points, g.planes_normals,
-                                    o->get_updated_Mmw(), o->position, o->angle,
-                                    o->scale);
-
-    if (synchronize) {
-      o->planes.release_lock();
-    }
-  }
-
   static inline auto are_bounding_planes_in_collision(object *o1, object *o2)
       -> bool {
 
-    update_planes_world_coordinates(o1);
-    update_planes_world_coordinates(o2);
+    o1->update_planes_world_coordinates();
+    o2->update_planes_world_coordinates();
 
     // planes can be update only once per 'resolve_collisions' pass because
     // bounding volume object state does not change (spheres do)
 
-    if (o1->planes.is_in_collision_with_planes(o2->planes) or
-        o2->planes.is_in_collision_with_planes(o1->planes)) {
+    if (o1->planes.is_any_point_in_volume(o2->planes) or
+        o2->planes.is_any_point_in_volume(o1->planes)) {
       return true;
     }
 

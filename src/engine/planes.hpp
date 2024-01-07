@@ -5,6 +5,8 @@
 namespace glos {
 class planes final {
 public:
+  // points and normals are in model coordinates
+  // Mmw matrix was constructed using pos, agl, scl are
   inline void update_model_to_world(std::vector<glm::vec3> const &points,
                                     std::vector<glm::vec3> const &normals,
                                     glm::mat4 const &Mmw, glm::vec3 const &pos,
@@ -62,7 +64,7 @@ public:
 
   // assumes both this and 'pns' have updated world points and normals
   // returns true if any point in this is behind all planes in 'pns'
-  inline auto is_in_collision_with_planes(planes const &pns) const -> bool {
+  inline auto is_any_point_in_volume(planes const &pns) const -> bool {
     for (glm::vec3 const &p : world_points) {
       if (pns.is_point_behind_all_planes(p)) {
         return true;

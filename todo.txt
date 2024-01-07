@@ -1,3 +1,6 @@
+[o] profile
+[ ] object::get_updated_Mmw_matrix: also compare with frame_context.frame_num in
+    a non synchronized statement
 [ ] glob::load: better printout
 [ ] accessing global frame_context from threads is 1.8% of profiling 
     time without rendering on a threaded grid

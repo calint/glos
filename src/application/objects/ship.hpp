@@ -29,8 +29,6 @@ public:
   }
 
   inline auto update() -> bool override {
-    assert(not is_dead());
-
     if (object::update()) {
       return true;
     }
