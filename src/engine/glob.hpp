@@ -23,7 +23,6 @@ public:
   // planes
   std::vector<glm::vec3> planes_points{};
   std::vector<glm::vec3> planes_normals{};
-  std::vector<glm::vec3> planes_additional_points{};
 
   inline void free() const {
     glDeleteBuffers(1, &vertex_buffer_id);
@@ -353,15 +352,15 @@ private:
     // remove from points the points in plane_points
     for (glm::vec3 const &pt : points) {
       if (std::ranges::find(planes_points, pt) == planes_points.cend()) {
-        planes_additional_points.emplace_back(pt);
+        planes_points.emplace_back(pt);
       }
     }
     // std::cout << "additional points: " << std::endl;
     // for (auto const &pt : planes_additional_points) {
     //   std::cout << glm::to_string(pt) << std::endl;
     // }
-    printf("        %zu planes  %zu additional points\n", planes_normals.size(),
-           planes_additional_points.size());
+    printf("        %zu planes  %zu points\n", planes_normals.size(),
+           planes_points.size());
   }
 };
 

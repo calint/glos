@@ -53,9 +53,8 @@ public:
     if (debug_object_planes_normals) {
       glm::mat4 const &M = get_updated_Mmw();
       glob const &g = globs.at(glob_ix);
-      planes.update_model_to_world(g.planes_points, g.planes_normals,
-                                   g.planes_additional_points, M, position,
-                                   angle, scale);
+      planes.update_model_to_world(g.planes_points, g.planes_normals, M,
+                                   position, angle, scale);
     }
 
     return false;
@@ -144,8 +143,7 @@ private:
 
     glob const &g = globs.at(glob_ix);
     glm::mat4 const &M = get_updated_Mmw();
-    planes.update_model_to_world(g.planes_points, g.planes_normals,
-                                 g.planes_additional_points, M, Mmw_pos,
+    planes.update_model_to_world(g.planes_points, g.planes_normals, M, Mmw_pos,
                                  Mmw_agl, Mmw_scl);
 
     if (synchronize) {
