@@ -24,9 +24,8 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
-// #include "task_thread_pool.hpp"
 
-// inclusion order relevant
+// include subsystems order relevant
 #include "../application/configuration.hpp"
 //
 #include "metrics.hpp"
