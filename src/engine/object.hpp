@@ -114,15 +114,14 @@ public:
   }
 
   inline auto is_collision_handled_and_if_not_add(object const *obj) -> bool {
-    const bool is_handled =
-        std::find(handled_collisions.begin(), handled_collisions.end(), obj) !=
-        handled_collisions.end();
+    bool const found =
+        std::ranges::find(handled_collisions, obj) != handled_collisions.cend();
 
-    if (not is_handled) {
+    if (not found) {
       handled_collisions.push_back(obj);
     }
 
-    return is_handled;
+    return found;
   }
 
   inline void clear_handled_collisions() { handled_collisions.clear(); }
