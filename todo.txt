@@ -1,19 +1,9 @@
 [ ] objects.free(): what if destructors created new objects
 [ ] net_server: read/write instead of recv(...,0) and send(...,0)
-[x] net: when server disconnects there is no print out
-    => use fflush(stdout); before terminating
-    => fflush(stderr)
 [ ] object: update Mmw if it will be rendered
-[x] engine: review mutexes and why initial waiting for render can hang without the 'if'
-    => bug in predicate
-[x] engine: frame_context.ms in network mode should be from server
-[x] frame_context: 64 bit ms time
 [ ] consider inverting meaning of bool return value from 'update'
 [ ] object render culling using camera frustum, position and bounding sphere
 [ ] grid cell render culling
-[x] implement sample game
-[x] use a build system instead of make.sh
-    => and also make.sh
 [ ] planes::update_model_to_world could save frame_num from context to shorten
     the decision if cached values are valid
 [ ] ? racing condition on net.states between where render thread and update thread
@@ -52,11 +42,6 @@
 [ ] glob: optimize ranges by merging non-texture draws
 [ ] use string_view instead of const char*
 [ ] note about the absolute texture path in mtl files
-[x] rename 'node' to something better
-    => moved into object
-[x] use object Mmw when updating volume::planes
-[x] glo: after upload to gpu buffers can be deleted
-[x] glo: load obj and planes in a consistent way
 [ ] object size and content is not cache friendly. consider components
 [ ] volume::planes - ability to store some extra points without normals for use
     in collision detection
@@ -66,6 +51,27 @@
 [ ] collision reaction: tiny random added to 'dt' for each object to avoid
     mathematical precision example: "o>  o  <o"   "ooo" instead of  "o<  o  >o"
 [ ] object: checked_collisions make minimum size of vector to e.g. 8
+[ ] camera: update matrix only if necessary
+[ ] shader: mtx_wvp * mtx_mw   is it better with mtx_mwvp?
+[ ] consider: https://github.com/alugowski/task-thread-pool for simple multithreading
+------------------------------
+[x] use unique_ptr instead of new and delete
+    => o1store for objects
+[x] net: when server disconnects there is no print out
+    => use fflush(stdout); before terminating
+    => fflush(stderr)
+[x] engine: review mutexes and why initial waiting for render can hang without the 'if'
+    => bug in predicate
+[x] engine: frame_context.ms in network mode should be from server
+[x] frame_context: 64 bit ms time
+[x] implement sample game
+[x] use a build system instead of make.sh
+    => and also make.sh
+[x] rename 'node' to something better
+    => moved into object
+[x] use object Mmw when updating volume::planes
+[x] glo: after upload to gpu buffers can be deleted
+[x] glo: load obj and planes in a consistent way
 [x] glo: upgrade to glGenVertexArrays (opengl es3)
 [?] move init() and free() into constructor and destructor
     => it might be better to know exactly when init and free is done
@@ -84,7 +90,6 @@
 [-] o1store: new objects list that is applied after update
     causing allocated list to be stable during update and collision_resolution
     => 'objects' made 'o1store' private and handles list end limit
-[ ] camera: update matrix only if necessary
 [x] c++ conversion
 [x]   replace dynp, dyni, dynf with vector
 [x]   replace str with string
@@ -102,11 +107,7 @@
        with metrics turned of in cell::resolve_collisions multithreaded
        performance gain is 3x compared to single threaded (with no rendering)
 [x] deleted objects list created during 'update'
-[ ] shader: mtx_wvp * mtx_mw   is it better with mtx_mwvp?
-[x] use unique_ptr instead of new and delete
-    => o1store for objects
-[ ] consider: https://github.com/alugowski/task-thread-pool for simple multithreading
-------------------------------
+------------------------------------------------------------------
 [x] dynamic pointer vector
 [x] texturing
 [x] obj format
