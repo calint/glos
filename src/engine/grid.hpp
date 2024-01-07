@@ -76,14 +76,14 @@ public:
     // 'resolve_collisions' and this is an opportunity for that without a
     // separate pass in the loop
 
-    if (grid_cell_columns == 1 and grid_cell_rows == 1) {
+    if (grid_columns == 1 and grid_rows == 1) {
       // special case
       cells[0][0].add(o);
       return;
     }
 
-    constexpr float gw = grid_cell_size * grid_cell_columns;
-    constexpr float gh = grid_cell_size * grid_cell_rows;
+    constexpr float gw = grid_cell_size * grid_columns;
+    constexpr float gh = grid_cell_size * grid_rows;
 
     float const r = o->radius;
 
@@ -93,10 +93,10 @@ public:
     float const zt = gh / 2 + o->position.z - r;
     float const zb = gh / 2 + o->position.z + r;
 
-    unsigned const xil = clamp(int(xl / grid_cell_size), grid_cell_columns);
-    unsigned const xir = clamp(int(xr / grid_cell_size), grid_cell_columns);
-    unsigned const zit = clamp(int(zt / grid_cell_size), grid_cell_rows);
-    unsigned const zib = clamp(int(zb / grid_cell_size), grid_cell_rows);
+    unsigned const xil = clamp(int(xl / grid_cell_size), grid_columns);
+    unsigned const xir = clamp(int(xr / grid_cell_size), grid_columns);
+    unsigned const zit = clamp(int(zt / grid_cell_size), grid_rows);
+    unsigned const zib = clamp(int(zb / grid_cell_size), grid_rows);
 
     // add to cells
     for (unsigned z = zit; z <= zib; ++z) {
@@ -122,7 +122,7 @@ public:
   }
 
 private:
-  std::array<std::array<cell, grid_cell_columns>, grid_cell_rows> cells{};
+  std::array<std::array<cell, grid_columns>, grid_rows> cells{};
 
   static inline auto clamp(int const i, int const max_plus_one) -> unsigned {
     if (i < 0) {

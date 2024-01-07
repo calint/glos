@@ -9,8 +9,8 @@
 
 // grid dimensions
 static constexpr unsigned grid_cell_size = 10; // in meters
-static constexpr unsigned grid_cell_rows = 4;
-static constexpr unsigned grid_cell_columns = 4;
+static constexpr unsigned grid_rows = 4;
+static constexpr unsigned grid_columns = 4;
 
 // multithreaded grid
 // note. in some cases multithreaded mode is a degradation of performance
