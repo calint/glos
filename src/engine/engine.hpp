@@ -132,7 +132,7 @@ public:
   // index of previous shader
   size_t shader_program_ix_prv = shader_program_ix;
   // render heads-up-display
-  bool render_hud = true;
+  bool render_hud = hud_enabled;
 
   inline void init() {
     // set random number generator seed for deterministic behaviour

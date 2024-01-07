@@ -104,10 +104,10 @@ void application_init() {
   camera.position = {0, 50, 0};
   camera.look_at = {0, 0, -0.0001f};
   // note. -0.0001f because of the math of 'look at'
-  camera.ortho_min_x = -20;
-  camera.ortho_min_y = -20;
-  camera.ortho_max_x = 20;
-  camera.ortho_max_y = 20;
+  camera.ortho_min_x = -game_area_half_x;
+  camera.ortho_min_y = -game_area_half_z;
+  camera.ortho_max_x = game_area_half_x;
+  camera.ortho_max_y = game_area_half_z;
 
   // camera.type = camera::type::LOOK_AT;
   // camera.position = {0, 32, 0};

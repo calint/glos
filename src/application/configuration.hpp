@@ -34,6 +34,9 @@ static constexpr bool debug_multiplayer = false;
 inline bool debug_object_planes_normals = false;
 inline bool debug_object_bounding_sphere = false;
 
+// initially render the hud
+static constexpr bool hud_enabled = true;
+
 // window dimensions
 static constexpr unsigned window_width = 1024;
 static constexpr unsigned window_height = 1024;
@@ -52,14 +55,6 @@ static constexpr size_t objects_instance_size_B = 1024;
 //
 // definitions used by game
 //
-
-// game area
-static constexpr float game_area_min_x = -22;
-static constexpr float game_area_max_x = 22;
-static constexpr float game_area_min_y = -22;
-static constexpr float game_area_max_y = 22;
-static constexpr float game_area_min_z = -22;
-static constexpr float game_area_max_z = 22;
 
 // collision bits
 static constexpr uint32_t cb_none = 0;
@@ -80,6 +75,7 @@ static uint32_t glob_ix_asteroid_small = 0;
 static uint32_t glob_ix_fragment = 0;
 static uint32_t glob_ix_power_up = 0;
 
+// settings
 static constexpr unsigned asteroid_level = 2;
 
 static constexpr float asteroid_large_speed = 10;
@@ -106,6 +102,24 @@ static constexpr float bullet_fragment_agl_vel_rnd = 360;
 
 static constexpr int power_up_chance_rem = 5;
 static constexpr unsigned power_up_lifetime_ms = 30'000;
+
+// game area based on grid and biggest object
+static constexpr float game_area_half_x = grid_cell_size * grid_columns / 2;
+static constexpr float game_area_half_y = 10; // screen depth
+static constexpr float game_area_half_z = grid_cell_size * grid_rows / 2;
+
+static constexpr float game_area_min_x =
+    -game_area_half_x - asteroid_large_scale;
+static constexpr float game_area_max_x =
+    game_area_half_x + asteroid_large_scale;
+static constexpr float game_area_min_y =
+    -game_area_half_y - asteroid_large_scale;
+static constexpr float game_area_max_y =
+    game_area_half_y + asteroid_large_scale;
+static constexpr float game_area_min_z =
+    -game_area_half_z - asteroid_large_scale;
+static constexpr float game_area_max_z =
+    game_area_half_z + asteroid_large_scale;
 
 // used when 'debug_multiplayer' is on to give objects unique numbers
 static std::atomic<unsigned> counter = 0;
