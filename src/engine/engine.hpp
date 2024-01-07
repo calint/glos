@@ -18,6 +18,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/euler_angles.hpp>
 #include <glm/gtx/string_cast.hpp>
+#include <iostream>
 #include <mutex>
 #include <netinet/tcp.h>
 #include <sstream>

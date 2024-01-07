@@ -22,9 +22,8 @@ public:
     mass = 1500;
     radius = globs.at(glob_ix).bounding_radius * scale.x;
     collision_bits = cb_asteroid;
-    collision_mask = cb_hero_bullet | cb_hero | cb_asteroid;
+    collision_mask = cb_hero_bullet | cb_hero;
     angular_velocity.y = radians(rnd1(45));
-    is_sphere = true;
     ++asteroids_alive;
   }
 
@@ -51,9 +50,6 @@ public:
     if (debug_multiplayer) {
       printf("%lu: %lu: %s collision with %s\n", frame_context.frame_num,
              frame_context.ms, name.c_str(), o->name.c_str());
-    }
-    if (o->collision_bits & cb_asteroid) {
-      return false;
     }
 
     score += 10;

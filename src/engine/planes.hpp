@@ -7,11 +7,12 @@ class planes final {
 public:
   // points and normals are in model coordinates
   // Mmw matrix was constructed using pos, agl, scl are
-  inline void update_model_to_world(std::vector<glm::vec3> const &points,
-                                    std::vector<glm::vec3> const &normals,
-                                    glm::mat4 const &Mmw, glm::vec3 const &pos,
-                                    glm::vec3 const &agl,
-                                    glm::vec3 const &scl) {
+  inline void
+  update_model_to_world(std::vector<glm::vec3> const &points,
+                        std::vector<glm::vec3> const &normals,
+                        std::vector<glm::vec3> const &additional_points,
+                        glm::mat4 const &Mmw, glm::vec3 const &pos,
+                        glm::vec3 const &agl, glm::vec3 const &scl) {
     if (points.size() != 0 and
         (pos != Mmw_pos or agl != Mmw_agl or scl != Mmw_scl)) {
       // matrix state is not in sync with current state
@@ -23,6 +24,11 @@ public:
       for (glm::vec3 const &Pm : points) {
         glm::vec4 Pw = Mmw * glm::vec4{Pm, 1.0f};
         world_points.emplace_back(glm::vec3{Pw});
+      }
+      world_additional_points.clear();
+      for (glm::vec3 const &Pm : additional_points) {
+        glm::vec4 Pw = Mmw * glm::vec4{Pm, 1.0f};
+        world_additional_points.emplace_back(glm::vec3{Pw});
       }
     }
     // normals
@@ -53,19 +59,29 @@ public:
     }
   }
 
-  inline void debug_render_normals() const {
+  inline void debug_render_normals() {
+    acquire_lock();
     size_t const n = world_points.size();
     for (unsigned i = 0; i < n; ++i) {
       glm::vec3 const &pnt = world_points.at(i);
       glm::vec3 const &nml = world_normals.at(i);
       debug_render_wcs_line(pnt, pnt + nml, {1, 0, 0});
     }
+    for (glm::vec3 const &pt : world_additional_points) {
+      debug_render_wcs_line(pt, pt + glm::vec3{0, 0.2f, -0.2f}, {1, 1, 1});
+    }
+    release_lock();
   }
 
   // assumes both this and 'pns' have updated world points and normals
   // returns true if any point in this is behind all planes in 'pns'
   inline auto is_any_point_in_volume(planes const &pns) const -> bool {
     for (glm::vec3 const &p : world_points) {
+      if (pns.is_point_behind_all_planes(p)) {
+        return true;
+      }
+    }
+    for (glm::vec3 const &p : world_additional_points) {
       if (pns.is_point_behind_all_planes(p)) {
         return true;
       }
@@ -101,6 +117,7 @@ private:
   // cached world coordinate system points and normals
   std::vector<glm::vec3> world_points{};
   std::vector<glm::vec3> world_normals{};
+  std::vector<glm::vec3> world_additional_points{};
   // the components used in the cached points and normals
   glm::vec3 Mmw_pos{};
   glm::vec3 Mmw_agl{};
