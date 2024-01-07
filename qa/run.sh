@@ -1,6 +1,6 @@
 #!/bin/bash
 
-slptm=${1:-10}
+slptm=${1:-60}
 
 cd .. && ./glos 1>/dev/null 2> qa/metrics.txt &
 
@@ -12,7 +12,7 @@ echo done waiting $slptm &&
 pid=$(ps -u|grep glos|head -n1|awk '{print $2;}') &&
 kill $pid &&
 
-glxinfo |grep -i version > metrics.meta &&
+glxinfo | grep -i version > metrics.meta &&
 
-./metrics_plot
-
+./fps.plot
+./update.plot
