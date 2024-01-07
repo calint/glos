@@ -10,11 +10,11 @@ class glob final {
   class range final {
   public:
     // index in vertex buffer where triangle data starts
-    int32_t vertex_begin = 0;
+    uint32_t vertex_begin = 0;
     // number of triangle vertices in the range
-    int32_t vertex_count = 0;
+    uint32_t vertex_count = 0;
     // index in 'materials'
-    int32_t material_ix = 0;
+    uint32_t material_ix = 0;
   };
 
 public:
@@ -34,18 +34,19 @@ public:
   inline void render(glm::mat4 const &mtx_mw) const {
     glUniformMatrix4fv(shaders::umtx_mw, 1, GL_FALSE, glm::value_ptr(mtx_mw));
     glBindVertexArray(vertex_array_id);
-    for (range const &mr : ranges) {
-      material const &m = materials.store.at(size_t(mr.material_ix));
+    for (range const &mtl_rng : ranges) {
+      material const &mtl = materials.store.at(mtl_rng.material_ix);
       glActiveTexture(GL_TEXTURE0);
-      if (m.texture_id) {
+      if (mtl.texture_id) {
         glUniform1i(shaders::utex, 0);
-        glBindTexture(GL_TEXTURE_2D, m.texture_id);
+        glBindTexture(GL_TEXTURE_2D, mtl.texture_id);
       } else {
         glBindTexture(GL_TEXTURE_2D, 0);
       }
-      glDrawArrays(GL_TRIANGLES, mr.vertex_begin, mr.vertex_count);
-      metrics.rendered_triangles += uint32_t(mr.vertex_count) / 3;
-      if (m.texture_id) {
+      glDrawArrays(GL_TRIANGLES, GLint(mtl_rng.vertex_begin),
+                   GLint(mtl_rng.vertex_count));
+      metrics.rendered_triangles += mtl_rng.vertex_count / 3;
+      if (mtl.texture_id) {
         glBindTexture(GL_TEXTURE_2D, 0);
       }
     }

@@ -8,7 +8,7 @@
 //
 
 // grid dimensions
-static constexpr unsigned grid_cell_size = 10; // in meters
+static constexpr unsigned grid_cell_size = 10; // e.g. in meters
 static constexpr unsigned grid_rows = 4;
 static constexpr unsigned grid_columns = 4;
 
