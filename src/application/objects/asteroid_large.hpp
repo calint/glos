@@ -19,11 +19,12 @@ public:
     }
     scale = vec3{asteroid_large_scale};
     glob_ix = glob_ix_asteroid_large;
+    mass = 1500;
     radius = globs.at(glob_ix).bounding_radius * scale.x;
     collision_bits = cb_asteroid;
     collision_mask = cb_hero_bullet | cb_hero | cb_asteroid;
     angular_velocity.y = radians(rnd1(45));
-    mass = 1500;
+    is_sphere = true;
     ++asteroids_alive;
   }
 

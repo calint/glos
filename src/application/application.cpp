@@ -67,7 +67,7 @@ void application_init() {
                               "assets/obj/asteroids/bullet.obj");
   glob_ix_asteroid_large =
       globs.load("assets/obj/asteroids/asteroid_large.obj",
-                 "assets/obj/asteroids/asteroid_large.obj");
+                 "assets/obj/asteroids/asteroid_large-bv.obj");
 
   glob_ix_asteroid_medium =
       globs.load("assets/obj/asteroids/asteroid_medium.obj",

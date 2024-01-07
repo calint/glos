@@ -191,7 +191,6 @@ private:
     }
 
     if (not Oi->is_dead and Oi->on_collision(Oj)) {
-      // object has died
       Oi->is_dead = true;
       objects.free(Oi);
       if (synchronize) {

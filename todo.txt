@@ -1,4 +1,5 @@
 [o] profile
+[ ] object: changing glob_ix should invalidate planes
 [ ] object::get_updated_Mmw_matrix: also compare with frame_context.frame_num in
     a non synchronized statement
 [ ] glob::load: better printout
