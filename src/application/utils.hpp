@@ -9,7 +9,7 @@
 
 inline auto rnd1(float const plus_minus_range) -> float {
   int const r = rand();
-  if constexpr (debug_multiplayer) {
+  if (debug_multiplayer) {
     printf("%lu: %lu: rnd1: %d\n", frame_context.frame_num, frame_context.ms,
            r);
   }
@@ -18,7 +18,7 @@ inline auto rnd1(float const plus_minus_range) -> float {
 
 inline auto rnd2(float const zero_to_range) -> float {
   int const r = rand();
-  if constexpr (debug_multiplayer) {
+  if (debug_multiplayer) {
     printf("%lu: %lu: rnd2: %d\n", frame_context.frame_num, frame_context.ms,
            r);
   }
@@ -27,7 +27,7 @@ inline auto rnd2(float const zero_to_range) -> float {
 
 inline auto rnd3(int const rem) -> bool {
   int const r = rand();
-  if constexpr (debug_multiplayer) {
+  if (debug_multiplayer) {
     printf("%lu: %lu: rnd3: %d\n", frame_context.frame_num, frame_context.ms,
            r);
   }

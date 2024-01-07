@@ -184,7 +184,7 @@ public:
     printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
     puts("");
 
-    if constexpr (threaded_grid) {
+    if (threaded_grid) {
       printf("threaded grid on %u cores\n\n",
              std::thread::hardware_concurrency());
     }
@@ -231,7 +231,7 @@ public:
       net.begin();
     }
 
-    if constexpr (threaded_update) {
+    if (threaded_update) {
       // update runs as separate thread
       start_update_thread();
 
@@ -262,7 +262,7 @@ public:
         break;
       }
 
-      if constexpr (threaded_update) {
+      if (threaded_update) {
         render_thread_loop_body();
       } else {
         // single threaded mode
@@ -277,7 +277,7 @@ public:
       metrics.at_frame_end(stderr);
     }
 
-    if constexpr (threaded_update) {
+    if (threaded_update) {
       std::unique_lock<std::mutex> lock{is_rendering_mutex};
       is_rendering = false;
       lock.unlock();
