@@ -117,6 +117,25 @@ public:
       }
     }
   }
+
+  inline auto find_material_ix_or_break(std::string const &path,
+                                        std::string const &name) const
+      -> size_t {
+
+    auto it =
+        std::find_if(store.cbegin(), store.cend(), [&](material const &mtl) {
+          return mtl.path == path and mtl.name == name;
+        });
+
+    if (it == store.cend()) {
+      fprintf(stderr, "\n%s:%d: cannot find material: path '%s' name '%s'\n",
+              __FILE__, __LINE__, path.c_str(), name.c_str());
+      fflush(stderr);
+      std::abort();
+    }
+
+    return size_t(std::distance(store.cbegin(), it));
+  }
 };
 
 inline materials materials{};

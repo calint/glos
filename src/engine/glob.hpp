@@ -85,9 +85,9 @@ public:
     std::vector<glm::vec2> texture_uv{};
 
     std::string mtl_path = "";
-    unsigned current_material_ix = 0;
-    unsigned vertex_ix = 0;
-    unsigned vertex_ix_prv = 0;
+    size_t current_material_ix = 0;
+    size_t vertex_ix = 0;
+    size_t vertex_ix_prv = 0;
     bool first_obj = true;
 
     while (*p) {
@@ -116,28 +116,15 @@ public:
         token const t = token_next(&p);
         unsigned const n = token_size(&t);
         std::string mtl_name = {t.content, t.content + n};
-        bool found = false;
-        for (unsigned i = 0; i < materials.store.size(); ++i) {
-          material const &mtl = materials.store.at(i);
-          if (mtl.path == mtl_path and mtl.name == mtl_name) {
-            current_material_ix = i;
-            found = true;
-            break;
-          }
-        }
-        if (not found) {
-          fprintf(stderr,
-                  "\n%s:%d: cannot find material: path '%s' name '%s'\n",
-                  __FILE__, __LINE__, mtl_path.c_str(), mtl_name.c_str());
-          fflush(stderr);
-          std::abort();
-        }
-
+        current_material_ix =
+            materials.find_material_ix_or_break(mtl_path, mtl_name);
         if (vertex_ix_prv != vertex_ix) {
+          // is not the first 'usemtl' directive
           ranges.emplace_back(vertex_ix_prv, vertex_ix - vertex_ix_prv,
                               current_material_ix);
           vertex_ix_prv = vertex_ix;
         }
+        continue;
       }
       if (token_equals(&tk, "s")) {
         // smoothing directive ignored
