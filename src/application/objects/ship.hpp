@@ -29,8 +29,8 @@ public:
   }
 
   inline auto update() -> bool override {
-    if (object::update()) {
-      return true;
+    if (not object::update()) {
+      return false;
     }
 
     game_area_roll(position);
@@ -40,28 +40,26 @@ public:
 
     uint64_t const keys = net_state->keys;
     if (not keys) {
-      return false;
+      return true;
     }
 
     // handle ship controls
-    if (keys & glos::key_w) {
+    if (keys & key_w) {
       velocity +=
           ship_speed * vec3{-sin(angle.y), 0, -cos(angle.y)} * frame_context.dt;
       glob_ix = glob_ix_ship_engine_on;
     }
-    if (keys & glos::key_a) {
-      angular_velocity.y = radians(ship_turn_rate_deg);
+    if (keys & key_a) {
+      angular_velocity.y = ship_turn_rate;
     }
-    if (keys & glos::key_d) {
-      angular_velocity.y = radians(-ship_turn_rate_deg);
+    if (keys & key_d) {
+      angular_velocity.y = -ship_turn_rate;
     }
-    if (keys & glos::key_j) {
-      if (ready_to_fire_at_ms < frame_context.ms) {
-        fire();
-      }
+    if (keys & key_j) {
+      fire();
     }
 
-    return false;
+    return true;
   }
 
   inline auto on_collision(object *o) -> bool override {
@@ -91,11 +89,15 @@ public:
       frg->death_time_ms = frame_context.ms + 500;
     }
 
-    return false;
+    return true;
   }
 
 private:
   inline void fire() {
+    if (ready_to_fire_at_ms > frame_context.ms) {
+      return;
+    }
+
     mat4 const &M = get_updated_Mmw();
     vec3 const forward_vec = -normalize(vec3{M[2]});
     // note. M[2] is third column: z-axis

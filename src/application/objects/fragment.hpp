@@ -29,14 +29,14 @@ public:
   }
 
   inline auto update() -> bool override {
-    if (object::update()) {
-      return true;
+    if (not object::update()) {
+      return false;
     }
 
     if (death_time_ms < frame_context.ms) {
-      return true;
+      return false;
     }
 
-    return false;
+    return true;
   }
 };

@@ -29,12 +29,12 @@ public:
   }
 
   inline auto update() -> bool override {
-    if (object::update()) {
-      return true;
+    if (not object::update()) {
+      return false;
     }
 
     if (death_time_ms < frame_context.ms) {
-      return true;
+      return false;
     }
 
     if (scale_time_ms < frame_context.ms) {
@@ -50,7 +50,7 @@ public:
       scale_time_ms = frame_context.ms + 1'000;
     }
 
-    return false;
+    return true;
   }
 
   inline auto on_collision(object *o) -> bool override {
@@ -58,7 +58,7 @@ public:
       printf("%lu: %lu: %s collision with %s\n", frame_context.frame_num,
              frame_context.ms, name.c_str(), o->name.c_str());
     }
-    return true;
+    return false;
   }
 
 private:

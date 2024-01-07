@@ -29,15 +29,15 @@ public:
   }
 
   inline auto update() -> bool override {
-    if (object::update()) {
-      return true;
+    if (not object::update()) {
+      return false;
     }
 
     if (is_outside_game_area(position)) {
-      return true;
+      return false;
     }
 
-    return false;
+    return true;
   }
 
   inline auto on_collision(object *o) -> bool override {
@@ -51,6 +51,6 @@ public:
     frg->angular_velocity = vec3(radians(rnd1(bullet_fragment_agl_vel_rnd)));
     frg->death_time_ms = frame_context.ms + 500;
 
-    return true;
+    return false;
   }
 };

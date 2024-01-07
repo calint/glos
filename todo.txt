@@ -1,19 +1,20 @@
+[x] consider inverting meaning of bool return value from 'update' and 'on_collision'
 [o] profile
 [ ] fix itm anti-pattern
 [ ] object: changing glob_ix should invalidate planes
 [ ] object::get_updated_Mmw_matrix: also compare with frame_context.frame_num in
     a non synchronized statement
 [ ] glob::load: better printout
+[ ] grid: static vs moving vs bullets vs scenery objects
 [ ] accessing global frame_context from threads is 1.8% of profiling 
     time without rendering on a threaded grid
 [ ] glob::load: optimize ranges by merging non-textured materials since all
-    material info is saved in the vertices
+    used material info is saved in the vertices
 [ ] use string_view instead of const char*
 [ ] objects.free(): what if destructors created new objects
 [ ] net_server: read/write instead of recv(...,0) and send(...,0)
 [ ] net_server: record client signals and then replay the session
 [ ] object: update Mmw if it will be rendered
-[ ] consider inverting meaning of bool return value from 'update'
 [ ] object render culling using camera frustum, position and bounding sphere
 [ ] grid cell render culling
 [ ] planes::update_model_to_world could save frame_num from context to shorten
@@ -44,12 +45,12 @@
 [x]     arguments
 [x]     code
 [x]   ++i instead of i++
-[ ]   friend cell to object?
+[x]   friend cell to object?
+      => and grid
 [x]   const correctness
 [x]   const everything
 [ ]   constexpr everything
 [ ]   struct vertex used for sizeof only
-[ ] grid: static vs moving vs bullets vs scenery objects
 [ ] note about the absolute texture path in mtl files
 [ ] object size and content is not cache friendly. consider components
 [x] volume::planes - ability to store some extra points without normals for use

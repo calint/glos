@@ -31,7 +31,7 @@ public:
 
       // only one thread at a time is here
 
-      if (o->update()) {
+      if (not o->update()) {
         o->is_dead = true;
         objects.free(o);
         continue;
@@ -190,7 +190,7 @@ private:
       return;
     }
 
-    if (not Oi->is_dead and Oi->on_collision(Oj)) {
+    if (not Oi->is_dead and not Oi->on_collision(Oj)) {
       Oi->is_dead = true;
       objects.free(Oi);
       if (synchronize) {
@@ -237,7 +237,7 @@ private:
 
     // only one thread at a time can be here
 
-    if (not Osrc->is_dead and Osrc->on_collision(Otrg)) {
+    if (not Osrc->is_dead and not Osrc->on_collision(Otrg)) {
       Osrc->is_dead = true;
       objects.free(Osrc);
     }

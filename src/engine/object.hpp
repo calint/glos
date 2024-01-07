@@ -43,7 +43,7 @@ public:
     }
   }
 
-  // returns true if object has died
+  // returns false if object has died, true otherwise
   inline virtual auto update() -> bool {
     float const dt = frame_context.dt;
     velocity += acceleration * dt;
@@ -57,10 +57,10 @@ public:
                                    position, angle, scale);
     }
 
-    return false;
+    return true;
   }
 
-  // returns true if object has died
+  // returns false if object has died, true otherwise
   inline virtual auto on_collision(object *obj) -> bool { return false; }
 
   // synchronized in multithreaded because both update and render thread access

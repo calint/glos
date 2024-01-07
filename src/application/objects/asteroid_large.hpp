@@ -37,13 +37,13 @@ public:
   }
 
   inline auto update() -> bool override {
-    if (object::update()) {
-      return true;
+    if (not object::update()) {
+      return false;
     }
 
     game_area_roll(position);
 
-    return false;
+    return true;
   }
 
   inline auto on_collision(object *o) -> bool override {
@@ -65,6 +65,6 @@ public:
           vec3(radians(rnd1(asteroid_large_split_agl_vel_deg)));
     }
 
-    return true;
+    return false;
   }
 };
