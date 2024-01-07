@@ -5,7 +5,7 @@ class power_up : public object {
 public:
   inline power_up() {
     name = "power_up_";
-    if (debug_multiplayer) {
+    if constexpr (debug_multiplayer) {
       ++counter;
       name.append(std::to_string(counter));
       printf("%lu: %lu: create %s\n", frame_context.frame_num, frame_context.ms,
@@ -22,7 +22,7 @@ public:
   }
 
   inline ~power_up() override {
-    if (debug_multiplayer) {
+    if constexpr (debug_multiplayer) {
       printf("%lu: %lu: free %s\n", frame_context.frame_num, frame_context.ms,
              name.c_str());
     }
@@ -54,7 +54,7 @@ public:
   }
 
   inline auto on_collision(object *o) -> bool override {
-    if (debug_multiplayer) {
+    if constexpr (debug_multiplayer) {
       printf("%lu: %lu: %s collision with %s\n", frame_context.frame_num,
              frame_context.ms, name.c_str(), o->name.c_str());
     }

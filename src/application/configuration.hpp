@@ -18,7 +18,7 @@ static constexpr unsigned grid_columns = 4;
 //       non-deterministic behavior
 static constexpr bool threaded_grid = false;
 static constexpr bool threaded_o1store = threaded_grid;
-static constexpr bool threaded_update = true;
+static constexpr bool threaded_update = false;
 
 // o1store debugging (assertions should be on in development)
 static constexpr bool o1store_check_double_free = false;
@@ -37,7 +37,7 @@ inline bool debug_object_bounding_sphere = false;
 // window dimensions
 static constexpr unsigned window_width = 1024;
 static constexpr unsigned window_height = 1024;
-static constexpr bool window_vsync = false;
+static constexpr bool window_vsync = true;
 // note. vsync should be on when not doing performance tests
 
 // number of players in networked mode
@@ -80,16 +80,16 @@ static uint32_t glob_ix_asteroid_small = 0;
 static uint32_t glob_ix_fragment = 0;
 static uint32_t glob_ix_power_up = 0;
 
-static constexpr unsigned asteroid_level = 10;
+static constexpr unsigned asteroid_level = 2;
 
 static constexpr float asteroid_large_speed = 10;
 static constexpr float asteroid_large_scale = 2;
-static constexpr unsigned asteroid_large_split = 10;
+static constexpr unsigned asteroid_large_split = 4;
 static constexpr float asteroid_large_split_speed = 6;
 static constexpr float asteroid_large_split_agl_vel_deg = 60;
 
 static constexpr float asteroid_medium_scale = 1.2f;
-static constexpr unsigned asteroid_medium_split = 10;
+static constexpr unsigned asteroid_medium_split = 4;
 static constexpr float asteroid_medium_split_speed = 6;
 static constexpr float asteroid_medium_split_agl_vel_deg = 100;
 
@@ -107,5 +107,5 @@ static constexpr float bullet_fragment_agl_vel_rnd = 360;
 static constexpr int power_up_chance_rem = 5;
 static constexpr unsigned power_up_lifetime_ms = 30'000;
 
-// used when 'debug_multiplayer' is on
+// used when 'debug_multiplayer' is on to give objects unique numbers
 static std::atomic<unsigned> counter = 0;

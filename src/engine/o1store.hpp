@@ -69,11 +69,11 @@ public:
   // allocates an instance
   // returns nullptr if instance could not be allocated
   auto allocate_instance() -> Type * {
-    if (threaded_o1store) {
+    if constexpr (threaded_o1store) {
       acquire_lock();
     }
     if (free_ptr_ >= free_end_) {
-      if (threaded_o1store) {
+      if constexpr (threaded_o1store) {
         release_lock();
       }
       return nullptr;
@@ -83,7 +83,7 @@ public:
     *alloc_ptr_ = inst;
     inst->alloc_ptr = alloc_ptr_;
     ++alloc_ptr_;
-    if (threaded_o1store) {
+    if constexpr (threaded_o1store) {
       release_lock();
     }
     return inst;
@@ -91,11 +91,11 @@ public:
 
   // adds instance to list of instances to be freed with 'apply_free()'
   void free_instance(Type *inst) {
-    if (threaded_o1store) {
+    if constexpr (threaded_o1store) {
       acquire_lock();
     }
 
-    if (o1store_check_free_limits) {
+    if constexpr (o1store_check_free_limits) {
       if (del_ptr_ >= del_end_) {
         fprintf(stderr, "\n%s:%d: store %u: free overrun\n", __FILE__, __LINE__,
                 StoreId);
@@ -104,7 +104,7 @@ public:
       }
     }
 
-    if (o1store_check_double_free) {
+    if constexpr (o1store_check_double_free) {
       for (Type **it = del_bgn_; it < del_ptr_; ++it) {
         if (*it == inst) {
           fprintf(stderr, "\n%s:%d: store %u: double free\n", __FILE__,
@@ -118,7 +118,7 @@ public:
     *del_ptr_ = inst;
     ++del_ptr_;
 
-    if (threaded_o1store) {
+    if constexpr (threaded_o1store) {
       release_lock();
     }
   }

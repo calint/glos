@@ -7,7 +7,7 @@ public:
 
   inline fragment() {
     name = "fragment_";
-    if (debug_multiplayer) {
+    if constexpr (debug_multiplayer) {
       ++counter;
       name.append(std::to_string(counter));
       printf("%lu: %lu: create %s\n", frame_context.frame_num, frame_context.ms,
@@ -22,7 +22,7 @@ public:
   }
 
   inline ~fragment() override {
-    if (debug_multiplayer) {
+    if constexpr (debug_multiplayer) {
       printf("%lu: %lu: free %s\n", frame_context.frame_num, frame_context.ms,
              name.c_str());
     }

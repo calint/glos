@@ -80,13 +80,13 @@ public:
   // synchronized in multithreaded because both update and render thread access
   // it in a non-deterministic way breaking multiplayer mode
   inline auto get_updated_Mmw() -> glm::mat4 const & {
-    if (threaded_grid or threaded_update) {
+    if constexpr (threaded_grid or threaded_update) {
       while (lock_get_updated_Mmw.test_and_set(std::memory_order_acquire)) {
       }
     }
 
     if (is_Mmw_valid()) {
-      if (threaded_grid or threaded_update) {
+      if constexpr (threaded_grid or threaded_update) {
         lock_get_updated_Mmw.clear(std::memory_order_release);
       }
       return Mmw;
@@ -102,7 +102,7 @@ public:
     glm::mat4 Mt = glm::translate(glm::mat4(1), Mmw_pos);
     Mmw = Mt * Mr * Ms;
 
-    if (threaded_grid or threaded_update) {
+    if constexpr (threaded_grid or threaded_update) {
       lock_get_updated_Mmw.clear(std::memory_order_release);
     }
 
