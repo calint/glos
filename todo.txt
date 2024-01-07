@@ -1,5 +1,6 @@
 [ ] objects.free(): what if destructors created new objects
 [ ] net_server: read/write instead of recv(...,0) and send(...,0)
+[ ] net_server: record client signals and then replay the session
 [ ] object: update Mmw if it will be rendered
 [ ] consider inverting meaning of bool return value from 'update'
 [ ] object render culling using camera frustum, position and bounding sphere
