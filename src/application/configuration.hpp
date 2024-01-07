@@ -8,9 +8,9 @@
 //
 
 // grid dimensions
-static constexpr unsigned grid_cell_size = 10;
-static constexpr unsigned grid_ncells_wide = 4;
-static constexpr unsigned grid_ncells_high = 4;
+static constexpr unsigned grid_cell_size = 10; // in meters
+static constexpr unsigned grid_cell_rows = 4;
+static constexpr unsigned grid_cell_columns = 4;
 
 // multithreaded grid
 // note. in some cases multithreaded mode is a degradation of performance
@@ -79,7 +79,6 @@ static uint32_t glob_ix_asteroid_medium = 0;
 static uint32_t glob_ix_asteroid_small = 0;
 static uint32_t glob_ix_fragment = 0;
 static uint32_t glob_ix_power_up = 0;
-
 
 static constexpr unsigned asteroid_level = 10;
 
