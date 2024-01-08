@@ -1,4 +1,5 @@
 // reviewed: 2024-01-04
+// reviewed: 2024-01-08
 
 #include "../engine/engine.hpp"
 
@@ -21,7 +22,7 @@ static std::atomic<unsigned> asteroids_alive{0};
 static void application_init_shaders();
 static void create_asteroids(unsigned num);
 
-//
+// engine interface
 void application_init() {
   application_init_shaders();
 
@@ -109,6 +110,7 @@ void application_init() {
   hud.load_font("assets/fonts/digital-7 (mono).ttf", 20);
 }
 
+// engine interface
 void application_on_update_done() {
   if (asteroids_alive == 0) {
     ++level;
@@ -116,6 +118,7 @@ void application_on_update_done() {
   }
 }
 
+// engine interface
 void application_on_render_done() {
   if (score != score_prv) {
     score_prv = score;
@@ -125,6 +128,7 @@ void application_on_render_done() {
   }
 }
 
+// engine interface
 void application_free() {}
 
 static void create_asteroids(unsigned const num) {

@@ -1,15 +1,16 @@
 #pragma once
 // reviewed: 2024-01-04
+// reviewed: 2024-01-08
 
 #include "fragment.hpp"
 
-class bullet : public object {
+class bullet final : public object {
 public:
   inline bullet() {
-    name = "bullet_";
+    name = "bullet";
     if (debug_multiplayer) {
       ++counter;
-      name.append(std::to_string(counter));
+      name.append(1, '_').append(std::to_string(counter));
       printf("%lu: %lu: create %s\n", frame_context.frame_num, frame_context.ms,
              name.c_str());
     }

@@ -1,15 +1,16 @@
 #pragma once
 // reviewed: 2024-01-04
+// reviewed: 2024-01-08
 
-class fragment : public object {
+class fragment final : public object {
 public:
   uint64_t death_time_ms = 0;
 
   inline fragment() {
-    name = "fragment_";
+    name = "fragment";
     if (debug_multiplayer) {
       ++counter;
-      name.append(std::to_string(counter));
+      name.append(1, '_').append(std::to_string(counter));
       printf("%lu: %lu: create %s\n", frame_context.frame_num, frame_context.ms,
              name.c_str());
     }

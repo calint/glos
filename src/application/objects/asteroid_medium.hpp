@@ -1,19 +1,21 @@
 #pragma once
 // reviewed: 2024-01-04
+// reviewed: 2024-01-08
 
+// include order relevant
 #include "../configuration.hpp"
 //
 #include "asteroid_small.hpp"
 //
 #include "../utils.hpp"
 
-class asteroid_medium : public object {
+class asteroid_medium final : public object {
 public:
   inline asteroid_medium() {
-    name = "asteroid_medium_";
+    name = "asteroid_medium";
     if (debug_multiplayer) {
       ++counter;
-      name.append(std::to_string(counter));
+      name.append(1, '_').append(std::to_string(counter));
       printf("%lu: %lu: create %s\n", frame_context.frame_num, frame_context.ms,
              name.c_str());
     }
