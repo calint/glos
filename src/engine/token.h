@@ -36,8 +36,8 @@ static inline auto token_get_float(token const *t) -> float {
   return float(atof(t->content)); //? assuming file ends with whitespace
 }
 
-static inline auto token_get_int(token const *t) -> float {
-  return float(atoi(t->content)); //?  assuming file ends with whitespace
+static inline auto token_get_int(token const *t) -> int {
+  return atoi(t->content); //?  assuming file ends with whitespace
 }
 
 static inline auto token_get_uint(token const *t) -> unsigned {

@@ -1,4 +1,4 @@
-mån  8 jan 2024 19:24:15 CET
+mån  8 jan 2024 19:28:19 CET
 /home/c/w/glos/qa/lint/../../src/engine/../application/../engine/engine.hpp:204:15: warning: method 'free' can be made static [readability-convert-member-functions-to-static]
   inline void free() {
               ^
@@ -84,7 +84,4 @@ class object {
 /home/c/w/glos/qa/lint/../../src/engine/token.h:3:1: warning: use 'using' instead of 'typedef' [modernize-use-using]
 typedef struct token {
 ^~~~~~~~~~~~~~~~~~~~~~
-/home/c/w/glos/qa/lint/../../src/engine/token.h:40:10: warning: narrowing conversion from 'int' to 'float' [bugprone-narrowing-conversions,cppcoreguidelines-narrowing-conversions]
-  return float(atoi(t->content)); //?  assuming file ends with whitespace
-         ^
-mån  8 jan 2024 19:25:21 CET
+mån  8 jan 2024 19:29:26 CET
