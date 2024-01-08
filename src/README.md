@@ -29,4 +29,4 @@
   - when change to a public member triggers other actions, accessors are written, and member is moved to private scope
 * `++i` instead of `i++`
   - for consistency with incrementing iterators, all increments and decrements are done in prefix
-* all class members and variables are initialized for clarity although redundant, such as `std::string s = "";` instead of simply `std::string s;`
+* all class members and variables are initialized for clarity although redundant, such as `std::string s = "";` or `std::string s{};` instead of simply `std::string s;`
