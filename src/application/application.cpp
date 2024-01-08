@@ -135,11 +135,11 @@ static void create_asteroids(unsigned const num) {
   constexpr float v = asteroid_large_speed;
   constexpr float d = game_area_max_x - game_area_min_x;
   for (unsigned i = 0; i < num; ++i) {
-    auto *o = new (objects.alloc()) asteroid_large{};
-    o->position.x = rnd1(d);
-    o->position.z = rnd1(d);
-    o->velocity.x = rnd1(v);
-    o->velocity.z = rnd1(v);
+    asteroid_large *ast = new (objects.alloc()) asteroid_large{};
+    ast->position.x = rnd1(d);
+    ast->position.z = rnd1(d);
+    ast->velocity.x = rnd1(v);
+    ast->velocity.z = rnd1(v);
   }
 }
 
