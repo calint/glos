@@ -139,6 +139,7 @@ static void create_asteroids(unsigned const num) {
   }
 }
 
+// some additional shaders
 static void application_init_shaders() {
   {
     char const *vtx = R"(

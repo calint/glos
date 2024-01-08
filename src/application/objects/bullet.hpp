@@ -16,9 +16,9 @@ public:
     glob_ix = glob_ix_bullet;
     scale = {1, 1, 1};
     radius = globs.at(glob_ix).bounding_radius * scale.x;
+    mass = 5;
     collision_bits = cb_hero_bullet;
     collision_mask = cb_asteroid;
-    mass = 5;
   }
 
   inline ~bullet() override {

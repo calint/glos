@@ -20,9 +20,9 @@ public:
     glob_ix = glob_ix_asteroid_medium;
     scale = vec3{asteroid_medium_scale};
     radius = globs.at(glob_ix).bounding_radius * scale.x;
+    mass = 1000;
     collision_bits = cb_asteroid;
     collision_mask = cb_hero_bullet | cb_hero;
-    mass = 1000;
     ++asteroids_alive;
   }
 
@@ -55,8 +55,8 @@ public:
 
     for (unsigned i = 0; i < asteroid_medium_split; ++i) {
       asteroid_small *ast = new (objects.alloc()) asteroid_small{};
-      const float rd2 = radius / 2;
-      const vec3 rp = vec3(rnd1(rd2), 0, rnd1(rd2));
+      float const rd2 = radius / 2;
+      vec3 const rp = {rnd1(rd2), 0, rnd1(rd2)};
       ast->position = position + rp;
       ast->velocity =
           velocity + rnd2(asteroid_medium_split_speed) * normalize(rp);

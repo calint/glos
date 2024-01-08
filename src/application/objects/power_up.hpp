@@ -14,11 +14,11 @@ public:
     glob_ix = glob_ix_power_up;
     scale = {0.5f, 0.5f, 0.5f};
     radius = globs.at(glob_ix).bounding_radius * scale.x;
+    mass = 10;
     is_sphere = true;
-    death_time_ms = frame_context.ms + power_up_lifetime_ms;
     collision_bits = cb_power_up;
     collision_mask = cb_hero;
-    mass = 10;
+    death_time_ms = frame_context.ms + power_up_lifetime_ms;
   }
 
   inline ~power_up() override {
@@ -58,6 +58,7 @@ public:
       printf("%lu: %lu: %s collision with %s\n", frame_context.frame_num,
              frame_context.ms, name.c_str(), o->name.c_str());
     }
+
     return false;
   }
 

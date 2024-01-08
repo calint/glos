@@ -77,6 +77,7 @@ static uint32_t glob_ix_power_up = 0;
 // settings
 static constexpr unsigned asteroid_level = 2;
 
+static constexpr float asteroid_large_agl_vel_rnd = glm::radians(45.0f);
 static constexpr float asteroid_large_speed = 10;
 static constexpr float asteroid_large_scale = 2;
 static constexpr unsigned asteroid_large_split = 4;

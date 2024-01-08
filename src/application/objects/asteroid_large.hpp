@@ -1,6 +1,7 @@
 #pragma once
 // reviewed: 2024-01-04
 
+// include order relevant
 #include "../configuration.hpp"
 //
 #include "asteroid_medium.hpp"
@@ -17,13 +18,13 @@ public:
       printf("%lu: %lu: create %s\n", frame_context.frame_num, frame_context.ms,
              name.c_str());
     }
-    scale = vec3{asteroid_large_scale};
     glob_ix = glob_ix_asteroid_large;
-    mass = 1500;
+    scale = vec3{asteroid_large_scale};
     radius = globs.at(glob_ix).bounding_radius * scale.x;
+    mass = 1500;
     collision_bits = cb_asteroid;
     collision_mask = cb_hero_bullet | cb_hero;
-    angular_velocity.y = radians(rnd1(45));
+    angular_velocity.y = rnd1(asteroid_large_agl_vel_rnd);
     ++asteroids_alive;
   }
 
@@ -56,8 +57,8 @@ public:
 
     for (unsigned i = 0; i < asteroid_large_split; ++i) {
       asteroid_medium *ast = new (objects.alloc()) asteroid_medium{};
-      const float rd2 = radius / 2;
-      const vec3 rp = vec3(rnd1(rd2), 0, rnd1(rd2));
+      float const rd2 = radius / 2;
+      vec3 const rp = {rnd1(rd2), 0, rnd1(rd2)};
       ast->position = position + rp;
       ast->velocity =
           velocity + rnd2(asteroid_large_split_speed) * normalize(rp);

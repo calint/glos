@@ -16,9 +16,9 @@ public:
     glob_ix = glob_ix_ship;
     scale = {1, 1, 1};
     radius = globs.at(glob_ix).bounding_radius * scale.x;
+    mass = 150;
     collision_bits = cb_hero;
     collision_mask = cb_asteroid | cb_power_up;
-    mass = 150;
   }
 
   inline ~ship() override {
@@ -67,9 +67,9 @@ public:
       printf("%lu: %lu: %s collision with %s\n", frame_context.frame_num,
              frame_context.ms, name.c_str(), o->name.c_str());
     }
+
     if (typeid(*o) == typeid(power_up)) {
       score += 150;
-
       if (bullet_level == 0) {
         bullet_fire_rate_ms /= 2;
         if (bullet_fire_rate_ms < 100) {
@@ -110,7 +110,6 @@ private:
       bullet *blt = new (objects.alloc()) bullet{};
       blt->position = position + forward_vec;
       blt->angle = angle;
-      // note. forward is in negative z-axis direction
       blt->velocity = ship_bullet_speed * forward_vec;
       ready_to_fire_at_ms = frame_context.ms + bullet_fire_rate_ms;
       break;
@@ -122,8 +121,8 @@ private:
         blt->angle = angle;
         blt->velocity = ship_bullet_speed * forward_vec;
         constexpr float sp = ship_bullet_spread;
-        blt->velocity.x += float(rnd1(sp));
-        blt->velocity.z += float(rnd1(sp));
+        blt->velocity.x += rnd1(sp);
+        blt->velocity.z += rnd1(sp);
       }
       ready_to_fire_at_ms = frame_context.ms + bullet_fire_rate_ms;
       break;
