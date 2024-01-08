@@ -17,7 +17,7 @@ gdb glos /var/lib/apport/coredump/core._home_c_w_glos_glos.1000.a5eca36c-81b5-42
 # type 'bt' for stacktrace
 
 # cache hits statistics
-sudo perf stat -e cache-references,cache-misses ./glos
+sudo perf stat -B -e cache-references,cache-misses,branches,branch-misses,cycles,instructions,faults,migrations ./glos 
 
 cat stacktrace | awk '{print $2}'|cut -c 2-9 | while read addr; do
 	addr2line -e glos $addr

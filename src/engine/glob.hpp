@@ -28,7 +28,7 @@ public:
     glDeleteBuffers(1, &vertex_buffer_id);
     glDeleteVertexArrays(1, &vertex_array_id);
     metrics.buffered_vertex_data -= size_B;
-    metrics.allocated_globs--;
+    --metrics.allocated_globs;
   }
 
   inline void render(glm::mat4 const &mtx_mw) const {

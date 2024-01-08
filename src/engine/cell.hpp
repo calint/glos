@@ -8,37 +8,38 @@ class cell final {
 public:
   // called from grid (possibly by multiple threads)
   inline void update() const {
-    for (object *o : ols) {
-      // check if object has already been updated by a different cell
-      if (threaded_grid and o->overlaps_cells) {
-        // object is in several cells and may be called from multiple threads
-
-        o->acquire_lock();
-        if (o->updated_at_tick == frame_context.frame_num) {
-          o->release_lock();
-          continue;
+    for (object *obj : ols) {
+      if (threaded_grid) {
+        if (obj->overlaps_cells) {
+          // object is in several cells and may be called from multiple threads
+          obj->acquire_lock();
+          if (obj->updated_at_tick == frame_context.frame_num) {
+            obj->release_lock();
+            continue;
+          }
+          obj->updated_at_tick = frame_context.frame_num;
+          obj->release_lock();
         }
-        o->updated_at_tick = frame_context.frame_num;
-        o->release_lock();
-
       } else {
-        // object is in only one cell or can only be called from one thread
-        if (o->updated_at_tick == frame_context.frame_num) {
-          continue;
+        if (obj->overlaps_cells) {
+          // object is in several cells and may be called from multiple cells
+          if (obj->updated_at_tick == frame_context.frame_num) {
+            continue;
+          }
+          obj->updated_at_tick = frame_context.frame_num;
         }
-        o->updated_at_tick = frame_context.frame_num;
       }
 
-      // only one thread at a time is here
+      // only one thread at a time is here for 'obj'
 
-      if (not o->update()) {
-        o->is_dead = true;
-        objects.free(o);
+      if (not obj->update()) {
+        obj->is_dead = true;
+        objects.free(obj);
         continue;
       }
 
       // note. opportunity to clear the list prior to 'resolve_collisions'
-      o->clear_handled_collisions();
+      obj->clear_handled_collisions();
     }
   }
 
@@ -57,10 +58,12 @@ public:
 
         // thread safe because 'collision_mask' and 'collision_bits' do not
         // change during 'resolve_collisions'
+        //! what if object 'on_collision' changes the mask or bitss
 
+        bool const Oi_interest_of_Oj = Oi->collision_mask & Oj->collision_bits;
+        bool const Oj_interest_of_Oi = Oj->collision_mask & Oi->collision_bits;
         // check if Oi and Oj have interest in collision with each other
-        if ((Oi->collision_mask & Oj->collision_bits) == 0 and
-            (Oj->collision_mask & Oi->collision_bits) == 0) {
+        if (not Oi_interest_of_Oj and not Oj_interest_of_Oi) {
           continue;
         }
 
@@ -76,8 +79,18 @@ public:
         // bounding spheres are in collision
 
         if (Oi->is_sphere and Oj->is_sphere) {
-          handle_sphere_collision(Oi, Oj);
-          handle_sphere_collision(Oj, Oi);
+          bool Oi_handled_Oj = false;
+          bool Oj_handled_Oi = false;
+          if (Oi_interest_of_Oj) {
+            Oi_handled_Oj = dispatch_collision(Oi, Oj);
+          }
+          if (Oj_interest_of_Oi) {
+            Oj_handled_Oi = dispatch_collision(Oj, Oi);
+          }
+          if ((Oi_interest_of_Oj and not Oi_handled_Oj) or
+              (Oj_interest_of_Oi and not Oj_handled_Oi)) {
+            handle_sphere_collision(Oi, Oj);
+          }
           continue;
         }
 
@@ -87,8 +100,12 @@ public:
           Oj->update_planes_world_coordinates();
           if (Oj->planes.is_in_collision_with_sphere(Oi->position,
                                                      Oi->radius)) {
-            dispatch_collision(Oi, Oj);
-            dispatch_collision(Oj, Oi);
+            if (Oi_interest_of_Oj) {
+              dispatch_collision(Oi, Oj);
+            }
+            if (Oj_interest_of_Oi) {
+              dispatch_collision(Oj, Oi);
+            }
           }
           continue;
 
@@ -97,20 +114,28 @@ public:
           Oi->update_planes_world_coordinates();
           if (Oi->planes.is_in_collision_with_sphere(Oj->position,
                                                      Oj->radius)) {
-            dispatch_collision(Oj, Oi);
-            dispatch_collision(Oi, Oj);
+            if (Oi_interest_of_Oj) {
+              dispatch_collision(Oi, Oj);
+            }
+            if (Oj_interest_of_Oi) {
+              dispatch_collision(Oj, Oi);
+            }
           }
           continue;
         }
 
-        // both objects are convex volumes
+        // both objects are convex volumes bounded by planes
 
         if (not are_bounding_planes_in_collision(Oi, Oj)) {
           continue;
         }
 
-        dispatch_collision(Oi, Oj);
-        dispatch_collision(Oj, Oi);
+        if (Oi_interest_of_Oj) {
+          dispatch_collision(Oi, Oj);
+        }
+        if (Oj_interest_of_Oi) {
+          dispatch_collision(Oj, Oi);
+        }
       }
     }
   }
@@ -151,28 +176,7 @@ private:
   std::vector<object *> ols{};
 
   static inline void handle_sphere_collision(object *Oi, object *Oj) {
-
-    // check if Oi is subscribed to collision with Oj
-    if ((Oi->collision_mask & Oj->collision_bits) == 0) {
-      return;
-    }
-
-    // if object overlaps cells and threaded grid then this code might be called
-    // by several threads at the same time
-    const bool synchronize = threaded_grid and Oi->overlaps_cells;
-
-    if (synchronize) {
-      Oi->acquire_lock();
-    }
-
-    if (Oi->is_collision_handled_and_if_not_add(Oj)) {
-      if (synchronize) {
-        Oi->release_lock();
-      }
-      return;
-    }
-
-    // only one thread at a time can be here
+    //! racing
 
     glm::vec3 const collision_normal =
         glm::normalize(Oj->position - Oi->position);
@@ -182,20 +186,6 @@ private:
 
     if (relative_velocity_along_collision_normal >= 0 or
         std::isnan(relative_velocity_along_collision_normal)) {
-
-      // objects are not moving towards each other
-      if (synchronize) {
-        Oi->release_lock();
-      }
-      return;
-    }
-
-    if (not Oi->is_dead and not Oi->on_collision(Oj)) {
-      Oi->is_dead = true;
-      objects.free(Oi);
-      if (synchronize) {
-        Oi->release_lock();
-      }
       return;
     }
 
@@ -207,44 +197,38 @@ private:
                           (Oi->mass + Oj->mass);
 
     Oi->velocity += impulse * Oj->mass * collision_normal;
-
-    if (synchronize) {
-      Oi->release_lock();
-    }
+    Oj->velocity -= impulse * Oi->mass * collision_normal;
   }
 
-  static inline void dispatch_collision(object *Osrc, object *Otrg) {
-
-    // check if Osrc is subscribed to collision with Otrg
-    if ((Osrc->collision_mask & Otrg->collision_bits) == 0) {
-      return;
-    }
-
-    // if object overlaps cells this code might be called by several threads at
-    // the same time
-    const bool synchronize = threaded_grid and Osrc->overlaps_cells;
+  // returns true if collision has already been handled by Osrc
+  static inline auto dispatch_collision(object *receiver, object *obj) -> bool {
+    // if object overlaps cells then this code might be called by several
+    // threads at the same time
+    const bool synchronize = threaded_grid and receiver->overlaps_cells;
 
     if (synchronize) {
-      Osrc->acquire_lock();
+      receiver->acquire_lock();
     }
 
-    if (Osrc->is_collision_handled_and_if_not_add(Otrg)) {
+    if (receiver->is_collision_handled_and_if_not_add(obj)) {
       if (synchronize) {
-        Osrc->release_lock();
+        receiver->release_lock();
       }
-      return;
+      return true;
     }
 
     // only one thread at a time can be here
 
-    if (not Osrc->is_dead and not Osrc->on_collision(Otrg)) {
-      Osrc->is_dead = true;
-      objects.free(Osrc);
+    if (not receiver->is_dead and not receiver->on_collision(obj)) {
+      receiver->is_dead = true;
+      objects.free(receiver);
     }
 
     if (synchronize) {
-      Osrc->release_lock();
+      receiver->release_lock();
     }
+
+    return false;
   }
 
   static inline auto are_bounding_spheres_in_collision(object const *o1,

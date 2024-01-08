@@ -8,10 +8,9 @@
 //
 
 // grid dimensions
-static constexpr unsigned grid_size = 3200; // e.g. in meters
+static constexpr unsigned grid_cell_size = 100; // e.g. in meters
 static constexpr unsigned grid_rows = 16;
 static constexpr unsigned grid_columns = 16;
-static constexpr unsigned grid_cell_size = grid_size / 16;
 
 // multithreaded grid
 // note. in some cases multithreaded mode is a degradation of performance
@@ -48,7 +47,7 @@ static constexpr bool window_vsync = false;
 static constexpr unsigned net_players = 2;
 
 // number of preallocated objects
-static constexpr unsigned objects_count = 64 * 1024;
+static constexpr unsigned objects_count = 32 * 1024;
 
 // maximum size of any object instance in bytes
 static constexpr size_t objects_instance_size_B = 1024;

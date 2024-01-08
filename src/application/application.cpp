@@ -164,6 +164,18 @@ void application_on_render_done() {
 void application_free() {}
 
 static void create_asteroids(unsigned const num) {
+  // {
+  //   asteroid_large *o = new (objects.alloc()) asteroid_large{};
+  //   o->name = "left";
+  //   o->position.x = -5;
+  //   o->velocity.x = 5;
+  // }
+  // {
+  //   asteroid_large *o = new (objects.alloc()) asteroid_large{};
+  //   o->name = "right";
+  //   o->position.x = 5;
+  //   o->velocity.x = -5;
+  // }
   constexpr float v = asteroid_large_speed;
   constexpr float d = game_area_max_x - game_area_min_x;
   for (unsigned i = 0; i < num; ++i) {
