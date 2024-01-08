@@ -5,9 +5,11 @@
 [ ]   render cull cells
 [ ]   render cull objects
 [ ]   fix multithreading issues
+[ ] metrics gives a large first fps
 [x] consider inverting meaning of bool return value from 'update' and 'on_collision'
 [o] profile
 [ ] object: changing glob_ix should invalidate planes
+    => for now planes.points_invalidated and planes.normals_invalidated flags
 [ ] object::get_updated_Mmw_matrix: also compare with frame_context.frame_num in
     a non synchronized statement
 [ ] glob::load: better printout

@@ -5,6 +5,9 @@
 namespace glos {
 class planes final {
 public:
+  bool normals_invalidated = true;
+  bool points_invalidated = true;
+
   // points and normals are in model coordinates
   // Mmw matrix was constructed using pos, agl, scl are
   inline void update_model_to_world(std::vector<glm::vec3> const &points,
@@ -12,23 +15,26 @@ public:
                                     glm::mat4 const &Mmw, glm::vec3 const &pos,
                                     glm::vec3 const &agl,
                                     glm::vec3 const &scl) {
-    if (not points.empty() and
-        (pos != Mmw_pos or agl != Mmw_agl or scl != Mmw_scl)) {
+    // points
+    if (points_invalidated or pos != Mmw_pos or agl != Mmw_agl or
+        scl != Mmw_scl) {
       // matrix state is not in sync with current state
       Mmw_pos = pos;
       Mmw_agl = agl;
       Mmw_scl = scl;
+
       // update world_positions
       world_points.clear();
       for (glm::vec3 const &Pm : points) {
         glm::vec4 const Pw = Mmw * glm::vec4{Pm, 1.0f};
         world_points.emplace_back(Pw);
       }
-    }
-    // normals
-    if (not normals.empty() and (first_update or agl != Nmw_agl)) {
-      first_update = false;
 
+      points_invalidated = false;
+    }
+
+    // normals
+    if (normals_invalidated or agl != Nmw_agl) {
       // update matrix
       Nmw_agl = agl;
       glm::mat4 const Nr = glm::eulerAngleXYZ(Nmw_agl.x, Nmw_agl.y, Nmw_agl.z);
@@ -40,6 +46,8 @@ public:
         glm::vec3 const Nw = Nmw * Nm;
         world_normals.emplace_back(Nw);
       }
+
+      normals_invalidated = false;
     }
   }
 
@@ -112,8 +120,6 @@ private:
   glm::vec3 Mmw_agl{};
   glm::vec3 Mmw_scl{};
   glm::vec3 Nmw_agl{};
-  // necessary because Nmw_agl is zero and so might also be the object angle
-  bool first_update = true;
   //
   std::atomic_flag spinlock = ATOMIC_FLAG_INIT;
 
