@@ -1,3 +1,4 @@
+[ ] release and continue with sandbox game in glosi
 [x] consider inverting meaning of bool return value from 'update' and 'on_collision'
 [o] profile
 [ ] object: changing glob_ix should invalidate planes

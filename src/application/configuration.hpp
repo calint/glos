@@ -26,10 +26,10 @@ static constexpr bool o1store_check_double_free = false;
 static constexpr bool o1store_check_free_limits = false;
 
 // metrics print to console
-static constexpr bool metrics_print = false;
+static constexpr bool metrics_print = true;
 
 // multiplayer debugging output
-static constexpr bool debug_multiplayer = true;
+static constexpr bool debug_multiplayer = false;
 
 // render debugging (runtime modifiable)
 inline bool debug_object_planes_normals = false;
@@ -75,7 +75,7 @@ static uint32_t glob_ix_fragment = 0;
 static uint32_t glob_ix_power_up = 0;
 
 // settings
-static constexpr unsigned asteroid_level = 10;
+static constexpr unsigned asteroid_level = 2;
 
 static constexpr float asteroid_large_speed = 10;
 static constexpr float asteroid_large_scale = 2;
