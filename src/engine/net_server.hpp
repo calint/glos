@@ -54,7 +54,7 @@ public:
       std::abort();
     }
 
-    printf(" * waiting for %d players to connect on port %d\n", net_players,
+    printf(" * waiting for %u players to connect on port %u\n", net_players,
            port);
 
     for (unsigned i = 1; i < net_players + 1; ++i) {
@@ -75,7 +75,7 @@ public:
         std::abort();
       }
 
-      printf(" * player %d of %d connected\n", i, net_players);
+      printf(" * player %u of %u connected\n", i, net_players);
     }
 
     printf(" * sending start\n");

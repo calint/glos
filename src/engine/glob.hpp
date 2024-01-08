@@ -220,7 +220,7 @@ public:
       triangles_count += unsigned(r.vertex_count / 3);
     }
 
-    printf("     %zu range%c   %lu vertices   %u triangles   %zu B   radius: "
+    printf("     %zu range%c   %zu vertices   %u triangles   %zu B   radius: "
            "%0.2f\n",
            ranges.size(), ranges.size() == 1 ? ' ' : 's',
            vertices.size() * sizeof(float) / sizeof(vertex), triangles_count,

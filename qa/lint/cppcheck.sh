@@ -2,7 +2,7 @@
 # tools:
 #   cppcheck: 2.10
 
-SRC=../../src/main.cpp
+SRC="../../src/main.cpp ../../src/application/application.cpp"
 
 date | tee cppcheck.log
 cppcheck --enable=all --inline-suppr \

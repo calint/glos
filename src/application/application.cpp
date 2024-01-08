@@ -32,13 +32,13 @@ void application_init() {
   printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
   printf(": %15s : %-9s :\n", "class", "bytes");
   printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
-  printf(": %15s : %-9ld :\n", "asteroid_large", sizeof(asteroid_large));
-  printf(": %15s : %-9ld :\n", "asteroid_medium", sizeof(asteroid_medium));
-  printf(": %15s : %-9ld :\n", "asteroid_small", sizeof(asteroid_small));
-  printf(": %15s : %-9ld :\n", "bullet", sizeof(bullet));
-  printf(": %15s : %-9ld :\n", "fragment", sizeof(fragment));
-  printf(": %15s : %-9ld :\n", "power_up", sizeof(power_up));
-  printf(": %15s : %-9ld :\n", "ship", sizeof(ship));
+  printf(": %15s : %-9zu :\n", "asteroid_large", sizeof(asteroid_large));
+  printf(": %15s : %-9zu :\n", "asteroid_medium", sizeof(asteroid_medium));
+  printf(": %15s : %-9zu :\n", "asteroid_small", sizeof(asteroid_small));
+  printf(": %15s : %-9zu :\n", "bullet", sizeof(bullet));
+  printf(": %15s : %-9zu :\n", "fragment", sizeof(fragment));
+  printf(": %15s : %-9zu :\n", "power_up", sizeof(power_up));
+  printf(": %15s : %-9zu :\n", "ship", sizeof(ship));
   printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
   puts("");
 
@@ -123,7 +123,7 @@ void application_on_render_done() {
   if (score != score_prv) {
     score_prv = score;
     std::array<char, 256> buf{};
-    sprintf(buf.data(), "score: %06d", score);
+    sprintf(buf.data(), "score: %06u", score);
     hud.print(buf.data(), SDL_Color{255, 0, 0, 255}, 60, 10);
   }
 }

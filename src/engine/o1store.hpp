@@ -11,8 +11,8 @@
 // note. no destructor since life-time is program life-time
 //
 
-template <typename Type, const size_t Size, const unsigned StoreId = 0,
-          const size_t InstanceSizeInBytes = 0>
+template <typename Type, size_t const Size, unsigned const StoreId = 0,
+          size_t const InstanceSizeInBytes = 0>
 class o1store final {
   Type *all_ = nullptr;
   Type **free_bgn_ = nullptr;

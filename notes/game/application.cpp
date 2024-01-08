@@ -31,14 +31,14 @@ void application_init() {
   printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
   printf(": %15s : %-9s :\n", "class", "bytes");
   printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
-  printf(": %15s : %-9ld :\n", "ship", sizeof(ship));
-  printf(": %15s : %-9ld :\n", "asteroid_large", sizeof(asteroid_large));
-  printf(": %15s : %-9ld :\n", "asteroid_medium", sizeof(asteroid_medium));
-  printf(": %15s : %-9ld :\n", "asteroid_small", sizeof(asteroid_small));
-  printf(": %15s : %-9ld :\n", "bullet", sizeof(bullet));
-  printf(": %15s : %-9ld :\n", "fragment", sizeof(fragment));
-  printf(": %15s : %-9ld :\n", "power_up", sizeof(power_up));
-  printf(": %15s : %-9ld :\n", "ship", sizeof(ship));
+  printf(": %15s : %-9zu :\n", "ship", sizeof(ship));
+  printf(": %15s : %-9zu :\n", "asteroid_large", sizeof(asteroid_large));
+  printf(": %15s : %-9zu :\n", "asteroid_medium", sizeof(asteroid_medium));
+  printf(": %15s : %-9zu :\n", "asteroid_small", sizeof(asteroid_small));
+  printf(": %15s : %-9zu :\n", "bullet", sizeof(bullet));
+  printf(": %15s : %-9zu :\n", "fragment", sizeof(fragment));
+  printf(": %15s : %-9zu :\n", "power_up", sizeof(power_up));
+  printf(": %15s : %-9zu :\n", "ship", sizeof(ship));
   printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
   puts("");
 
@@ -111,37 +111,6 @@ void application_init() {
   camera.ortho_max_x = game_area_half_x;
   camera.ortho_max_y = game_area_half_z;
 
-  // camera.type = camera::type::LOOK_AT;
-  // camera.position = {0, 32, 0};
-  // camera.look_at = {0, 0, -0.00001f};
-
-  // assumes grid is a square
-  // constexpr float world_size = grid_cell_size * grid_ncells_wide;
-
-  // setup the initial scene
-  // {
-  //   object *o = new (objects.alloc()) object{};
-  //   o->name = "grid";
-  //   o->glob_ix = glob_grid_ix;
-  //   o->position.y = -5;
-  //   const glob &g = globs.at(o->glob_ix);
-  //   constexpr float grid_scale = world_size / 2;
-  //   // note. 2 because model coordinates span is -1 to 1
-  //   o->scale = {grid_scale, grid_scale, grid_scale};
-  //   o->radius = g.bounding_radius * grid_scale;
-  // }
-
-  // {
-  //   object *o = new (objects.alloc()) object{};
-  //   o->name = "skydome";
-  //   o->glob_ix = glob_skydome_ix;
-  //   const glob &g = globs.at(o->glob_ix);
-  //   constexpr float skydome_scale = world_size / 2;
-  //   // note. 2 because model coordinates span is -1 to 1
-  //   o->scale = {skydome_scale, skydome_scale, skydome_scale};
-  //   o->radius = g.bounding_radius * skydome_scale;
-  // }
-
   hud.load_font("assets/fonts/digital-7 (mono).ttf", 20);
 }
 
@@ -156,7 +125,7 @@ void application_on_render_done() {
   if (score != score_prv) {
     score_prv = score;
     char buf[256];
-    sprintf(buf, "score: %06d", score);
+    sprintf(buf, "score: %06u", score);
     hud.print(buf, SDL_Color{255, 0, 0, 255}, 60, 10);
   }
 }

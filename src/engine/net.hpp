@@ -76,18 +76,18 @@ public:
     net_init_packet nip{};
     ssize_t const n = recv(fd, &nip, sizeof(nip), 0);
     if (n == -1) {
-      fprintf(stderr, "%s:%u: ", __FILE__, __LINE__);
+      fprintf(stderr, "%s:%d: ", __FILE__, __LINE__);
       perror("");
       fflush(stderr);
       std::abort();
     }
     if (n == 0) {
-      fprintf(stderr, "%s:%u: server disconnected\n", __FILE__, __LINE__);
+      fprintf(stderr, "%s:%d: server disconnected\n", __FILE__, __LINE__);
       fflush(stderr);
       std::abort();
     }
     if (size_t(n) != sizeof(nip)) {
-      fprintf(stderr, "%s:%u: incomplete receive\n", __FILE__, __LINE__);
+      fprintf(stderr, "%s:%d: incomplete receive\n", __FILE__, __LINE__);
       fflush(stderr);
       std::abort();
     }
