@@ -1,4 +1,8 @@
-mån  8 jan 2024 19:28:19 CET
+mån  8 jan 2024 20:51:01 CET
+/home/c/w/glos/qa/lint/../../src/application/application.cpp:138:5: warning: use auto when initializing with new to avoid duplicating the type name [hicpp-use-auto,modernize-use-auto]
+    asteroid_large *ast = new (objects.alloc()) asteroid_large{};
+    ^~~~~~~~~~~~~~
+    auto
 /home/c/w/glos/qa/lint/../../src/engine/../application/../engine/engine.hpp:204:15: warning: method 'free' can be made static [readability-convert-member-functions-to-static]
   inline void free() {
               ^
@@ -7,35 +11,39 @@ mån  8 jan 2024 19:28:19 CET
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid *)0);
                                                                ^
                                                                nullptr
-/home/c/w/glos/qa/lint/../../src/engine/../application/objects/../utils.hpp:11:17: warning: rand() has limited randomness; use C++11 random library instead [cert-msc30-c,cert-msc50-cpp]
+/home/c/w/glos/qa/lint/../../src/engine/../application/objects/../utils.hpp:12:17: warning: rand() has limited randomness; use C++11 random library instead [cert-msc30-c,cert-msc50-cpp]
   int const r = rand();
                 ^
-/home/c/w/glos/qa/lint/../../src/engine/../application/objects/../utils.hpp:11:17: warning: function is not thread safe [concurrency-mt-unsafe]
-/home/c/w/glos/qa/lint/../../src/engine/../application/objects/../utils.hpp:20:17: warning: rand() has limited randomness; use C++11 random library instead [cert-msc30-c,cert-msc50-cpp]
+/home/c/w/glos/qa/lint/../../src/engine/../application/objects/../utils.hpp:12:17: warning: function is not thread safe [concurrency-mt-unsafe]
+/home/c/w/glos/qa/lint/../../src/engine/../application/objects/../utils.hpp:21:17: warning: rand() has limited randomness; use C++11 random library instead [cert-msc30-c,cert-msc50-cpp]
   int const r = rand();
                 ^
-/home/c/w/glos/qa/lint/../../src/engine/../application/objects/../utils.hpp:20:17: warning: function is not thread safe [concurrency-mt-unsafe]
-/home/c/w/glos/qa/lint/../../src/engine/../application/objects/../utils.hpp:29:17: warning: rand() has limited randomness; use C++11 random library instead [cert-msc30-c,cert-msc50-cpp]
+/home/c/w/glos/qa/lint/../../src/engine/../application/objects/../utils.hpp:21:17: warning: function is not thread safe [concurrency-mt-unsafe]
+/home/c/w/glos/qa/lint/../../src/engine/../application/objects/../utils.hpp:30:17: warning: rand() has limited randomness; use C++11 random library instead [cert-msc30-c,cert-msc50-cpp]
   int const r = rand();
                 ^
-/home/c/w/glos/qa/lint/../../src/engine/../application/objects/../utils.hpp:29:17: warning: function is not thread safe [concurrency-mt-unsafe]
-/home/c/w/glos/qa/lint/../../src/engine/../application/objects/asteroid_large.hpp:58:7: warning: use auto when initializing with new to avoid duplicating the type name [hicpp-use-auto,modernize-use-auto]
+/home/c/w/glos/qa/lint/../../src/engine/../application/objects/../utils.hpp:30:17: warning: function is not thread safe [concurrency-mt-unsafe]
+/home/c/w/glos/qa/lint/../../src/engine/../application/objects/../utils.hpp:61:3: warning: use auto when initializing with new to avoid duplicating the type name [hicpp-use-auto,modernize-use-auto]
+  power_up *pu = new (objects.alloc()) power_up{};
+  ^~~~~~~~
+  auto
+/home/c/w/glos/qa/lint/../../src/engine/../application/objects/asteroid_large.hpp:60:7: warning: use auto when initializing with new to avoid duplicating the type name [hicpp-use-auto,modernize-use-auto]
       asteroid_medium *ast = new (objects.alloc()) asteroid_medium{};
       ^~~~~~~~~~~~~~~
       auto
-/home/c/w/glos/qa/lint/../../src/engine/../application/objects/asteroid_medium.hpp:57:7: warning: use auto when initializing with new to avoid duplicating the type name [hicpp-use-auto,modernize-use-auto]
+/home/c/w/glos/qa/lint/../../src/engine/../application/objects/asteroid_medium.hpp:59:7: warning: use auto when initializing with new to avoid duplicating the type name [hicpp-use-auto,modernize-use-auto]
       asteroid_small *ast = new (objects.alloc()) asteroid_small{};
       ^~~~~~~~~~~~~~
       auto
-/home/c/w/glos/qa/lint/../../src/engine/../application/objects/bullet.hpp:49:5: warning: use auto when initializing with new to avoid duplicating the type name [hicpp-use-auto,modernize-use-auto]
+/home/c/w/glos/qa/lint/../../src/engine/../application/objects/bullet.hpp:50:5: warning: use auto when initializing with new to avoid duplicating the type name [hicpp-use-auto,modernize-use-auto]
     fragment *frg = new (objects.alloc()) fragment{};
     ^~~~~~~~
     auto
-/home/c/w/glos/qa/lint/../../src/engine/../application/objects/ship.hpp:88:7: warning: use auto when initializing with new to avoid duplicating the type name [hicpp-use-auto,modernize-use-auto]
+/home/c/w/glos/qa/lint/../../src/engine/../application/objects/ship.hpp:89:7: warning: use auto when initializing with new to avoid duplicating the type name [hicpp-use-auto,modernize-use-auto]
       fragment *frg = new (objects.alloc()) fragment{};
       ^~~~~~~~
       auto
-/home/c/w/glos/qa/lint/../../src/engine/../application/objects/ship.hpp:110:7: warning: use auto when initializing with new to avoid duplicating the type name [hicpp-use-auto,modernize-use-auto]
+/home/c/w/glos/qa/lint/../../src/engine/../application/objects/ship.hpp:111:7: warning: use auto when initializing with new to avoid duplicating the type name [hicpp-use-auto,modernize-use-auto]
       bullet *blt = new (objects.alloc()) bullet{};
       ^~~~~~
       auto
@@ -84,10 +92,4 @@ class object {
 /home/c/w/glos/qa/lint/../../src/engine/token.h:3:1: warning: use 'using' instead of 'typedef' [modernize-use-using]
 typedef struct token {
 ^~~~~~~~~~~~~~~~~~~~~~
-mån  8 jan 2024 19:29:26 CET
-mån  8 jan 2024 20:11:59 CET
-mån  8 jan 2024 20:13:45 CET
-mån  8 jan 2024 20:19:10 CET
-mån  8 jan 2024 20:19:46 CET
-mån  8 jan 2024 20:20:31 CET
-mån  8 jan 2024 20:20:45 CET
+mån  8 jan 2024 20:52:07 CET
