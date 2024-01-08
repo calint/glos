@@ -10,6 +10,8 @@ intention:
 * grid of cells that partition world space
   - update and collision detection of objects
   - multithreaded
+* game where most objects are visible on screen
+  - cull grid cells and objects to render within frustum _(todo)_
 * importing blender exported `obj` files
 * explore legacy opengl rendering
 * intuitive programming of game objects and logic
@@ -55,5 +57,4 @@ ubuntu packages used:
 ## todo
 * tidy the source in `src/engine/`
 * another sample game in a 3D sandbox-like environment
-* grid cells and objects culling to view frustum
 * and much more in [todo.txt](https://github.com/calint/glos/blob/master/todo.txt)

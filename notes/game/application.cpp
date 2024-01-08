@@ -31,6 +31,7 @@ void application_init() {
   printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
   printf(": %15s : %-9s :\n", "class", "bytes");
   printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
+  printf(": %15s : %-9ld :\n", "ship", sizeof(ship));
   printf(": %15s : %-9ld :\n", "asteroid_large", sizeof(asteroid_large));
   printf(": %15s : %-9ld :\n", "asteroid_medium", sizeof(asteroid_medium));
   printf(": %15s : %-9ld :\n", "asteroid_small", sizeof(asteroid_small));
@@ -51,6 +52,10 @@ void application_init() {
   static_assert(sizeof(ship) <= objects_instance_size_B, "");
 
   // load the objects and assign the indexes
+  glob_ix_skydome = globs.load("assets/obj/skydome.obj", nullptr);
+
+  glob_ix_grid = globs.load("assets/obj/grid.obj", nullptr);
+
   glob_ix_ship = globs.load("assets/obj/asteroids/ship.obj",
                             "assets/obj/asteroids/ship.obj");
 
@@ -105,6 +110,37 @@ void application_init() {
   camera.ortho_min_y = -game_area_half_z;
   camera.ortho_max_x = game_area_half_x;
   camera.ortho_max_y = game_area_half_z;
+
+  // camera.type = camera::type::LOOK_AT;
+  // camera.position = {0, 32, 0};
+  // camera.look_at = {0, 0, -0.00001f};
+
+  // assumes grid is a square
+  // constexpr float world_size = grid_cell_size * grid_ncells_wide;
+
+  // setup the initial scene
+  // {
+  //   object *o = new (objects.alloc()) object{};
+  //   o->name = "grid";
+  //   o->glob_ix = glob_grid_ix;
+  //   o->position.y = -5;
+  //   const glob &g = globs.at(o->glob_ix);
+  //   constexpr float grid_scale = world_size / 2;
+  //   // note. 2 because model coordinates span is -1 to 1
+  //   o->scale = {grid_scale, grid_scale, grid_scale};
+  //   o->radius = g.bounding_radius * grid_scale;
+  // }
+
+  // {
+  //   object *o = new (objects.alloc()) object{};
+  //   o->name = "skydome";
+  //   o->glob_ix = glob_skydome_ix;
+  //   const glob &g = globs.at(o->glob_ix);
+  //   constexpr float skydome_scale = world_size / 2;
+  //   // note. 2 because model coordinates span is -1 to 1
+  //   o->scale = {skydome_scale, skydome_scale, skydome_scale};
+  //   o->radius = g.bounding_radius * skydome_scale;
+  // }
 
   hud.load_font("assets/fonts/digital-7 (mono).ttf", 20);
 }

@@ -8,9 +8,10 @@
 //
 
 // grid dimensions
-static constexpr unsigned grid_cell_size = 100; // e.g. in meters
-static constexpr unsigned grid_rows = 16;
-static constexpr unsigned grid_columns = 16;
+static constexpr unsigned grid_size = 40; // square side in e.g. meters
+static constexpr unsigned grid_rows = 4;
+static constexpr unsigned grid_columns = grid_rows;
+static constexpr unsigned grid_cell_size = grid_size / grid_rows;
 
 // multithreaded grid
 // note. in some cases multithreaded mode is a degradation of performance
@@ -35,19 +36,19 @@ inline bool debug_object_planes_normals = false;
 inline bool debug_object_bounding_sphere = false;
 
 // initially render the hud
-static constexpr bool hud_enabled = false;
+static constexpr bool hud_enabled = true;
 
 // window dimensions
 static constexpr unsigned window_width = 1024;
 static constexpr unsigned window_height = 1024;
-static constexpr bool window_vsync = false;
+static constexpr bool window_vsync = true;
 // note. vsync should be on when not doing performance tests
 
 // number of players in networked mode
 static constexpr unsigned net_players = 2;
 
 // number of preallocated objects
-static constexpr unsigned objects_count = 32 * 1024;
+static constexpr unsigned objects_count = 1 * 1024;
 
 // maximum size of any object instance in bytes
 static constexpr size_t objects_instance_size_B = 1024;
@@ -76,7 +77,7 @@ static uint32_t glob_ix_fragment = 0;
 static uint32_t glob_ix_power_up = 0;
 
 // settings
-static constexpr unsigned asteroid_level = objects_count;
+static constexpr unsigned asteroid_level = 2;
 
 static constexpr float asteroid_large_speed = 10;
 static constexpr float asteroid_large_scale = 2;
@@ -104,10 +105,12 @@ static constexpr int power_up_chance_rem = 5;
 static constexpr unsigned power_up_lifetime_ms = 30'000;
 
 // game area based on grid and biggest object
-static constexpr float game_area_half_x = grid_cell_size * grid_columns / 2;
+static constexpr float game_area_half_x = grid_size / 2;
 static constexpr float game_area_half_y = 10; // screen depth
-static constexpr float game_area_half_z = grid_cell_size * grid_rows / 2;
+static constexpr float game_area_half_z = grid_size / 2;
 
+// set game area so the largest object, asteroid_large, just fits outside the
+// screen before rollover
 static constexpr float game_area_min_x =
     -game_area_half_x - asteroid_large_scale;
 static constexpr float game_area_max_x =
@@ -121,7 +124,7 @@ static constexpr float game_area_min_z =
 static constexpr float game_area_max_z =
     game_area_half_z + asteroid_large_scale;
 
-static constexpr bool create_players = false;
+static constexpr bool create_players = true;
 
-// used when 'debug_multiplayer' is on to give objects unique numbers
+// used when 'debug_multiplayer' is true to give objects unique numbers
 static std::atomic<unsigned> counter = 0;
