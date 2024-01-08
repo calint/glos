@@ -68,6 +68,8 @@ public:
              frame_context.ms, name.c_str(), o->name.c_str());
     }
     if (typeid(*o) == typeid(power_up)) {
+      score += 150;
+
       if (bullet_level == 0) {
         bullet_fire_rate_ms /= 2;
         if (bullet_fire_rate_ms < 100) {
