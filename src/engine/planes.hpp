@@ -72,12 +72,9 @@ public:
   // assumes both this and 'pns' have updated world points and normals
   // returns true if any point in this is behind all planes in 'pns'
   inline auto is_any_point_in_volume(planes const &pns) const -> bool {
-    for (glm::vec3 const &p : world_points) {
-      if (pns.is_point_behind_all_planes(p)) {
-        return true;
-      }
-    }
-    return false;
+    return std::ranges::any_of(world_points, [&](glm::vec3 const &p) {
+      return pns.is_point_behind_all_planes(p);
+    });
   }
 
   inline auto is_in_collision_with_sphere(glm::vec3 const &pos,

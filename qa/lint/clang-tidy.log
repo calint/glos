@@ -1,4 +1,4 @@
-mån  8 jan 2024 18:12:52 CET
+mån  8 jan 2024 18:53:18 CET
 /home/c/w/glos/qa/lint/../../src/engine/../application/../engine/engine.hpp:204:15: warning: method 'free' can be made static [readability-convert-member-functions-to-static]
   inline void free() {
               ^
@@ -36,11 +36,11 @@ mån  8 jan 2024 18:12:52 CET
       ^~~~~~~~
       auto
 /home/c/w/glos/qa/lint/../../src/engine/../application/objects/ship.hpp:110:7: warning: use auto when initializing with new to avoid duplicating the type name [hicpp-use-auto,modernize-use-auto]
-      bullet *o = new (objects.alloc()) bullet{};
+      bullet *blt = new (objects.alloc()) bullet{};
       ^~~~~~
       auto
 /home/c/w/glos/qa/lint/../../src/engine/../application/objects/ship.hpp:120:9: warning: use auto when initializing with new to avoid duplicating the type name [hicpp-use-auto,modernize-use-auto]
-        bullet *o = new (objects.alloc()) bullet{};
+        bullet *blt = new (objects.alloc()) bullet{};
         ^~~~~~
         auto
 /home/c/w/glos/qa/lint/../../src/engine/../application/../engine/engine.hpp:204:15: warning: method 'free' can be made static [readability-convert-member-functions-to-static]
@@ -51,10 +51,6 @@ mån  8 jan 2024 18:12:52 CET
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid *)0);
                                                                ^
                                                                nullptr
-/home/c/w/glos/qa/lint/../../src/engine/glob.hpp:76:51: warning: 'find_last_of' called with a string literal consisting of a single character; consider using the more effective overload accepting a character [performance-faster-string-find]
-      size_t const found = file_path.find_last_of("/");
-                                                  ^~~
-                                                  '/'
 /home/c/w/glos/qa/lint/../../src/engine/glob.hpp:249:37: warning: use nullptr [hicpp-use-nullptr,modernize-use-nullptr]
                           (GLvoid *)0);
                                     ^
@@ -74,9 +70,6 @@ class object {
   inline virtual auto on_collision(object *obj) -> bool { return true; }
                                            ^~~
                                             /*obj*/
-/home/c/w/glos/qa/lint/../../src/engine/planes.hpp:75:5: warning: replace loop by 'std::ranges::any_of()' [readability-use-anyofallof]
-    for (glm::vec3 const &p : world_points) {
-    ^
 /home/c/w/glos/qa/lint/../../src/engine/sdl.hpp:10:15: warning: method 'init' can be made static [readability-convert-member-functions-to-static]
   inline void init() {
               ^
@@ -258,7 +251,4 @@ static inline char const *scan_to_including_newline(char const *p) {
     if (!*p)
             ^
              {
-/home/c/w/glos/qa/lint/../../src/engine/window.hpp:38:32: warning: use of a signed integer operand with a binary bitwise operator [hicpp-signed-bitwise]
-                               (window_vsync ? SDL_RENDERER_PRESENTVSYNC : 0));
-                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-mån  8 jan 2024 18:13:53 CET
+mån  8 jan 2024 18:54:19 CET

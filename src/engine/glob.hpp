@@ -73,7 +73,7 @@ public:
     std::string base_dir_path{};
     {
       std::string const file_path = obj_path;
-      size_t const found = file_path.find_last_of("/");
+      size_t const found = file_path.find_last_of('/');
       if (found != std::string::npos) {
         base_dir_path = file_path.substr(0, found + 1);
         // note. +1 to include '/'

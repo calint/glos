@@ -107,23 +107,23 @@ private:
 
     switch (bullet_level) {
     case 0: {
-      bullet *o = new (objects.alloc()) bullet{};
-      o->position = position + forward_vec;
-      o->angle = angle;
+      bullet *blt = new (objects.alloc()) bullet{};
+      blt->position = position + forward_vec;
+      blt->angle = angle;
       // note. forward is in negative z-axis direction
-      o->velocity = ship_bullet_speed * forward_vec;
+      blt->velocity = ship_bullet_speed * forward_vec;
       ready_to_fire_at_ms = frame_context.ms + bullet_fire_rate_ms;
       break;
     }
     case 1: {
       for (unsigned i = 0; i < ship_bullet_level_1_fire_count; ++i) {
-        bullet *o = new (objects.alloc()) bullet{};
-        o->position = position + forward_vec;
-        o->angle = angle;
-        o->velocity = ship_bullet_speed * forward_vec;
+        bullet *blt = new (objects.alloc()) bullet{};
+        blt->position = position + forward_vec;
+        blt->angle = angle;
+        blt->velocity = ship_bullet_speed * forward_vec;
         constexpr float sp = ship_bullet_spread;
-        o->velocity.x += float(rnd1(sp));
-        o->velocity.z += float(rnd1(sp));
+        blt->velocity.x += float(rnd1(sp));
+        blt->velocity.z += float(rnd1(sp));
       }
       ready_to_fire_at_ms = frame_context.ms + bullet_fire_rate_ms;
       break;
