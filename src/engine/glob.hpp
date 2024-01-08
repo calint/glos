@@ -94,7 +94,7 @@ public:
     while (*p) {
       token const tk = token_next(&p);
       if (token_starts_with(&tk, "#")) {
-        p = scan_to_including_newline(p);
+        p = token_to_including_newline(p);
         continue;
       }
       if (token_equals(&tk, "mtllib")) {
@@ -129,7 +129,7 @@ public:
       }
       if (token_equals(&tk, "s")) {
         // smoothing directive ignored
-        p = scan_to_including_newline(p);
+        p = token_to_including_newline(p);
         continue;
       }
       if (token_equals(&tk, "v")) {
@@ -343,11 +343,11 @@ private:
         planes_normals.emplace_back(normal);
 
         // ignore the other vertices
-        p = scan_to_including_newline(p);
+        p = token_to_including_newline(p);
         continue;
       }
       // unknown token
-      p = scan_to_including_newline(p);
+      p = token_to_including_newline(p);
     }
     // remove from points the points in plane_points
     for (glm::vec3 const &pt : points) {

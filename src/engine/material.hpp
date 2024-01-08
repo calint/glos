@@ -58,7 +58,7 @@ public:
       token const t = token_next(&p);
       if (token_starts_with(&t, "#")) {
         // comment line
-        p = scan_to_including_newline(p);
+        p = token_to_including_newline(p);
         continue;
       }
       if (token_starts_with(&t, "newmtl")) {

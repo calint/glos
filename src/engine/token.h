@@ -36,10 +36,6 @@ static inline auto token_get_float(token const *t) -> float {
   return float(atof(t->content)); //? assuming file ends with whitespace
 }
 
-static inline auto token_get_int(token const *t) -> int {
-  return atoi(t->content); //?  assuming file ends with whitespace
-}
-
 static inline auto token_get_uint(token const *t) -> unsigned {
   int const i = atoi(t->content);
   //?  assuming file ends with whitespace, error?
@@ -115,7 +111,7 @@ static inline auto token_from_string_additional_delim(char const *s, char delim)
   return t;
 }
 
-static inline auto scan_to_including_newline(char const *p) -> char const * {
+static inline auto token_to_including_newline(char const *p) -> char const * {
   while (true) {
     if (not *p) {
       return p;
