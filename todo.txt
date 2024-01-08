@@ -4,6 +4,7 @@
 [ ] release and continue with sandbox game in 'glosi'
 [ ]   render cull cells
 [ ]   render cull objects
+[ ]   fix multithreading issues
 [x] consider inverting meaning of bool return value from 'update' and 'on_collision'
 [o] profile
 [ ] object: changing glob_ix should invalidate planes
