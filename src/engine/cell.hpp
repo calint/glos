@@ -108,8 +108,9 @@ public:
             }
           }
           continue;
-
-        } else if (Oj->is_sphere) {
+        }
+        
+        if (Oj->is_sphere) {
           // Oi is not a sphere
           Oi->update_planes_world_coordinates();
           if (Oi->planes.is_in_collision_with_sphere(Oj->position,
@@ -252,12 +253,8 @@ private:
     // planes can be update only once per 'resolve_collisions' pass because
     // bounding volume object state does not change (spheres do)
 
-    if (o1->planes.is_any_point_in_volume(o2->planes) or
-        o2->planes.is_any_point_in_volume(o1->planes)) {
-      return true;
-    }
-
-    return false;
+    return o1->planes.is_any_point_in_volume(o2->planes) or
+           o2->planes.is_any_point_in_volume(o1->planes);
   }
 };
 } // namespace glos

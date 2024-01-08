@@ -1,0 +1,264 @@
+mån  8 jan 2024 18:12:52 CET
+/home/c/w/glos/qa/lint/../../src/engine/../application/../engine/engine.hpp:204:15: warning: method 'free' can be made static [readability-convert-member-functions-to-static]
+  inline void free() {
+              ^
+  static 
+/home/c/w/glos/qa/lint/../../src/engine/../application/../engine/engine.hpp:609:64: warning: use nullptr [hicpp-use-nullptr,modernize-use-nullptr]
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid *)0);
+                                                               ^
+                                                               nullptr
+/home/c/w/glos/qa/lint/../../src/engine/../application/objects/../utils.hpp:11:17: warning: rand() has limited randomness; use C++11 random library instead [cert-msc30-c,cert-msc50-cpp]
+  int const r = rand();
+                ^
+/home/c/w/glos/qa/lint/../../src/engine/../application/objects/../utils.hpp:11:17: warning: function is not thread safe [concurrency-mt-unsafe]
+/home/c/w/glos/qa/lint/../../src/engine/../application/objects/../utils.hpp:20:17: warning: rand() has limited randomness; use C++11 random library instead [cert-msc30-c,cert-msc50-cpp]
+  int const r = rand();
+                ^
+/home/c/w/glos/qa/lint/../../src/engine/../application/objects/../utils.hpp:20:17: warning: function is not thread safe [concurrency-mt-unsafe]
+/home/c/w/glos/qa/lint/../../src/engine/../application/objects/../utils.hpp:29:17: warning: rand() has limited randomness; use C++11 random library instead [cert-msc30-c,cert-msc50-cpp]
+  int const r = rand();
+                ^
+/home/c/w/glos/qa/lint/../../src/engine/../application/objects/../utils.hpp:29:17: warning: function is not thread safe [concurrency-mt-unsafe]
+/home/c/w/glos/qa/lint/../../src/engine/../application/objects/asteroid_large.hpp:58:7: warning: use auto when initializing with new to avoid duplicating the type name [hicpp-use-auto,modernize-use-auto]
+      asteroid_medium *ast = new (objects.alloc()) asteroid_medium{};
+      ^~~~~~~~~~~~~~~
+      auto
+/home/c/w/glos/qa/lint/../../src/engine/../application/objects/asteroid_medium.hpp:57:7: warning: use auto when initializing with new to avoid duplicating the type name [hicpp-use-auto,modernize-use-auto]
+      asteroid_small *ast = new (objects.alloc()) asteroid_small{};
+      ^~~~~~~~~~~~~~
+      auto
+/home/c/w/glos/qa/lint/../../src/engine/../application/objects/bullet.hpp:49:5: warning: use auto when initializing with new to avoid duplicating the type name [hicpp-use-auto,modernize-use-auto]
+    fragment *frg = new (objects.alloc()) fragment{};
+    ^~~~~~~~
+    auto
+/home/c/w/glos/qa/lint/../../src/engine/../application/objects/ship.hpp:88:7: warning: use auto when initializing with new to avoid duplicating the type name [hicpp-use-auto,modernize-use-auto]
+      fragment *frg = new (objects.alloc()) fragment{};
+      ^~~~~~~~
+      auto
+/home/c/w/glos/qa/lint/../../src/engine/../application/objects/ship.hpp:110:7: warning: use auto when initializing with new to avoid duplicating the type name [hicpp-use-auto,modernize-use-auto]
+      bullet *o = new (objects.alloc()) bullet{};
+      ^~~~~~
+      auto
+/home/c/w/glos/qa/lint/../../src/engine/../application/objects/ship.hpp:120:9: warning: use auto when initializing with new to avoid duplicating the type name [hicpp-use-auto,modernize-use-auto]
+        bullet *o = new (objects.alloc()) bullet{};
+        ^~~~~~
+        auto
+/home/c/w/glos/qa/lint/../../src/engine/../application/../engine/engine.hpp:204:15: warning: method 'free' can be made static [readability-convert-member-functions-to-static]
+  inline void free() {
+              ^
+  static 
+/home/c/w/glos/qa/lint/../../src/engine/../application/../engine/engine.hpp:609:64: warning: use nullptr [hicpp-use-nullptr,modernize-use-nullptr]
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid *)0);
+                                                               ^
+                                                               nullptr
+/home/c/w/glos/qa/lint/../../src/engine/glob.hpp:76:51: warning: 'find_last_of' called with a string literal consisting of a single character; consider using the more effective overload accepting a character [performance-faster-string-find]
+      size_t const found = file_path.find_last_of("/");
+                                                  ^~~
+                                                  '/'
+/home/c/w/glos/qa/lint/../../src/engine/glob.hpp:249:37: warning: use nullptr [hicpp-use-nullptr,modernize-use-nullptr]
+                          (GLvoid *)0);
+                                    ^
+                                    nullptr
+/home/c/w/glos/qa/lint/../../src/engine/hud.hpp:51:37: warning: use nullptr [hicpp-use-nullptr,modernize-use-nullptr]
+                          (GLvoid *)0);
+                                    ^
+                                    nullptr
+/home/c/w/glos/qa/lint/../../src/engine/net_server.hpp:61:23: warning: prefer accept4() to accept() because accept4() allows SOCK_CLOEXEC [android-cloexec-accept]
+      clients_fd[i] = accept(server_fd, nullptr, nullptr);
+                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                      accept4(server_fd, nullptr, nullptr, SOCK_CLOEXEC)
+/home/c/w/glos/qa/lint/../../src/engine/object.hpp:11:7: warning: constructor does not initialize these fields: alloc_ptr [cppcoreguidelines-pro-type-member-init,hicpp-member-init]
+class object {
+      ^
+/home/c/w/glos/qa/lint/../../src/engine/object.hpp:64:44: warning: parameter 'obj' is unused [misc-unused-parameters]
+  inline virtual auto on_collision(object *obj) -> bool { return true; }
+                                           ^~~
+                                            /*obj*/
+/home/c/w/glos/qa/lint/../../src/engine/planes.hpp:75:5: warning: replace loop by 'std::ranges::any_of()' [readability-use-anyofallof]
+    for (glm::vec3 const &p : world_points) {
+    ^
+/home/c/w/glos/qa/lint/../../src/engine/sdl.hpp:10:15: warning: method 'init' can be made static [readability-convert-member-functions-to-static]
+  inline void init() {
+              ^
+  static 
+/home/c/w/glos/qa/lint/../../src/engine/sdl.hpp:19:15: warning: method 'free' can be made static [readability-convert-member-functions-to-static]
+  inline void free() { SDL_Quit(); }
+              ^
+  static 
+/home/c/w/glos/qa/lint/../../src/engine/texture.hpp:60:25: warning: std::move of the variable 'tex' of the trivially-copyable type 'texture' has no effect [hicpp-move-const-arg,performance-move-const-arg]
+    store.insert({path, std::move(tex)});
+                        ^
+/home/c/w/glos/qa/lint/../../src/engine/token.h:3:1: warning: use 'using' instead of 'typedef' [modernize-use-using]
+typedef struct token {
+^~~~~~~~~~~~~~~~~~~~~~
+/home/c/w/glos/qa/lint/../../src/engine/token.h:13:24: warning: use a trailing return type for this function [modernize-use-trailing-return-type]
+static inline unsigned token_size(token const *t) {
+              ~~~~~~~~ ^
+              auto                                -> unsigned
+/home/c/w/glos/qa/lint/../../src/engine/token.h:17:20: warning: use a trailing return type for this function [modernize-use-trailing-return-type]
+static inline bool token_starts_with(token const *t, char const *str) {
+              ~~~~ ^
+              auto                                                    -> bool
+/home/c/w/glos/qa/lint/../../src/engine/token.h:21:20: warning: use a trailing return type for this function [modernize-use-trailing-return-type]
+static inline bool token_equals(token const *t, char const *str) {
+              ~~~~ ^
+              auto                                               -> bool
+/home/c/w/glos/qa/lint/../../src/engine/token.h:26:16: warning: redundant boolean literal in conditional return statement [readability-simplify-boolean-expr]
+        return true;
+~~~~~~~~~~~~~~~^~~~~
+/home/c/w/glos/qa/lint/../../src/engine/token.h:38:21: warning: use a trailing return type for this function [modernize-use-trailing-return-type]
+static inline float token_get_float(token const *t) {
+              ~~~~~ ^
+              auto                                  -> float
+/home/c/w/glos/qa/lint/../../src/engine/token.h:42:19: warning: use a trailing return type for this function [modernize-use-trailing-return-type]
+static inline int token_get_int(token const *t) {
+              ~~~ ^
+              auto                              -> int
+/home/c/w/glos/qa/lint/../../src/engine/token.h:46:24: warning: use a trailing return type for this function [modernize-use-trailing-return-type]
+static inline unsigned token_get_uint(token const *t) {
+              ~~~~~~~~ ^
+              auto                                    -> unsigned
+/home/c/w/glos/qa/lint/../../src/engine/token.h:47:3: warning: variable 'i' of type 'int' can be declared 'const' [misc-const-correctness]
+  int i = atoi(t->content); //?  assuming file ends with whitespace, error?
+  ^
+      const 
+/home/c/w/glos/qa/lint/../../src/engine/token.h:56:21: warning: use a trailing return type for this function [modernize-use-trailing-return-type]
+static inline token token_next(char const **s) {
+              ~~~~~ ^
+              auto                             -> token
+/home/c/w/glos/qa/lint/../../src/engine/token.h:60:10: warning: converting integer literal to bool, use bool literal instead [modernize-use-bool-literals]
+  while (1) {
+         ^
+         true
+/home/c/w/glos/qa/lint/../../src/engine/token.h:61:13: warning: statement should be inside braces [google-readability-braces-around-statements,hicpp-braces-around-statements,readability-braces-around-statements]
+    if (!*p)
+            ^
+             {
+/home/c/w/glos/qa/lint/../../src/engine/token.h:63:22: warning: statement should be inside braces [google-readability-braces-around-statements,hicpp-braces-around-statements,readability-braces-around-statements]
+    if (!isspace(*p))
+                     ^
+                      {
+/home/c/w/glos/qa/lint/../../src/engine/token.h:68:10: warning: converting integer literal to bool, use bool literal instead [modernize-use-bool-literals]
+  while (1) {
+         ^
+         true
+/home/c/w/glos/qa/lint/../../src/engine/token.h:69:13: warning: statement should be inside braces [google-readability-braces-around-statements,hicpp-braces-around-statements,readability-braces-around-statements]
+    if (!*p)
+            ^
+             {
+/home/c/w/glos/qa/lint/../../src/engine/token.h:71:21: warning: statement should be inside braces [google-readability-braces-around-statements,hicpp-braces-around-statements,readability-braces-around-statements]
+    if (isspace(*p))
+                    ^
+                     {
+/home/c/w/glos/qa/lint/../../src/engine/token.h:73:19: warning: statement should be inside braces [google-readability-braces-around-statements,hicpp-braces-around-statements,readability-braces-around-statements]
+    if (*p == ':')
+                  ^
+                   {
+/home/c/w/glos/qa/lint/../../src/engine/token.h:75:19: warning: statement should be inside braces [google-readability-braces-around-statements,hicpp-braces-around-statements,readability-braces-around-statements]
+    if (*p == '{')
+                  ^
+                   {
+/home/c/w/glos/qa/lint/../../src/engine/token.h:77:19: warning: statement should be inside braces [google-readability-braces-around-statements,hicpp-braces-around-statements,readability-braces-around-statements]
+    if (*p == '}')
+                  ^
+                   {
+/home/c/w/glos/qa/lint/../../src/engine/token.h:79:19: warning: statement should be inside braces [google-readability-braces-around-statements,hicpp-braces-around-statements,readability-braces-around-statements]
+    if (*p == ',')
+                  ^
+                   {
+/home/c/w/glos/qa/lint/../../src/engine/token.h:81:19: warning: statement should be inside braces [google-readability-braces-around-statements,hicpp-braces-around-statements,readability-braces-around-statements]
+    if (*p == '=')
+                  ^
+                   {
+/home/c/w/glos/qa/lint/../../src/engine/token.h:83:19: warning: statement should be inside braces [google-readability-braces-around-statements,hicpp-braces-around-statements,readability-braces-around-statements]
+    if (*p == ';')
+                  ^
+                   {
+/home/c/w/glos/qa/lint/../../src/engine/token.h:85:19: warning: statement should be inside braces [google-readability-braces-around-statements,hicpp-braces-around-statements,readability-braces-around-statements]
+    if (*p == '(')
+                  ^
+                   {
+/home/c/w/glos/qa/lint/../../src/engine/token.h:87:19: warning: statement should be inside braces [google-readability-braces-around-statements,hicpp-braces-around-statements,readability-braces-around-statements]
+    if (*p == ')')
+                  ^
+                   {
+/home/c/w/glos/qa/lint/../../src/engine/token.h:89:19: warning: statement should be inside braces [google-readability-braces-around-statements,hicpp-braces-around-statements,readability-braces-around-statements]
+    if (*p == '!')
+                  ^
+                   {
+/home/c/w/glos/qa/lint/../../src/engine/token.h:91:19: warning: statement should be inside braces [google-readability-braces-around-statements,hicpp-braces-around-statements,readability-braces-around-statements]
+    if (*p == '>')
+                  ^
+                   {
+/home/c/w/glos/qa/lint/../../src/engine/token.h:93:19: warning: statement should be inside braces [google-readability-braces-around-statements,hicpp-braces-around-statements,readability-braces-around-statements]
+    if (*p == '<')
+                  ^
+                   {
+/home/c/w/glos/qa/lint/../../src/engine/token.h:98:10: warning: converting integer literal to bool, use bool literal instead [modernize-use-bool-literals]
+  while (1) {
+         ^
+         true
+/home/c/w/glos/qa/lint/../../src/engine/token.h:99:13: warning: statement should be inside braces [google-readability-braces-around-statements,hicpp-braces-around-statements,readability-braces-around-statements]
+    if (!*p)
+            ^
+             {
+/home/c/w/glos/qa/lint/../../src/engine/token.h:101:22: warning: statement should be inside braces [google-readability-braces-around-statements,hicpp-braces-around-statements,readability-braces-around-statements]
+    if (!isspace(*p))
+                     ^
+                      {
+/home/c/w/glos/qa/lint/../../src/engine/token.h:109:21: warning: use a trailing return type for this function [modernize-use-trailing-return-type]
+static inline token token_from_string_additional_delim(char const *s,
+              ~~~~~ ^
+              auto
+/home/c/w/glos/qa/lint/../../src/engine/token.h:114:10: warning: converting integer literal to bool, use bool literal instead [modernize-use-bool-literals]
+  while (1) {
+         ^
+         true
+/home/c/w/glos/qa/lint/../../src/engine/token.h:115:13: warning: statement should be inside braces [google-readability-braces-around-statements,hicpp-braces-around-statements,readability-braces-around-statements]
+    if (!*p)
+            ^
+             {
+/home/c/w/glos/qa/lint/../../src/engine/token.h:117:22: warning: statement should be inside braces [google-readability-braces-around-statements,hicpp-braces-around-statements,readability-braces-around-statements]
+    if (!isspace(*p))
+                     ^
+                      {
+/home/c/w/glos/qa/lint/../../src/engine/token.h:122:10: warning: converting integer literal to bool, use bool literal instead [modernize-use-bool-literals]
+  while (1) {
+         ^
+         true
+/home/c/w/glos/qa/lint/../../src/engine/token.h:123:13: warning: statement should be inside braces [google-readability-braces-around-statements,hicpp-braces-around-statements,readability-braces-around-statements]
+    if (!*p)
+            ^
+             {
+/home/c/w/glos/qa/lint/../../src/engine/token.h:125:21: warning: statement should be inside braces [google-readability-braces-around-statements,hicpp-braces-around-statements,readability-braces-around-statements]
+    if (isspace(*p))
+                    ^
+                     {
+/home/c/w/glos/qa/lint/../../src/engine/token.h:135:10: warning: converting integer literal to bool, use bool literal instead [modernize-use-bool-literals]
+  while (1) {
+         ^
+         true
+/home/c/w/glos/qa/lint/../../src/engine/token.h:136:13: warning: statement should be inside braces [google-readability-braces-around-statements,hicpp-braces-around-statements,readability-braces-around-statements]
+    if (!*p)
+            ^
+             {
+/home/c/w/glos/qa/lint/../../src/engine/token.h:138:22: warning: statement should be inside braces [google-readability-braces-around-statements,hicpp-braces-around-statements,readability-braces-around-statements]
+    if (!isspace(*p))
+                     ^
+                      {
+/home/c/w/glos/qa/lint/../../src/engine/token.h:146:27: warning: use a trailing return type for this function [modernize-use-trailing-return-type]
+static inline char const *scan_to_including_newline(char const *p) {
+              ~~~~~~~~~~~~^
+              auto                                                 -> char const *
+/home/c/w/glos/qa/lint/../../src/engine/token.h:147:10: warning: converting integer literal to bool, use bool literal instead [modernize-use-bool-literals]
+  while (1) {
+         ^
+         true
+/home/c/w/glos/qa/lint/../../src/engine/token.h:148:13: warning: statement should be inside braces [google-readability-braces-around-statements,hicpp-braces-around-statements,readability-braces-around-statements]
+    if (!*p)
+            ^
+             {
+/home/c/w/glos/qa/lint/../../src/engine/window.hpp:38:32: warning: use of a signed integer operand with a binary bitwise operator [hicpp-signed-bitwise]
+                               (window_vsync ? SDL_RENDERER_PRESENTVSYNC : 0));
+                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mån  8 jan 2024 18:13:53 CET

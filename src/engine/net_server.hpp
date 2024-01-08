@@ -58,7 +58,7 @@ public:
            port);
 
     for (unsigned i = 1; i < net_players + 1; ++i) {
-      clients_fd[i] = accept(server_fd, NULL, NULL);
+      clients_fd[i] = accept(server_fd, nullptr, nullptr);
       if (clients_fd[i] == -1) {
         fprintf(stderr, "\n%s:%d: ", __FILE__, __LINE__);
         perror("");
@@ -86,7 +86,7 @@ public:
     for (uint32_t i = 1; i < net_players + 1; ++i) {
       // send initial packet to clients
       nip.player_ix = i;
-      ssize_t n = send(clients_fd[i], &nip, sizeof(nip), 0);
+      ssize_t const n = send(clients_fd[i], &nip, sizeof(nip), 0);
       if (n == -1) {
         fprintf(stderr, "\n%s:%d: could not send initial packet to player %u: ",
                 __FILE__, __LINE__, i);

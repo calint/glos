@@ -163,7 +163,7 @@ private:
     glGetShaderiv(shader_id, GL_COMPILE_STATUS, &ok);
     if (!ok) {
       GLchar msg[1024];
-      glGetShaderInfoLog(shader_id, sizeof(msg), NULL, msg);
+      glGetShaderInfoLog(shader_id, sizeof(msg), nullptr, msg);
       fprintf(stderr, "\n%s:%d: compile error in %s shader:\n%s\n", __FILE__,
               __LINE__, shader_name_for_type(shader_type), msg);
       fflush(stderr);

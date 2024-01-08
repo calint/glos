@@ -27,7 +27,7 @@ public:
   net_state *net_state = nullptr; // pointer to signals used by this object
   bool is_sphere = false;         // true if object can be considered a sphere
 
-  inline virtual ~object() {}
+  inline virtual ~object() = default;
   // note. 'delete obj;' may not be used because memory is managed by 'o1store'
   //       destructor is invoked in the 'objects.apply_free()'
 
@@ -61,7 +61,7 @@ public:
   }
 
   // returns false if object has died, true otherwise
-  inline virtual auto on_collision(object *obj) -> bool { return false; }
+  inline virtual auto on_collision(object *obj) -> bool { return true; }
 
   // synchronized in multithreaded because both update and render thread access
   // it in a non-deterministic way breaking multiplayer mode
@@ -89,9 +89,9 @@ public:
     Mmw_agl = angle;
     Mmw_scl = scale;
     // make a new matrix
-    glm::mat4 Ms = glm::scale(glm::mat4(1), Mmw_scl);
-    glm::mat4 Mr = glm::eulerAngleXYZ(Mmw_agl.x, Mmw_agl.y, Mmw_agl.z);
-    glm::mat4 Mt = glm::translate(glm::mat4(1), Mmw_pos);
+    glm::mat4 const Ms = glm::scale(glm::mat4(1), Mmw_scl);
+    glm::mat4 const Mr = glm::eulerAngleXYZ(Mmw_agl.x, Mmw_agl.y, Mmw_agl.z);
+    glm::mat4 const Mt = glm::translate(glm::mat4(1), Mmw_pos);
     Mmw = Mt * Mr * Ms;
 
     if (synchronize) {

@@ -57,7 +57,7 @@ inline void power_up_by_chance(glm::vec3 const &position) {
     return;
   }
 
-  power_up *obj = new (objects.alloc()) power_up{};
+  auto *obj = new (objects.alloc()) power_up{};
   obj->position = position;
   obj->angular_velocity.y = radians(90.0f);
 }

@@ -10,7 +10,7 @@ using namespace glm;
 static unsigned level = 0; // no racing
 static unsigned score = 0; // racing ok
 static unsigned score_prv = score;
-std::atomic<unsigned> asteroids_alive{0};
+static std::atomic<unsigned> asteroids_alive{0};
 
 // objects
 #include "objects/asteroid_large.hpp"
@@ -19,7 +19,7 @@ std::atomic<unsigned> asteroids_alive{0};
 
 // forward declarations
 static void application_init_shaders();
-static void create_asteroids(unsigned const num);
+static void create_asteroids(unsigned num);
 
 //
 void application_init() {
@@ -42,13 +42,13 @@ void application_init() {
   puts("");
 
   // assert that classes use fit in objects store slot
-  static_assert(sizeof(asteroid_large) <= objects_instance_size_B, "");
-  static_assert(sizeof(asteroid_medium) <= objects_instance_size_B, "");
-  static_assert(sizeof(asteroid_small) <= objects_instance_size_B, "");
-  static_assert(sizeof(bullet) <= objects_instance_size_B, "");
-  static_assert(sizeof(fragment) <= objects_instance_size_B, "");
-  static_assert(sizeof(power_up) <= objects_instance_size_B, "");
-  static_assert(sizeof(ship) <= objects_instance_size_B, "");
+  static_assert(sizeof(asteroid_large) <= objects_instance_size_B);
+  static_assert(sizeof(asteroid_medium) <= objects_instance_size_B);
+  static_assert(sizeof(asteroid_small) <= objects_instance_size_B);
+  static_assert(sizeof(bullet) <= objects_instance_size_B);
+  static_assert(sizeof(fragment) <= objects_instance_size_B);
+  static_assert(sizeof(power_up) <= objects_instance_size_B);
+  static_assert(sizeof(ship) <= objects_instance_size_B);
 
   // load the objects and assign the indexes
   glob_ix_ship = globs.load("assets/obj/asteroids/ship.obj",
@@ -119,9 +119,9 @@ void application_on_update_done() {
 void application_on_render_done() {
   if (score != score_prv) {
     score_prv = score;
-    char buf[256];
-    sprintf(buf, "score: %06d", score);
-    hud.print(buf, SDL_Color{255, 0, 0, 255}, 60, 10);
+    std::array<char, 256> buf{};
+    sprintf(buf.data(), "score: %06d", score);
+    hud.print(buf.data(), SDL_Color{255, 0, 0, 255}, 60, 10);
   }
 }
 
@@ -131,7 +131,7 @@ static void create_asteroids(unsigned const num) {
   constexpr float v = asteroid_large_speed;
   constexpr float d = game_area_max_x - game_area_min_x;
   for (unsigned i = 0; i < num; ++i) {
-    asteroid_large *o = new (objects.alloc()) asteroid_large{};
+    auto *o = new (objects.alloc()) asteroid_large{};
     o->position.x = rnd1(d);
     o->position.z = rnd1(d);
     o->velocity.x = rnd1(v);

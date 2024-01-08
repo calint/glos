@@ -20,8 +20,8 @@ namespace glos {
 
 class material final {
 public:
-  std::string path = "";
-  std::string name = "";
+  std::string path{};
+  std::string name{};
   float Ns = 0;
   glm::vec3 Ka{0};
   glm::vec3 Kd{0};
@@ -29,7 +29,7 @@ public:
   glm::vec3 Ke{0};
   float Ni = 0;
   float d = 0;
-  std::string map_Kd = "";
+  std::string map_Kd{};
   GLuint texture_id = 0;
 };
 
@@ -43,7 +43,7 @@ public:
 
   inline void load(char const *path) {
     printf("   * loading materials from '%s'\n", path);
-    std::ifstream file(path);
+    std::ifstream const file(path);
     if (not file) {
       fprintf(stderr, "\n%s:%d: cannot open file '%s'\n", __FILE__, __LINE__,
               path);

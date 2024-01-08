@@ -12,7 +12,7 @@ public:
                                     glm::mat4 const &Mmw, glm::vec3 const &pos,
                                     glm::vec3 const &agl,
                                     glm::vec3 const &scl) {
-    if (points.size() != 0 and
+    if (not points.empty() and
         (pos != Mmw_pos or agl != Mmw_agl or scl != Mmw_scl)) {
       // matrix state is not in sync with current state
       Mmw_pos = pos;
@@ -21,23 +21,23 @@ public:
       // update world_positions
       world_points.clear();
       for (glm::vec3 const &Pm : points) {
-        glm::vec4 Pw = Mmw * glm::vec4{Pm, 1.0f};
-        world_points.emplace_back(glm::vec3{Pw});
+        glm::vec4 const Pw = Mmw * glm::vec4{Pm, 1.0f};
+        world_points.emplace_back(Pw);
       }
     }
     // normals
-    if (normals.size() != 0 and (first_update or agl != Nmw_agl)) {
+    if (not normals.empty() and (first_update or agl != Nmw_agl)) {
       first_update = false;
 
       // update matrix
       Nmw_agl = agl;
-      glm::mat4 Nr = glm::eulerAngleXYZ(Nmw_agl.x, Nmw_agl.y, Nmw_agl.z);
+      glm::mat4 const Nr = glm::eulerAngleXYZ(Nmw_agl.x, Nmw_agl.y, Nmw_agl.z);
       Nmw = glm::mat3{Nr};
 
       // update world normals
       world_normals.clear();
       for (glm::vec3 const &Nm : normals) {
-        glm::vec3 Nw = Nmw * Nm;
+        glm::vec3 const Nw = Nmw * Nm;
         world_normals.emplace_back(Nw);
       }
     }

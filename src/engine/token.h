@@ -36,13 +36,11 @@ static inline bool token_equals(token const *t, char const *str) {
 }
 
 static inline float token_get_float(token const *t) {
-  float f = (float)atof(t->content); //? assuming file ends with whitespace
-  return f;
+  return (float)atof(t->content); //? assuming file ends with whitespace
 }
 
 static inline int token_get_int(token const *t) {
-  int i = atoi(t->content); //?  assuming file ends with whitespace
-  return i;
+  return atoi(t->content); //?  assuming file ends with whitespace
 }
 
 static inline unsigned token_get_uint(token const *t) {

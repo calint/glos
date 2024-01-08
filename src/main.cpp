@@ -4,7 +4,7 @@
 #include "engine/engine.hpp"
 
 //------------------------------------------------------------------------ main
-int main(int argc, char *argv[]) {
+auto main(int argc, char *argv[]) -> int {
 
   if (argc > 1 and *argv[1] == 's') {
     // instance is a server

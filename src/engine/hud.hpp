@@ -48,11 +48,11 @@ public:
 
     // Set the vertex attribute pointers
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
-                          (void *)0);
+                          (GLvoid *)0);
     glEnableVertexAttribArray(0);
 
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
-                          (void *)(2 * sizeof(float)));
+                          (GLvoid *)(2 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -60,7 +60,7 @@ public:
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture_width, texture_height, 0,
-                 GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+                 GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
     // Set texture parameters
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -84,7 +84,7 @@ public:
 
   inline void load_font(char const *ttf_path, int const size) {
     font = TTF_OpenFont(ttf_path, size);
-    if (font == NULL) {
+    if (not font) {
       fprintf(stderr, "\n%s:%d: cannot load font '%s': %s\n", __FILE__,
               __LINE__, ttf_path, TTF_GetError());
       fflush(stderr);
@@ -98,7 +98,7 @@ public:
     glBindVertexArray(vao);
     glBindTexture(GL_TEXTURE_2D, texture);
     glUniform1i(0, 0); // sets uniform "utex" to texture unit 0
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
     // glDisable(GL_BLEND);
   }
 

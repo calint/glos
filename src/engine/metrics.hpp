@@ -98,7 +98,7 @@ public:
     }
 
     fps.average_during_last_interval =
-        uint32_t(fps.frame_count * 1000 / dt_interval);
+        fps.frame_count * uint32_t(1000) / uint32_t(dt_interval);
     fps.time_at_start_of_interval_ms = t1;
     reset_timer();
 

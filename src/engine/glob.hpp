@@ -18,7 +18,7 @@ class glob final {
   };
 
 public:
-  std::string name = "";
+  std::string name{};
   float bounding_radius = 0;
   // planes
   std::vector<glm::vec3> planes_points{};
@@ -58,7 +58,7 @@ public:
   inline void load(char const *obj_path, char const *bounding_planes_path) {
     printf(" * loading glob from '%s'\n", obj_path);
 
-    std::ifstream file{obj_path};
+    std::ifstream const file{obj_path};
     if (not file) {
       fprintf(stderr, "\n%s:%d: cannot open file '%s'\n", __FILE__, __LINE__,
               obj_path);
@@ -67,10 +67,10 @@ public:
     }
     std::stringstream buffer{};
     buffer << file.rdbuf();
-    std::string content = buffer.str();
+    std::string const content = buffer.str();
     char const *p = content.c_str();
 
-    std::string base_dir_path = "";
+    std::string base_dir_path{};
     {
       std::string const file_path = obj_path;
       size_t const found = file_path.find_last_of("/");
@@ -85,14 +85,14 @@ public:
     std::vector<glm::vec3> normals{};
     std::vector<glm::vec2> texture_uv{};
 
-    std::string mtl_path = "";
+    std::string mtl_path{};
     size_t current_material_ix = 0;
     size_t vertex_ix = 0;
     size_t vertex_ix_prv = 0;
     bool first_obj = true;
 
     while (*p) {
-      token tk = token_next(&p);
+      token const tk = token_next(&p);
       if (token_starts_with(&tk, "#")) {
         p = scan_to_including_newline(p);
         continue;
@@ -116,7 +116,7 @@ public:
       if (token_equals(&tk, "usemtl")) {
         token const t = token_next(&p);
         unsigned const n = token_size(&t);
-        std::string mtl_name = {t.content, t.content + n};
+        std::string const mtl_name = {t.content, t.content + n};
         current_material_ix =
             materials.find_material_ix_or_break(mtl_path, mtl_name);
         if (vertex_ix_prv != vertex_ix) {
@@ -246,7 +246,7 @@ public:
     // describe the data format
     glEnableVertexAttribArray(shaders::apos);
     glVertexAttribPointer(shaders::apos, 3, GL_FLOAT, GL_FALSE, sizeof(vertex),
-                          0);
+                          (GLvoid *)0);
 
     glEnableVertexAttribArray(shaders::argba);
     glVertexAttribPointer(shaders::argba, 4, GL_FLOAT, GL_FALSE, sizeof(vertex),
@@ -284,7 +284,7 @@ private:
   inline void load_planes(char const *path) {
     // load from blender exported 'obj' file
     printf("     * loading planes from '%s'\n", path);
-    std::ifstream file{path};
+    std::ifstream const file{path};
     if (not file) {
       fprintf(stderr, "\n%s:%d: cannot open file '%s'\n", __FILE__, __LINE__,
               path);
@@ -293,14 +293,14 @@ private:
     }
     std::stringstream buffer{};
     buffer << file.rdbuf();
-    std::string content = buffer.str();
+    std::string const content = buffer.str();
     char const *p = content.c_str();
 
     std::vector<glm::vec3> points{};
     std::vector<glm::vec3> normals{};
 
     while (*p) {
-      token t = token_next(&p);
+      token const t = token_next(&p);
       if (token_equals(&t, "v")) {
         token const tx = token_next(&p);
         float const x = token_get_float(&tx);

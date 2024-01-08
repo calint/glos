@@ -127,11 +127,7 @@ public:
       }
     }
 
-    if (xil != xir or zit != zib) {
-      o->overlaps_cells = true;
-    } else {
-      o->overlaps_cells = false;
-    }
+    o->overlaps_cells = (xil != xir or zit != zib);
   }
 
   inline void print() const {
@@ -151,7 +147,8 @@ private:
   static inline auto clamp(int const i, int const max_plus_one) -> unsigned {
     if (i < 0) {
       return 0;
-    } else if (i >= max_plus_one) {
+    }
+    if (i >= max_plus_one) {
       return unsigned(max_plus_one - 1);
     }
     return unsigned(i);

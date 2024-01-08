@@ -8,10 +8,10 @@
 //
 
 // grid dimensions
-static constexpr unsigned grid_size = 40; // square side in e.g. meters
+static constexpr float grid_size = 40; // square side in e.g. meters
 static constexpr unsigned grid_rows = 4;
 static constexpr unsigned grid_columns = grid_rows;
-static constexpr unsigned grid_cell_size = grid_size / grid_rows;
+static constexpr float grid_cell_size = grid_size / grid_rows;
 
 // multithreaded grid
 // note. in some cases multithreaded mode is a degradation of performance
@@ -59,10 +59,10 @@ static constexpr size_t objects_instance_size_B = 1024;
 
 // collision bits
 static constexpr uint32_t cb_none = 0;
-static constexpr uint32_t cb_hero = 1 << 0;
-static constexpr uint32_t cb_hero_bullet = 1 << 1;
-static constexpr uint32_t cb_asteroid = 1 << 2;
-static constexpr uint32_t cb_power_up = 1 << 3;
+static constexpr uint32_t cb_hero = 1U << 0U;
+static constexpr uint32_t cb_hero_bullet = 1U << 1U;
+static constexpr uint32_t cb_asteroid = 1U << 2U;
+static constexpr uint32_t cb_power_up = 1U << 3U;
 
 // glob indexes (are set by 'application_init()' when loading)
 static uint32_t glob_ix_ship = 0;

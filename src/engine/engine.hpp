@@ -23,6 +23,7 @@
 #include <netinet/tcp.h>
 #include <sstream>
 #include <string>
+#include <sys/socket.h>
 #include <unordered_map>
 #include <vector>
 
@@ -109,18 +110,18 @@ inline glm::vec3 ambient_light = glm::normalize(glm::vec3{0, 1, 1});
 inline object *camera_follow_object = nullptr;
 
 // signal bit corresponding to keyboard key
-static constexpr uint32_t key_w = 1 << 0;
-static constexpr uint32_t key_a = 1 << 1;
-static constexpr uint32_t key_s = 1 << 2;
-static constexpr uint32_t key_d = 1 << 3;
-static constexpr uint32_t key_q = 1 << 4;
-static constexpr uint32_t key_e = 1 << 5;
-static constexpr uint32_t key_i = 1 << 6;
-static constexpr uint32_t key_j = 1 << 7;
-static constexpr uint32_t key_k = 1 << 8;
-static constexpr uint32_t key_l = 1 << 9;
-static constexpr uint32_t key_u = 1 << 10;
-static constexpr uint32_t key_o = 1 << 11;
+static constexpr uint32_t key_w = 1U << 0U;
+static constexpr uint32_t key_a = 1U << 1U;
+static constexpr uint32_t key_s = 1U << 2U;
+static constexpr uint32_t key_d = 1U << 3U;
+static constexpr uint32_t key_q = 1U << 4U;
+static constexpr uint32_t key_e = 1U << 5U;
+static constexpr uint32_t key_i = 1U << 6U;
+static constexpr uint32_t key_j = 1U << 7U;
+static constexpr uint32_t key_k = 1U << 8U;
+static constexpr uint32_t key_l = 1U << 9U;
+static constexpr uint32_t key_u = 1U << 10U;
+static constexpr uint32_t key_o = 1U << 11U;
 
 class engine final {
 public:
@@ -278,8 +279,9 @@ public:
   }
 
 private:
-  friend void debug_render_wcs_line(glm::vec3 const &, glm::vec3 const &,
-                                    glm::vec3 const &);
+  friend void debug_render_wcs_line(glm::vec3 const &from_wcs,
+                                    glm::vec3 const &to_wcs,
+                                    glm::vec3 const &color);
 
   static constexpr float rad_over_degree = 2.0f * glm::pi<float>() / 360.0f;
   uint64_t frame_num = 0;
@@ -368,7 +370,7 @@ private:
     }
   }
 
-  inline void update_pass_2() {
+  inline void update_pass_2() const {
     if (print_grid) {
       grid.print();
     }
@@ -604,7 +606,7 @@ static inline void debug_render_wcs_line(glm::vec3 const &from_wcs,
   glBufferData(GL_ARRAY_BUFFER, sizeof(line_vertices), line_vertices,
                GL_STATIC_DRAW);
   glEnableVertexAttribArray(0);
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid *)0);
 
   camera.update_matrix_wvp();
 

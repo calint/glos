@@ -1,4 +1,9 @@
-[ ] release and continue with sandbox game in glosi
+[x] clang-tidy
+[ ] convert token.h
+[ ] rand() is not thread-safe
+[ ] release and continue with sandbox game in 'glosi'
+[ ]   render cull cells
+[ ]   render cull objects
 [x] consider inverting meaning of bool return value from 'update' and 'on_collision'
 [o] profile
 [ ] object: changing glob_ix should invalidate planes
@@ -34,7 +39,6 @@
       => source in hpp and the concept of the program being one file is kept
 [x]   use gl_element_array_buffer (where appropriate)
 [ ]   use glDebugMessageCallback
-[ ]   clang-tidy
 [ ]   cmake or premake and automatically download dependencies using git submodules
 [x]   use glm::sin, cos etc
 [x]   consider verbose self documenting code
