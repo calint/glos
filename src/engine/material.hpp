@@ -67,7 +67,7 @@ public:
         unsigned const n = token_size(&tk);
         store.back().path = std::string{path};
         store.back().name = std::string{tk.content, tk.content + n};
-        printf("     * %s\n", store.back().name.c_str());
+        printf("     %s\n", store.back().name.c_str());
         continue;
       }
       if (token_equals(&t, "Ns")) {

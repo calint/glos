@@ -110,7 +110,7 @@ public:
         token const t = token_next(&p);
         unsigned const n = token_size(&t);
         name = std::string{t.content, t.content + n};
-        printf("     %s\n", name.c_str());
+        printf("   %s\n", name.c_str());
         continue;
       }
       if (token_equals(&tk, "usemtl")) {
@@ -220,7 +220,7 @@ public:
       triangles_count += unsigned(r.vertex_count / 3);
     }
 
-    printf("     %zu range%c   %zu vertices   %u triangles   %zu B   radius: "
+    printf("   %zu range%c   %zu vertices   %u triangles   %zu B   radius: "
            "%0.2f\n",
            ranges.size(), ranges.size() == 1 ? ' ' : 's',
            vertices.size() * sizeof(float) / sizeof(vertex), triangles_count,
@@ -283,7 +283,7 @@ private:
 
   inline void load_planes(char const *path) {
     // load from blender exported 'obj' file
-    printf("     * loading planes from '%s'\n", path);
+    printf("   * loading planes from '%s'\n", path);
     std::ifstream const file{path};
     if (not file) {
       fprintf(stderr, "\n%s:%d: cannot open file '%s'\n", __FILE__, __LINE__,
@@ -359,7 +359,7 @@ private:
     // for (auto const &pt : planes_additional_points) {
     //   std::cout << glm::to_string(pt) << std::endl;
     // }
-    printf("        %zu planes  %zu points\n", planes_normals.size(),
+    printf("     %zu planes  %zu points\n", planes_normals.size(),
            planes_points.size());
   }
 };

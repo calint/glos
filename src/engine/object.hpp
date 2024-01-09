@@ -9,21 +9,24 @@
 namespace glos {
 
 class object {
+  friend class grid;
+  friend class cell;
+
 public:
+  glm::vec3 position{};           // in e.g. meters
+  float radius = 0;               // bounding radius in e.g. meters
+  uint32_t collision_bits = 0;    // mask & bits for collision subscription
+  uint32_t collision_mask = 0;    // ...
   object **alloc_ptr;             // initiated at allocate by 'o1store'
   std::string name{};             // instance name
   uint32_t glob_ix = 0;           // index in globs store
-  float radius = 0;               // bounding radius
   glm::vec3 scale{};              // in meters
   planes planes{};                // bounding planes (if any)
-  glm::vec3 position{};           // in meters
   glm::vec3 velocity{};           // in meters/second
   glm::vec3 acceleration{};       // in meters/second^2
   glm::vec3 angle{};              // in radians
   glm::vec3 angular_velocity{};   // in radians/second
   float mass = 0;                 // in kg
-  uint32_t collision_bits = 0;    // mask & bits for collision subscription
-  uint32_t collision_mask = 0;    // ...
   net_state *net_state = nullptr; // pointer to signals used by this object
   bool is_sphere = false;         // true if object can be considered a sphere
 
@@ -102,9 +105,6 @@ public:
   }
 
 private:
-  friend class grid;
-  friend class cell;
-
   glm::mat4 Mmw{};               // model -> world matrix
   glm::vec3 Mmw_pos{};           // position of current Mmw matrix
   glm::vec3 Mmw_agl{};           // angle of current Mmw matrix
