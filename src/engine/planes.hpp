@@ -5,8 +5,8 @@
 namespace glos {
 class planes final {
 public:
-  bool normals_invalidated = true;
   bool points_invalidated = true;
+  bool normals_invalidated = true;
 
   // points and normals are in model coordinates
   // Mmw matrix was constructed using pos, agl, scl are
