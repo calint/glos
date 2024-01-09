@@ -142,7 +142,7 @@ public:
       state[0].keys = SDL_GetTicks64();
 
       for (unsigned i = 1; i < net_players + 1; ++i) {
-        ssize_t const n = send(clients_fd[i], state, sizeof(state), 0);
+        ssize_t const n = send(clients_fd[i], state.data(), sizeof(state), 0);
         if (n == -1) {
           fprintf(stderr, "\n%s:%d: player %u: ", __FILE__, __LINE__, i);
           perror("");
@@ -167,8 +167,8 @@ public:
 
 private:
   int server_fd = 0;
-  int clients_fd[net_players + 1] = {};
-  net_state state[net_players + 1]{};
+  std::array<int, net_players + 1> clients_fd{};
+  std::array<net_state, net_players + 1> state{};
   // note. state[0] is used by server to broadcast to all clients
   //       delta time for frame (dt) and current server time in ms
 };

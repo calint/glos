@@ -1,13 +1,13 @@
-tis  9 jan 2024 08:38:32 CET
+tis  9 jan 2024 15:55:37 CET
 /home/c/w/glos/qa/lint/../../src/application/application.cpp:138:5: warning: use auto when initializing with new to avoid duplicating the type name [hicpp-use-auto,modernize-use-auto]
     asteroid_large *ast = new (objects.alloc()) asteroid_large{};
     ^~~~~~~~~~~~~~
     auto
-/home/c/w/glos/qa/lint/../../src/engine/../application/../engine/engine.hpp:204:15: warning: method 'free' can be made static [readability-convert-member-functions-to-static]
+/home/c/w/glos/qa/lint/../../src/engine/../application/../engine/engine.hpp:205:15: warning: method 'free' can be made static [readability-convert-member-functions-to-static]
   inline void free() {
               ^
   static 
-/home/c/w/glos/qa/lint/../../src/engine/../application/../engine/engine.hpp:609:64: warning: use nullptr [hicpp-use-nullptr,modernize-use-nullptr]
+/home/c/w/glos/qa/lint/../../src/engine/../application/../engine/engine.hpp:610:64: warning: use nullptr [hicpp-use-nullptr,modernize-use-nullptr]
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid *)0);
                                                                ^
                                                                nullptr
@@ -51,11 +51,11 @@ tis  9 jan 2024 08:38:32 CET
         bullet *blt = new (objects.alloc()) bullet{};
         ^~~~~~
         auto
-/home/c/w/glos/qa/lint/../../src/engine/../application/../engine/engine.hpp:204:15: warning: method 'free' can be made static [readability-convert-member-functions-to-static]
+/home/c/w/glos/qa/lint/../../src/engine/../application/../engine/engine.hpp:205:15: warning: method 'free' can be made static [readability-convert-member-functions-to-static]
   inline void free() {
               ^
   static 
-/home/c/w/glos/qa/lint/../../src/engine/../application/../engine/engine.hpp:609:64: warning: use nullptr [hicpp-use-nullptr,modernize-use-nullptr]
+/home/c/w/glos/qa/lint/../../src/engine/../application/../engine/engine.hpp:610:64: warning: use nullptr [hicpp-use-nullptr,modernize-use-nullptr]
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid *)0);
                                                                ^
                                                                nullptr
@@ -92,4 +92,4 @@ class object {
 /home/c/w/glos/qa/lint/../../src/engine/token.h:3:1: warning: use 'using' instead of 'typedef' [modernize-use-using]
 typedef struct token {
 ^~~~~~~~~~~~~~~~~~~~~~
-tis  9 jan 2024 08:39:39 CET
+tis  9 jan 2024 15:56:42 CET

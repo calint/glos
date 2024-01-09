@@ -24,7 +24,7 @@ class net final {
 public:
   bool enabled = false;
   net_state next_state{};
-  net_state states[net_players + 1];
+  std::array<net_state, net_players + 1> states{};
   uint32_t player_ix = 1;
   float dt = 0;
   uint64_t ms = 0;
@@ -118,7 +118,7 @@ public:
     uint64_t const t0 = SDL_GetPerformanceCounter();
 
     // receive signals from previous frame
-    ssize_t const n = recv(fd, states, sizeof(states), 0);
+    ssize_t const n = recv(fd, states.data(), sizeof(states), 0);
     if (n == -1) {
       fprintf(stderr, "\n%s:%d: ", __FILE__, __LINE__);
       perror("");

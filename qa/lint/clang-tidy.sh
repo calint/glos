@@ -1,6 +1,9 @@
-#!/bin/sh
+#!/bin/bash
 # tools:
 #   clang-tidy: Ubuntu LLVM version 15.0.7
+set -e
+cd $(dirname "$0")
+DIR="$(pwd)"
 
 SRC="../../src/main.cpp ../../src/application/application.cpp"
 
