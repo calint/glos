@@ -1,6 +1,9 @@
 #!/bin/sh
 # tools:
 #   cppcheck: 2.10
+set -e
+cd $(dirname "$0")
+DIR="$(pwd)"
 
 SRC="../../src/main.cpp ../../src/application/application.cpp"
 
