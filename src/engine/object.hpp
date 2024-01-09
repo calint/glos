@@ -112,7 +112,7 @@ private:
   uint64_t rendered_at_tick = 0; // used by cell to avoid rendering twice
   uint64_t updated_at_tick = 0;  // used by cell to avoid updating twice
   std::vector<const object *> handled_collisions{};
-  std::atomic_flag spinlock = ATOMIC_FLAG_INIT;
+  std::atomic_flag lock = ATOMIC_FLAG_INIT;
   std::atomic_flag lock_get_updated_Mmw = ATOMIC_FLAG_INIT;
   bool overlaps_cells = false; // used by grid to flag cell overlap
   bool is_dead = false;        // used by cell to avoid events on dead objects
@@ -156,11 +156,11 @@ private:
   }
 
   inline void acquire_lock() {
-    while (spinlock.test_and_set(std::memory_order_acquire)) {
+    while (lock.test_and_set(std::memory_order_acquire)) {
     }
   }
 
-  inline void release_lock() { spinlock.clear(std::memory_order_release); }
+  inline void release_lock() { lock.clear(std::memory_order_release); }
 };
 
 class objects final {

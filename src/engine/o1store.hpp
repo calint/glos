@@ -23,7 +23,7 @@ class o1store final {
   Type **del_bgn_ = nullptr;
   Type **del_ptr_ = nullptr;
   Type **del_end_ = nullptr;
-  std::atomic_flag spinlock = ATOMIC_FLAG_INIT;
+  std::atomic_flag lock = ATOMIC_FLAG_INIT;
 
 public:
   o1store() {
@@ -174,9 +174,9 @@ public:
   }
 
   inline void acquire_lock() {
-    while (spinlock.test_and_set(std::memory_order_acquire)) {
+    while (lock.test_and_set(std::memory_order_acquire)) {
     }
   }
 
-  inline void release_lock() { spinlock.clear(std::memory_order_release); }
+  inline void release_lock() { lock.clear(std::memory_order_release); }
 };

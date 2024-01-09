@@ -104,11 +104,11 @@ public:
   }
 
   inline void acquire_lock() {
-    while (spinlock.test_and_set(std::memory_order_acquire)) {
+    while (lock.test_and_set(std::memory_order_acquire)) {
     }
   }
 
-  inline void release_lock() { spinlock.clear(std::memory_order_release); }
+  inline void release_lock() { lock.clear(std::memory_order_release); }
 
   inline static auto are_in_collision(planes const &pns1, planes const &pns2)
       -> bool {
@@ -131,7 +131,7 @@ private:
   glm::vec3 Mmw_scl{};
   glm::vec3 Nmw_agl{};
   //
-  std::atomic_flag spinlock = ATOMIC_FLAG_INIT;
+  std::atomic_flag lock = ATOMIC_FLAG_INIT;
 
   inline auto is_point_behind_all_planes(glm::vec3 const &p) const -> bool {
     size_t const n = world_normals.size();
