@@ -17,17 +17,17 @@ public:
   float radius = 0;               // bounding radius in e.g. meters
   uint32_t collision_bits = 0;    // mask & bits for collision subscription
   uint32_t collision_mask = 0;    // ...
-  object **alloc_ptr;             // initiated at allocate by 'o1store'
-  std::string name{};             // instance name
-  uint32_t glob_ix = 0;           // index in globs store
-  glm::vec3 scale{};              // in meters
-  planes planes{};                // bounding planes (if any)
   glm::vec3 velocity{};           // in meters/second
   glm::vec3 acceleration{};       // in meters/second^2
   glm::vec3 angle{};              // in radians
   glm::vec3 angular_velocity{};   // in radians/second
+  uint32_t glob_ix = 0;           // index in globs store
+  glm::vec3 scale{};              // in meters
+  planes planes{};                // bounding planes (if any)
   float mass = 0;                 // in kg
   net_state *net_state = nullptr; // pointer to signals used by this object
+  object **alloc_ptr;             // initiated at allocate by 'o1store'
+  std::string name{};             // instance name
   bool is_sphere = false;         // true if object can be considered a sphere
 
   inline virtual ~object() = default;

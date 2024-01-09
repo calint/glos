@@ -1,6 +1,5 @@
-[x] profile
-[ ] sanitize
 [ ] review engine source
+[ ] object: updated_at_tick and rendered_at_tick is uint64_t. uint32_t enough for purpose?
 [ ] convert token.h
 [ ] use c++ random number generator
 [ ] rand() is not thread-safe
@@ -42,6 +41,8 @@
 [ ] shader: mtx_wvp * mtx_mw   is it better with mtx_mwvp?
 [ ] consider: https://github.com/alugowski/task-thread-pool for simple multithreading
 ------------------------------
+[x] profile
+[x] sanitize
 [x] glob::load: better printout
 [x] ? racing condition on net.states between where render thread and update thread
     => it is ok. current signals are copied to net.states and the object
