@@ -274,8 +274,7 @@ private:
     // bounding volume objects state do not change because there is no handle
     // collision implementation (spheres do)
 
-    return o1->planes.is_any_point_in_volume(o2->planes) or
-           o2->planes.is_any_point_in_volume(o1->planes);
+    return planes::are_in_collision(o1->planes, o2->planes);
   }
 };
 } // namespace glos

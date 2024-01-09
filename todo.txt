@@ -15,7 +15,7 @@
     => for now planes.points_invalidated and planes.normals_invalidated flags
 [ ] object::get_updated_Mmw_matrix: also compare with frame_context.frame_num in
     a non synchronized statement
-[ ] glob::load: better printout
+[x] glob::load: better printout
 [ ] objects.free(): what if destructors created new objects
 [ ] net_server: read/write instead of recv(...,0) and send(...,0)
 [ ] net_server: record client signals and then replay the session

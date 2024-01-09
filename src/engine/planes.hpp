@@ -37,8 +37,7 @@ public:
     if (normals_invalidated or agl != Nmw_agl) {
       // update matrix
       Nmw_agl = agl;
-      glm::mat4 const Nr = glm::eulerAngleXYZ(Nmw_agl.x, Nmw_agl.y, Nmw_agl.z);
-      Nmw = glm::mat3{Nr};
+      Nmw = glm::mat3{glm::eulerAngleXYZ(Nmw_agl.x, Nmw_agl.y, Nmw_agl.z)};
 
       // update world normals
       world_normals.clear();
@@ -52,12 +51,17 @@ public:
   }
 
   inline void print() const {
-    size_t const n = world_points.size();
+    size_t const n = world_normals.size();
     for (unsigned i = 0; i < n; ++i) {
-      glm::vec3 const &pnt = world_points[i];
-      glm::vec3 const &nml = world_normals[i];
+      glm::vec3 const &pnt = world_points.at(i);
+      glm::vec3 const &nml = world_normals.at(i);
       printf("normal %u: %s  ->  %s\n", i, glm::to_string(pnt).c_str(),
              glm::to_string(nml).c_str());
+    }
+    size_t const m = world_points.size();
+    for (size_t i = n; i < m; ++i) {
+      glm::vec3 const &pnt = world_points.at(i);
+      printf("point %s\n", glm::to_string(pnt).c_str());
     }
   }
 
@@ -105,6 +109,12 @@ public:
   }
 
   inline void release_lock() { spinlock.clear(std::memory_order_release); }
+
+  inline static auto are_in_collision(planes const &pns1, planes const &pns2)
+      -> bool {
+    return pns1.is_any_point_in_volume(pns2) or
+           pns2.is_any_point_in_volume(pns1);
+  }
 
 private:
   // normals rotation matrix from model to world coordinate system
