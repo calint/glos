@@ -1,10 +1,9 @@
-[x] clang-tidy
+[x] profile
+[ ] review engine source
 [ ] convert token.h
+[ ] use c++ random number generator
 [ ] rand() is not thread-safe
 [ ] use string_view instead of const char*
-[o] try using cell_entry{pos,radius,collbits,collmsk} instead of object pointer for 
-    better cache utilization in hot path
-    => first impl 10% improvement in 'upd_ms' for the 64K objects grid
 [ ] release and continue with sandbox game in 'glosi'
 [ ]   render cull cells
 [ ]   render cull objects
@@ -12,16 +11,11 @@
 [ ]   grid: static vs moving vs bullets vs scenery objects
 [ ]   glob::load: optimize ranges by merging non-textured materials since all
       used material info is saved in the vertices
-[ ] metrics gives a large first fps
-[x] consider inverting meaning of bool return value from 'update' and 'on_collision'
-[o] profile
 [ ] object: changing glob_ix should invalidate planes
     => for now planes.points_invalidated and planes.normals_invalidated flags
 [ ] object::get_updated_Mmw_matrix: also compare with frame_context.frame_num in
     a non synchronized statement
 [ ] glob::load: better printout
-[ ] accessing global frame_context from threads is 1.8% of profiling 
-    time without rendering on a threaded grid
 [ ] objects.free(): what if destructors created new objects
 [ ] net_server: read/write instead of recv(...,0) and send(...,0)
 [ ] net_server: record client signals and then replay the session
@@ -31,42 +25,14 @@
 [ ] planes::update_model_to_world could save frame_num from context to shorten
     the decision if cached values are valid
 [ ] ? racing condition on net.states between where render thread and update thread
-[o] halt development and tidy up
-[x]   'unsigned' instead of 'int' where size cannot be negative
-      => in 64 bit architecture 'int' instead of 'unsigned' should be considered
-[x]   use size_t for sizes and indexes (assumes 64 bit architecture)
-[x]   review application code
-[x]   print out source location when std::abort()
-[ ]   use c++ random number generator
-[x]   class private members at the bottom of the declaration
-[x]   use uint32_t instead of unsigned int32_t etc
-      => class members fixed. in code less relevant
-[-]   consider a more standard source layout without depending on include order
-      => source in hpp and the concept of the program being one file is kept
-[x]   use gl_element_array_buffer (where appropriate)
-[ ]   use glDebugMessageCallback
-[ ]   cmake or premake and automatically download dependencies using git submodules
-[x]   use glm::sin, cos etc
-[x]   consider verbose self documenting code
-[x]   move object::volume into physics
-      => moved into object
-[x]   review and delete obsolete notes
-[ ]   net_server as separate application
-[x]   ref& const, bool const, etc
-[x]     arguments
-[x]     code
-[x]   ++i instead of i++
-[x]   friend cell to object?
-      => and grid
-[x]   const correctness
-[x]   const everything
-[ ]   constexpr everything
-[ ]   struct vertex used for sizeof only
+[ ] use glDebugMessageCallback
+[ ] cmake or premake and automatically download dependencies using git submodules
+[ ] net_server as separate application
+[ ] constexpr everything
+[ ] struct vertex used for sizeof only
 [ ] fix itm anti-pattern
 [ ] note about the absolute texture path in mtl files
 [ ] object size and content is not cache friendly. consider components
-[x] volume::planes - ability to store some extra points without normals for use
-    in collision detection
 [ ] use "moving towards each other" vector to cull collision detection
 [ ] multiple collision detection convex volumes per object
 [ ] collision detection: collision_context such as collision normal, plane etc
@@ -77,6 +43,43 @@
 [ ] shader: mtx_wvp * mtx_mw   is it better with mtx_mwvp?
 [ ] consider: https://github.com/alugowski/task-thread-pool for simple multithreading
 ------------------------------
+[x] volume::planes - ability to store some extra points without normals for use
+    in collision detection
+[x] accessing global frame_context from threads is 1.8% of profiling 
+    time without rendering on a threaded grid
+    => misread
+[x] halt development and tidy up
+[x]   'unsigned' instead of 'int' where size cannot be negative
+      => in 64 bit architecture 'int' instead of 'unsigned' should be considered
+[x]   use size_t for sizes and indexes (assumes 64 bit architecture)
+[x]   review application code
+[x]   print out source location when std::abort()
+[x]   class private members at the bottom of the declaration
+[x]   use uint32_t instead of unsigned int32_t etc
+      => class members fixed. in code less relevant
+[-]   consider a more standard source layout without depending on include order
+      => source in hpp and the concept of the program being one file is kept
+[x]   use gl_element_array_buffer (where appropriate)
+[x]   use glm::sin, cos etc
+[x]   consider verbose self documenting code
+[x]   move object::volume into physics
+      => moved into object
+[x]   review and delete obsolete notes
+[x]   ref& const, bool const, etc
+[x]     arguments
+[x]     code
+[x]   ++i instead of i++
+[x]   friend cell to object?
+      => and grid
+[x]   const correctness
+[x]   const everything
+[x] clang-tidy
+[x] try using cell_entry{pos,radius,collbits,collmsk} instead of object pointer for 
+    better cache utilization in hot path
+    => first impl 10% improvement in 'upd_ms' for the 64K objects grid
+[x] metrics gives a large first fps when vsync is on
+    => seems like SDL2 issue
+[x] consider inverting meaning of bool return value from 'update' and 'on_collision'
 [x] use unique_ptr instead of new and delete
     => o1store for objects
 [x] net: when server disconnects there is no print out
