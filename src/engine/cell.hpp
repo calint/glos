@@ -5,8 +5,8 @@
 
 namespace glos {
 
-// object entry in a cell with common used attributes copied for better cache
-// utilization in the hot code path
+// object entry in a cell with members used in the hot code path copied for
+// better cache utilization
 struct cell_entry {
   glm::vec3 position{};
   float radius = 0;
@@ -84,22 +84,22 @@ public:
         // bounding spheres are in collision
 
         if (Oi.object->is_sphere and Oj.object->is_sphere) {
-          bool Oi_already_handled_Oj = false;
-          bool Oj_already_handled_Oi = false;
-          if (Oi_interest_of_Oj) {
-            Oi_already_handled_Oj = dispatch_collision(Oi.object, Oj.object);
-          }
-          if (Oj_interest_of_Oi) {
-            Oj_already_handled_Oi = dispatch_collision(Oj.object, Oi.object);
+          bool const Oi_already_handled_Oj =
+              Oi_interest_of_Oj ? dispatch_collision(Oi.object, Oj.object)
+                                : false;
+          bool const Oj_already_handled_Oi =
+              Oj_interest_of_Oi ? dispatch_collision(Oj.object, Oi.object)
+                                : false;
+
+          // if collision has already been handled, possibly on a different
+          // thread or grid cell continue
+          if (Oi_already_handled_Oj or Oj_already_handled_Oi) {
+            continue;
           }
 
-          // note. if either of the participants subscribes to collision then
-          // change the state of the spheres once although running on multiple
-          // threads
-          if ((Oi_interest_of_Oj and not Oi_already_handled_Oj) or
-              (Oj_interest_of_Oi and not Oj_already_handled_Oi)) {
-            handle_sphere_collision(Oi.object, Oj.object);
-          }
+          // collision has not been handled during this frame
+
+          handle_sphere_collision(Oi.object, Oj.object);
           continue;
         }
 
@@ -218,14 +218,18 @@ private:
   // returns true if collision with 'obj' has already been handled by 'receiver'
   static inline auto dispatch_collision(object *receiver, object *obj) -> bool {
     // if object overlaps cells then this code might be called by several
-    // threads at the same time
-    const bool synchronize = threaded_grid and receiver->overlaps_cells;
+    // threads at the same time from different cells
+    bool const synchronize = threaded_grid and receiver->overlaps_cells;
 
     if (synchronize) {
       receiver->acquire_lock();
     }
 
-    if (receiver->is_collision_handled_and_if_not_add(obj)) {
+    // if object overlaps cells then the same collision is detected and
+    // dispatched in multiple cells
+    if (receiver->overlaps_cells and
+        receiver->is_collision_handled_and_if_not_add(obj)) {
+      // collision already dispatched
       if (synchronize) {
         receiver->release_lock();
       }
