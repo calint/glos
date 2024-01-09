@@ -2,6 +2,9 @@
 [ ] convert token.h
 [ ] rand() is not thread-safe
 [ ] use string_view instead of const char*
+[o] try using cell_entry{pos,radius,collbits,collmsk} instead of object pointer for 
+    better cache utilization in hot path
+    => first impl 10% improvement in 'upd_ms' for the 64K objects grid
 [ ] release and continue with sandbox game in 'glosi'
 [ ]   render cull cells
 [ ]   render cull objects

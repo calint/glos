@@ -4,78 +4,75 @@
 // reviewed: 2024-01-06
 
 namespace glos {
-
-// object entry in a cell with common used attributes copied for better cache
-// utilization in the hot code path
-struct cell_entry {
-  glm::vec3 position{};
-  float radius = 0;
-  uint32_t collision_bits = 0;
-  uint32_t collision_mask = 0;
-  object *object = nullptr;
-};
-
 class cell final {
 public:
   // called from grid (possibly by multiple threads)
   inline void update() const {
-    for (cell_entry const &ce : entry_list) {
+    for (object *obj : ols) {
       if (threaded_grid) {
         // multithreaded mode
-        if (ce.object->overlaps_cells) {
+        if (obj->overlaps_cells) {
           // object is in several cells and may be called from multiple threads
-          ce.object->acquire_lock();
-          if (ce.object->updated_at_tick == frame_context.frame_num) {
-            ce.object->release_lock();
+          obj->acquire_lock();
+          if (obj->updated_at_tick == frame_context.frame_num) {
+            obj->release_lock();
             continue;
           }
-          ce.object->updated_at_tick = frame_context.frame_num;
-          ce.object->release_lock();
+          obj->updated_at_tick = frame_context.frame_num;
+          obj->release_lock();
         }
       } else {
         // single threaded mode
-        if (ce.object->overlaps_cells) {
+        if (obj->overlaps_cells) {
           // object is in several cells and may be called from multiple cells
-          if (ce.object->updated_at_tick == frame_context.frame_num) {
+          if (obj->updated_at_tick == frame_context.frame_num) {
             continue;
           }
-          ce.object->updated_at_tick = frame_context.frame_num;
+          obj->updated_at_tick = frame_context.frame_num;
         }
       }
 
       // only one thread at a time is here for 'obj'
 
-      if (not ce.object->update()) {
-        ce.object->is_dead = true;
-        objects.free(ce.object);
+      if (not obj->update()) {
+        obj->is_dead = true;
+        objects.free(obj);
         continue;
       }
 
       // note. opportunity to clear the list prior to 'resolve_collisions'
-      ce.object->clear_handled_collisions();
+      obj->clear_handled_collisions();
     }
   }
 
   // called from grid (possibly by multiple threads)
   inline void resolve_collisions() const {
-    // thread safe because 'ls' does not change during 'resolve_collisions'
-    size_t const len = entry_list.size();
+    // thread safe because 'ols' does not change during 'resolve_collisions'
+    size_t const len = ols.size();
     if (len < 2) {
       return;
     }
     for (unsigned i = 0; i < len - 1; ++i) {
       for (unsigned j = i + 1; j < len; ++j) {
 
-        cell_entry const &Oi = entry_list[i];
-        cell_entry const &Oj = entry_list[j];
+        object *Oi = ols[i];
+        object *Oj = ols[j];
 
+        // thread safe because 'collision_mask' and 'collision_bits' do not
+        // change during 'resolve_collisions'
+        //! what if object 'on_collision' changes the mask or bits
+
+        bool const Oi_interest_of_Oj = Oi->collision_mask & Oj->collision_bits;
+        bool const Oj_interest_of_Oi = Oj->collision_mask & Oi->collision_bits;
         // check if Oi and Oj have interest in collision with each other
-        bool const Oi_interest_of_Oj = Oi.collision_mask & Oj.collision_bits;
-        bool const Oj_interest_of_Oi = Oj.collision_mask & Oi.collision_bits;
-
         if (not Oi_interest_of_Oj and not Oj_interest_of_Oi) {
           continue;
         }
+
+        // note. instead of checking if collision detection has been tried
+        // between these 2 objects just try it because it is more expensive to
+        // do the locking and lookup than just trying and only handling a
+        // collision between 2 objects once per frame
 
         if (not are_bounding_spheres_in_collision(Oi, Oj)) {
           continue;
@@ -83,14 +80,14 @@ public:
 
         // bounding spheres are in collision
 
-        if (Oi.object->is_sphere and Oj.object->is_sphere) {
+        if (Oi->is_sphere and Oj->is_sphere) {
           bool Oi_already_handled_Oj = false;
           bool Oj_already_handled_Oi = false;
           if (Oi_interest_of_Oj) {
-            Oi_already_handled_Oj = dispatch_collision(Oi.object, Oj.object);
+            Oi_already_handled_Oj = dispatch_collision(Oi, Oj);
           }
           if (Oj_interest_of_Oi) {
-            Oj_already_handled_Oi = dispatch_collision(Oj.object, Oi.object);
+            Oj_already_handled_Oi = dispatch_collision(Oj, Oi);
           }
 
           // note. if either of the participants subscribes to collision then
@@ -98,38 +95,38 @@ public:
           // threads
           if ((Oi_interest_of_Oj and not Oi_already_handled_Oj) or
               (Oj_interest_of_Oi and not Oj_already_handled_Oi)) {
-            handle_sphere_collision(Oi.object, Oj.object);
+            handle_sphere_collision(Oi, Oj);
           }
           continue;
         }
 
         // check if sphere vs planes
 
-        if (Oi.object->is_sphere) {
+        if (Oi->is_sphere) {
           // Oj is not a sphere
-          Oj.object->update_planes_world_coordinates();
-          if (Oj.object->planes.is_in_collision_with_sphere(Oi.position,
-                                                            Oi.radius)) {
+          Oj->update_planes_world_coordinates();
+          if (Oj->planes.is_in_collision_with_sphere(Oi->position,
+                                                     Oi->radius)) {
             if (Oi_interest_of_Oj) {
-              dispatch_collision(Oi.object, Oj.object);
+              dispatch_collision(Oi, Oj);
             }
             if (Oj_interest_of_Oi) {
-              dispatch_collision(Oj.object, Oi.object);
+              dispatch_collision(Oj, Oi);
             }
           }
           continue;
         }
 
-        if (Oj.object->is_sphere) {
+        if (Oj->is_sphere) {
           // Oi is not a sphere
-          Oi.object->update_planes_world_coordinates();
-          if (Oi.object->planes.is_in_collision_with_sphere(Oj.position,
-                                                            Oj.radius)) {
+          Oi->update_planes_world_coordinates();
+          if (Oi->planes.is_in_collision_with_sphere(Oj->position,
+                                                     Oj->radius)) {
             if (Oi_interest_of_Oj) {
-              dispatch_collision(Oi.object, Oj.object);
+              dispatch_collision(Oi, Oj);
             }
             if (Oj_interest_of_Oi) {
-              dispatch_collision(Oj.object, Oi.object);
+              dispatch_collision(Oj, Oi);
             }
           }
           continue;
@@ -137,17 +134,17 @@ public:
 
         // both objects are convex volumes bounded by planes
 
-        if (not are_bounding_planes_in_collision(Oi.object, Oj.object)) {
+        if (not are_bounding_planes_in_collision(Oi, Oj)) {
           continue;
         }
 
         // bounding planes in collision
 
         if (Oi_interest_of_Oj) {
-          dispatch_collision(Oi.object, Oj.object);
+          dispatch_collision(Oi, Oj);
         }
         if (Oj_interest_of_Oi) {
-          dispatch_collision(Oj.object, Oi.object);
+          dispatch_collision(Oj, Oi);
         }
       }
     }
@@ -155,41 +152,38 @@ public:
 
   // called from grid (from only one thread)
   inline void render() const {
-    for (cell_entry const &ce : entry_list) {
+    for (object *o : ols) {
       // check if object has been rendered by another cell
-      if (ce.object->rendered_at_tick == frame_context.frame_num) {
+      if (o->rendered_at_tick == frame_context.frame_num) {
         continue;
       }
-      ce.object->rendered_at_tick = frame_context.frame_num;
-      ce.object->render();
+      o->rendered_at_tick = frame_context.frame_num;
+      o->render();
       ++metrics.rendered_objects;
     }
   }
 
   // called from grid (from only one thread)
-  inline void clear() { entry_list.clear(); }
+  inline void clear() { ols.clear(); }
 
   // called from grid (from only one thread)
-  inline void add(object *o) {
-    entry_list.emplace_back(o->position, o->radius, o->collision_bits,
-                            o->collision_mask, o);
-  }
+  inline void add(object *o) { ols.push_back(o); }
 
   inline void print() const {
     unsigned i = 0;
-    for (cell_entry const &ce : entry_list) {
+    for (object const *o : ols) {
       if (i++) {
         printf(", ");
       }
-      printf("%s", ce.object->name.c_str());
+      printf("%s", o->name.c_str());
     }
     printf("\n");
   }
 
-  inline auto objects_count() const -> size_t { return entry_list.size(); }
+  inline auto objects_count() const -> size_t { return ols.size(); }
 
 private:
-  std::vector<cell_entry> entry_list{};
+  std::vector<object *> ols{};
 
   static inline void handle_sphere_collision(object *Oi, object *Oj) {
     //! racing
@@ -202,7 +196,6 @@ private:
 
     if (relative_velocity_along_collision_normal >= 0 or
         std::isnan(relative_velocity_along_collision_normal)) {
-      // sphere are not moving towards each other
       return;
     }
 
@@ -234,7 +227,7 @@ private:
       return true;
     }
 
-    // only one thread at a time can be here for 'receiver'
+    // only one thread at a time can be here
 
     if (not receiver->is_dead and not receiver->on_collision(obj)) {
       receiver->is_dead = true;
@@ -248,12 +241,12 @@ private:
     return false;
   }
 
-  static inline auto are_bounding_spheres_in_collision(cell_entry const &o1,
-                                                       cell_entry const &o2)
+  static inline auto are_bounding_spheres_in_collision(object const *o1,
+                                                       object const *o2)
       -> bool {
 
-    glm::vec3 const v = o2.position - o1.position;
-    float const d = o1.radius + o2.radius;
+    glm::vec3 const v = o2->position - o1->position;
+    float const d = o1->radius + o2->radius;
     float const dsq = d * d;
     float const vsq = glm::dot(v, v); // distance squared
     float const diff = vsq - dsq;
@@ -267,8 +260,7 @@ private:
     o2->update_planes_world_coordinates();
 
     // planes can be update only once per 'resolve_collisions' pass because
-    // bounding volume objects state do not change because there is no handle
-    // collision implementation (spheres do)
+    // bounding volume object state does not change (spheres do)
 
     return o1->planes.is_any_point_in_volume(o2->planes) or
            o2->planes.is_any_point_in_volume(o1->planes);
