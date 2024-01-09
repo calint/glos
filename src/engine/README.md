@@ -4,10 +4,10 @@
 * `grid` partitions space in `cells` containing `objects`
   - `object` may overlap `grid` `cells`
   - `grid` runs `update` then `resolve_collisions` pass on `cells`
-  - when `threaded_grid` is on the passes call `cells` in a non-deterministic, parallel and unsequenced way
+  - when `threaded_grid` is `true`, the passes call `cells` in a non-deterministic, parallel and unsequenced way
   - `threaded_grid` must be off in multiplayer applications
   - `object` `update` is called once every frame
-  - `object` `on_collision` is called once for each collision with another `object` in that frame
+  - `object` `on_collision` is called once for each collision with another `object` in that time slice
 * `object` has reference to a 3d model, `glob`, using an index in `globs`
   - has state such as `position`, `angle`, `scale`, `velocity`, `acceleration`, `angular_velocity` etc
 * `glob`
