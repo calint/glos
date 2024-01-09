@@ -17,7 +17,7 @@
 
 ## notes
 * engine is multithreaded (see `configuration.hpp` setting `threaded_grid` and `threaded_update`)
-* in multiplayer mode `threaded_grid` must be `false` for clients to run in a  deterministic way
+* in multiplayer mode, `threaded_grid` must be `false` for clients to run in a  deterministic way
 * in single player mode, updating objects and collisions resolutions can be done on available cores by turning `threaded_grid` on
 * `threaded_update` enables rendering and update running in parallel which is not thread safe but deterministic
 * in smaller applications multithreaded mode might degrade performance
