@@ -1,4 +1,4 @@
-mån  8 jan 2024 20:51:01 CET
+tis  9 jan 2024 08:38:32 CET
 /home/c/w/glos/qa/lint/../../src/application/application.cpp:138:5: warning: use auto when initializing with new to avoid duplicating the type name [hicpp-use-auto,modernize-use-auto]
     asteroid_large *ast = new (objects.alloc()) asteroid_large{};
     ^~~~~~~~~~~~~~
@@ -92,4 +92,4 @@ class object {
 /home/c/w/glos/qa/lint/../../src/engine/token.h:3:1: warning: use 'using' instead of 'typedef' [modernize-use-using]
 typedef struct token {
 ^~~~~~~~~~~~~~~~~~~~~~
-mån  8 jan 2024 20:52:07 CET
+tis  9 jan 2024 08:39:39 CET

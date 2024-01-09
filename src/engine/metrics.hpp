@@ -32,7 +32,7 @@ public:
 
   inline void free() {}
 
-  inline void reset_timer() {
+  inline void begin() {
     fps.frame_count = 0;
     fps.time_at_start_of_interval_ms = SDL_GetTicks64();
     fps.timer_tick_at_start_of_frame = SDL_GetPerformanceCounter();
@@ -100,7 +100,7 @@ public:
     fps.average_during_last_interval =
         fps.frame_count * uint32_t(1000) / uint32_t(dt_interval);
     fps.time_at_start_of_interval_ms = t1;
-    reset_timer();
+    fps.frame_count = 0;
 
     print(f);
   }

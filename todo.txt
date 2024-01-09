@@ -1,10 +1,14 @@
 [x] clang-tidy
 [ ] convert token.h
 [ ] rand() is not thread-safe
+[ ] use string_view instead of const char*
 [ ] release and continue with sandbox game in 'glosi'
 [ ]   render cull cells
 [ ]   render cull objects
 [ ]   fix multithreading issues
+[ ]   grid: static vs moving vs bullets vs scenery objects
+[ ]   glob::load: optimize ranges by merging non-textured materials since all
+      used material info is saved in the vertices
 [ ] metrics gives a large first fps
 [x] consider inverting meaning of bool return value from 'update' and 'on_collision'
 [o] profile
@@ -13,12 +17,8 @@
 [ ] object::get_updated_Mmw_matrix: also compare with frame_context.frame_num in
     a non synchronized statement
 [ ] glob::load: better printout
-[ ] grid: static vs moving vs bullets vs scenery objects
 [ ] accessing global frame_context from threads is 1.8% of profiling 
     time without rendering on a threaded grid
-[ ] glob::load: optimize ranges by merging non-textured materials since all
-    used material info is saved in the vertices
-[ ] use string_view instead of const char*
 [ ] objects.free(): what if destructors created new objects
 [ ] net_server: read/write instead of recv(...,0) and send(...,0)
 [ ] net_server: record client signals and then replay the session

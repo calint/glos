@@ -69,7 +69,7 @@ Checking ../../src/application/application.cpp ...
 ../../src/application/application.cpp:93:13: error: Uninitialized variable: o [legacyUninitvar]
       ship *o = new (objects.alloc()) ship{};
             ^
-../../src/application/application.cpp:138:11: error: Uninitialized variable: o [legacyUninitvar]
+../../src/application/appliwwcation.cpp:138:11: error: Uninitialized variable: o [legacyUninitvar]
     auto *o = new (objects.alloc()) asteroid_large{};
           ^
 ../../src/application/utils.hpp:61:13: style: Variable 'pu' is assigned a value that is never used. [unreadVariable]

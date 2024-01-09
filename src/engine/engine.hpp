@@ -236,7 +236,7 @@ public:
     // initiate metrics
     metrics.fps.calculation_interval_ms = 1000;
     metrics.enable_print = metrics_print;
-    metrics.reset_timer();
+    metrics.begin();
     metrics.print_headers(stderr);
 
     SDL_SetRelativeMouseMode(mouse_mode ? SDL_TRUE : SDL_FALSE);
