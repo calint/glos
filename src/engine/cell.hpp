@@ -192,8 +192,6 @@ private:
   std::vector<cell_entry> entry_list{};
 
   static inline void handle_sphere_collision(object *Oi, object *Oj) {
-    //! racing
-
     glm::vec3 const collision_normal =
         glm::normalize(Oj->position - Oi->position);
 
