@@ -10,6 +10,7 @@ public:
   inline void update() const {
     for (object *obj : ols) {
       if (threaded_grid) {
+        // multithreaded mode
         if (obj->overlaps_cells) {
           // object is in several cells and may be called from multiple threads
           obj->acquire_lock();
@@ -21,6 +22,7 @@ public:
           obj->release_lock();
         }
       } else {
+        // single threaded mode
         if (obj->overlaps_cells) {
           // object is in several cells and may be called from multiple cells
           if (obj->updated_at_tick == frame_context.frame_num) {
@@ -58,7 +60,7 @@ public:
 
         // thread safe because 'collision_mask' and 'collision_bits' do not
         // change during 'resolve_collisions'
-        //! what if object 'on_collision' changes the mask or bitss
+        //! what if object 'on_collision' changes the mask or bits
 
         bool const Oi_interest_of_Oj = Oi->collision_mask & Oj->collision_bits;
         bool const Oj_interest_of_Oi = Oj->collision_mask & Oi->collision_bits;
@@ -70,7 +72,7 @@ public:
         // note. instead of checking if collision detection has been tried
         // between these 2 objects just try it because it is more expensive to
         // do the locking and lookup than just trying and only handling a
-        // collision between 2 objects once
+        // collision between 2 objects once per frame
 
         if (not are_bounding_spheres_in_collision(Oi, Oj)) {
           continue;
@@ -79,22 +81,27 @@ public:
         // bounding spheres are in collision
 
         if (Oi->is_sphere and Oj->is_sphere) {
-          bool Oi_handled_Oj = false;
-          bool Oj_handled_Oi = false;
+          bool Oi_already_handled_Oj = false;
+          bool Oj_already_handled_Oi = false;
           if (Oi_interest_of_Oj) {
-            Oi_handled_Oj = dispatch_collision(Oi, Oj);
+            Oi_already_handled_Oj = dispatch_collision(Oi, Oj);
           }
           if (Oj_interest_of_Oi) {
-            Oj_handled_Oi = dispatch_collision(Oj, Oi);
+            Oj_already_handled_Oi = dispatch_collision(Oj, Oi);
           }
-          if ((Oi_interest_of_Oj and not Oi_handled_Oj) or
-              (Oj_interest_of_Oi and not Oj_handled_Oi)) {
+
+          // note. if either of the participants subscribes to collision then
+          // change the state of the spheres once although running on multiple
+          // threads
+          if ((Oi_interest_of_Oj and not Oi_already_handled_Oj) or
+              (Oj_interest_of_Oi and not Oj_already_handled_Oi)) {
             handle_sphere_collision(Oi, Oj);
           }
           continue;
         }
 
-        // sphere vs planes
+        // check if sphere vs planes
+
         if (Oi->is_sphere) {
           // Oj is not a sphere
           Oj->update_planes_world_coordinates();
@@ -109,7 +116,7 @@ public:
           }
           continue;
         }
-        
+
         if (Oj->is_sphere) {
           // Oi is not a sphere
           Oi->update_planes_world_coordinates();
@@ -130,6 +137,8 @@ public:
         if (not are_bounding_planes_in_collision(Oi, Oj)) {
           continue;
         }
+
+        // bounding planes in collision
 
         if (Oi_interest_of_Oj) {
           dispatch_collision(Oi, Oj);
@@ -201,7 +210,7 @@ private:
     Oj->velocity -= impulse * Oi->mass * collision_normal;
   }
 
-  // returns true if collision has already been handled by Osrc
+  // returns true if collision with 'obj' has already been handled by 'receiver'
   static inline auto dispatch_collision(object *receiver, object *obj) -> bool {
     // if object overlaps cells then this code might be called by several
     // threads at the same time
