@@ -26,6 +26,7 @@ public:
           // object is in several cells and may be called from multiple threads
           ce.object->acquire_lock();
           if (ce.object->updated_at_tick == frame_context.frame_num) {
+            // object already updated in a different cell
             ce.object->release_lock();
             continue;
           }
@@ -43,7 +44,7 @@ public:
         }
       }
 
-      // only one thread at a time is here for 'obj'
+      // only one thread at a time is here for 'ce.object'
 
       if (not ce.object->update()) {
         ce.object->is_dead = true;
@@ -58,7 +59,8 @@ public:
 
   // called from grid (possibly by multiple threads)
   inline void resolve_collisions() const {
-    // thread safe because 'ls' does not change during 'resolve_collisions'
+    // thread safe because 'entry_list' does not change during
+    // 'resolve_collisions'
     size_t const len = entry_list.size();
     if (len < 2) {
       return;
