@@ -1,4 +1,5 @@
 [x] profile
+[ ] sanitize
 [ ] review engine source
 [ ] convert token.h
 [ ] use c++ random number generator
@@ -15,7 +16,6 @@
     => for now planes.points_invalidated and planes.normals_invalidated flags
 [ ] object::get_updated_Mmw_matrix: also compare with frame_context.frame_num in
     a non synchronized statement
-[x] glob::load: better printout
 [ ] objects.free(): what if destructors created new objects
 [ ] net_server: read/write instead of recv(...,0) and send(...,0)
 [ ] net_server: record client signals and then replay the session
@@ -24,7 +24,6 @@
 [ ] grid cell render culling
 [ ] planes::update_model_to_world could save frame_num from context to shorten
     the decision if cached values are valid
-[ ] ? racing condition on net.states between where render thread and update thread
 [ ] use glDebugMessageCallback
 [ ] cmake or premake and automatically download dependencies using git submodules
 [ ] net_server as separate application
@@ -43,6 +42,10 @@
 [ ] shader: mtx_wvp * mtx_mw   is it better with mtx_mwvp?
 [ ] consider: https://github.com/alugowski/task-thread-pool for simple multithreading
 ------------------------------
+[x] glob::load: better printout
+[x] ? racing condition on net.states between where render thread and update thread
+    => it is ok. current signals are copied to net.states and the object
+       references those signals
 [x] volume::planes - ability to store some extra points without normals for use
     in collision detection
 [x] accessing global frame_context from threads is 1.8% of profiling 
