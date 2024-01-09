@@ -20,9 +20,10 @@
 * `inline` functions
   - all functions are requested to be inlined assuming compilers won't adhere to the hint when it does not make sense, such as big functions called from multiple locations
   - functions called from only one location should be inlined
-* right to left notation `Type const &inst` instead of `const Type &inst`
-* for consistency, constants are written after the type such as `char const *ptr` instead of `const char *ptr` and `float const x` instead of `const float x`
 * `auto` is used when the type name is too verbose, such as iterators; otherwise, types are spelled out for readability
+* right to left notation `Type const &inst` instead of `const Type &inst`
+  - idea is that the type is an annotation because it can be replaced with `auto`
+* for consistency, constants are written after the type such as `char const *ptr` instead of `const char *ptr` and `float const x` instead of `const float x`
 * `unsigned` is used where negative values do not make sense
 * use of public members in classes
   - public members are moved to private scope when not used outside the class
