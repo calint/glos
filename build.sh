@@ -29,8 +29,8 @@ if [[ "$1" == "profile" ]]; then
 fi
 LDFLAGS=""
 if [[ "$1" == "sanitize" ]]; then
-    LDFLAGS="-fsanitize=address -fsanitize-address-use-after-scope"
-#    LDFLAGS="-fsanitize=thread"
+#    LDFLAGS="-fsanitize=address -fsanitize-address-use-after-scope"
+    LDFLAGS="-fsanitize=thread"
 fi
 
 CMD="$CC -o $BIN $SRC $DEBUG $PROFILE $OPTIMIZATION $CFLAGS $LDFLAGS $WARNINGS $LIBS"

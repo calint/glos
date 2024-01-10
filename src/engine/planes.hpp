@@ -1,8 +1,10 @@
 #pragma once
 // reviewed: 2024-01-04
 // reviewed: 2024-01-06
+// reviewed: 2024-01-10
 
 namespace glos {
+
 class planes final {
 public:
   bool points_invalidated = true;
@@ -37,7 +39,8 @@ public:
     if (normals_invalidated or agl != Nmw_agl) {
       // update matrix
       Nmw_agl = agl;
-      Nmw = glm::mat3{glm::eulerAngleXYZ(Nmw_agl.x, Nmw_agl.y, Nmw_agl.z)};
+      glm::mat3 const Nmw =
+          glm::mat3{glm::eulerAngleXYZ(Nmw_agl.x, Nmw_agl.y, Nmw_agl.z)};
 
       // update world normals
       world_normals.clear();
@@ -117,9 +120,6 @@ public:
   }
 
 private:
-  // normals rotation matrix from model to world coordinate system
-  glm::mat3 Nmw{};
-
   // cached world coordinate system points and normals
   // note. there is a point for each normal followed by additional points
   //       without normals used in collision detection

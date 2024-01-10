@@ -2,6 +2,7 @@
 // reviewed: 2023-12-22
 // reviewed: 2024-01-04
 // reviewed: 2024-01-06
+// reviewed: 2024-01-10
 
 namespace glos {
 
@@ -30,7 +31,7 @@ public:
             ce.object->release_lock();
             continue;
           }
-          ce.object->updated_at_tick = frame_context.frame_num;
+          ce.object->updated_at_tick = uint32_t(frame_context.frame_num);
           ce.object->release_lock();
         }
       } else {
