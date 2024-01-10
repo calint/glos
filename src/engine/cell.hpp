@@ -279,12 +279,12 @@ private:
     return false;
   }
 
-  static inline auto are_bounding_spheres_in_collision(cell_entry const &o1,
-                                                       cell_entry const &o2)
+  static inline auto are_bounding_spheres_in_collision(cell_entry const &ce1,
+                                                       cell_entry const &ce2)
       -> bool {
 
-    glm::vec3 const v = o2.position - o1.position;
-    float const d = o1.radius + o2.radius;
+    glm::vec3 const v = ce2.position - ce1.position;
+    float const d = ce1.radius + ce2.radius;
     float const dsq = d * d;
     float const vsq = glm::dot(v, v); // distance squared
     float const diff = vsq - dsq;
