@@ -34,10 +34,10 @@ public:
       std::abort();
     }
 
-    sdl_renderer =
-        SDL_CreateRenderer(sdl_window, -1,
-                           SDL_RENDERER_ACCELERATED |
-                               (window_vsync ? SDL_RENDERER_PRESENTVSYNC : 0U));
+    sdl_renderer = SDL_CreateRenderer(
+        sdl_window, -1,
+        window_vsync ? (SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC)
+                     : (SDL_RENDERER_ACCELERATED));
     if (not sdl_renderer) {
       fprintf(stderr, "\n%s:%d: cannot create renderer: %s\n", __FILE__,
               __LINE__, SDL_GetError());

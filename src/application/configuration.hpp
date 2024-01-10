@@ -52,7 +52,7 @@ static constexpr unsigned net_players = 2;
 static constexpr unsigned objects_count = 1 * 1024;
 
 // maximum size of any object instance in bytes
-static constexpr size_t objects_instance_size_B = 1024;
+static constexpr size_t objects_instance_size_B = 512;
 
 //
 // definitions used by game
