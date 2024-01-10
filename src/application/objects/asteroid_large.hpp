@@ -22,10 +22,9 @@ public:
     glob_ix = glob_ix_asteroid_large;
     scale = vec3{asteroid_large_scale};
     radius = globs.at(glob_ix).bounding_radius * scale.x;
-    is_sphere = true;
     mass = 1500;
     collision_bits = cb_asteroid;
-    collision_mask = cb_hero_bullet | cb_hero | cb_asteroid;
+    collision_mask = cb_hero_bullet | cb_hero;
     angular_velocity.y = rnd1(asteroid_large_agl_vel_rnd);
     ++asteroids_alive;
   }
@@ -54,8 +53,6 @@ public:
       printf("%lu: %lu: %s collision with %s\n", frame_context.frame_num,
              frame_context.ms, name.c_str(), o->name.c_str());
     }
-
-    return true;
 
     score += 10;
 
