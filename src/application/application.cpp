@@ -98,7 +98,7 @@ void application_init() {
   // setup light and camera
   ambient_light = normalize(vec3{1, 1, 1});
 
-  camera.type = camera::type::ORTHO;
+  camera.type = camera::type::ORTHOGONAL;
   camera.position = {0, 50, 0};
   camera.look_at = {0, 0, -0.0001f};
   // note. -0.0001f because of the math of 'look at'

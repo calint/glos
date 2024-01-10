@@ -1,13 +1,13 @@
 #pragma once
 // reviewed: 2024-01-06
+// reviewed: 2024-01-10
 
 //
 //! colors do not get converted correctly. color 'red' works though.
 //
 
-#include "shader.hpp"
-
 namespace glos {
+
 class hud final {
 public:
   size_t program_ix = 0;
@@ -74,7 +74,9 @@ public:
   }
 
   inline void free() {
-    TTF_CloseFont(font);
+    if (font) {
+      TTF_CloseFont(font);
+    }
     TTF_Quit();
     glDeleteBuffers(1, &vbo);
     glDeleteBuffers(1, &ebo);

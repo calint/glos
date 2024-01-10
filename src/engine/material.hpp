@@ -2,6 +2,7 @@
 // reviewed: 2023-12-22
 // reviewed: 2024-01-04
 // reviewed: 2024-01-06
+// reviewed: 2024-01-10
 
 #include "token.h"
 
@@ -43,7 +44,7 @@ public:
 
   inline void load(char const *path) {
     printf("   * loading materials from '%s'\n", path);
-    std::ifstream const file(path);
+    std::ifstream const file{path};
     if (not file) {
       fprintf(stderr, "\n%s:%d: cannot open file '%s'\n", __FILE__, __LINE__,
               path);

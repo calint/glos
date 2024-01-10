@@ -9,16 +9,21 @@
 //
 
 // grid dimensions
-static constexpr float grid_size = 40; // square side in e.g. meters
-static constexpr unsigned grid_rows = 4;
+static constexpr float grid_size = 3200; // square side in e.g. meters
+static constexpr unsigned grid_rows = 16;
 static constexpr unsigned grid_columns = grid_rows;
 static constexpr float grid_cell_size = grid_size / grid_rows;
+
+// static constexpr float grid_size = 50; // square side in e.g. meters
+// static constexpr unsigned grid_rows = 4;
+// static constexpr unsigned grid_columns = grid_rows;
+// static constexpr float grid_cell_size = grid_size / grid_rows;
 
 // multithreaded grid
 // note. in some cases multithreaded mode is a degradation of performance
 // note. multiplayer mode cannot use 'threaded_grid' because of the
 //       non-deterministic behavior
-static constexpr bool threaded_grid = false;
+static constexpr bool threaded_grid = true;
 static constexpr bool threaded_o1store = threaded_grid;
 static constexpr bool threaded_update = false;
 
@@ -37,19 +42,19 @@ inline bool debug_object_planes_normals = false;
 inline bool debug_object_bounding_sphere = false;
 
 // initially render the hud
-static constexpr bool hud_enabled = true;
+static constexpr bool hud_enabled = false;
 
 // window dimensions
 static constexpr unsigned window_width = 1024;
 static constexpr unsigned window_height = 1024;
-static constexpr bool window_vsync = true;
+static constexpr bool window_vsync = false;
 // note. vsync should be on when not doing performance tests
 
 // number of players in networked mode
 static constexpr unsigned net_players = 2;
 
 // number of preallocated objects
-static constexpr unsigned objects_count = 1 * 1024;
+static constexpr unsigned objects_count = 64 * 1024;
 
 // maximum size of any object instance in bytes
 static constexpr size_t objects_instance_size_B = 1024;
@@ -76,7 +81,7 @@ static uint32_t glob_ix_fragment = 0;
 static uint32_t glob_ix_power_up = 0;
 
 // settings
-static constexpr unsigned asteroid_level = 2;
+static constexpr unsigned asteroid_level = objects_count;
 
 static constexpr float asteroid_large_agl_vel_rnd = glm::radians(45.0f);
 static constexpr float asteroid_large_speed = 10;
@@ -124,7 +129,7 @@ static constexpr float game_area_min_z =
 static constexpr float game_area_max_z =
     game_area_half_z + asteroid_large_scale;
 
-static constexpr bool create_players = true;
+static constexpr bool create_players = false;
 
 // used when 'debug_multiplayer' is true to give objects unique numbers
 static std::atomic<unsigned> counter = 0;

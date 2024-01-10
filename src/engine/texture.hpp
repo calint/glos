@@ -1,10 +1,12 @@
 #pragma once
 // reviewed: 2024-01-04
 // reviewed: 2024-01-06
+// reviewed: 2024-01-10
 
 #include "metrics.hpp"
 
 namespace glos {
+
 class texture final {
 public:
   GLuint id = 0;

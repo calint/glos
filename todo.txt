@@ -2,21 +2,21 @@
 [x]   cell
 [x]   object
 [x]   planes
-[ ]   camera
+[x]   camera
 [ ]   engine
 [ ]   glob
-[ ]   grid
-[ ]   hud
-[ ]   material
-[ ]   metrics
-[ ]   net_server
-[ ]   net
-[ ]   o1store
-[ ]   sdl
-[ ]   shader
-[ ]   texture
+[x]   grid
+[x]   hud
+[x]   material
+[x]   metrics
+[x]   net_server
+[x]   net
+[x]   o1store
+[x]   sdl
+[x]   shaders
+[x]   texture
 [ ]   token
-[ ]   windows
+[x]   windows
 [x] sanitize
 [x]   thread
 [x]   memory

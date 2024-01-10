@@ -60,7 +60,6 @@ public:
 
         // thread safe because 'collision_mask' and 'collision_bits' do not
         // change during 'resolve_collisions'
-        //! what if object 'on_collision' changes the mask or bits
 
         bool const Oi_interest_of_Oj = Oi->collision_mask & Oj->collision_bits;
         bool const Oj_interest_of_Oi = Oj->collision_mask & Oi->collision_bits;
@@ -186,8 +185,6 @@ private:
   std::vector<object *> ols{};
 
   static inline void handle_sphere_collision(object *Oi, object *Oj) {
-    //! racing
-
     glm::vec3 const collision_normal =
         glm::normalize(Oj->position - Oi->position);
 

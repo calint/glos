@@ -2,10 +2,12 @@
 // reviewed: 2023-12-23
 // reviewed: 2024-01-04
 // reviewed: 2024-01-06
+// reviewed: 2024-01-10
 
 #include "net.hpp"
 
 namespace glos {
+
 class net_server final {
 public:
   uint16_t port = 8085;
@@ -160,6 +162,11 @@ public:
   }
 
   inline void free() {
+    size_t const n = clients_fd.size();
+    for (unsigned i = 1; i < n; i++) {
+      close(clients_fd[i]);
+      clients_fd[i] = 0;
+    }
     close(server_fd);
     server_fd = 0;
     SDL_Quit();

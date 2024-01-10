@@ -103,7 +103,6 @@ public:
           }
 
           // collision has not been handled during this frame by any cell
-          //!? todo: check thread safety
           handle_sphere_collision(Oi.object, Oj.object);
           continue;
         }

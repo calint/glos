@@ -40,7 +40,7 @@
 //
 #include "window.hpp"
 //
-#include "shader.hpp"
+#include "shaders.hpp"
 //
 #include "camera.hpp"
 //
