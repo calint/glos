@@ -2,10 +2,25 @@
 [x]   cell
 [x]   object
 [x]   planes
-[o] sanitize
-[ ]   thread
+[ ]   camera
+[ ]   engine
+[ ]   glob
+[ ]   grid
+[ ]   hud
+[ ]   material
+[ ]   metrics
+[ ]   net_server
+[ ]   net
+[ ]   o1store
+[ ]   sdl
+[ ]   shader
+[ ]   texture
+[ ]   token
+[ ]   windows
+[x] sanitize
+[x]   thread
 [x]   memory
-[ ] object: updated_at_tick and rendered_at_tick is uint64_t. uint32_t enough for purpose?
+[x] object: updated_at_tick and rendered_at_tick is uint64_t. uint32_t enough for purpose?
 [ ] convert token.h
 [ ] use c++ random number generator
 [ ] rand() is not thread-safe
