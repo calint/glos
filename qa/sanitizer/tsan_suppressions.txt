@@ -1,0 +1,12 @@
+# howto:
+# build.sh sanitize
+# with thread sanitizer on
+# then run (from project root):
+# TSAN_OPTIONS="suppressions=qa/sanitizer/tsan_suppressions.txt" ./glos 2> log1
+
+# false positive reports between code portions that do not run in parallel
+race:glos::grid::add
+race:glos::engine::init
+race:glos::cell::update
+race:glos::grid::clear
+
