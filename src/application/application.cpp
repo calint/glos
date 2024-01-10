@@ -77,6 +77,11 @@ void application_init() {
 
   glob_ix_power_up = globs.load("assets/obj/asteroids/power_up.obj", nullptr);
 
+  // object *skydome = new (objects.alloc()) object{};
+  // skydome->glob_ix = globs.load("assets/obj/skydome.obj", nullptr);
+  // skydome->radius = 50;
+  // skydome->scale = {50.0f, 50.0f, 50.0f};
+
   if (create_players) {
     // setup scene
     if (net.enabled) {
@@ -106,6 +111,10 @@ void application_init() {
   camera.ortho_min_y = -game_area_half_z;
   camera.ortho_max_x = game_area_half_x;
   camera.ortho_max_y = game_area_half_z;
+
+  // camera.type = camera::type::LOOK_AT;
+  // camera.position = {0, 30, 30};
+  // camera.look_at = {0, 0, -0.0001f};
 
   hud.load_font("assets/fonts/digital-7 (mono).ttf", 20);
 }
