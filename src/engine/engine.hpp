@@ -255,10 +255,10 @@ public:
       }
 
       if (threaded_update) {
-        // update runs in separate
+        // update runs in separate thread
         render_thread_loop_body();
       } else {
-        // single threaded mode
+        // update runs in main thread
         metrics.update_begin();
         update_pass_1();
         update_pass_2();

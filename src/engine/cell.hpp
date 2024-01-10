@@ -199,6 +199,18 @@ private:
   std::vector<cell_entry> entry_list{};
 
   static inline void handle_sphere_collision(object *Oi, object *Oj) {
+    bool const synchronize =
+        threaded_grid and (Oi->overlaps_cells or Oj->overlaps_cells);
+
+    if (synchronize) {
+      if (Oi->overlaps_cells) {
+        Oi->acquire_lock();
+      }
+      if (Oj->overlaps_cells) {
+        Oj->acquire_lock();
+      }
+    }
+
     glm::vec3 const collision_normal =
         glm::normalize(Oj->position - Oi->position);
 
@@ -208,6 +220,14 @@ private:
     if (relative_velocity_along_collision_normal >= 0 or
         std::isnan(relative_velocity_along_collision_normal)) {
       // sphere are not moving towards each other
+      if (synchronize) {
+        if (Oj->overlaps_cells) {
+          Oj->release_lock();
+        }
+        if (Oi->overlaps_cells) {
+          Oi->release_lock();
+        }
+      }
       return;
     }
 
@@ -220,6 +240,15 @@ private:
 
     Oi->velocity += impulse * Oj->mass * collision_normal;
     Oj->velocity -= impulse * Oi->mass * collision_normal;
+
+    if (synchronize) {
+      if (Oj->overlaps_cells) {
+        Oj->release_lock();
+      }
+      if (Oi->overlaps_cells) {
+        Oi->release_lock();
+      }
+    }
   }
 
   // returns true if collision with 'obj' has already been handled by 'receiver'
