@@ -36,14 +36,24 @@ inline auto rnd3(int const rem) -> bool {
 }
 
 inline void game_area_roll(glm::vec3 &position) {
-  if (position.x < game_area_min_x or position.x > game_area_max_x) {
-    position.x = -position.x;
+  // approximately correct. can be done better.
+
+  if (position.x < game_area_min_x) {
+    position.x = game_area_max_x;
+  } else if (position.x > game_area_max_x) {
+    position.x = game_area_min_x;
   }
-  if (position.y < game_area_min_y or position.y > game_area_max_y) {
-    position.y = -position.y;
+
+  if (position.y < game_area_min_y) {
+    position.y = game_area_max_y;
+  } else if (position.y > game_area_max_y) {
+    position.y = game_area_min_y;
   }
-  if (position.z < game_area_min_z or position.z > game_area_max_z) {
-    position.z = -position.z;
+
+  if (position.z < game_area_min_z) {
+    position.z = game_area_max_z;
+  } else if (position.z > game_area_max_z) {
+    position.z = game_area_min_z;
   }
 }
 
