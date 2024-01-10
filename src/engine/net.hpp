@@ -114,7 +114,7 @@ public:
 
   inline void begin() { send_state(); }
 
-  inline void at_update_done() {
+  inline void receive_and_send() {
     // calculate net lag
     uint64_t const t0 = SDL_GetPerformanceCounter();
 

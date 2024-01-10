@@ -1,26 +1,3 @@
-[o] review engine source
-[x]   cell
-[x]   object
-[x]   planes
-[x]   camera
-[ ]   engine
-[ ]   glob
-[x]   grid
-[x]   hud
-[x]   material
-[x]   metrics
-[x]   net_server
-[x]   net
-[x]   o1store
-[x]   sdl
-[x]   shaders
-[x]   texture
-[ ]   token
-[x]   windows
-[x] sanitize
-[x]   thread
-[x]   memory
-[x] object: updated_at_tick and rendered_at_tick is uint64_t. uint32_t enough for purpose?
 [ ] convert token.h
 [ ] use c++ random number generator
 [ ] rand() is not thread-safe
@@ -31,7 +8,7 @@
 [ ]   fix multithreading issues
 [ ]   grid: static vs moving vs bullets vs scenery objects
 [ ]   glob::load: optimize ranges by merging non-textured materials since all
-      used material info is saved in the vertices
+      material info is saved in the vertices
 [ ] object: changing glob_ix should invalidate planes
     => for now planes.points_invalidated and planes.normals_invalidated flags
 [ ] object::get_updated_Mmw_matrix: also compare with frame_context.frame_num in
@@ -62,6 +39,29 @@
 [ ] shader: mtx_wvp * mtx_mw   is it better with mtx_mwvp?
 [ ] consider: https://github.com/alugowski/task-thread-pool for simple multithreading
 ------------------------------
+[x] review engine source
+[x]   cell
+[x]   object
+[x]   planes
+[x]   camera
+[x]   engine
+[x]   glob
+[x]   grid
+[x]   hud
+[x]   material
+[x]   metrics
+[x]   net_server
+[x]   net
+[x]   o1store
+[x]   sdl
+[x]   shaders
+[x]   texture
+[x]   token
+[x]   windows
+[x] sanitize
+[x]   thread
+[x]   memory
+[x] object: updated_at_tick and rendered_at_tick is uint64_t. uint32_t enough for purpose?
 [x] profile
 [x] sanitize
 [x] glob::load: better printout

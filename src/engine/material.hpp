@@ -114,6 +114,7 @@ public:
         token const tk = token_next(&p);
         unsigned const n = token_size(&tk);
         store.back().map_Kd = std::string{tk.content, tk.content + n};
+        store.back().texture_id = textures.find_id_or_load(store.back().map_Kd);
         continue;
       }
     }

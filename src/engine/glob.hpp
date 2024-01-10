@@ -2,10 +2,12 @@
 // reviewed: 2023-12-22
 // reviewed: 2024-01-04
 // reviewed: 2024-01-06
+// reviewed: 2024-01-10
 
 #include "texture.hpp"
 
 namespace glos {
+
 class glob final {
   class range final {
   public:
@@ -50,7 +52,7 @@ public:
         glBindTexture(GL_TEXTURE_2D, 0);
       }
     }
-    glBindVertexArray(0);
+    glBindVertexArray(0); //? can be removed?
     ++metrics.rendered_globs;
   }
 
@@ -89,7 +91,7 @@ public:
     size_t current_material_ix = 0;
     size_t vertex_ix = 0;
     size_t vertex_ix_prv = 0;
-    bool first_obj = true;
+    bool is_first_obj = true;
 
     while (*p) {
       token const tk = token_next(&p);
@@ -105,8 +107,8 @@ public:
         materials.load(mtl_path.c_str());
         continue;
       }
-      if (token_equals(&tk, "o") and first_obj) {
-        first_obj = false;
+      if (token_equals(&tk, "o") and is_first_obj) {
+        is_first_obj = false;
         token const t = token_next(&p);
         unsigned const n = token_size(&t);
         name = std::string{t.content, t.content + n};
@@ -266,13 +268,6 @@ public:
     size_B = vertices.size() * sizeof(float);
 
     metrics.buffered_vertex_data += size_B;
-
-    for (range const &mtlrng : ranges) {
-      material &mtl = materials.store.at(size_t(mtlrng.material_ix));
-      if (not mtl.map_Kd.empty()) {
-        mtl.texture_id = textures.find_id_or_load(mtl.map_Kd);
-      }
-    }
   }
 
 private:
@@ -349,16 +344,12 @@ private:
       // unknown token
       p = token_to_including_newline(p);
     }
-    // remove from points the points in plane_points
+    // add points not connected to normals to 'plane_points'
     for (glm::vec3 const &pt : points) {
       if (std::ranges::find(planes_points, pt) == planes_points.cend()) {
         planes_points.emplace_back(pt);
       }
     }
-    // std::cout << "additional points: " << std::endl;
-    // for (auto const &pt : planes_additional_points) {
-    //   std::cout << glm::to_string(pt) << std::endl;
-    // }
     printf("     %zu planes  %zu points\n", planes_normals.size(),
            planes_points.size());
   }

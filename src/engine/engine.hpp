@@ -1,6 +1,7 @@
 #pragma once
 // reviewed: 2024-01-04
 // reviewed: 2024-01-06
+// reviewed: 2024-01-10
 
 // all includes used by the subsystems
 #include <GLES3/gl3.h>
@@ -27,7 +28,7 @@
 #include <unordered_map>
 #include <vector>
 
-// include subsystems order relevant
+// include order of subsystems relevant
 #include "../application/configuration.hpp"
 //
 #include "metrics.hpp"
@@ -45,6 +46,8 @@
 #include "camera.hpp"
 //
 #include "hud.hpp"
+//
+#include "texture.hpp"
 //
 #include "material.hpp"
 //
@@ -181,6 +184,7 @@ public:
              std::thread::hardware_concurrency());
     }
 
+    // the bounding sphere used for debugging
     glob_ix_bounding_sphere =
         globs.load("assets/obj/bounding_sphere.obj", nullptr);
 
@@ -191,6 +195,10 @@ public:
         net.enabled ? net.ms : SDL_GetTicks64(),
         0,
     };
+
+    // set defaults for metrics
+    metrics.fps.calculation_interval_ms = 1000;
+    metrics.enable_print = metrics_print;
 
     application_init();
 
@@ -234,13 +242,11 @@ public:
       }
     }
 
-    // initiate metrics
-    metrics.fps.calculation_interval_ms = 1000;
-    metrics.enable_print = metrics_print;
-    metrics.begin();
+    // start metrics
     metrics.print_headers(stderr);
+    metrics.begin();
 
-    SDL_SetRelativeMouseMode(mouse_mode ? SDL_TRUE : SDL_FALSE);
+    SDL_SetRelativeMouseMode(is_mouse_mode ? SDL_TRUE : SDL_FALSE);
 
     // enter game loop
     while (true) {
@@ -271,6 +277,7 @@ public:
     }
 
     if (threaded_update) {
+      // trigger update thread incase it is waiting
       std::unique_lock<std::mutex> lock{is_rendering_mutex};
       is_rendering = false;
       lock.unlock();
@@ -286,11 +293,12 @@ private:
 
   static constexpr float rad_over_degree = 2.0f * glm::pi<float>() / 360.0f;
   uint64_t frame_num = 0;
-  bool resolve_collisions = true;
-  bool print_grid = false;
+  bool is_resolve_collisions = true;
+  bool is_print_grid = false;
   bool is_running = true;
-  bool do_render = true;
-  bool mouse_mode = false;
+  bool is_render = true;
+  bool is_render_hud = hud_enabled;
+  bool is_mouse_mode = false;
   float mouse_rad_over_pixels = rad_over_degree * .02f;
   float mouse_sensitivity = 1.5f;
   // index of shader that renders world coordinate system line
@@ -299,8 +307,6 @@ private:
   size_t shader_program_ix = 0;
   // index of previous shader
   size_t shader_program_ix_prv = shader_program_ix;
-  // render heads-up-display
-  bool render_hud = hud_enabled;
 
   // synchronization of update and render thread
   std::thread update_thread{};
@@ -309,7 +315,7 @@ private:
   std::condition_variable is_rendering_cv{};
 
   inline void render() {
-    if (not do_render) {
+    if (not is_render) {
       return;
     }
     // check if shader program has changed
@@ -337,7 +343,7 @@ private:
 
     grid.render();
 
-    if (render_hud) {
+    if (is_render_hud) {
       shaders.use_program(hud.program_ix);
       hud.render();
       shaders.use_program(shader_program_ix);
@@ -372,16 +378,16 @@ private:
   }
 
   inline void update_pass_2() const {
-    if (print_grid) {
+    if (is_print_grid) {
       grid.print();
     }
 
     // note. data racing between render and update thread on objects
-    // position, angle, scale glob index is ok
+    // position, angle, scale glob index is ok (?)
 
     grid.update();
 
-    if (resolve_collisions) {
+    if (is_resolve_collisions) {
       grid.resolve_collisions();
     }
 
@@ -400,7 +406,7 @@ private:
     if (net.enabled) {
       // receive signals from previous frame and send signals of current
       // frame
-      net.at_update_done();
+      net.receive_and_send();
     } else {
       // copy signals to active player
       net.states[net.player_ix] = net.next_state;
@@ -440,11 +446,10 @@ private:
 
   void render_thread_loop_body() {
     // wait for update thread to remove and add objects to grid
-
     std::unique_lock<std::mutex> lock{is_rendering_mutex};
     is_rendering_cv.wait(lock, [this] { return is_rendering; });
 
-    // note. render and update have acceptable data races on objects
+    // note. render and update have acceptable (?) data races on objects
     // position, angle, scale, glob index etc
 
     render();
@@ -553,17 +558,17 @@ private:
           net.next_state.keys &= ~key_l;
           break;
         case SDLK_SPACE:
-          mouse_mode = mouse_mode ? SDL_FALSE : SDL_TRUE;
-          SDL_SetRelativeMouseMode(mouse_mode ? SDL_TRUE : SDL_FALSE);
+          is_mouse_mode = is_mouse_mode ? SDL_FALSE : SDL_TRUE;
+          SDL_SetRelativeMouseMode(is_mouse_mode ? SDL_TRUE : SDL_FALSE);
           break;
         case SDLK_F1:
-          print_grid = not print_grid;
+          is_print_grid = not is_print_grid;
           break;
         case SDLK_F2:
-          resolve_collisions = not resolve_collisions;
+          is_resolve_collisions = not is_resolve_collisions;
           break;
         case SDLK_F3:
-          do_render = not do_render;
+          is_render = not is_render;
           break;
         case SDLK_F4:
           ++shader_program_ix;
@@ -578,7 +583,7 @@ private:
           debug_object_bounding_sphere = not debug_object_bounding_sphere;
           break;
         case SDLK_F7:
-          render_hud = not render_hud;
+          is_render_hud = not is_render_hud;
           break;
         }
         break;
