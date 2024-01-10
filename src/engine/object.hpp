@@ -13,10 +13,12 @@ class object {
   friend class cell;
 
 public:
-  glm::vec3 position{};           // in e.g. meters
-  float radius = 0;               // bounding radius in e.g. meters
-  uint32_t collision_bits = 0;    // mask & bits for collision subscription
-  uint32_t collision_mask = 0;    // ...
+  // first members in same order as in cell_entry
+  glm::vec3 position{};        // in e.g. meters
+  float radius = 0;            // bounding radius in e.g. meters
+  uint32_t collision_bits = 0; // mask & bits for collision subscription
+  uint32_t collision_mask = 0; // ...
+  // rest of object public state
   glm::vec3 velocity{};           // in meters/second
   glm::vec3 acceleration{};       // in meters/second^2
   glm::vec3 angle{};              // in radians
@@ -66,13 +68,11 @@ public:
   // returns false if object has died, true otherwise
   inline virtual auto on_collision(object *obj) -> bool { return true; }
 
-  // synchronized in multithreaded because both update and render thread access
-  // it in a non-deterministic way breaking multiplayer mode
   inline auto get_updated_Mmw() -> glm::mat4 const & {
-    // synchronize if render and update run on different threads; both racing
-    // for this
-    // in threaded grid when objects in different cells running on different
-    // threads might race for this
+    // * synchronize if render and update run on different threads; both racing
+    //   for this
+    // * in threaded grid when objects in different cells running on different
+    //   threads might race for this
     bool const synchronize = threaded_update or threaded_grid;
 
     if (synchronize) {
@@ -105,12 +105,16 @@ public:
   }
 
 private:
-  glm::mat4 Mmw{};               // model -> world matrix
-  glm::vec3 Mmw_pos{};           // position of current Mmw matrix
-  glm::vec3 Mmw_agl{};           // angle of current Mmw matrix
-  glm::vec3 Mmw_scl{};           // scale of current Mmw matrix
-  uint64_t rendered_at_tick = 0; // used by cell to avoid rendering twice
-  uint64_t updated_at_tick = 0;  // used by cell to avoid updating twice
+  glm::mat4 Mmw{};     // model -> world matrix
+  glm::vec3 Mmw_pos{}; // position of current Mmw matrix
+  glm::vec3 Mmw_agl{}; // angle of current Mmw matrix
+  glm::vec3 Mmw_scl{}; // scale of current Mmw matrix
+
+  // note. 32 bit resolution vs 64 bit comparison source ok since only checking
+  // for equality
+  uint32_t rendered_at_tick = 0; // used by cell to avoid rendering twice
+  uint32_t updated_at_tick = 0;  // used by cell to avoid updating twice
+
   std::vector<const object *> handled_collisions{};
   std::atomic_flag lock = ATOMIC_FLAG_INIT;
   std::atomic_flag lock_get_updated_Mmw = ATOMIC_FLAG_INIT;
@@ -178,6 +182,7 @@ public:
       object *obj = *it;
       obj->~object(); // note. the freeing of memory is done by 'o1store'
     }
+    //? what if destructor created objects
   }
 
   inline auto alloc() -> object * { return store_.allocate_instance(); }

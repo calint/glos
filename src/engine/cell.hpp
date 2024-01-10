@@ -5,7 +5,7 @@
 
 namespace glos {
 
-// object entry in a cell with members used in the hot code path copied for
+// object entry in a cell with copied members used in the hot code path for
 // better cache utilization
 struct cell_entry {
   glm::vec3 position{};
@@ -40,7 +40,7 @@ public:
           if (ce.object->updated_at_tick == frame_context.frame_num) {
             continue;
           }
-          ce.object->updated_at_tick = frame_context.frame_num;
+          ce.object->updated_at_tick = uint32_t(frame_context.frame_num);
         }
       }
 
@@ -68,6 +68,8 @@ public:
     for (unsigned i = 0; i < len - 1; ++i) {
       for (unsigned j = i + 1; j < len; ++j) {
 
+        // thread safe because cell entries do not change during
+        // 'resolve_collisions'
         cell_entry const &Oi = entry_list[i];
         cell_entry const &Oj = entry_list[j];
 
@@ -99,8 +101,8 @@ public:
             continue;
           }
 
-          // collision has not been handled during this frame
-
+          // collision has not been handled during this frame by any cell
+          //!? todo: check thread safety
           handle_sphere_collision(Oi.object, Oj.object);
           continue;
         }
@@ -158,11 +160,13 @@ public:
   // called from grid (from only one thread)
   inline void render() const {
     for (cell_entry const &ce : entry_list) {
-      // check if object has been rendered by another cell
-      if (ce.object->rendered_at_tick == frame_context.frame_num) {
-        continue;
+      if (ce.object->overlaps_cells) {
+        // check if object has been rendered by another cell
+        if (ce.object->rendered_at_tick == frame_context.frame_num) {
+          continue;
+        }
+        ce.object->rendered_at_tick = uint32_t(frame_context.frame_num);
       }
-      ce.object->rendered_at_tick = frame_context.frame_num;
       ce.object->render();
       ++metrics.rendered_objects;
     }
@@ -227,11 +231,11 @@ private:
       receiver->acquire_lock();
     }
 
-    // if object overlaps cells then the same collision is detected and
+    // if both objects overlap cells then the same collision is detected and
     // dispatched in multiple cells
-    if (receiver->overlaps_cells and
+    if (receiver->overlaps_cells and obj->overlaps_cells and
         receiver->is_collision_handled_and_if_not_add(obj)) {
-      // collision already dispatched
+      // collision already dispatched for this 'receiver' and 'obj'
       if (synchronize) {
         receiver->release_lock();
       }
