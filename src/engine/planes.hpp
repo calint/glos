@@ -29,35 +29,21 @@ public:
         world_points.emplace_back(Pw);
       }
 
-      glm::mat4 const Nmw = glm::eulerAngleXYZ(Mmw_agl.x, Mmw_agl.y, Mmw_agl.z);
+      glm::mat4 const R = glm::eulerAngleXYZ(Mmw_agl.x, Mmw_agl.y, Mmw_agl.z);
 
       world_planes.clear();
       size_t const n = normals.size();
       for (size_t i = 0; i < n; ++i) {
-        glm::vec4 Nw = Nmw * normals[i];
-        Nw.w = -glm::dot(Nw, world_points[i]); // plane equation ax + by + cz +
-                                               // d = 0 where d is w
-        world_planes.emplace_back(Nw);
+        glm::vec4 plane = R * normals[i];
+        // note. normals[i].w = 0
+        // plane equation ax + by + cz + d = 0 where d is w
+        plane.w = -glm::dot(plane, world_points[i]);
+        world_planes.emplace_back(plane);
       }
 
       invalidated = false;
     }
   }
-
-  // inline void print() const {
-  //   size_t const n = world_normals.size();
-  //   for (unsigned i = 0; i < n; ++i) {
-  //     glm::vec3 const &pnt = world_points.at(i);
-  //     glm::vec3 const &nml = world_normals.at(i);
-  //     printf("normal %u: %s  ->  %s\n", i, glm::to_string(pnt).c_str(),
-  //            glm::to_string(nml).c_str());
-  //   }
-  //   size_t const m = world_points.size();
-  //   for (size_t i = n; i < m; ++i) {
-  //     glm::vec3 const &pnt = world_points.at(i);
-  //     printf("point %s\n", glm::to_string(pnt).c_str());
-  //   }
-  // }
 
   inline void debug_render_normals() {
     acquire_lock();
@@ -94,13 +80,9 @@ public:
     // return is_in_collision_with_sphere_sat(position, radius);
 
     glm::vec4 const point{position, 1.0f};
-    for (glm::vec4 const &plane : world_planes) {
-      float const d = glm::dot(point, plane);
-      if (d > radius) {
-        return false;
-      }
-    }
-    return true;
+    return std::ranges::all_of(world_planes, [&](glm::vec4 const &plane) {
+      return glm::dot(point, plane) <= radius;
+    });
   }
 
   // // there are cases that give false positive
@@ -160,27 +142,22 @@ public:
   }
 
 private:
-  // cached world coordinate system points and normals
-  // note. there is a point for each normal followed by additional points
-  //       without normals used in collision detection
+  // cached world coordinate system points and planes
+  // note. there is a point for each plane followed by additional points
+  //       without plains used in collision detection
   std::vector<glm::vec4> world_points{};
   std::vector<glm::vec4> world_planes{}; // A*X + B*Y + C*Z + D = 0
   // the components used in the cached points and normals
   glm::vec3 Mmw_pos{};
   glm::vec3 Mmw_agl{};
   glm::vec3 Mmw_scl{};
-  glm::vec3 Nmw_agl{};
   //
   std::atomic_flag lock = ATOMIC_FLAG_INIT;
 
   inline auto is_point_behind_all_planes(glm::vec4 const &point) const -> bool {
-    for (glm::vec4 const &plane : world_planes) {
-      float const d = glm::dot(point, plane);
-      if (d > 0) {
-        return false;
-      }
-    }
-    return true;
+    return std::ranges::all_of(world_planes, [&](glm::vec4 const &plane) {
+      return glm::dot(point, plane) <= 0;
+    });
   }
 };
 } // namespace glos
