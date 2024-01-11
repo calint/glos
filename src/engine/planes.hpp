@@ -115,14 +115,16 @@ public:
     return true;
   }
 
-  inline bool is_in_collision_with_sphere_sat(glm::vec3 const &pos,
-                                              float const radius) {
-    // Check for separation along each normal
+  inline auto is_in_collision_with_sphere_sat(glm::vec3 const &pos,
+                                              float const radius) const
+      -> bool {
+    
+    // check for separation along each normal
     for (glm::vec3 const &normal : world_normals) {
       float min_projection = glm::dot(world_points[0], normal);
       float max_projection = min_projection;
 
-      // Project both the sphere and the convex volume onto the normal
+      // project both the sphere and the convex volume onto the normal
       size_t const n = world_points.size();
       for (size_t i = 1; i < n; ++i) {
         glm::vec3 const &point = world_points[i];
