@@ -62,7 +62,12 @@ public:
     if (keys & key_o) {
       velocity = {0, 0, 0};
     }
-
+    if (keys & key_i) {
+      camera.position = {0, 50, 0};
+    }
+    if (keys & key_k) {
+      camera.position = {0, 0, 50};
+    }
     return true;
   }
 

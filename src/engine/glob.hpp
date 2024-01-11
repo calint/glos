@@ -23,8 +23,8 @@ public:
   std::string name{};
   float bounding_radius = 0;
   // planes
-  std::vector<glm::vec3> planes_points{};
-  std::vector<glm::vec3> planes_normals{};
+  std::vector<glm::vec4> planes_points{};
+  std::vector<glm::vec4> planes_normals{};
 
   inline void free() const {
     glDeleteBuffers(1, &vertex_buffer_id);
@@ -291,8 +291,8 @@ private:
     std::string const content = buffer.str();
     char const *p = content.c_str();
 
-    std::vector<glm::vec3> points{};
-    std::vector<glm::vec3> normals{};
+    std::vector<glm::vec4> points{};
+    std::vector<glm::vec4> normals{};
 
     while (*p) {
       token const t = token_next(&p);
@@ -303,7 +303,7 @@ private:
         float const y = token_get_float(&ty);
         token const tz = token_next(&p);
         float const z = token_get_float(&tz);
-        points.emplace_back(x, y, z);
+        points.emplace_back(x, y, z, 1.0f);
         continue;
       }
       if (token_equals(&t, "vn")) {
@@ -313,7 +313,7 @@ private:
         float const y = token_get_float(&ty);
         token const tz = token_next(&p);
         float const z = token_get_float(&tz);
-        normals.emplace_back(x, y, z);
+        normals.emplace_back(x, y, z, 0);
         continue;
       }
       if (token_equals(&t, "f")) {
@@ -322,7 +322,7 @@ private:
         token const ix1_tkn = token_from_string_additional_delim(p, '/');
         p = ix1_tkn.end;
         unsigned const ix1 = token_get_uint(&ix1_tkn);
-        glm::vec3 const &point = points.at(ix1 - 1);
+        glm::vec4 const &point = points.at(ix1 - 1);
 
         // texture, skip
         token const ix2_tkn = token_from_string_additional_delim(p, '/');
@@ -332,7 +332,7 @@ private:
         token const ix3_tkn = token_from_string_additional_delim(p, '/');
         p = ix3_tkn.end;
         unsigned const ix3 = token_get_uint(&ix3_tkn);
-        glm::vec3 const &normal = normals.at(ix3 - 1);
+        glm::vec4 const &normal = normals.at(ix3 - 1);
 
         planes_points.emplace_back(point);
         planes_normals.emplace_back(normal);
@@ -345,7 +345,7 @@ private:
       p = token_to_including_newline(p);
     }
     // add points not connected to normals to 'plane_points'
-    for (glm::vec3 const &pt : points) {
+    for (glm::vec4 const &pt : points) {
       if (std::ranges::find(planes_points, pt) == planes_points.cend()) {
         planes_points.emplace_back(pt);
       }

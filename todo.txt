@@ -5,11 +5,13 @@
 [ ]   grid: static vs moving vs bullets vs scenery objects
 [ ]   glob::load: optimize ranges by merging non-textured materials since all
       material info is saved in the vertices
-[ ] examine plane representation Ax + By + Cz + D = 0 where w is D
-    then get distance: dot(vec3(plane), pnt) + plane.w;
-[ ] collision detection: large sphere vs "pointy" convex volume gives false positives
+[x] examine plane representation Ax + By + Cz + D = 0 where w is D
+    then get distance: dot(plane, point);
+[x] collision detection: large sphere vs "pointy" convex volume gives false positives
     when planes outside the object volume are closer to sphere than radius
     => more planes can be added to the "pointy" object
+    => sat method (separating axis theorem) using normals for projection axis
+       has edge cases and does give false positives
 [ ] convert token.h
 [ ] use c++ random number generator
 [ ] rand() is not thread-safe
