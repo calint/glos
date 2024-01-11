@@ -10,7 +10,7 @@ public:
   bool invalidated = true;
 
   // points and normals are in model coordinates
-  // Mmw matrix was constructed using pos, agl, scl are
+  // Mmw matrix was constructed using pos, agl, scl
   inline void update_model_to_world(std::vector<glm::vec4> const &points,
                                     std::vector<glm::vec4> const &normals,
                                     glm::mat4 const &Mmw, glm::vec3 const &pos,
@@ -72,6 +72,12 @@ public:
     });
   }
 
+  inline auto is_point_behind_all_planes(glm::vec4 const &point) const -> bool {
+    return std::ranges::all_of(world_planes, [&](glm::vec4 const &plane) {
+      return glm::dot(point, plane) <= 0;
+    });
+  }
+
   // works in cases where the sphere is much smaller than the convex volume
   // e.g. bullets vs walls. gives false positives when spheres are larger than
   // the volume and the volume has "pointy" edges
@@ -87,7 +93,7 @@ public:
     });
   }
 
-  // // there are cases that give false positive
+  // there are cases that give false positive
   inline auto is_in_collision_with_sphere_sat(glm::vec3 const &pos,
                                               float const radius) const
       -> bool {
@@ -146,7 +152,7 @@ public:
 private:
   // cached world coordinate system points and planes
   // note. there is a point for each plane followed by additional points
-  //       without plains used in collision detection
+  //       without planes for use in collision detection
   std::vector<glm::vec4> world_points{};
   std::vector<glm::vec4> world_planes{}; // A*X + B*Y + C*Z + D = 0
   // the components used in the cached points and normals
@@ -155,11 +161,5 @@ private:
   glm::vec3 Mmw_scl{};
   //
   std::atomic_flag lock = ATOMIC_FLAG_INIT;
-
-  inline auto is_point_behind_all_planes(glm::vec4 const &point) const -> bool {
-    return std::ranges::all_of(world_planes, [&](glm::vec4 const &plane) {
-      return glm::dot(point, plane) <= 0;
-    });
-  }
 };
 } // namespace glos
