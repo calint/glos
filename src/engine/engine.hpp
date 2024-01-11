@@ -523,8 +523,14 @@ private:
         case SDLK_l:
           net.next_state.keys |= key_l;
           break;
+        case SDLK_u:
+          net.next_state.keys |= key_u;
+          break;
         case SDLK_i:
           net.next_state.keys |= key_i;
+          break;
+        case SDLK_o:
+          net.next_state.keys |= key_o;
           break;
         }
         break;
@@ -556,6 +562,15 @@ private:
           break;
         case SDLK_l:
           net.next_state.keys &= ~key_l;
+          break;
+        case SDLK_u:
+          net.next_state.keys &= ~key_u;
+          break;
+        case SDLK_i:
+          net.next_state.keys &= ~key_i;
+          break;
+        case SDLK_o:
+          net.next_state.keys &= ~key_o;
           break;
         case SDLK_SPACE:
           is_mouse_mode = is_mouse_mode ? SDL_FALSE : SDL_TRUE;

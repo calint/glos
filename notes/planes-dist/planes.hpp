@@ -39,14 +39,16 @@ public:
     if (normals_invalidated or agl != Nmw_agl) {
       // update matrix
       Nmw_agl = agl;
-      glm::mat3 const Nmw =
-          glm::mat3{glm::eulerAngleXYZ(Nmw_agl.x, Nmw_agl.y, Nmw_agl.z)};
+      glm::mat3 const Nmw = glm::eulerAngleXYZ(Nmw_agl.x, Nmw_agl.y, Nmw_agl.z);
 
       // update world normals
       world_normals.clear();
-      for (glm::vec3 const &Nm : normals) {
-        glm::vec3 const Nw = Nmw * Nm;
+      world_distance_to_plane.clear();
+      size_t const n = normals.size();
+      for (size_t i = 0; i < n; ++i) {
+        glm::vec3 const Nw = Nmw * normals[i];
         world_normals.emplace_back(Nw);
+        world_distance_to_plane.emplace_back(-glm::dot(Nw, world_points[i]));
       }
 
       normals_invalidated = false;
@@ -92,20 +94,17 @@ public:
     });
   }
 
-  //!? works on special case when sphere is much smaller than the convex volume
-  //! e.g. bullets vs walls. gives false positives when spheres are larger than
-  //! the volume
-  inline auto is_in_collision_with_sphere(glm::vec3 const &pos,
+  inline auto is_in_collision_with_sphere(glm::vec3 const &position,
                                           float const radius) const -> bool {
     size_t const n = world_normals.size();
     for (unsigned i = 0; i < n; ++i) {
-      glm::vec3 const v = pos - world_points[i];
-      glm::vec3 const &nml = world_normals[i];
-      float const d = glm::dot(v, nml);
+      float const d =
+          glm::dot(position, world_normals[i]) + world_distance_to_plane[i];
       if (d > radius) {
         return false;
       }
     }
+
     return true;
   }
 
@@ -128,6 +127,8 @@ private:
   //       without normals used in collision detection
   std::vector<glm::vec3> world_points{};
   std::vector<glm::vec3> world_normals{};
+  std::vector<float> world_distance_to_plane{};
+
   // the components used in the cached points and normals
   glm::vec3 Mmw_pos{};
   glm::vec3 Mmw_agl{};
@@ -136,13 +137,10 @@ private:
   //
   std::atomic_flag lock = ATOMIC_FLAG_INIT;
 
-  inline auto is_point_behind_all_planes(glm::vec3 const &p) const -> bool {
+  inline auto is_point_behind_all_planes(glm::vec3 const &point) const -> bool {
     size_t const n = world_normals.size();
     for (unsigned i = 0; i < n; ++i) {
-      glm::vec3 const v = p - world_points[i];
-      glm::vec3 const &nml = world_normals[i];
-      float const d = glm::dot(v, nml);
-      if (d > 0) {
+      if (glm::dot(point, world_normals[i]) + world_distance_to_plane[i] > 0) {
         return false;
       }
     }
