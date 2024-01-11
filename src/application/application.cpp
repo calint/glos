@@ -53,10 +53,11 @@ void application_init() {
 
   // load the objects and assign the indexes
   glob_ix_ship = globs.load("assets/obj/asteroids/ship.obj",
-                            "assets/obj/asteroids/ship-bv.obj");
+                            "assets/obj/asteroids/ship.obj");
 
-  glob_ix_ship_engine_on = globs.load("assets/obj/asteroids/ship_engine_on.obj",
-                                      "assets/obj/asteroids/ship-bv.obj");
+  glob_ix_ship_engine_on =
+      globs.load("assets/obj/asteroids/ship_engine_on.obj",
+                 "assets/obj/asteroids/ship_engine_on.obj");
 
   glob_ix_bullet = globs.load("assets/obj/asteroids/bullet.obj",
                               "assets/obj/asteroids/bullet.obj");

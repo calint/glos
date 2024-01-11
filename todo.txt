@@ -8,6 +8,7 @@
 [ ] examine plane representation Ax + By + Cz + D = 0 where w is D
     then get distance: glm::dot(glm::vec3(plane), pnt) + plane.w;
 [ ] collision detection: large sphere vs pointy convex volume gives false positives
+    => more planes added to the pointy object
 [ ] convert token.h
 [ ] use c++ random number generator
 [ ] rand() is not thread-safe

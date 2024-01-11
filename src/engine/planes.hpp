@@ -92,9 +92,9 @@ public:
     });
   }
 
-  //!? works on special case when sphere is much smaller than the convex volume
-  //! e.g. bullets vs walls. gives false positives when spheres are larger than
-  //! the volume
+  // works in cases where the sphere is much smaller than the convex volume
+  // e.g. bullets vs walls. gives false positives when spheres are larger than
+  // the volume and the volume has "pointy" edges
   inline auto is_in_collision_with_sphere(glm::vec3 const &pos,
                                           float const radius) const -> bool {
     size_t const n = world_normals.size();
