@@ -115,43 +115,42 @@ public:
     return true;
   }
 
-  static bool
-  isCollisionWithSphere(const glm::vec3 &sphereCenter, float sphereRadius,
-                        const std::vector<glm::vec3> &worldPoints,
-                        const std::vector<glm::vec3> &worldNormals) {
+  inline bool is_in_collision_with_sphere_sat(glm::vec3 const &pos,
+                                              float const radius) {
     // Check for separation along each normal
-    for (const auto &normal : worldNormals) {
-      glm::vec3 nml = glm::normalize(normal);
-      float minProjection = glm::dot(worldPoints[0], nml);
-      float maxProjection = minProjection;
+    for (glm::vec3 const &normal : world_normals) {
+      float min_projection = glm::dot(world_points[0], normal);
+      float max_projection = min_projection;
 
       // Project both the sphere and the convex volume onto the normal
-      for (const auto &point : worldPoints) {
-        float projection = glm::dot(point, nml);
-        if (projection < minProjection) {
-          minProjection = projection;
-        } else if (projection > maxProjection) {
-          maxProjection = projection;
+      size_t const n = world_points.size();
+      for (size_t i = 1; i < n; ++i) {
+        glm::vec3 const &point = world_points[i];
+        float const projection = glm::dot(point, normal);
+        if (projection < min_projection) {
+          min_projection = projection;
+        } else if (projection > max_projection) {
+          max_projection = projection;
         }
       }
 
-      float sphereProjection = glm::dot(sphereCenter, nml);
+      float const sphere_projection = glm::dot(pos, normal);
 
-      // Check for separation
-      if (sphereProjection + sphereRadius < minProjection ||
-          sphereProjection - sphereRadius > maxProjection) {
-        return false; // Separating axis found, no collision
+      // check for separation
+      if (sphere_projection + radius < min_projection ||
+          sphere_projection - radius > max_projection) {
+        return false; // separating axis found, no collision
       }
 
-      debug_render_wcs_line(nml * (sphereProjection + sphereRadius),
-                            nml * (sphereProjection - sphereRadius),
+      debug_render_wcs_line(normal * (sphere_projection + radius),
+                            normal * (sphere_projection - radius),
                             {1.0f, 1.0f, 1.0f, 0.1f});
 
-      debug_render_wcs_line(nml * minProjection, nml * maxProjection,
+      debug_render_wcs_line(normal * min_projection, normal * max_projection,
                             {0.0f, 1.0f, 0.0f, 0.1f});
     }
 
-    return true; // No separating axis found, collision detected
+    return true; // no separating axis found, collision detected
   }
 
   inline void acquire_lock() {
