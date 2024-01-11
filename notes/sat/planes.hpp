@@ -100,17 +100,17 @@ public:
   inline auto is_in_collision_with_sphere(glm::vec3 const &pos,
                                           float const radius) const -> bool {
 
-    size_t const n = world_normals.size();
-    for (unsigned i = 0; i < n; ++i) {
-      glm::vec3 const v = pos - world_points[i];
-      glm::vec3 const &nml = world_normals[i];
-      float const d = glm::dot(v, nml);
-      if (d > radius) {
-        return false;
-      }
-    }
+    // size_t const n = world_normals.size();
+    // for (unsigned i = 0; i < n; ++i) {
+    //   glm::vec3 const v = pos - world_points[i];
+    //   glm::vec3 const &nml = world_normals[i];
+    //   float const d = glm::dot(v, nml);
+    //   if (d > radius) {
+    //     return false;
+    //   }
+    // }
 
-    // return isCollisionWithSphere(pos, radius, world_points, world_normals);
+    return isCollisionWithSphere(pos, radius, world_points, world_normals);
 
     return true;
   }

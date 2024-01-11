@@ -97,11 +97,17 @@ public:
   inline void render() const {
     // glEnable(GL_BLEND);
     // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glDisable(GL_DEPTH_TEST);
+    glDepthMask(GL_FALSE);
+
     glBindVertexArray(vao);
     glBindTexture(GL_TEXTURE_2D, texture);
     glUniform1i(0, 0); // sets uniform "utex" to texture unit 0
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+
     // glDisable(GL_BLEND);
+    glDepthMask(GL_TRUE);
+    glEnable(GL_DEPTH_TEST);
   }
 
   inline void print(char const *text, SDL_Color color, int x, int y) const {
@@ -156,7 +162,7 @@ private:
     layout(location = 1) in vec2 tex_coord;
     out vec2 v_tex_coord;
     void main() {
-        gl_Position = vec4(position, 0.999, 1.0);
+        gl_Position = vec4(position, 0, 1.0);
         v_tex_coord = tex_coord;
     }
 )";

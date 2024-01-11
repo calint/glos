@@ -57,7 +57,7 @@ namespace glos {
 // debugging functions
 static inline void debug_render_wcs_line(glm::vec3 const &from_wcs,
                                          glm::vec3 const &to_wcs,
-                                         glm::vec3 const &color);
+                                         glm::vec4 const &color);
 
 static inline void debug_render_bounding_sphere(glm::mat4 const &Mmw);
 
@@ -158,10 +158,10 @@ public:
 
       constexpr char const *frag = R"(
   #version 330 core
-  uniform vec3 ucolor;
+  uniform vec4 ucolor;
   out vec4 rgba;
   void main() {
-    rgba = vec4(ucolor, 1);
+    rgba = ucolor;
   }
 )";
       shader_program_ix_render_line =
@@ -234,12 +234,6 @@ public:
     if (threaded_update) {
       // update runs as separate thread
       start_update_thread();
-
-      // wait for update before rendering first frame
-      {
-        std::unique_lock<std::mutex> lock{is_rendering_mutex};
-        is_rendering_cv.wait(lock, [this] { return is_rendering; });
-      }
     }
 
     // start metrics
@@ -264,12 +258,16 @@ public:
         // update runs in separate thread
         render_thread_loop_body();
       } else {
-        // update runs in main thread
+        // update runs on main thread
+
+        render();
+
         metrics.update_begin();
         update_pass_1();
         update_pass_2();
         metrics.update_end();
-        render();
+
+        window.swap_buffers();
       }
 
       metrics.allocated_objects = uint32_t(objects.allocated_list_len());
@@ -289,7 +287,7 @@ public:
 private:
   friend void debug_render_wcs_line(glm::vec3 const &from_wcs,
                                     glm::vec3 const &to_wcs,
-                                    glm::vec3 const &color);
+                                    glm::vec4 const &color);
 
   static constexpr float rad_over_degree = 2.0f * glm::pi<float>() / 360.0f;
   uint64_t frame_num = 0;
@@ -310,7 +308,7 @@ private:
 
   // synchronization of update and render thread
   std::thread update_thread{};
-  bool is_rendering = false;
+  bool is_rendering = true;
   std::mutex is_rendering_mutex{};
   std::condition_variable is_rendering_cv{};
 
@@ -341,17 +339,15 @@ private:
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    grid.render();
-
     if (is_render_hud) {
       shaders.use_program(hud.program_ix);
       hud.render();
       shaders.use_program(shader_program_ix);
     }
 
-    application_on_render_done();
+    grid.render();
 
-    window.swap_buffers();
+    application_on_render_done();
   }
 
   inline void update_pass_1() {
@@ -453,6 +449,8 @@ private:
     // position, angle, scale, glob index etc
 
     render();
+
+    window.swap_buffers();
 
     // notify update thread that rendering is done
     is_rendering = false;
@@ -613,7 +611,7 @@ inline engine engine{};
 // lines
 static inline void debug_render_wcs_line(glm::vec3 const &from_wcs,
                                          glm::vec3 const &to_wcs,
-                                         glm::vec3 const &color) {
+                                         glm::vec4 const &color) {
   GLuint vao = 0;
   glGenVertexArrays(1, &vao);
   glBindVertexArray(vao);
@@ -634,9 +632,16 @@ static inline void debug_render_wcs_line(glm::vec3 const &from_wcs,
   shaders.use_program(engine.shader_program_ix_render_line);
 
   glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(camera.Mwvp));
-  glUniform3fv(1, 1, glm::value_ptr(color));
+  glUniform4fv(1, 1, glm::value_ptr(color));
 
+  glDisable(GL_DEPTH_TEST);
+  glDepthMask(GL_FALSE);
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glDrawArrays(GL_LINES, 0, 2);
+  glDisable(GL_BLEND);
+  glDepthMask(GL_TRUE);
+  glEnable(GL_DEPTH_TEST);
 
   glBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
