@@ -100,8 +100,7 @@ public:
   inline auto is_in_collision_with_sphere(glm::vec3 const &pos,
                                           float const radius) const -> bool {
 
-    return is_in_collision_with_sphere_sat(pos, radius);
-
+    // return is_in_collision_with_sphere_sat(pos, radius);
     size_t const n = world_normals.size();
     for (unsigned i = 0; i < n; ++i) {
       glm::vec3 const v = pos - world_points[i];
