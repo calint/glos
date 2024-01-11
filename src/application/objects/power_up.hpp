@@ -12,10 +12,8 @@ public:
       printf("%lu: %lu: create %s\n", frame_context.frame_num, frame_context.ms,
              name.c_str());
     }
-    // glob_ix = glob_ix_power_up;
-    glob_ix = glob_ix_bounding_sphere;
-    // scale = {0.5f, 0.5f, 0.5f};
-    scale = {5.0f, 5.0f, 5.0f};
+    glob_ix = glob_ix_power_up;
+    scale = {0.5f, 0.5f, 0.5f};
     radius = globs.at(glob_ix).bounding_radius * scale.x;
     mass = 10;
     is_sphere = true;
@@ -36,22 +34,22 @@ public:
       return false;
     }
 
-    // if (death_time_ms < frame_context.ms) {
-    //   return false;
-    // }
+    if (death_time_ms < frame_context.ms) {
+      return false;
+    }
 
-    // if (scale_time_ms < frame_context.ms) {
-    //   if (scale_up) {
-    //     scale_up = false;
-    //     scale = {0.75f, 0.75f, 0.75f};
-    //     radius = globs.at(glob_ix).bounding_radius * scale.x;
-    //   } else {
-    //     scale_up = true;
-    //     scale = {0.5f, 0.5f, 0.5f};
-    //     radius = globs.at(glob_ix).bounding_radius * scale.x;
-    //   }
-    //   scale_time_ms = frame_context.ms + 1'000;
-    // }
+    if (scale_time_ms < frame_context.ms) {
+      if (scale_up) {
+        scale_up = false;
+        scale = {0.75f, 0.75f, 0.75f};
+        radius = globs.at(glob_ix).bounding_radius * scale.x;
+      } else {
+        scale_up = true;
+        scale = {0.5f, 0.5f, 0.5f};
+        radius = globs.at(glob_ix).bounding_radius * scale.x;
+      }
+      scale_time_ms = frame_context.ms + 1'000;
+    }
 
     return true;
   }
@@ -61,8 +59,8 @@ public:
       printf("%lu: %lu: %s collision with %s\n", frame_context.frame_num,
              frame_context.ms, name.c_str(), o->name.c_str());
     }
-    // return false;
-    return true;
+
+    return false;
   }
 
 private:
