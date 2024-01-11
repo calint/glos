@@ -68,11 +68,12 @@ public:
   // returns true if any point in this is behind all planes in 'pns'
   inline auto is_any_point_in_volume(planes const &pns) const -> bool {
     return std::ranges::any_of(world_points, [&](glm::vec4 const &point) {
-      return pns.is_point_behind_all_planes(point);
+      return pns.is_point_in_volume(point);
     });
   }
 
-  inline auto is_point_behind_all_planes(glm::vec4 const &point) const -> bool {
+  // assumes updated world points and normals
+  inline auto is_point_in_volume(glm::vec4 const &point) const -> bool {
     return std::ranges::all_of(world_planes, [&](glm::vec4 const &plane) {
       return glm::dot(point, plane) <= 0;
     });
