@@ -6,9 +6,10 @@
 [ ]   glob::load: optimize ranges by merging non-textured materials since all
       material info is saved in the vertices
 [ ] examine plane representation Ax + By + Cz + D = 0 where w is D
-    then get distance: glm::dot(glm::vec3(plane), pnt) + plane.w;
-[ ] collision detection: large sphere vs pointy convex volume gives false positives
-    => more planes added to the pointy object
+    then get distance: dot(vec3(plane), pnt) + plane.w;
+[ ] collision detection: large sphere vs "pointy" convex volume gives false positives
+    when planes outside the object volume are closer to sphere than radius
+    => more planes can be added to the "pointy" object
 [ ] convert token.h
 [ ] use c++ random number generator
 [ ] rand() is not thread-safe
