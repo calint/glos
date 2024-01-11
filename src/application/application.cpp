@@ -59,6 +59,9 @@ void application_init() {
       globs.load("assets/obj/asteroids/ship_engine_on.obj",
                  "assets/obj/asteroids/ship_engine_on.obj");
 
+  glob_ix_ship = glob_ix_ship_engine_on =
+      globs.load("assets/obj/cube.obj", "assets/obj/cube-bv.obj");
+
   glob_ix_bullet = globs.load("assets/obj/asteroids/bullet.obj",
                               "assets/obj/asteroids/bullet.obj");
   glob_ix_asteroid_large =
@@ -97,6 +100,9 @@ void application_init() {
       // single player mode
       ship *o = new (objects.alloc()) ship{};
       o->net_state = &net.states[1];
+
+      power_up *pu = new (objects.alloc()) power_up{};
+      pu->position.x = 8;
     }
   }
 
@@ -121,10 +127,10 @@ void application_init() {
 
 // engine interface
 void application_on_update_done() {
-  if (asteroids_alive == 0) {
-    ++level;
-    create_asteroids(level * asteroid_level);
-  }
+  // if (asteroids_alive == 0) {
+  //   ++level;
+  //   create_asteroids(level * asteroid_level);
+  // }
 }
 
 // engine interface

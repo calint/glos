@@ -59,6 +59,9 @@ public:
     if (keys & key_j) {
       fire();
     }
+    if (keys & key_o) {
+      velocity = {0, 0, 0};
+    }
 
     return true;
   }

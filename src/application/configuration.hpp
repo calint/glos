@@ -92,7 +92,7 @@ static constexpr float asteroid_medium_split_agl_vel_rnd = glm::radians(200.0f);
 
 static constexpr float asteroid_small_scale = 0.75f;
 
-static constexpr float ship_turn_rate = glm::radians(120.0f);
+static constexpr float ship_turn_rate = glm::radians(10.0f);
 static constexpr float ship_speed = 6;
 static constexpr float ship_bullet_speed = 17;
 static constexpr unsigned ship_bullet_fire_interval_ms = 1'000;

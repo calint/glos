@@ -100,6 +100,8 @@ public:
   inline auto is_in_collision_with_sphere(glm::vec3 const &pos,
                                           float const radius) const -> bool {
 
+    return is_in_collision_with_sphere_sat(pos, radius);
+
     size_t const n = world_normals.size();
     for (unsigned i = 0; i < n; ++i) {
       glm::vec3 const v = pos - world_points[i];
@@ -110,22 +112,20 @@ public:
       }
     }
 
-    // return isCollisionWithSphere(pos, radius, world_points, world_normals);
-
     return true;
   }
 
   inline auto is_in_collision_with_sphere_sat(glm::vec3 const &pos,
                                               float const radius) const
       -> bool {
-    
+
     // check for separation along each normal
     for (glm::vec3 const &normal : world_normals) {
       float min_projection = glm::dot(world_points[0], normal);
       float max_projection = min_projection;
 
       // project both the sphere and the convex volume onto the normal
-      size_t const n = world_points.size();
+      size_t const n = world_normals.size();
       for (size_t i = 1; i < n; ++i) {
         glm::vec3 const &point = world_points[i];
         float const projection = glm::dot(point, normal);
@@ -139,17 +139,17 @@ public:
       float const sphere_projection = glm::dot(pos, normal);
 
       // check for separation
-      if (sphere_projection + radius < min_projection ||
+      if (sphere_projection + radius < min_projection or
           sphere_projection - radius > max_projection) {
         return false; // separating axis found, no collision
       }
 
       debug_render_wcs_line(normal * (sphere_projection + radius),
                             normal * (sphere_projection - radius),
-                            {1.0f, 1.0f, 1.0f, 0.1f});
+                            {1.0f, 0.0f, 0.0f, 0.2f});
 
       debug_render_wcs_line(normal * min_projection, normal * max_projection,
-                            {0.0f, 1.0f, 0.0f, 0.1f});
+                            {0.0f, 0.0f, 1.0f, 0.2f});
     }
 
     return true; // no separating axis found, collision detected
