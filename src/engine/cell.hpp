@@ -82,9 +82,9 @@ public:
           continue;
         }
 
-        // if (not are_bounding_spheres_in_collision(Oi, Oj)) {
-        //   continue;
-        // }
+        if (not are_bounding_spheres_in_collision(Oi, Oj)) {
+          continue;
+        }
 
         // bounding spheres are in collision
 
@@ -199,7 +199,7 @@ private:
 
   static inline void handle_sphere_collision(object *Oi, object *Oj) {
     // synchronize objects that overlap cells
-    
+
     if (threaded_grid and Oi->overlaps_cells) {
       Oi->acquire_lock();
     }
