@@ -267,6 +267,7 @@ public:
         update_pass_2();
         metrics.update_end();
 
+        // swap buffers after update to allow debugging rendering
         window.swap_buffers();
       }
 
@@ -316,6 +317,7 @@ private:
     if (not is_render) {
       return;
     }
+
     // check if shader program has changed
     if (shader_program_ix_prv != shader_program_ix) {
       printf(" * switching to program at index %zu\n", shader_program_ix);
