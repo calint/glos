@@ -125,8 +125,8 @@ void application_init() {
 // engine interface
 void application_on_update_done() {
   if (asteroids_alive == 0) {
-  ++level;
-  create_asteroids(level * asteroid_level);
+    ++level;
+    create_asteroids(level * asteroid_level);
   }
 }
 

@@ -18,29 +18,31 @@ public:
                                     glm::vec3 const &scl) {
     // points
     if (invalidated or pos != Mmw_pos or agl != Mmw_agl or scl != Mmw_scl) {
-      // matrix state is not in sync with current state
-      Mmw_pos = pos;
-      Mmw_agl = agl;
-      Mmw_scl = scl;
-
+      // matrix state is not in sync with cached points and/or planes
       world_points.clear();
       for (glm::vec4 const &point : points) {
         glm::vec4 const Pw = Mmw * point;
         world_points.emplace_back(Pw);
       }
 
-      glm::mat4 const R = glm::eulerAngleXYZ(Mmw_agl.x, Mmw_agl.y, Mmw_agl.z);
+      if (invalidated or Mmw_agl != agl) {
+        // rotation has happened. update the planes
+        glm::mat4 const R = glm::eulerAngleXYZ(agl.x, agl.y, agl.z);
 
-      world_planes.clear();
-      size_t const n = normals.size();
-      for (size_t i = 0; i < n; ++i) {
-        glm::vec4 plane = R * normals[i];
-        // note. normals[i].w = 0
-        // plane equation ax + by + cz + d = 0 where d is w
-        plane.w = -glm::dot(plane, world_points[i]);
-        world_planes.emplace_back(plane);
+        world_planes.clear();
+        size_t const n = normals.size();
+        for (size_t i = 0; i < n; ++i) {
+          glm::vec4 plane = R * normals[i];
+          // note. normals[i].w = 0
+          // plane equation ax + by + cz + d = 0 where d is w
+          plane.w = -glm::dot(plane, world_points[i]);
+          world_planes.emplace_back(plane);
+        }
+        // save the state of the cached planes
+        Mmw_agl = agl;
       }
-
+      Mmw_pos = pos;
+      Mmw_scl = scl;
       invalidated = false;
     }
   }
