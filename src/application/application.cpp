@@ -111,7 +111,7 @@ void application_init() {
 
       auto *a = new (objects.alloc()) tetra{};
       a->position.x = 4;
-      a->velocity.x = 0.1f;
+      // a->velocity.x = 0.1f;
 
       auto *s = new (objects.alloc()) sphere{};
       s->position.x = -4;
