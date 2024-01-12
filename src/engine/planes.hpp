@@ -17,40 +17,38 @@ public:
                                     glm::vec3 const &agl,
                                     glm::vec3 const &scl) {
     // points
-    if (invalidated or pos != Mmw_pos or agl != Mmw_agl or scl != Mmw_scl) {
-      // matrix state is not in sync with cached points and/or planes
+    bool const angle_or_and_scale_has_changed =
+        Mmw_agl != agl or Mmw_scl != scl;
+    if (invalidated or pos != Mmw_pos or angle_or_and_scale_has_changed) {
+      // matrix state is not in sync with cached points and planes
       world_points.clear();
       for (glm::vec4 const &point : points) {
         glm::vec4 const Pw = Mmw * point;
         world_points.emplace_back(Pw);
       }
 
-      if (invalidated or Mmw_agl != agl or Mmw_scl != scl) {
-        // rotation has happened. update the planes
+      if (invalidated or angle_or_and_scale_has_changed) {
+        bool const is_uniform_scale = scl.x == scl.y and scl.y == scl.z;
+
+        // the generalized solution is: glm::mat3 const N =
+        // glm::transpose(glm::inverse(glm::mat3(Mmw))); but since it is known
+        // how Mmw is composed a less expensive operations is done
+
+        glm::mat3 const N =
+            is_uniform_scale
+                ? glm::eulerAngleXYZ(agl.x, agl.y, agl.z)
+                : glm::scale(
+                      glm::eulerAngleXYZ(agl.x, agl.y, agl.z),
+                      glm::vec3{1.0f / scl.x, 1.0f / scl.y, 1.0f / scl.z});
+
         world_planes.clear();
         size_t const n = normals.size();
-
-        if (scl.x != scl.y or scl.y != scl.z) {
-          // non uniform scaling
-          glm::mat3 const N = glm::transpose(glm::inverse(glm::mat3(Mmw)));
-
-          for (size_t i = 0; i < n; ++i) {
-            glm::vec3 normal = N * normals[i];
-            glm::vec4 plane{normal,
-                            -glm::dot(normal, glm::vec3{world_points[i]})};
-            world_planes.emplace_back(plane);
-          }
-        } else {
-          // if uniform scaling then rotation matrix works
-          glm::mat4 const N = glm::eulerAngleXYZ(agl.x, agl.y, agl.z);
-
-          for (size_t i = 0; i < n; ++i) {
-            // note. normals[i].w = 0
-            glm::vec4 plane = N * normals[i];
-            // plane equation ax + by + cz + d = 0 where d is w
-            plane.w = -glm::dot(plane, world_points[i]);
-            world_planes.emplace_back(plane);
-          }
+        for (size_t i = 0; i < n; ++i) {
+          // note. normals[i].w = 0
+          glm::vec3 const normal = N * normals[i];
+          glm::vec4 const plane{normal,
+                                -glm::dot(normal, glm::vec3{world_points[i]})};
+          world_planes.emplace_back(plane);
         }
         // save the state of the cached planes
         Mmw_agl = agl;
@@ -89,7 +87,7 @@ public:
   // assumes updated world points and normals
   inline auto is_point_in_volume(glm::vec4 const &point) const -> bool {
     return std::ranges::all_of(world_planes, [&](glm::vec4 const &plane) {
-      return glm::dot(point, plane) <= 0;
+      return glm::dot(plane, point) <= 0;
     });
   }
 

@@ -104,8 +104,8 @@ void application_init() {
       ship *o = new (objects.alloc()) ship{};
       o->net_state = &net.states[1];
 
-      // auto *a = new (objects.alloc()) tetra{};
-      // a->position.x = 4;
+      auto *a = new (objects.alloc()) tetra{};
+      a->position.x = 4;
     }
   }
 
@@ -116,10 +116,10 @@ void application_init() {
   camera.position = {0, 50, 0};
   camera.look_at = {0, 0, -0.0001f};
   // note. -0.0001f because of the math of 'look at'
-  camera.ortho_min_x = -game_area_half_x;
-  camera.ortho_min_y = -game_area_half_z;
-  camera.ortho_max_x = game_area_half_x;
-  camera.ortho_max_y = game_area_half_z;
+  camera.ortho_min_x = -game_area_half_x/2;
+  camera.ortho_min_y = -game_area_half_z/2;
+  camera.ortho_max_x = game_area_half_x/2;
+  camera.ortho_max_y = game_area_half_z/2;
 
   // camera.type = camera::type::LOOK_AT;
   // camera.position = {0, 30, 30};
@@ -130,10 +130,10 @@ void application_init() {
 
 // engine interface
 void application_on_update_done() {
-  if (asteroids_alive == 0) {
-    ++level;
-    create_asteroids(level * asteroid_level);
-  }
+  // if (asteroids_alive == 0) {
+  //   ++level;
+  //   create_asteroids(level * asteroid_level);
+  // }
 }
 
 // engine interface
