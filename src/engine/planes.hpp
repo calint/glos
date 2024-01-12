@@ -93,7 +93,8 @@ public:
 
   // works in cases where the sphere is much smaller than the convex volume
   // e.g. bullets vs walls. gives false positives when spheres are larger than
-  // the volume and the volume has "pointy" edges
+  // the volume and the volume has "pointy" edges because there are positions
+  // where the sphere i "within" the collision planes "outside" the volume
   // workaround: add some more planes to the volume at the "pointy" edges
   inline auto is_in_collision_with_sphere(glm::vec3 const &position,
                                           float const radius) const -> bool {
