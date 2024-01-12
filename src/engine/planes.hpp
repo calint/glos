@@ -45,10 +45,10 @@ public:
         world_normals.clear();
         world_planes.clear();
         size_t const n = normals.size();
-        for (size_t i = 0; i < n; ++i) {
-          glm::vec3 const normal = N * normals[i];
-          world_normals.emplace_back(normal);
-          world_planes.emplace_back(glm::vec4{normal, 0});
+        for (glm::vec3 const &normal : normals) {
+          glm::vec3 const world_normal = N * normal;
+          world_normals.emplace_back(world_normal);
+          world_planes.emplace_back(glm::vec4{world_normal, 0});
         }
         // save the state of the cache
         Mmw_agl = agl;
