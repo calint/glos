@@ -15,6 +15,7 @@ static std::atomic<unsigned> asteroids_alive{0};
 
 // objects
 #include "objects/asteroid_large.hpp"
+#include "objects/cube.hpp"
 #include "objects/fragment.hpp"
 #include "objects/ship.hpp"
 
@@ -59,8 +60,7 @@ void application_init() {
       globs.load("assets/obj/asteroids/ship_engine_on.obj",
                  "assets/obj/asteroids/ship_engine_on.obj");
 
-  // glob_ix_ship = glob_ix_ship_engine_on =
-  //     globs.load("assets/obj/cube.obj", "assets/obj/cube-bv.obj");
+  glob_ix_cube = globs.load("assets/obj/cube.obj", "assets/obj/cube-bv.obj");
 
   glob_ix_bullet = globs.load("assets/obj/asteroids/bullet.obj",
                               "assets/obj/asteroids/bullet.obj");
@@ -100,6 +100,9 @@ void application_init() {
       // single player mode
       ship *o = new (objects.alloc()) ship{};
       o->net_state = &net.states[1];
+
+      // auto *a = new (objects.alloc()) cube{};
+      // a->position.x = 4;
     }
   }
 
