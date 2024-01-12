@@ -16,9 +16,10 @@ static std::atomic<unsigned> asteroids_alive{0};
 // objects
 #include "objects/asteroid_large.hpp"
 #include "objects/cube.hpp"
-#include "objects/tetra.hpp"
+#include "objects/sphere.hpp"
 #include "objects/fragment.hpp"
 #include "objects/ship.hpp"
+#include "objects/tetra.hpp"
 
 // forward declarations
 static void application_init_shaders();
@@ -58,12 +59,16 @@ void application_init() {
 
   glob_ix_tetra = globs.load("assets/obj/tetra.obj", "assets/obj/tetra.obj");
 
+  glob_ix_sphere = globs.load("assets/obj/sphere.obj", nullptr);
+
   glob_ix_ship = globs.load("assets/obj/asteroids/ship.obj",
                             "assets/obj/asteroids/ship.obj");
 
   glob_ix_ship_engine_on =
       globs.load("assets/obj/asteroids/ship_engine_on.obj",
                  "assets/obj/asteroids/ship_engine_on.obj");
+
+  glob_ix_ship = glob_ix_ship_engine_on = glob_ix_cube;
 
   glob_ix_bullet = globs.load("assets/obj/asteroids/bullet.obj",
                               "assets/obj/asteroids/bullet.obj");
@@ -106,6 +111,10 @@ void application_init() {
 
       auto *a = new (objects.alloc()) tetra{};
       a->position.x = 4;
+      a->velocity.x = 0.1f;
+
+      auto *s = new (objects.alloc()) sphere{};
+      s->position.x = -4;
     }
   }
 
@@ -116,10 +125,10 @@ void application_init() {
   camera.position = {0, 50, 0};
   camera.look_at = {0, 0, -0.0001f};
   // note. -0.0001f because of the math of 'look at'
-  camera.ortho_min_x = -game_area_half_x/2;
-  camera.ortho_min_y = -game_area_half_z/2;
-  camera.ortho_max_x = game_area_half_x/2;
-  camera.ortho_max_y = game_area_half_z/2;
+  camera.ortho_min_x = -game_area_half_x / 2;
+  camera.ortho_min_y = -game_area_half_z / 2;
+  camera.ortho_max_x = game_area_half_x / 2;
+  camera.ortho_max_y = game_area_half_z / 2;
 
   // camera.type = camera::type::LOOK_AT;
   // camera.position = {0, 30, 30};

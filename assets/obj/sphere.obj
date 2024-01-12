@@ -1,6 +1,6 @@
 # Blender 3.6.2
 # www.blender.org
-mtllib bounding_sphere.mtl
+mtllib sphere.mtl
 o Icosphere
 v 0.000000 -1.000000 0.000000
 v 0.723607 -0.447220 0.525725

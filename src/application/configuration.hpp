@@ -76,6 +76,7 @@ static uint32_t glob_ix_fragment = 0;
 static uint32_t glob_ix_power_up = 0;
 static uint32_t glob_ix_cube = 0;
 static uint32_t glob_ix_tetra = 0;
+static uint32_t glob_ix_sphere = 0;
 
 // settings
 static constexpr unsigned asteroid_level = 2;
