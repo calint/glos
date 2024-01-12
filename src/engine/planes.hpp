@@ -38,9 +38,8 @@ public:
         glm::mat3 const N =
             is_uniform_scale
                 ? glm::eulerAngleXYZ(agl.x, agl.y, agl.z)
-                : glm::scale(
-                      glm::eulerAngleXYZ(agl.x, agl.y, agl.z),
-                      glm::vec3{1.0f / scl.x, 1.0f / scl.y, 1.0f / scl.z});
+                : glm::scale(glm::eulerAngleXYZ(agl.x, agl.y, agl.z),
+                             1.0f / scl);
 
         world_normals.clear();
         world_planes.clear();
