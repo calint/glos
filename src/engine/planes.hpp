@@ -43,7 +43,6 @@ public:
 
         world_normals.clear();
         world_planes.clear();
-        size_t const n = normals.size();
         for (glm::vec3 const &normal : normals) {
           glm::vec3 const world_normal = N * normal;
           world_normals.emplace_back(world_normal);
