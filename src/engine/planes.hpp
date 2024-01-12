@@ -117,6 +117,30 @@ public:
     return std::ranges::all_of(world_planes, [&](glm::vec4 const &plane) {
       return glm::dot(point, plane) / glm::length(glm::vec3{plane}) <= radius;
     });
+
+    // bool const definitely_no =
+    //     std::ranges::any_of(world_planes, [&](glm::vec4 const &plane) {
+    //       return glm::dot(point, plane) / glm::length(glm::vec3{plane}) >
+    //              radius;
+    //     });
+
+    // if (definitely_no) {
+    //   printf("definitely no\n");
+    //   return false;
+    // }
+
+    // for (glm::vec4 const &wp : world_points) {
+    //   glm::vec3 const nml = glm::normalize(wp - point);
+    //   glm::vec3 const pt_on_plane = nml * radius;
+    //   glm::vec3 const v = glm::vec3{wp} - pt_on_plane;
+    //   float const d = glm::dot(v, nml);
+    //   if (d < 0) {
+    //     printf("found point behind plane\n");
+    //     return true;
+    //   }
+    // }
+
+    // return false;
   }
 
   // there are cases that give false positive
