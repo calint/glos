@@ -20,7 +20,6 @@ public:
     bool const angle_scale_changed = Mmw_agl != agl or Mmw_scl != scl;
 
     if (invalidated or pos != Mmw_pos or angle_scale_changed) {
-      printf("update points\n");
       // world points and normals are not in sync with object Mmw
       world_points.clear();
       for (glm::vec4 const &point : points) {
@@ -29,7 +28,6 @@ public:
       }
 
       if (angle_scale_changed) {
-        printf("update normals\n");
         // the generalized solution is:
         // glm::mat3 const N = glm::transpose(glm::inverse(glm::mat3(Mmw)));
         // but since it is known how Mmw is composed a less expensive operations
