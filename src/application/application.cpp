@@ -16,6 +16,7 @@ static std::atomic<unsigned> asteroids_alive{0};
 // objects
 #include "objects/asteroid_large.hpp"
 #include "objects/cube.hpp"
+#include "objects/tetra.hpp"
 #include "objects/fragment.hpp"
 #include "objects/ship.hpp"
 
@@ -53,14 +54,16 @@ void application_init() {
   static_assert(sizeof(ship) <= objects_instance_size_B);
 
   // load the objects and assign the indexes
+  glob_ix_cube = globs.load("assets/obj/cube.obj", "assets/obj/cube-bv.obj");
+
+  glob_ix_tetra = globs.load("assets/obj/tetra.obj", "assets/obj/tetra.obj");
+
   glob_ix_ship = globs.load("assets/obj/asteroids/ship.obj",
                             "assets/obj/asteroids/ship.obj");
 
   glob_ix_ship_engine_on =
       globs.load("assets/obj/asteroids/ship_engine_on.obj",
                  "assets/obj/asteroids/ship_engine_on.obj");
-
-  glob_ix_cube = globs.load("assets/obj/cube.obj", "assets/obj/cube-bv.obj");
 
   glob_ix_bullet = globs.load("assets/obj/asteroids/bullet.obj",
                               "assets/obj/asteroids/bullet.obj");
@@ -101,7 +104,7 @@ void application_init() {
       ship *o = new (objects.alloc()) ship{};
       o->net_state = &net.states[1];
 
-      // auto *a = new (objects.alloc()) cube{};
+      // auto *a = new (objects.alloc()) tetra{};
       // a->position.x = 4;
     }
   }

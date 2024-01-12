@@ -25,24 +25,38 @@ public:
         world_points.emplace_back(Pw);
       }
 
-      if (invalidated or Mmw_agl != agl) {
+      if (invalidated or Mmw_agl != agl or Mmw_scl != scl) {
         // rotation has happened. update the planes
-        glm::mat4 const R = glm::eulerAngleXYZ(agl.x, agl.y, agl.z);
-
         world_planes.clear();
         size_t const n = normals.size();
-        for (size_t i = 0; i < n; ++i) {
-          glm::vec4 plane = R * normals[i];
-          // note. normals[i].w = 0
-          // plane equation ax + by + cz + d = 0 where d is w
-          plane.w = -glm::dot(plane, world_points[i]);
-          world_planes.emplace_back(plane);
+
+        if (scl.x != scl.y or scl.y != scl.z) {
+          // non uniform scaling
+          glm::mat3 const N = glm::transpose(glm::inverse(glm::mat3(Mmw)));
+
+          for (size_t i = 0; i < n; ++i) {
+            glm::vec3 normal = N * normals[i];
+            glm::vec4 plane{normal,
+                            -glm::dot(normal, glm::vec3{world_points[i]})};
+            world_planes.emplace_back(plane);
+          }
+        } else {
+          // if uniform scaling then rotation matrix works
+          glm::mat4 const N = glm::eulerAngleXYZ(agl.x, agl.y, agl.z);
+
+          for (size_t i = 0; i < n; ++i) {
+            // note. normals[i].w = 0
+            glm::vec4 plane = N * normals[i];
+            // plane equation ax + by + cz + d = 0 where d is w
+            plane.w = -glm::dot(plane, world_points[i]);
+            world_planes.emplace_back(plane);
+          }
         }
         // save the state of the cached planes
         Mmw_agl = agl;
+        Mmw_scl = scl;
       }
       Mmw_pos = pos;
-      Mmw_scl = scl;
       invalidated = false;
     }
   }
