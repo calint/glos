@@ -23,8 +23,8 @@ public:
       // world points and normals are not in sync with object Mmw
       world_points.clear();
       for (glm::vec4 const &point : points) {
-        glm::vec4 const Pw = Mmw * point;
-        world_points.emplace_back(Pw);
+        glm::vec4 const world_point = Mmw * point;
+        world_points.emplace_back(world_point);
       }
 
       if (angle_scale_changed) {
