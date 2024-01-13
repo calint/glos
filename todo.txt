@@ -16,6 +16,8 @@
 [ ] convert token.h
 [ ] use c++ random number generator
 [ ] rand() is not thread-safe
+[ ] bounding box. OBB 3 normals, width, height
+    check i point is inside: 3 dot products + additions and comparisons
 [ ] use string_view instead of const char*
 [ ] object: changing glob_ix should invalidate planes
     => for now planes.points_invalidated and planes.normals_invalidated flags

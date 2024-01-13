@@ -27,7 +27,7 @@ public:
         world_points.emplace_back(world_point);
       }
 
-      if (angle_scale_changed) {
+      if (invalidated or angle_scale_changed) {
         // the generalized solution is:
         // glm::mat3 const N = glm::transpose(glm::inverse(glm::mat3(Mmw)));
         // but since it is known how Mmw is composed a less expensive operations
