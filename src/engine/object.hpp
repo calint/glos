@@ -32,7 +32,24 @@ public:
   object **alloc_ptr;             // initiated at allocate by 'o1store'
   std::string name{};             // instance name
   bool is_sphere = false;         // true if object can be considered a sphere
+private:
+  glm::mat4 Mmw{};     // model -> world matrix
+  glm::vec3 Mmw_pos{}; // position of current Mmw matrix
+  glm::vec3 Mmw_agl{}; // angle of current Mmw matrix
+  glm::vec3 Mmw_scl{}; // scale of current Mmw matrix
 
+  // note. 32 bit resolution vs 64 bit comparison source ok since only checking
+  // for equality
+  uint32_t rendered_at_tick = 0; // used by cell to avoid rendering twice
+  uint32_t updated_at_tick = 0;  // used by cell to avoid updating twice
+
+  std::vector<const object *> handled_collisions{};
+  std::atomic_flag lock = ATOMIC_FLAG_INIT;
+  std::atomic_flag lock_get_updated_Mmw = ATOMIC_FLAG_INIT;
+  bool overlaps_cells = false; // used by grid to flag cell overlap
+  bool is_dead = false;        // used by cell to avoid events on dead objects
+
+public:
   inline virtual ~object() = default;
   // note. 'delete obj;' may not be used because memory is managed by 'o1store'
   //       destructor is invoked in the 'objects.apply_free()'
@@ -106,22 +123,6 @@ public:
   }
 
 private:
-  glm::mat4 Mmw{};     // model -> world matrix
-  glm::vec3 Mmw_pos{}; // position of current Mmw matrix
-  glm::vec3 Mmw_agl{}; // angle of current Mmw matrix
-  glm::vec3 Mmw_scl{}; // scale of current Mmw matrix
-
-  // note. 32 bit resolution vs 64 bit comparison source ok since only checking
-  // for equality
-  uint32_t rendered_at_tick = 0; // used by cell to avoid rendering twice
-  uint32_t updated_at_tick = 0;  // used by cell to avoid updating twice
-
-  std::vector<const object *> handled_collisions{};
-  std::atomic_flag lock = ATOMIC_FLAG_INIT;
-  std::atomic_flag lock_get_updated_Mmw = ATOMIC_FLAG_INIT;
-  bool overlaps_cells = false; // used by grid to flag cell overlap
-  bool is_dead = false;        // used by cell to avoid events on dead objects
-
   inline auto is_Mmw_valid() const -> bool {
     return position == Mmw_pos and angle == Mmw_agl and scale == Mmw_scl;
   }
