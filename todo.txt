@@ -16,6 +16,7 @@
 [ ] convert token.h
 [ ] use c++ random number generator
 [ ] rand() is not thread-safe
+[ ] cell.update does what object::update does since it always returns true
 [ ] bounding box. OBB 3 normals, width, height
     check i point is inside: 3 dot products + additions and comparisons
 [ ] use string_view instead of const char*
