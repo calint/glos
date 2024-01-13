@@ -13,12 +13,12 @@ public:
              name.c_str());
     }
     glob_ix = glob_ix_cube;
-    scale = {1.0f, 1.0f, 3.0f};
+    scale = {1.0f, 1.0f, 1.0f};
     radius = globs.at(glob_ix).bounding_radius * scale.x;
     angular_velocity.y = radians(20.0f);
     mass = 10;
     collision_bits = cb_power_up;
-    collision_mask = cb_hero;
+    collision_mask = cb_power_up;
   }
 
   inline ~cube() override {
@@ -33,6 +33,8 @@ public:
       return false;
     }
 
+    game_area_roll(position);
+
     return true;
   }
 
@@ -42,7 +44,7 @@ public:
              frame_context.ms, name.c_str(), o->name.c_str());
     }
 
-    score += 10;
+    score += 1;
 
     return true;
   }

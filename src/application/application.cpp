@@ -16,14 +16,15 @@ static std::atomic<unsigned> asteroids_alive{0};
 // objects
 #include "objects/asteroid_large.hpp"
 #include "objects/cube.hpp"
-#include "objects/sphere.hpp"
 #include "objects/fragment.hpp"
 #include "objects/ship.hpp"
+#include "objects/sphere.hpp"
 #include "objects/tetra.hpp"
 
 // forward declarations
 static void application_init_shaders();
 static void create_asteroids(unsigned num);
+static void create_cubes(unsigned num);
 
 // engine interface
 void application_init() {
@@ -68,8 +69,6 @@ void application_init() {
       globs.load("assets/obj/asteroids/ship_engine_on.obj",
                  "assets/obj/asteroids/ship_engine_on.obj");
 
-  glob_ix_ship = glob_ix_ship_engine_on = glob_ix_cube;
-
   glob_ix_bullet = globs.load("assets/obj/asteroids/bullet.obj",
                               "assets/obj/asteroids/bullet.obj");
   glob_ix_asteroid_large =
@@ -93,7 +92,7 @@ void application_init() {
   // skydome->radius = 50;
   // skydome->scale = {50.0f, 50.0f, 50.0f};
 
-  if (create_players) {
+  if (not performance_test) {
     // setup scene
     if (net.enabled) {
       // multiplayer mode
@@ -106,16 +105,11 @@ void application_init() {
       p2->net_state = &net.states[2];
     } else {
       // single player mode
-      ship *o = new (objects.alloc()) ship{};
-      o->net_state = &net.states[1];
-
-      auto *a = new (objects.alloc()) tetra{};
-      a->position.x = 4;
-      // a->velocity.x = 0.1f;
-
-      auto *s = new (objects.alloc()) sphere{};
-      s->position.x = -4;
+      ship *p = new (objects.alloc()) ship{};
+      p->net_state = &net.states[1];
     }
+  } else {
+    create_cubes(objects_count);
   }
 
   // setup light and camera
@@ -125,10 +119,10 @@ void application_init() {
   camera.position = {0, 50, 0};
   camera.look_at = {0, 0, -0.0001f};
   // note. -0.0001f because of the math of 'look at'
-  camera.ortho_min_x = -game_area_half_x / 2;
-  camera.ortho_min_y = -game_area_half_z / 2;
-  camera.ortho_max_x = game_area_half_x / 2;
-  camera.ortho_max_y = game_area_half_z / 2;
+  camera.ortho_min_x = -game_area_half_x;
+  camera.ortho_min_y = -game_area_half_z;
+  camera.ortho_max_x = game_area_half_x;
+  camera.ortho_max_y = game_area_half_z;
 
   // camera.type = camera::type::LOOK_AT;
   // camera.position = {0, 30, 30};
@@ -139,10 +133,14 @@ void application_init() {
 
 // engine interface
 void application_on_update_done() {
-  // if (asteroids_alive == 0) {
-  //   ++level;
-  //   create_asteroids(level * asteroid_level);
-  // }
+  if (performance_test) {
+    return;
+  }
+
+  if (asteroids_alive == 0) {
+    ++level;
+    create_asteroids(level * asteroid_level);
+  }
 }
 
 // engine interface
@@ -167,6 +165,18 @@ static void create_asteroids(unsigned const num) {
     ast->position.z = rnd1(d);
     ast->velocity.x = rnd1(v);
     ast->velocity.z = rnd1(v);
+  }
+}
+
+static void create_cubes(unsigned const num) {
+  constexpr float v = cube_speed;
+  constexpr float d = game_area_max_x - game_area_min_x;
+  for (unsigned i = 0; i < num; ++i) {
+    cube *o = new (objects.alloc()) cube{};
+    o->position.x = rnd1(d);
+    o->position.z = rnd1(d);
+    o->velocity.x = rnd1(v);
+    o->velocity.z = rnd1(v);
   }
 }
 

@@ -8,9 +8,16 @@
 // definitions used by engine
 //
 
+//
+// running performance tests
+//
+static constexpr bool performance_test = true;
+static constexpr float cube_speed = 10;
+
 // grid dimensions
-static constexpr float grid_size = 40; // square side in e.g. meters
-static constexpr unsigned grid_rows = 4;
+static constexpr float grid_size =
+    performance_test ? 3200 : 40; // square side in e.g. meters
+static constexpr unsigned grid_rows = performance_test ? 16 : 4;
 static constexpr unsigned grid_columns = grid_rows;
 static constexpr float grid_cell_size = grid_size / grid_rows;
 
@@ -42,14 +49,15 @@ static constexpr bool hud_enabled = true;
 // window dimensions
 static constexpr unsigned window_width = 1024;
 static constexpr unsigned window_height = 1024;
-static constexpr bool window_vsync = true;
+static constexpr bool window_vsync = performance_test ? false : true;
 // note. vsync should be on when not doing performance tests
 
 // number of players in networked mode
 static constexpr unsigned net_players = 2;
 
 // number of preallocated objects
-static constexpr unsigned objects_count = 1 * 1024;
+static constexpr unsigned objects_count =
+    performance_test ? 64 * 1024 : 1 * 1024;
 
 // maximum size of any object instance in bytes
 static constexpr size_t objects_instance_size_B = 512;
@@ -126,8 +134,6 @@ static constexpr float game_area_min_z =
     -game_area_half_z - asteroid_large_scale;
 static constexpr float game_area_max_z =
     game_area_half_z + asteroid_large_scale;
-
-static constexpr bool create_players = true;
 
 // used when 'debug_multiplayer' is true to give objects unique numbers
 static std::atomic<unsigned> counter = 0;

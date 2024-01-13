@@ -8,13 +8,13 @@
 #include "objects/power_up.hpp"
 //
 
-inline auto rnd1(float const plus_minus_range) -> float {
+inline auto rnd1(float const range) -> float {
   int const r = rand();
   if (debug_multiplayer) {
     printf("%lu: %lu: rnd1: %d\n", frame_context.frame_num, frame_context.ms,
            r);
   }
-  return float(r) / float(RAND_MAX) * plus_minus_range - plus_minus_range / 2;
+  return float(r) / float(RAND_MAX) * range - range / 2;
 }
 
 inline auto rnd2(float const zero_to_range) -> float {

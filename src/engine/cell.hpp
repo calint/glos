@@ -82,9 +82,9 @@ public:
           continue;
         }
 
-        // if (not are_bounding_spheres_in_collision(Oi, Oj)) {
-        //   continue;
-        // }
+        if (not are_bounding_spheres_in_collision(Oi, Oj)) {
+          continue;
+        }
 
         // bounding spheres are in collision
 
