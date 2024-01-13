@@ -1,3 +1,5 @@
+[ ] reorganize order and align members as expected to be accessed in the subsystems aware of the
+    cache lines (64B)
 [ ] release and continue with sandbox game in 'glosi'
 [ ]   render cull cells
 [ ]   render cull objects
