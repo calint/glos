@@ -57,6 +57,23 @@
         297,399813000 seconds user
         7,854987000 seconds sys
     ----------------------------------------------------------- 
+    comparison
+    -----------------------------------------------------------
+         5 157 401 111      cache-references                                                        (83,22%)
+     1 999 581 630      cache-misses                     #   38,77% of all cache refs           (83,36%)
+    92 024 843 007      branches                                                                (83,34%)
+       548 863 910      branch-misses                    #    0,60% of all branches             (83,41%)
+   738 475 968 517      cycles                                                                  (83,40%)
+ 1 165 234 597 123      instructions                     #    1,58  insn per cycle              (83,28%)
+            24 982      faults                                                                
+            17 127      migrations                                                            
+
+      31,606359637 seconds time elapsed
+
+     194,767411000 seconds user
+       5,533641000 seconds sys
+    -----------------------------------------------------------
+    
 [x] reorganize order and align members as expected to be accessed in the subsystems aware of the
     cache lines (64B)
 [ ] release and continue with sandbox game in 'glosi'
