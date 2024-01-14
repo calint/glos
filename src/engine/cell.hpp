@@ -139,18 +139,14 @@ private:
         bool const Oj_subscribed_to_collisions_with_Oi =
             Oj.collision_mask & Oi.collision_bits;
 
-        if (not Oi_subscribed_to_collisions_with_Oj and
-            not Oj_subscribed_to_collisions_with_Oi) {
-          continue;
-        }
+        if ((Oi_subscribed_to_collisions_with_Oj or
+             Oj_subscribed_to_collisions_with_Oi) and
+            are_bounding_spheres_in_collision(Oi, Oj)) {
 
-        if (not are_bounding_spheres_in_collision(Oi, Oj)) {
-          continue;
+          check_collisions_list.emplace_back(
+              Oi.object, Oj.object, Oi_subscribed_to_collisions_with_Oj,
+              Oj_subscribed_to_collisions_with_Oi);
         }
-
-        check_collisions_list.emplace_back(Oi.object, Oj.object,
-                                           Oi_subscribed_to_collisions_with_Oj,
-                                           Oj_subscribed_to_collisions_with_Oi);
       }
     }
   }
