@@ -11,7 +11,9 @@
 // note. no destructor since life-time is program life-time
 //
 
-template <typename Type, size_t const Size, unsigned const StoreId = 0,
+template <typename Type, size_t const InstancesCount,
+          unsigned const StoreId = 0,
+          bool const return_nullptr_when_no_free_instance_found = false,
           size_t const InstanceSizeInBytes = 0>
 class o1store final {
   Type *all_ = nullptr;
@@ -28,14 +30,16 @@ class o1store final {
 public:
   o1store() {
     if (InstanceSizeInBytes) {
-      all_ = static_cast<Type *>(calloc(Size, InstanceSizeInBytes));
+      all_ = static_cast<Type *>(calloc(InstancesCount, InstanceSizeInBytes));
     } else {
-      all_ = static_cast<Type *>(calloc(Size, sizeof(Type)));
+      all_ = static_cast<Type *>(calloc(InstancesCount, sizeof(Type)));
     }
-    free_ptr_ = free_bgn_ = static_cast<Type **>(calloc(Size, sizeof(Type *)));
+    free_ptr_ = free_bgn_ =
+        static_cast<Type **>(calloc(InstancesCount, sizeof(Type *)));
     alloc_ptr_ = alloc_bgn_ =
-        static_cast<Type **>(calloc(Size, sizeof(Type *)));
-    del_ptr_ = del_bgn_ = static_cast<Type **>(calloc(Size, sizeof(Type *)));
+        static_cast<Type **>(calloc(InstancesCount, sizeof(Type *)));
+    del_ptr_ = del_bgn_ =
+        static_cast<Type **>(calloc(InstancesCount, sizeof(Type *)));
 
     if (!all_ or !free_bgn_ or !alloc_bgn_ or !del_bgn_) {
       fprintf(stderr, "\n%s:%d: store %u: cannot allocate arrays\n", __FILE__,
@@ -44,8 +48,8 @@ public:
       std::abort();
     }
 
-    free_end_ = free_bgn_ + Size;
-    del_end_ = del_bgn_ + Size;
+    free_end_ = free_bgn_ + InstancesCount;
+    del_end_ = del_bgn_ + InstancesCount;
 
     // write pointers to instances in the 'free' list
     Type *all_it = all_;
@@ -77,7 +81,16 @@ public:
       if (threaded_o1store) {
         release_lock();
       }
-      return nullptr;
+      if (return_nullptr_when_no_free_instance_found) {
+        return nullptr;
+      } else {
+        fprintf(stderr,
+                "\n%s:%d: store %u: out of free instances. consider increasing "
+                "the size of the store.\n",
+                __FILE__, __LINE__, StoreId);
+        fflush(stderr);
+        std::abort();
+      }
     }
     Type *inst = *free_ptr_;
     ++free_ptr_;
@@ -154,7 +167,7 @@ public:
   inline auto all_list() const -> Type * { return all_; }
 
   // returns the length of 'all' list
-  constexpr auto all_list_len() const -> size_t { return Size; }
+  constexpr auto all_list_len() const -> size_t { return InstancesCount; }
 
   // returns instance at index 'ix' from 'all' list
   inline auto instance(size_t ix) const -> Type * {
@@ -168,9 +181,10 @@ public:
 
   // returns the size of allocated heap memory in bytes
   constexpr auto allocated_data_size_B() const -> size_t {
-    return InstanceSizeInBytes
-               ? (Size * InstanceSizeInBytes + 3 * Size * sizeof(Type *))
-               : (Size * sizeof(Type) + 3 * Size * sizeof(Type *));
+    return InstanceSizeInBytes ? (InstancesCount * InstanceSizeInBytes +
+                                  3 * InstancesCount * sizeof(Type *))
+                               : (InstancesCount * sizeof(Type) +
+                                  3 * InstancesCount * sizeof(Type *));
   }
 
   inline void acquire_lock() {

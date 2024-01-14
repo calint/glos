@@ -1,13 +1,15 @@
-[ ] reorganize order and align members as expected to be accessed in the subsystems aware of the
+[ ] look at std::aligned_alloc to align o1store
+[x] reorganize order and align members as expected to be accessed in the subsystems aware of the
     cache lines (64B)
 [ ] release and continue with sandbox game in 'glosi'
 [ ]   render cull cells
 [ ]   render cull objects
-[ ]   fix multithreading issues
+[x]   fix multithreading issues
+[ ]     in multiplayer
 [ ]   grid: static vs moving vs bullets vs scenery objects
 [ ]   glob::load: optimize ranges by merging non-textured materials since all
       material info is saved in the vertices
-[ ] o1store: nice exit when objects exceeded capacity
+[x] o1store: nice exit when objects exceeded capacity
 [x] examine plane representation Ax + By + Cz + D = 0 where w is D
     then get distance: dot(plane, point);
 [x] collision detection: large sphere vs "pointy" convex volume gives false positives
