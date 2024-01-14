@@ -43,6 +43,9 @@ void application_init() {
   printf(": %15s : %-9zu :\n", "fragment", sizeof(fragment));
   printf(": %15s : %-9zu :\n", "power_up", sizeof(power_up));
   printf(": %15s : %-9zu :\n", "ship", sizeof(ship));
+  printf(": %15s : %-9zu :\n", "cube", sizeof(cube));
+  printf(": %15s : %-9zu :\n", "sphere", sizeof(sphere));
+  printf(": %15s : %-9zu :\n", "tetra", sizeof(tetra));
   printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
   puts("");
 
@@ -54,6 +57,9 @@ void application_init() {
   static_assert(sizeof(fragment) <= objects_instance_size_B);
   static_assert(sizeof(power_up) <= objects_instance_size_B);
   static_assert(sizeof(ship) <= objects_instance_size_B);
+  static_assert(sizeof(cube) <= objects_instance_size_B);
+  static_assert(sizeof(sphere) <= objects_instance_size_B);
+  static_assert(sizeof(tetra) <= objects_instance_size_B);
 
   // load the objects and assign the indexes
   glob_ix_cube = globs.load("assets/obj/cube.obj", "assets/obj/cube-bv.obj");
