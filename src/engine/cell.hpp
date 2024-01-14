@@ -191,7 +191,7 @@ private:
     }
   }
 
-  inline void handle_collisions() {
+  inline void handle_collisions() const {
     for (cell_collision const &cc : check_collisions_list) {
       if (not cc.is_in_collision) {
         continue;
