@@ -23,7 +23,7 @@
 [ ] rand() is not thread-safe
 [ ] cell.update does what object::update does since it always returns true
 [ ] bounding box. OBB 3 normals, width, height
-    check i point is inside: 3 dot products + additions and comparisons
+    check if point is inside: 3 dot products + additions and comparisons
 [ ] use string_view instead of const char*
 [ ] object: changing glob_ix should invalidate planes
     => for now planes.invalidated flag
