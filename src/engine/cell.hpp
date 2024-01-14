@@ -16,7 +16,18 @@ struct cell_entry {
   object *object = nullptr;
 };
 
+struct cell_collision_check {
+  object *o1 = nullptr;
+  object *o2 = nullptr;
+  bool Oi_interest_of_Oj = false;
+  bool Oj_interest_of_Oi = false;
+};
+
 class cell final {
+  std::vector<cell_entry> entry_list{};
+  std::vector<cell_collision_check> check_collisions_list{};
+  std::vector<cell_collision_check> detected_collisions_list{};
+
 public:
   // called from grid (possibly by multiple threads)
   inline void update() const {
@@ -58,14 +69,24 @@ public:
     }
   }
 
+  inline void resolve_collisions() {
+    make_check_collisions_list();
+    make_detected_collisions_list();
+    handle_collisions();
+  }
+
+private:
   // called from grid (possibly by multiple threads)
-  inline void resolve_collisions() const {
+  inline void make_check_collisions_list() {
+    check_collisions_list.clear();
+
     // thread safe because 'entry_list' does not change during
     // 'resolve_collisions'
     size_t const len = entry_list.size();
     if (len < 2) {
       return;
     }
+
     for (unsigned i = 0; i < len - 1; ++i) {
       for (unsigned j = i + 1; j < len; ++j) {
 
@@ -86,77 +107,89 @@ public:
           continue;
         }
 
-        // bounding spheres are in collision
-
-        if (Oi.object->is_sphere and Oj.object->is_sphere) {
-          bool const Oi_already_handled_Oj =
-              Oi_interest_of_Oj ? dispatch_collision(Oi.object, Oj.object)
-                                : false;
-          bool const Oj_already_handled_Oi =
-              Oj_interest_of_Oi ? dispatch_collision(Oj.object, Oi.object)
-                                : false;
-
-          // if collision has already been handled, possibly on a different
-          // thread or grid cell continue
-          if (Oi_already_handled_Oj or Oj_already_handled_Oi) {
-            continue;
-          }
-
-          // collision has not been handled during this frame by any cell
-          handle_sphere_collision(Oi.object, Oj.object);
-          continue;
-        }
-
-        // check if sphere vs planes
-
-        if (Oi.object->is_sphere) {
-          // Oj is not a sphere
-          Oj.object->update_planes_world_coordinates();
-          if (Oj.object->planes.is_in_collision_with_sphere(Oi.position,
-                                                            Oi.radius)) {
-            if (Oi_interest_of_Oj) {
-              dispatch_collision(Oi.object, Oj.object);
-            }
-            if (Oj_interest_of_Oi) {
-              dispatch_collision(Oj.object, Oi.object);
-            }
-          }
-          continue;
-        }
-
-        if (Oj.object->is_sphere) {
-          // Oi is not a sphere
-          Oi.object->update_planes_world_coordinates();
-          if (Oi.object->planes.is_in_collision_with_sphere(Oj.position,
-                                                            Oj.radius)) {
-            if (Oi_interest_of_Oj) {
-              dispatch_collision(Oi.object, Oj.object);
-            }
-            if (Oj_interest_of_Oi) {
-              dispatch_collision(Oj.object, Oi.object);
-            }
-          }
-          continue;
-        }
-
-        // both objects are convex volumes bounded by planes
-
-        if (not are_bounding_planes_in_collision(Oi.object, Oj.object)) {
-          continue;
-        }
-
-        // bounding planes in collision
-
-        if (Oi_interest_of_Oj) {
-          dispatch_collision(Oi.object, Oj.object);
-        }
-        if (Oj_interest_of_Oi) {
-          dispatch_collision(Oj.object, Oi.object);
-        }
+        check_collisions_list.emplace_back(Oi.object, Oj.object,
+                                          Oi_interest_of_Oj, Oj_interest_of_Oi);
       }
     }
   }
 
+  inline void make_detected_collisions_list() {
+    detected_collisions_list.clear();
+
+    for (cell_collision_check const &cc : check_collisions_list) {
+      // bounding spheres are in collision
+      object *Oi = cc.o1;
+      object *Oj = cc.o2;
+
+      if (Oi->is_sphere and Oj->is_sphere) {
+        detected_collisions_list.emplace_back(cc);
+        continue;
+      }
+
+      // check if sphere vs planes
+
+      if (Oi->is_sphere) {
+        // Oj is not a sphere
+        Oj->update_planes_world_coordinates();
+        if (Oj->planes.is_in_collision_with_sphere(Oi->position,
+                                                   Oi->bounding_radius)) {
+          detected_collisions_list.emplace_back(cc);
+        }
+        continue;
+      }
+
+      if (Oj->is_sphere) {
+        // Oi is not a sphere
+        Oi->update_planes_world_coordinates();
+        if (Oi->planes.is_in_collision_with_sphere(Oj->position,
+                                                   Oj->bounding_radius)) {
+          detected_collisions_list.emplace_back(cc);
+        }
+        continue;
+      }
+
+      // both objects are convex volumes bounded by planes
+
+      if (are_bounding_planes_in_collision(Oi, Oj)) {
+        detected_collisions_list.emplace_back(cc);
+      }
+    }
+  }
+
+  inline void handle_collisions() {
+    for (cell_collision_check const &cc : detected_collisions_list) {
+      // objects are in collision
+      object *Oi = cc.o1;
+      object *Oj = cc.o2;
+
+      if (Oi->is_sphere and Oj->is_sphere) {
+        bool const Oi_already_handled_Oj =
+            cc.Oi_interest_of_Oj ? dispatch_collision(Oi, Oj) : false;
+        bool const Oj_already_handled_Oi =
+            cc.Oj_interest_of_Oi ? dispatch_collision(Oj, Oi) : false;
+
+        // if collision has already been handled, possibly on a different
+        // thread or grid cell continue
+        if (Oi_already_handled_Oj or Oj_already_handled_Oi) {
+          continue;
+        }
+
+        // collision has not been handled during this frame by any cell
+        handle_sphere_collision(Oi, Oj);
+        continue;
+      }
+
+      if (cc.Oi_interest_of_Oj) {
+        dispatch_collision(Oi, Oj);
+      }
+
+      if (cc.Oj_interest_of_Oi) {
+        dispatch_collision(Oj, Oi);
+      }
+    }
+  }
+
+public:
   // called from grid (from only one thread)
   inline void render() const {
     for (cell_entry const &ce : entry_list) {
@@ -195,8 +228,6 @@ public:
   inline auto objects_count() const -> size_t { return entry_list.size(); }
 
 private:
-  std::vector<cell_entry> entry_list{};
-
   static inline void handle_sphere_collision(object *Oi, object *Oj) {
     // synchronize objects that overlap cells
 
