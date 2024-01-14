@@ -57,7 +57,7 @@ public:
 
 public:
   inline virtual ~object() = default;
-  // note. 'delete obj;' may not be used because memory is managed by 'o1store'
+  // note. 'delete obj;' may not be used because memory is managed by 'o1store'.
   //       destructor is invoked in the 'objects.apply_free()'
 
   inline virtual void render() {
