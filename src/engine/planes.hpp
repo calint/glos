@@ -41,11 +41,9 @@ public:
                 : glm::scale(glm::eulerAngleXYZ(agl.x, agl.y, agl.z),
                              1.0f / scl);
 
-        world_normals.clear();
         world_planes.clear();
         for (glm::vec3 const &normal : normals) {
           glm::vec3 const world_normal = N * normal;
-          world_normals.emplace_back(world_normal);
           world_planes.emplace_back(glm::vec4{world_normal, 0});
         }
         // save the state of the cache
@@ -53,13 +51,14 @@ public:
         Mmw_scl = scl;
       }
 
-      // update planes
-      size_t const n = world_normals.size();
+      // update planes D component (distance to plane from origo along the
+      // normal)
+      size_t const n = world_planes.size();
       for (size_t i = 0; i < n; ++i) {
-        glm::vec3 const &normal = world_normals[i];
         glm::vec3 const &point = world_points[i];
+        glm::vec4 &normal = world_planes[i];
         // d in a*x+b*y+z*d+d=0
-        world_planes[i].w = -glm::dot(normal, point);
+        normal.w = -glm::dot(glm::vec3{normal}, point);
       }
       // save the state of the cache
       Mmw_pos = pos;
@@ -200,7 +199,6 @@ private:
   // note. there is a point for each plane followed by additional points
   //       without planes for use in collision detection
   std::vector<glm::vec4> world_points{};
-  std::vector<glm::vec3> world_normals{};
   std::vector<glm::vec4> world_planes{}; // A*X + B*Y + C*Z + D = 0
   // the components used in the cached points and normals
   glm::vec3 Mmw_pos{};

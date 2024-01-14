@@ -11,7 +11,7 @@
 //
 // running performance tests
 //
-static constexpr bool performance_test = true;
+static constexpr bool performance_test = false;
 static constexpr float cube_speed = 10;
 
 // grid dimensions
