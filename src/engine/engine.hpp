@@ -90,7 +90,7 @@ void application_on_render_done();
 void application_free();
 
 //
-#include "object.hpp"
+#include "objects.hpp"
 //
 #include "grid.hpp"
 //
