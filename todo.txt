@@ -1,6 +1,8 @@
 [ ] look at std::aligned_alloc to align o1store
 [x] cell: break up 'resolve_collisions' for better cache coherence
+    -----------------------------------------------------------
     valgrind --tool=cachegrind --cache-sim=yes ./glos
+    -----------------------------------------------------------
     ==3193976== 
     ==3193976== I refs:        21,591,014,416
     ==3193976== I1  misses:           524,057
@@ -17,6 +19,25 @@
     ==3193976== LL refs:           37,162,173  (   28,007,643 rd   +   9,154,530 wr)
     ==3193976== LL misses:         22,672,719  (   16,800,350 rd   +   5,872,369 wr)
     ==3193976== LL miss rate:             0.1% (          0.1%     +         1.9%  )
+    -----------------------------------------------------------
+    sudo perf stat -B -e cache-references,cache-misses,branches,branch-misses,cycles,instructions,faults,migrations ./glos
+    -----------------------------------------------------------
+        Performance counter stats for './glos':
+
+        5 427 242 458      cache-references                                                        (83,35%)
+        2 158 269 617      cache-misses                     #   39,77% of all cache refs           (83,32%)
+    139 727 819 121      branches                                                                (83,36%)
+        832 292 830      branch-misses                    #    0,60% of all branches             (83,35%)
+    1 110 681 636 436      cycles                                                                  (83,29%)
+    1 882 425 151 281      instructions                     #    1,69  insn per cycle              (83,33%)
+                25 423      faults                                                                
+                17 102      migrations                                                            
+
+        46,548245359 seconds time elapsed
+
+        297,399813000 seconds user
+        7,854987000 seconds sys
+    ----------------------------------------------------------- 
 [x] reorganize order and align members as expected to be accessed in the subsystems aware of the
     cache lines (64B)
 [ ] release and continue with sandbox game in 'glosi'

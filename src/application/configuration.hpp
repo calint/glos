@@ -15,13 +15,6 @@ static constexpr float cube_speed = 10;
 // multiplayer debugging output
 static constexpr bool debug_multiplayer = false;
 
-// grid dimensions
-static constexpr float grid_size =
-    performance_test ? 3200 : 40; // square side in e.g. meters
-static constexpr unsigned grid_rows = performance_test ? 16 : 4;
-static constexpr unsigned grid_columns = grid_rows;
-static constexpr float grid_cell_size = grid_size / grid_rows;
-
 // multithreaded grid
 // note. in some cases multithreaded mode is a degradation of performance
 // note. multiplayer mode cannot use 'threaded_grid' because of the
@@ -29,6 +22,13 @@ static constexpr float grid_cell_size = grid_size / grid_rows;
 static constexpr bool threaded_grid = false;
 static constexpr bool threaded_o1store = threaded_grid;
 static constexpr bool threaded_update = false;
+
+// grid dimensions
+static constexpr float grid_size =
+    performance_test ? 3200 : 40; // square side in e.g. meters
+static constexpr unsigned grid_rows = performance_test ? 16 : 4;
+static constexpr unsigned grid_columns = grid_rows;
+static constexpr float grid_cell_size = grid_size / grid_rows;
 
 // o1store debugging (assertions should be on in development)
 static constexpr bool o1store_check_double_free = false;
