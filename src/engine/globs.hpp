@@ -4,8 +4,6 @@
 // reviewed: 2024-01-06
 // reviewed: 2024-01-10
 
-#include "texture.hpp"
-
 namespace glos {
 
 class glob final {

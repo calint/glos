@@ -47,11 +47,11 @@
 //
 #include "hud.hpp"
 //
-#include "texture.hpp"
+#include "textures.hpp"
 //
-#include "material.hpp"
+#include "materials.hpp"
 //
-#include "glob.hpp"
+#include "globs.hpp"
 //
 namespace glos {
 // debugging functions

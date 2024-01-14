@@ -1,3 +1,5 @@
+[ ] move texures into materials, materials into globs, globs into engine
+[ ] window, shaders into enging
 [ ] look at std::aligned_alloc to align o1store
 [x] cell: break up 'resolve_collisions' for better cache coherence
     -----------------------------------------------------------
