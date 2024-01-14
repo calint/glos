@@ -17,12 +17,13 @@ class cell final {
     object *object = nullptr;
   };
 
+  // entry in list of objects where bounding spheres are in collision
   struct collision {
     object *o1 = nullptr;
     object *o2 = nullptr;
     bool Oi_subscribed_to_collision_with_Oj = false;
     bool Oj_subscribed_to_collision_with_Oi = false;
-    bool is_in_collision = false;
+    bool is_collision = false;
   };
 
   std::vector<entry> entry_list{};
@@ -34,7 +35,7 @@ public:
     for (entry const &ce : entry_list) {
       if (threaded_grid) {
         // multithreaded mode
-        if (ce.object->overlaps_cells) {
+        if (ce.object->overlaps_cells) [[unlikely]] {
           // object is in several cells and may be called from multiple threads
           ce.object->acquire_lock();
           if (ce.object->updated_at_tick == frame_context.frame_num) {
@@ -47,7 +48,7 @@ public:
         }
       } else {
         // single threaded mode
-        if (ce.object->overlaps_cells) {
+        if (ce.object->overlaps_cells) [[unlikely]] {
           // object is in several cells and may be called from multiple cells
           if (ce.object->updated_at_tick == frame_context.frame_num) {
             continue;
@@ -72,13 +73,13 @@ public:
   inline void resolve_collisions() {
     make_check_collisions_list();
     process_check_collisions_list();
-    handle_collisions();
+    handle_check_collisions_list();
   }
 
   // called from grid (from only one thread)
   inline void render() const {
     for (entry const &ce : entry_list) {
-      if (ce.object->overlaps_cells) {
+      if (ce.object->overlaps_cells) [[unlikely]] {
         // check if object has been rendered by another cell
         if (ce.object->rendered_at_tick == frame_context.frame_num) {
           continue;
@@ -127,9 +128,6 @@ private:
     for (unsigned i = 0; i < len - 1; ++i) {
       for (unsigned j = i + 1; j < len; ++j) {
 
-        // note. thread safe because cell entries do not change during
-        // 'resolve_collisions'
-
         entry const &Oi = entry_list[i];
         entry const &Oj = entry_list[j];
 
@@ -141,7 +139,7 @@ private:
 
         if ((Oi_subscribed_to_collisions_with_Oj or
              Oj_subscribed_to_collisions_with_Oi) and
-            are_bounding_spheres_in_collision(Oi, Oj)) {
+            bounding_spheres_are_in_collision(Oi, Oj)) {
 
           check_collisions_list.emplace_back(
               Oi.object, Oj.object, Oi_subscribed_to_collisions_with_Oj,
@@ -158,7 +156,7 @@ private:
       object *Oj = cc.o2;
 
       if (Oi->is_sphere and Oj->is_sphere) {
-        cc.is_in_collision = true;
+        cc.is_collision = true;
         continue;
       }
 
@@ -167,9 +165,9 @@ private:
       if (Oi->is_sphere) {
         // Oj is not a sphere
         Oj->update_planes_world_coordinates();
-        if (Oj->planes.is_in_collision_with_sphere(Oi->position,
-                                                   Oi->bounding_radius)) {
-          cc.is_in_collision = true;
+        if (Oj->planes.are_in_collision_with_sphere(Oi->position,
+                                                    Oi->bounding_radius)) {
+          cc.is_collision = true;
         }
         continue;
       }
@@ -177,26 +175,27 @@ private:
       if (Oj->is_sphere) {
         // Oi is not a sphere
         Oi->update_planes_world_coordinates();
-        if (Oi->planes.is_in_collision_with_sphere(Oj->position,
-                                                   Oj->bounding_radius)) {
-          cc.is_in_collision = true;
+        if (Oi->planes.are_in_collision_with_sphere(Oj->position,
+                                                    Oj->bounding_radius)) {
+          cc.is_collision = true;
         }
         continue;
       }
 
       // both objects are convex volumes bounded by planes
 
-      if (are_bounding_planes_in_collision(Oi, Oj)) {
-        cc.is_in_collision = true;
+      if (bounding_planes_are_in_collision(Oi, Oj)) {
+        cc.is_collision = true;
       }
     }
   }
 
-  inline void handle_collisions() const {
+  inline void handle_check_collisions_list() const {
     for (collision const &cc : check_collisions_list) {
-      if (not cc.is_in_collision) {
+      if (not cc.is_collision) {
         continue;
       }
+
       // objects are in collision
       object *Oi = cc.o1;
       object *Oj = cc.o2;
@@ -209,14 +208,13 @@ private:
                                                ? dispatch_collision(Oj, Oi)
                                                : false;
 
-        // if collision has already been handled, possibly on a different
-        // thread or grid cell continue
-        if (Oi_already_handled_Oj or Oj_already_handled_Oi) {
-          continue;
+        // check if collision has already been handled, possibly on a different
+        // thread in a different cell
+        if (not Oi_already_handled_Oj and not Oj_already_handled_Oi)
+            [[likely]] {
+          // collision has not been handled during this frame by any cell
+          handle_sphere_collision(Oi, Oj);
         }
-
-        // collision has not been handled during this frame by any cell
-        handle_sphere_collision(Oi, Oj);
         continue;
       }
 
@@ -311,7 +309,7 @@ private:
     return false;
   }
 
-  static inline auto are_bounding_spheres_in_collision(entry const &ce1,
+  static inline auto bounding_spheres_are_in_collision(entry const &ce1,
                                                        entry const &ce2)
       -> bool {
 
@@ -323,7 +321,7 @@ private:
     return diff < 0;
   }
 
-  static inline auto are_bounding_planes_in_collision(object *o1, object *o2)
+  static inline auto bounding_planes_are_in_collision(object *o1, object *o2)
       -> bool {
 
     o1->update_planes_world_coordinates();

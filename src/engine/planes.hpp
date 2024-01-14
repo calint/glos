@@ -108,7 +108,7 @@ public:
   // the volume and the volume has "pointy" edges because there are positions
   // where the sphere i "within" the collision planes "outside" the volume
   // workaround: add some more planes to the volume at the "pointy" edges
-  inline auto is_in_collision_with_sphere(glm::vec3 const &position,
+  inline auto are_in_collision_with_sphere(glm::vec3 const &position,
                                           float const radius) const -> bool {
 
     // return is_in_collision_with_sphere_sat(position, radius);
