@@ -218,7 +218,9 @@ public:
   inline void apply_freed_instances() { store_.apply_free(); }
 
 private:
-  o1store<object, objects_count, 0, false, objects_instance_size_B> store_{};
+  o1store<object, objects_count, 0, false, threaded_grid,
+          objects_instance_size_B>
+      store_{};
   object **allocated_list_end_ = nullptr;
   size_t allocated_list_len_ = 0;
 };

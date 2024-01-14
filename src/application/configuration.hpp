@@ -20,7 +20,6 @@ static constexpr bool debug_multiplayer = false;
 // note. multiplayer mode cannot use 'threaded_grid' because of the
 //       non-deterministic behavior
 static constexpr bool threaded_grid = false;
-static constexpr bool threaded_o1store = threaded_grid;
 static constexpr bool threaded_update = false;
 
 // grid dimensions
