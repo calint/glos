@@ -16,7 +16,7 @@ struct cell_entry {
   object *object = nullptr;
 };
 
-struct cell_collision_check {
+struct cell_collision {
   object *o1 = nullptr;
   object *o2 = nullptr;
   bool Oi_interest_of_Oj = false;
@@ -25,8 +25,8 @@ struct cell_collision_check {
 
 class cell final {
   std::vector<cell_entry> entry_list{};
-  std::vector<cell_collision_check> check_collisions_list{};
-  std::vector<cell_collision_check> detected_collisions_list{};
+  std::vector<cell_collision> check_collisions_list{};
+  std::vector<cell_collision> detected_collisions_list{};
 
 public:
   // called from grid (possibly by multiple threads)
@@ -70,16 +70,54 @@ public:
   }
 
   inline void resolve_collisions() {
+    check_collisions_list.clear();
+    detected_collisions_list.clear();
+
     make_check_collisions_list();
     make_detected_collisions_list();
     handle_collisions();
   }
 
+  // called from grid (from only one thread)
+  inline void render() const {
+    for (cell_entry const &ce : entry_list) {
+      if (ce.object->overlaps_cells) {
+        // check if object has been rendered by another cell
+        if (ce.object->rendered_at_tick == frame_context.frame_num) {
+          continue;
+        }
+        ce.object->rendered_at_tick = uint32_t(frame_context.frame_num);
+      }
+      ce.object->render();
+      ++metrics.rendered_objects;
+    }
+  }
+
+  // called from grid (from only one thread)
+  inline void clear() { entry_list.clear(); }
+
+  // called from grid (from only one thread)
+  inline void add(object *o) {
+    entry_list.emplace_back(o->position, o->bounding_radius, o->collision_bits,
+                            o->collision_mask, o);
+  }
+
+  inline void print() const {
+    unsigned i = 0;
+    for (cell_entry const &ce : entry_list) {
+      if (i++) {
+        printf(", ");
+      }
+      printf("%s", ce.object->name.c_str());
+    }
+    printf("\n");
+  }
+
+  inline auto objects_count() const -> size_t { return entry_list.size(); }
+
 private:
   // called from grid (possibly by multiple threads)
   inline void make_check_collisions_list() {
-    check_collisions_list.clear();
-
     // thread safe because 'entry_list' does not change during
     // 'resolve_collisions'
     size_t const len = entry_list.size();
@@ -107,16 +145,14 @@ private:
           continue;
         }
 
-        check_collisions_list.emplace_back(Oi.object, Oj.object,
-                                          Oi_interest_of_Oj, Oj_interest_of_Oi);
+        check_collisions_list.emplace_back(
+            Oi.object, Oj.object, Oi_interest_of_Oj, Oj_interest_of_Oi);
       }
     }
   }
 
   inline void make_detected_collisions_list() {
-    detected_collisions_list.clear();
-
-    for (cell_collision_check const &cc : check_collisions_list) {
+    for (cell_collision const &cc : check_collisions_list) {
       // bounding spheres are in collision
       object *Oi = cc.o1;
       object *Oj = cc.o2;
@@ -157,7 +193,7 @@ private:
   }
 
   inline void handle_collisions() {
-    for (cell_collision_check const &cc : detected_collisions_list) {
+    for (cell_collision const &cc : detected_collisions_list) {
       // objects are in collision
       object *Oi = cc.o1;
       object *Oj = cc.o2;
@@ -189,45 +225,6 @@ private:
     }
   }
 
-public:
-  // called from grid (from only one thread)
-  inline void render() const {
-    for (cell_entry const &ce : entry_list) {
-      if (ce.object->overlaps_cells) {
-        // check if object has been rendered by another cell
-        if (ce.object->rendered_at_tick == frame_context.frame_num) {
-          continue;
-        }
-        ce.object->rendered_at_tick = uint32_t(frame_context.frame_num);
-      }
-      ce.object->render();
-      ++metrics.rendered_objects;
-    }
-  }
-
-  // called from grid (from only one thread)
-  inline void clear() { entry_list.clear(); }
-
-  // called from grid (from only one thread)
-  inline void add(object *o) {
-    entry_list.emplace_back(o->position, o->bounding_radius, o->collision_bits,
-                            o->collision_mask, o);
-  }
-
-  inline void print() const {
-    unsigned i = 0;
-    for (cell_entry const &ce : entry_list) {
-      if (i++) {
-        printf(", ");
-      }
-      printf("%s", ce.object->name.c_str());
-    }
-    printf("\n");
-  }
-
-  inline auto objects_count() const -> size_t { return entry_list.size(); }
-
-private:
   static inline void handle_sphere_collision(object *Oi, object *Oj) {
     // synchronize objects that overlap cells
 
