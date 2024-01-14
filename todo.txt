@@ -24,7 +24,7 @@
     check i point is inside: 3 dot products + additions and comparisons
 [ ] use string_view instead of const char*
 [ ] object: changing glob_ix should invalidate planes
-    => for now planes.points_invalidated and planes.normals_invalidated flags
+    => for now planes.invalidated flag
 [ ] object::get_updated_Mmw_matrix: also compare with frame_context.frame_num in
     a non synchronized statement
 [ ] objects.free(): what if destructors created new objects
