@@ -175,7 +175,6 @@ public:
     printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
     printf(": %15s : %-9zu :\n", "object", sizeof(object));
     printf(": %15s : %-9zu :\n", "glob", sizeof(glob));
-    printf(": %15s : %-9zu :\n", "cell_entry", sizeof(cell_entry));
     printf(": %15s : %-9zu :\n", "planes", sizeof(planes));
     printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
     puts("");

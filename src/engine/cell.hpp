@@ -6,32 +6,32 @@
 
 namespace glos {
 
-// object entry in a cell with copied members used in the hot code path for
-// better cache utilization
-struct cell_entry {
-  glm::vec3 position{};
-  float radius = 0;
-  uint32_t collision_bits = 0;
-  uint32_t collision_mask = 0;
-  object *object = nullptr;
-};
-
-struct cell_collision {
-  object *o1 = nullptr;
-  object *o2 = nullptr;
-  bool Oi_interest_of_Oj = false;
-  bool Oj_interest_of_Oi = false;
-  bool is_in_collision = false;
-};
-
 class cell final {
-  std::vector<cell_entry> entry_list{};
-  std::vector<cell_collision> check_collisions_list{};
+  // object entry in a cell with copied members used in the hot code path for
+  // better cache utilization
+  struct entry {
+    glm::vec3 position{};
+    float radius = 0;
+    uint32_t collision_bits = 0;
+    uint32_t collision_mask = 0;
+    object *object = nullptr;
+  };
+
+  struct collision {
+    object *o1 = nullptr;
+    object *o2 = nullptr;
+    bool Oi_subscribed_to_collision_with_Oj = false;
+    bool Oj_subscribed_to_collision_with_Oi = false;
+    bool is_in_collision = false;
+  };
+
+  std::vector<entry> entry_list{};
+  std::vector<collision> check_collisions_list{};
 
 public:
   // called from grid (possibly by multiple threads)
   inline void update() const {
-    for (cell_entry const &ce : entry_list) {
+    for (entry const &ce : entry_list) {
       if (threaded_grid) {
         // multithreaded mode
         if (ce.object->overlaps_cells) {
@@ -77,7 +77,7 @@ public:
 
   // called from grid (from only one thread)
   inline void render() const {
-    for (cell_entry const &ce : entry_list) {
+    for (entry const &ce : entry_list) {
       if (ce.object->overlaps_cells) {
         // check if object has been rendered by another cell
         if (ce.object->rendered_at_tick == frame_context.frame_num) {
@@ -101,7 +101,7 @@ public:
 
   inline void print() const {
     unsigned i = 0;
-    for (cell_entry const &ce : entry_list) {
+    for (entry const &ce : entry_list) {
       if (i++) {
         printf(", ");
       }
@@ -129,8 +129,8 @@ private:
 
         // thread safe because cell entries do not change during
         // 'resolve_collisions'
-        cell_entry const &Oi = entry_list[i];
-        cell_entry const &Oj = entry_list[j];
+        entry const &Oi = entry_list[i];
+        entry const &Oj = entry_list[j];
 
         // check if Oi and Oj have interest in collision with each other
         bool const Oi_interest_of_Oj = Oi.collision_mask & Oj.collision_bits;
@@ -151,7 +151,7 @@ private:
   }
 
   inline void process_check_collisions_list() {
-    for (cell_collision &cc : check_collisions_list) {
+    for (collision &cc : check_collisions_list) {
       // bounding spheres are in collision
       object *Oi = cc.o1;
       object *Oj = cc.o2;
@@ -192,7 +192,7 @@ private:
   }
 
   inline void handle_collisions() const {
-    for (cell_collision const &cc : check_collisions_list) {
+    for (collision const &cc : check_collisions_list) {
       if (not cc.is_in_collision) {
         continue;
       }
@@ -201,10 +201,12 @@ private:
       object *Oj = cc.o2;
 
       if (Oi->is_sphere and Oj->is_sphere) {
-        bool const Oi_already_handled_Oj =
-            cc.Oi_interest_of_Oj ? dispatch_collision(Oi, Oj) : false;
-        bool const Oj_already_handled_Oi =
-            cc.Oj_interest_of_Oi ? dispatch_collision(Oj, Oi) : false;
+        bool const Oi_already_handled_Oj = cc.Oi_subscribed_to_collision_with_Oj
+                                               ? dispatch_collision(Oi, Oj)
+                                               : false;
+        bool const Oj_already_handled_Oi = cc.Oj_subscribed_to_collision_with_Oi
+                                               ? dispatch_collision(Oj, Oi)
+                                               : false;
 
         // if collision has already been handled, possibly on a different
         // thread or grid cell continue
@@ -217,11 +219,11 @@ private:
         continue;
       }
 
-      if (cc.Oi_interest_of_Oj) {
+      if (cc.Oi_subscribed_to_collision_with_Oj) {
         dispatch_collision(Oi, Oj);
       }
 
-      if (cc.Oj_interest_of_Oi) {
+      if (cc.Oj_subscribed_to_collision_with_Oi) {
         dispatch_collision(Oj, Oi);
       }
     }
@@ -308,8 +310,8 @@ private:
     return false;
   }
 
-  static inline auto are_bounding_spheres_in_collision(cell_entry const &ce1,
-                                                       cell_entry const &ce2)
+  static inline auto are_bounding_spheres_in_collision(entry const &ce1,
+                                                       entry const &ce2)
       -> bool {
 
     glm::vec3 const v = ce2.position - ce1.position;
