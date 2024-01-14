@@ -17,7 +17,6 @@
     ==3193976== LL refs:           37,162,173  (   28,007,643 rd   +   9,154,530 wr)
     ==3193976== LL misses:         22,672,719  (   16,800,350 rd   +   5,872,369 wr)
     ==3193976== LL miss rate:             0.1% (          0.1%     +         1.9%  )
-
 [x] reorganize order and align members as expected to be accessed in the subsystems aware of the
     cache lines (64B)
 [ ] release and continue with sandbox game in 'glosi'
