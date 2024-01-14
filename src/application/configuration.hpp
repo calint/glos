@@ -8,11 +8,12 @@
 // definitions used by engine
 //
 
-//
-// running performance tests
-//
-static constexpr bool performance_test = true;
+// true if performance test case instead of game
+static constexpr bool performance_test = false;
 static constexpr float cube_speed = 10;
+
+// multiplayer debugging output
+static constexpr bool debug_multiplayer = false;
 
 // grid dimensions
 static constexpr float grid_size =
@@ -35,9 +36,6 @@ static constexpr bool o1store_check_free_limits = false;
 
 // metrics print to console
 static constexpr bool metrics_print = true;
-
-// multiplayer debugging output
-static constexpr bool debug_multiplayer = false;
 
 // render debugging (runtime modifiable)
 inline bool debug_object_planes_normals = false;
