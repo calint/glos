@@ -22,6 +22,7 @@ public:
     if (invalidated or pos != Mmw_pos or angle_scale_changed) {
       // world points and normals are not in sync with object Mmw
       world_points.clear();
+      world_points.reserve(points.size());
       for (glm::vec4 const &point : points) {
         glm::vec4 const world_point = Mmw * point;
         world_points.emplace_back(world_point);
@@ -42,6 +43,7 @@ public:
                              1.0f / scl);
 
         world_planes.clear();
+        world_planes.reserve(normals.size());
         for (glm::vec3 const &normal : normals) {
           glm::vec3 const world_normal = N * normal;
           world_planes.emplace_back(glm::vec4{world_normal, 0});
