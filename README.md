@@ -54,6 +54,9 @@ ubuntu packages used:
 
 ![multiplayer mode](https://github.com/calint/glos/assets/1920811/697dbe55-b3b0-41ef-8bfa-ab67666291c8)
 
+
+![single player mode](https://github.com/calint/glos/assets/1920811/96a27e30-d180-4f6b-930c-cf49b2c09d98)
+
 ## todo
 * tidy the source in `src/engine/`
 * another sample game in a 3D sandbox-like environment
