@@ -21,7 +21,7 @@ public:
     }
     glob_ix = glob_ix_asteroid_large;
     scale = vec3{asteroid_large_scale};
-    radius = globs.at(glob_ix).bounding_radius * scale.x;
+    bounding_radius = globs.at(glob_ix).bounding_radius * scale.x;
     mass = 1500;
     collision_bits = cb_asteroid;
     collision_mask = cb_hero_bullet | cb_hero;
@@ -58,7 +58,7 @@ public:
 
     for (unsigned i = 0; i < asteroid_large_split; ++i) {
       asteroid_medium *ast = new (objects.alloc()) asteroid_medium{};
-      float const rd2 = radius / 2;
+      float const rd2 = bounding_radius / 2;
       vec3 const rp = {rnd1(rd2), 0, rnd1(rd2)};
       ast->position = position + rp;
       ast->velocity =

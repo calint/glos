@@ -16,7 +16,7 @@ public:
     }
     glob_ix = glob_ix_ship;
     scale = {1, 1, 1};
-    radius = globs.at(glob_ix).bounding_radius * scale.x;
+    bounding_radius = globs.at(glob_ix).bounding_radius * scale.x;
     mass = 150;
     collision_bits = cb_hero;
     collision_mask = cb_asteroid | cb_power_up;

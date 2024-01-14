@@ -108,7 +108,7 @@ public:
     constexpr float gw = grid_cell_size * grid_columns;
     constexpr float gh = grid_cell_size * grid_rows;
 
-    float const r = o->radius;
+    float const r = o->bounding_radius;
 
     // calculate min max x and z in cell array
     float const xl = gw / 2 + o->position.x - r;

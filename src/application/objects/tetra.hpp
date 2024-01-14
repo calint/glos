@@ -14,7 +14,7 @@ public:
     }
     glob_ix = glob_ix_tetra;
     scale = {2.0f, 1.0f, 7.0f};
-    radius = globs.at(glob_ix).bounding_radius * scale.x;
+    bounding_radius = globs.at(glob_ix).bounding_radius * scale.x;
     // angular_velocity.z = radians(20.0f);
     mass = 10;
     collision_bits = cb_power_up;

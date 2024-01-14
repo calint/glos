@@ -15,8 +15,8 @@ class object {
 
 public:
   // first members in same order as in cell_entry
-  glm::vec3 position{};        // in e.g. meters
-  float radius = 0;            // bounding radius in e.g. meters
+  glm::vec3 position{};        // in meters
+  float bounding_radius = 0;   // in meters
   uint32_t collision_bits = 0; // mask & bits for collision subscription
   uint32_t collision_mask = 0; // ...
   // rest of object public state
@@ -158,7 +158,8 @@ private:
   }
 
   inline auto debug_get_Mmw_for_bounding_sphere() const -> glm::mat4 {
-    return glm::scale(glm::translate(glm::mat4(1), Mmw_pos), glm::vec3(radius));
+    return glm::scale(glm::translate(glm::mat4(1), Mmw_pos),
+                      glm::vec3(bounding_radius));
   }
 
   inline void acquire_lock() {

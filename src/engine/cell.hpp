@@ -177,7 +177,7 @@ public:
 
   // called from grid (from only one thread)
   inline void add(object *o) {
-    entry_list.emplace_back(o->position, o->radius, o->collision_bits,
+    entry_list.emplace_back(o->position, o->bounding_radius, o->collision_bits,
                             o->collision_mask, o);
   }
 

@@ -11,7 +11,8 @@
 [x] examine plane representation Ax + By + Cz + D = 0 where w is D
     then get distance: dot(plane, point);
 [x] collision detection: large sphere vs "pointy" convex volume gives false positives
-    when planes outside the object volume are closer to sphere than radius
+    when the sphere is in front of the "pointy" part because the planes outside the object
+    give false positive with distance to plane being closer to sphere than radius
     => more planes can be added to the "pointy" object
     => sat method (separating axis theorem) using normals for projection axis
        has edge cases and does give false positives

@@ -14,7 +14,7 @@ public:
     }
     glob_ix = glob_ix_power_up;
     scale = {0.5f, 0.5f, 0.5f};
-    radius = globs.at(glob_ix).bounding_radius * scale.x;
+    bounding_radius = globs.at(glob_ix).bounding_radius * scale.x;
     mass = 10;
     is_sphere = true;
     collision_bits = cb_power_up;
@@ -42,11 +42,11 @@ public:
       if (scale_up) {
         scale_up = false;
         scale = {0.75f, 0.75f, 0.75f};
-        radius = globs.at(glob_ix).bounding_radius * scale.x;
+        bounding_radius = globs.at(glob_ix).bounding_radius * scale.x;
       } else {
         scale_up = true;
         scale = {0.5f, 0.5f, 0.5f};
-        radius = globs.at(glob_ix).bounding_radius * scale.x;
+        bounding_radius = globs.at(glob_ix).bounding_radius * scale.x;
       }
       scale_time_ms = frame_context.ms + 1'000;
     }

@@ -16,7 +16,7 @@ public:
     }
     glob_ix = glob_ix_fragment;
     scale = {0.5f, 0.5f, 0.5f};
-    radius = globs.at(glob_ix).bounding_radius * scale.x;
+    bounding_radius = globs.at(glob_ix).bounding_radius * scale.x;
     mass = 10;
     collision_bits = cb_none;
     collision_mask = cb_none;
