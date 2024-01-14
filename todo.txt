@@ -39,7 +39,7 @@
     ==3371940== LL misses:         27,913,316  (   20,096,996 rd   +   7,816,320 wr)
     ==3371940== LL miss rate:             0.1% (          0.1%     +         2.2%  )
     -----------------------------------------------------------
-    sudo perf stat -B -e cache-references,cache-misses,branches,branch-misses,cycles,instructions,faults,migrations ./glos
+    perf stat -B -e cache-references,cache-misses,branches,branch-misses,cycles,instructions,faults,migrations ./glos
     -----------------------------------------------------------
         Performance counter stats for './glos':
 
