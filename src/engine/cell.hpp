@@ -21,12 +21,12 @@ struct cell_collision {
   object *o2 = nullptr;
   bool Oi_interest_of_Oj = false;
   bool Oj_interest_of_Oi = false;
+  bool is_in_collision = false;
 };
 
 class cell final {
   std::vector<cell_entry> entry_list{};
   std::vector<cell_collision> check_collisions_list{};
-  std::vector<cell_collision> detected_collisions_list{};
 
 public:
   // called from grid (possibly by multiple threads)
@@ -70,11 +70,8 @@ public:
   }
 
   inline void resolve_collisions() {
-    check_collisions_list.clear();
-    detected_collisions_list.clear();
-
     make_check_collisions_list();
-    make_detected_collisions_list();
+    process_check_collisions_list();
     handle_collisions();
   }
 
@@ -118,6 +115,8 @@ public:
 private:
   // called from grid (possibly by multiple threads)
   inline void make_check_collisions_list() {
+    check_collisions_list.clear();
+
     // thread safe because 'entry_list' does not change during
     // 'resolve_collisions'
     size_t const len = entry_list.size();
@@ -151,14 +150,14 @@ private:
     }
   }
 
-  inline void make_detected_collisions_list() {
-    for (cell_collision const &cc : check_collisions_list) {
+  inline void process_check_collisions_list() {
+    for (cell_collision &cc : check_collisions_list) {
       // bounding spheres are in collision
       object *Oi = cc.o1;
       object *Oj = cc.o2;
 
       if (Oi->is_sphere and Oj->is_sphere) {
-        detected_collisions_list.emplace_back(cc);
+        cc.is_in_collision = true;
         continue;
       }
 
@@ -169,7 +168,7 @@ private:
         Oj->update_planes_world_coordinates();
         if (Oj->planes.is_in_collision_with_sphere(Oi->position,
                                                    Oi->bounding_radius)) {
-          detected_collisions_list.emplace_back(cc);
+          cc.is_in_collision = true;
         }
         continue;
       }
@@ -179,7 +178,7 @@ private:
         Oi->update_planes_world_coordinates();
         if (Oi->planes.is_in_collision_with_sphere(Oj->position,
                                                    Oj->bounding_radius)) {
-          detected_collisions_list.emplace_back(cc);
+          cc.is_in_collision = true;
         }
         continue;
       }
@@ -187,13 +186,16 @@ private:
       // both objects are convex volumes bounded by planes
 
       if (are_bounding_planes_in_collision(Oi, Oj)) {
-        detected_collisions_list.emplace_back(cc);
+        cc.is_in_collision = true;
       }
     }
   }
 
   inline void handle_collisions() {
-    for (cell_collision const &cc : detected_collisions_list) {
+    for (cell_collision const &cc : check_collisions_list) {
+      if (not cc.is_in_collision) {
+        continue;
+      }
       // objects are in collision
       object *Oi = cc.o1;
       object *Oj = cc.o2;
