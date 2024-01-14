@@ -13,7 +13,7 @@
 
 template <typename Type, size_t const InstancesCount,
           unsigned const StoreId = 0,
-          bool const return_nullptr_when_no_free_instance_found = false,
+          bool const return_nullptr_when_no_free_instance_available = false,
           size_t const InstanceSizeInBytes = 0>
 class o1store final {
   Type *all_ = nullptr;
@@ -81,7 +81,7 @@ public:
       if (threaded_o1store) {
         release_lock();
       }
-      if (return_nullptr_when_no_free_instance_found) {
+      if (return_nullptr_when_no_free_instance_available) {
         return nullptr;
       } else {
         fprintf(stderr,
