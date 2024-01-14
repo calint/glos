@@ -45,7 +45,7 @@ public:
         for (glm::vec3 const &normal : normals) {
           glm::vec3 const world_normal = N * normal;
           world_planes.emplace_back(glm::vec4{world_normal, 0});
-          // note. D component (distance to plane from origo along the normal)
+          // note. D component (distance to plane from origin along the normal)
           // in plane equation is set to 0 and will be updated when world_points
           // change
         }
@@ -57,9 +57,10 @@ public:
       // update planes D component
       size_t const n = world_planes.size();
       for (size_t i = 0; i < n; ++i) {
+        // point on plane
         glm::vec3 const &point = world_points[i];
         glm::vec4 &plane = world_planes[i];
-        // d in a*x+b*y+z*d+d=0
+        // d in a*x+b*y+c*z+d=0 stored in w
         plane.w = -glm::dot(glm::vec3{plane}, point);
       }
       // save the state of the cache
