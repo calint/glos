@@ -127,16 +127,20 @@ private:
     for (unsigned i = 0; i < len - 1; ++i) {
       for (unsigned j = i + 1; j < len; ++j) {
 
-        // thread safe because cell entries do not change during
+        // note. thread safe because cell entries do not change during
         // 'resolve_collisions'
+
         entry const &Oi = entry_list[i];
         entry const &Oj = entry_list[j];
 
-        // check if Oi and Oj have interest in collision with each other
-        bool const Oi_interest_of_Oj = Oi.collision_mask & Oj.collision_bits;
-        bool const Oj_interest_of_Oi = Oj.collision_mask & Oi.collision_bits;
+        bool const Oi_subscribed_to_collisions_with_Oj =
+            Oi.collision_mask & Oj.collision_bits;
 
-        if (not Oi_interest_of_Oj and not Oj_interest_of_Oi) {
+        bool const Oj_subscribed_to_collisions_with_Oi =
+            Oj.collision_mask & Oi.collision_bits;
+
+        if (not Oi_subscribed_to_collisions_with_Oj and
+            not Oj_subscribed_to_collisions_with_Oi) {
           continue;
         }
 
@@ -144,8 +148,9 @@ private:
           continue;
         }
 
-        check_collisions_list.emplace_back(
-            Oi.object, Oj.object, Oi_interest_of_Oj, Oj_interest_of_Oi);
+        check_collisions_list.emplace_back(Oi.object, Oj.object,
+                                           Oi_subscribed_to_collisions_with_Oj,
+                                           Oj_subscribed_to_collisions_with_Oi);
       }
     }
   }

@@ -9,7 +9,7 @@
 //
 
 // true if performance test case instead of game
-static constexpr bool performance_test = false;
+static constexpr bool performance_test = true;
 static constexpr float cube_speed = 10;
 
 // multiplayer debugging output
