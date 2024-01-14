@@ -3,6 +3,7 @@
 /gmon.out
 /perf.data*
 /cachegrind.out.*
+/qa/linaro-map/*
 /build/
 /log1
 /log2
