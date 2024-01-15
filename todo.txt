@@ -1,3 +1,61 @@
+[ ] look at std::aligned_alloc to align o1store
+[ ] release and continue with sandbox game in 'glosi'
+[ ]   render cull cells
+[ ]   render cull objects
+[x]   fix multithreading issues
+[ ]     in multiplayer
+[ ]   grid: static vs moving vs bullets vs scenery objects
+[ ]   glob::load: optimize ranges by merging non-textured materials since all
+      material info is saved in the vertices
+[ ] object: consider making all members private
+[ ] cell::resolve_collisions: consider/try making a vector of objects to check collisions
+    with if bounding spheres in collision considering cache coherence
+[x] o1store: nice exit when objects exceeded capacity
+[x] examine plane representation Ax + By + Cz + D = 0 where w is D
+    then get distance: dot(plane, point);
+[x] collision detection: large sphere vs "pointy" convex volume gives false positives
+    when the sphere is in front of the "pointy" part because the planes outside the object
+    give false positive with distance to plane being closer to sphere than radius
+    => more planes can be added to the "pointy" object
+    => sat method (separating axis theorem) using normals for projection axis
+       has edge cases and does give false positives
+[ ] convert token.h
+[ ] use c++ random number generator
+[ ] rand() is not thread-safe
+[ ] cell.update does what object::update does since it always returns true
+[ ] bounding box. OBB 3 normals, width, height
+    check if point is inside: 3 dot products + additions and comparisons
+[ ] use string_view instead of const char*
+[ ] object: changing glob_ix should invalidate planes
+    => for now planes.invalidated flag
+[ ] object::get_updated_Mmw_matrix: also compare with frame_context.frame_num in
+    a non synchronized statement
+[ ] objects.free(): what if destructors created new objects
+[ ] net_server: read/write instead of recv(...,0) and send(...,0)
+[ ] net_server: record client signals and then replay the session
+[ ] object: update Mmw if it will be rendered
+[ ] object render culling using camera frustum, position and bounding sphere
+[ ] grid cell render culling
+[ ] planes::update_model_to_world could save frame_num from context to shorten
+    the decision if cached values are valid
+[ ] use glDebugMessageCallback
+[ ] cmake or premake and automatically download dependencies using git submodules
+[ ] net_server as separate application
+[ ] constexpr everything
+[ ] struct vertex used for sizeof only
+[ ] fix itm anti-pattern
+[ ] note about the absolute texture path in mtl files
+[ ] object size and content is not cache friendly. consider components
+[ ] use "moving towards each other" vector to cull collision detection
+[ ] multiple collision detection convex volumes per object
+[ ] collision detection: collision_context such as collision normal, plane etc
+[ ] collision reaction: tiny random added to 'dt' for each object to avoid
+    mathematical precision example: "o>  o  <o"   "ooo" instead of  "o<  o  >o"
+[ ] object: checked_collisions make minimum size of vector to e.g. 8
+[ ] camera: update matrix only if necessary
+[ ] shader: mtx_wvp * mtx_mw   is it better with mtx_mwvp?
+[ ] consider: https://github.com/alugowski/task-thread-pool for simple multithreading
+------------------------------
 [-] move texures into materials, materials into globs, globs into engine
     => would introduce circular reference engine->globs->glob->engine->globs
     => glos namespace contains the instances of the components without any
@@ -5,10 +63,11 @@
        only one engine runs so globals in glos namespace for composition of
        the system is ok
 [-] window, shaders into engine
-[ ] cell overlapping objects placed in a global cell to eliminate
+[-] cell overlapping objects placed in a global cell to eliminate
     synchronization at update, collision detection etc
     => or a grid with double the cell size until one top cell
-[ ] look at std::aligned_alloc to align o1store
+    => does not work due to collision detection between "overlapping" objects
+       and non-overlapping objects is not done
 [x] cell: break up 'resolve_collisions' for better cache coherence
     -----------------------------------------------------------
     valgrind --tool=cachegrind --cache-sim=yes ./glos
@@ -99,66 +158,8 @@
         157,625824000 seconds user
         4,291702000 seconds sys
     -----------------------------------------------------------
-    
 [x] reorganize order and align members as expected to be accessed in the subsystems aware of the
     cache lines (64B)
-[ ] release and continue with sandbox game in 'glosi'
-[ ]   render cull cells
-[ ]   render cull objects
-[x]   fix multithreading issues
-[ ]     in multiplayer
-[ ]   grid: static vs moving vs bullets vs scenery objects
-[ ]   glob::load: optimize ranges by merging non-textured materials since all
-      material info is saved in the vertices
-[ ] object: consider making all members private
-[ ] cell::resolve_collisions: consider/try making a vector of objects to check collisions
-    with if bounding spheres in collision considering cache coherence
-[x] o1store: nice exit when objects exceeded capacity
-[x] examine plane representation Ax + By + Cz + D = 0 where w is D
-    then get distance: dot(plane, point);
-[x] collision detection: large sphere vs "pointy" convex volume gives false positives
-    when the sphere is in front of the "pointy" part because the planes outside the object
-    give false positive with distance to plane being closer to sphere than radius
-    => more planes can be added to the "pointy" object
-    => sat method (separating axis theorem) using normals for projection axis
-       has edge cases and does give false positives
-[ ] convert token.h
-[ ] use c++ random number generator
-[ ] rand() is not thread-safe
-[ ] cell.update does what object::update does since it always returns true
-[ ] bounding box. OBB 3 normals, width, height
-    check if point is inside: 3 dot products + additions and comparisons
-[ ] use string_view instead of const char*
-[ ] object: changing glob_ix should invalidate planes
-    => for now planes.invalidated flag
-[ ] object::get_updated_Mmw_matrix: also compare with frame_context.frame_num in
-    a non synchronized statement
-[ ] objects.free(): what if destructors created new objects
-[ ] net_server: read/write instead of recv(...,0) and send(...,0)
-[ ] net_server: record client signals and then replay the session
-[ ] object: update Mmw if it will be rendered
-[ ] object render culling using camera frustum, position and bounding sphere
-[ ] grid cell render culling
-[ ] planes::update_model_to_world could save frame_num from context to shorten
-    the decision if cached values are valid
-[ ] use glDebugMessageCallback
-[ ] cmake or premake and automatically download dependencies using git submodules
-[ ] net_server as separate application
-[ ] constexpr everything
-[ ] struct vertex used for sizeof only
-[ ] fix itm anti-pattern
-[ ] note about the absolute texture path in mtl files
-[ ] object size and content is not cache friendly. consider components
-[ ] use "moving towards each other" vector to cull collision detection
-[ ] multiple collision detection convex volumes per object
-[ ] collision detection: collision_context such as collision normal, plane etc
-[ ] collision reaction: tiny random added to 'dt' for each object to avoid
-    mathematical precision example: "o>  o  <o"   "ooo" instead of  "o<  o  >o"
-[ ] object: checked_collisions make minimum size of vector to e.g. 8
-[ ] camera: update matrix only if necessary
-[ ] shader: mtx_wvp * mtx_mw   is it better with mtx_mwvp?
-[ ] consider: https://github.com/alugowski/task-thread-pool for simple multithreading
-------------------------------
 [x] review engine source
 [x]   cell
 [x]   object
