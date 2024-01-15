@@ -89,7 +89,7 @@
     ==3368870== LL misses:         9,565,025  (    7,034,197 rd   +   2,530,828 wr)
     ==3368870== LL miss rate:            0.1% (          0.1%     +         0.5%  )
     -----------------------------------------------------------
-    comparison with prior breakup of 'handle_collisions'
+    comparison with prior breakup of 'handle_collisions' glos-2024-01-14-02-37
     -----------------------------------------------------------
     ==3371940== 
     ==3371940== I refs:        17,896,490,605
@@ -133,7 +133,7 @@
         599,536929000 seconds user
         15,263751000 seconds sys
     ----------------------------------------------------------- 
-    comparison
+    comparison with glos-2024-01-14-02-37
     -----------------------------------------------------------
     Performance counter stats for './glos':
 
@@ -157,6 +157,48 @@
 
         157,625824000 seconds user
         4,291702000 seconds sys
+    -----------------------------------------------------------
+    with checked and detected collisions list
+    -----------------------------------------------------------
+        Performance counter stats for './glos':
+
+            184 532,28 msec task-clock                       #    6,563 CPUs utilized             
+            103 370      context-switches                 #  560,173 /sec                      
+                9 602      cpu-migrations                   #   52,034 /sec                      
+                22 865      page-faults                      #  123,908 /sec                      
+    668 681 898 756      cycles                           #    3,624 GHz                         (62,56%)
+    117 275 028 868      stalled-cycles-frontend          #   17,54% frontend cycles idle        (62,53%)
+    151 633 836 165      stalled-cycles-backend           #   22,68% backend cycles idle         (62,29%)
+    1 133 099 743 488      instructions                     #    1,69  insn per cycle            
+                                                    #    0,13  stalled cycles per insn     (62,35%)
+        83 680 196 457      branches                         #  453,472 M/sec                       (62,40%)
+        491 196 775      branch-misses                    #    0,59% of all branches             (62,66%)
+    350 050 152 874      L1-dcache-loads                  #    1,897 G/sec                       (62,62%)
+        1 816 093 223      L1-dcache-load-misses            #    0,52% of all L1-dcache accesses   (62,64%)
+    <not supported>      LLC-loads                                                             
+    <not supported>      LLC-load-misses                                                       
+
+        28,115203777 seconds time elapsed
+
+        179,326068000 seconds user
+        4,739171000 seconds sys
+    -----------------------------------------------------------
+    ==4120280== 
+    ==4120280== I refs:        7,390,203,553
+    ==4120280== I1  misses:          436,886
+    ==4120280== LLi misses:           97,033
+    ==4120280== I1  miss rate:          0.01%
+    ==4120280== LLi miss rate:          0.00%
+    ==4120280== 
+    ==4120280== D refs:        2,271,563,652  (1,865,762,901 rd   + 405,800,751 wr)
+    ==4120280== D1  misses:       16,272,259  (   12,921,750 rd   +   3,350,509 wr)
+    ==4120280== LLd misses:        7,673,113  (    5,504,511 rd   +   2,168,602 wr)
+    ==4120280== D1  miss rate:           0.7% (          0.7%     +         0.8%  )
+    ==4120280== LLd miss rate:           0.3% (          0.3%     +         0.5%  )
+    ==4120280== 
+    ==4120280== LL refs:          16,709,145  (   13,358,636 rd   +   3,350,509 wr)
+    ==4120280== LL misses:         7,770,146  (    5,601,544 rd   +   2,168,602 wr)
+    ==4120280== LL miss rate:            0.1% (          0.1%     +         0.5%  )
     -----------------------------------------------------------
 [x] reorganize order and align members as expected to be accessed in the subsystems aware of the
     cache lines (64B)
