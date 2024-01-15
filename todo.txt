@@ -8,7 +8,7 @@
 [ ]   glob::load: optimize ranges by merging non-textured materials since all
       material info is saved in the vertices
 [ ] object: consider making all members private
-[ ] cell::resolve_collisions: consider/try making a vector of objects to check collisions
+[x] cell::resolve_collisions: consider/try making a vector of objects to check collisions
     with if bounding spheres in collision considering cache coherence
 [x] o1store: nice exit when objects exceeded capacity
 [x] examine plane representation Ax + By + Cz + D = 0 where w is D
