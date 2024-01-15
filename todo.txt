@@ -1,5 +1,10 @@
-[ ] move texures into materials, materials into globs, globs into engine
-[ ] window, shaders into enging
+[-] move texures into materials, materials into globs, globs into engine
+    => would introduce circular refernce engine->globs->glob->engine->globs
+    => glos namespace contains the instances of the components without any
+       circular references
+       only one engine runs so globals in glos namespace for composition of
+       the system is ok
+[-] window, shaders into engine
 [ ] look at std::aligned_alloc to align o1store
 [x] cell: break up 'resolve_collisions' for better cache coherence
     -----------------------------------------------------------
@@ -41,39 +46,55 @@
     ==3371940== LL misses:         27,913,316  (   20,096,996 rd   +   7,816,320 wr)
     ==3371940== LL miss rate:             0.1% (          0.1%     +         2.2%  )
     -----------------------------------------------------------
-    perf stat -B -e cache-references,cache-misses,branches,branch-misses,cycles,instructions,faults,migrations ./glos
+    perf stat -d ./glos
     -----------------------------------------------------------
-        Performance counter stats for './glos':
+    Performance counter stats for './glos':
 
-        5 427 242 458      cache-references                                                        (83,35%)
-        2 158 269 617      cache-misses                     #   39,77% of all cache refs           (83,32%)
-    139 727 819 121      branches                                                                (83,36%)
-        832 292 830      branch-misses                    #    0,60% of all branches             (83,35%)
-    1 110 681 636 436      cycles                                                                  (83,29%)
-    1 882 425 151 281      instructions                     #    1,69  insn per cycle              (83,33%)
-                25 423      faults                                                                
-                17 102      migrations                                                            
+            616 905,71 msec task-clock                       #    6,658 CPUs utilized             
+            379 432      context-switches                 #  615,057 /sec                      
+                38 032      cpu-migrations                   #   61,650 /sec                      
+                22 944      page-faults                      #   37,192 /sec                      
+    2 234 163 704 167      cycles                           #    3,622 GHz                         (62,38%)
+    393 098 299 249      stalled-cycles-frontend          #   17,59% frontend cycles idle        (62,41%)
+    571 769 616 481      stalled-cycles-backend           #   25,59% backend cycles idle         (62,49%)
+    3 808 685 436 504      instructions                     #    1,70  insn per cycle            
+                                                    #    0,15  stalled cycles per insn     (62,51%)
+    281 079 361 553      branches                         #  455,628 M/sec                       (62,54%)
+        1 666 367 449      branch-misses                    #    0,59% of all branches             (62,60%)
+    1 174 450 945 236      L1-dcache-loads                  #    1,904 G/sec                       (62,59%)
+        5 861 070 616      L1-dcache-load-misses            #    0,50% of all L1-dcache accesses   (62,51%)
+    <not supported>      LLC-loads                                                             
+    <not supported>      LLC-load-misses                                                       
 
-        46,548245359 seconds time elapsed
+        92,651151520 seconds time elapsed
 
-        297,399813000 seconds user
-        7,854987000 seconds sys
+        599,536929000 seconds user
+        15,263751000 seconds sys
     ----------------------------------------------------------- 
     comparison
     -----------------------------------------------------------
-         5 157 401 111      cache-references                                                        (83,22%)
-     1 999 581 630      cache-misses                     #   38,77% of all cache refs           (83,36%)
-    92 024 843 007      branches                                                                (83,34%)
-       548 863 910      branch-misses                    #    0,60% of all branches             (83,41%)
-   738 475 968 517      cycles                                                                  (83,40%)
- 1 165 234 597 123      instructions                     #    1,58  insn per cycle              (83,28%)
-            24 982      faults                                                                
-            17 127      migrations                                                            
+    Performance counter stats for './glos':
 
-      31,606359637 seconds time elapsed
+            162 456,94 msec task-clock                       #    6,606 CPUs utilized             
+                98 735      context-switches                 #  607,761 /sec                      
+                8 146      cpu-migrations                   #   50,143 /sec                      
+                25 042      page-faults                      #  154,145 /sec                      
+    585 101 244 750      cycles                           #    3,602 GHz                         (62,51%)
+    118 614 533 784      stalled-cycles-frontend          #   20,27% frontend cycles idle        (62,43%)
+    157 045 302 977      stalled-cycles-backend           #   26,84% backend cycles idle         (62,49%)
+    943 975 824 297      instructions                     #    1,61  insn per cycle            
+                                                    #    0,17  stalled cycles per insn     (62,42%)
+        74 609 143 343      branches                         #  459,255 M/sec                       (62,54%)
+        434 160 738      branch-misses                    #    0,58% of all branches             (62,58%)
+    270 653 566 710      L1-dcache-loads                  #    1,666 G/sec                       (62,59%)
+        2 232 709 466      L1-dcache-load-misses            #    0,82% of all L1-dcache accesses   (62,50%)
+    <not supported>      LLC-loads                                                             
+    <not supported>      LLC-load-misses                                                       
 
-     194,767411000 seconds user
-       5,533641000 seconds sys
+        24,591022168 seconds time elapsed
+
+        157,625824000 seconds user
+        4,291702000 seconds sys
     -----------------------------------------------------------
     
 [x] reorganize order and align members as expected to be accessed in the subsystems aware of the

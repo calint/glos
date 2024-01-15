@@ -9,7 +9,7 @@
 //
 
 // true if performance test case instead of game
-static constexpr bool performance_test = false;
+static constexpr bool performance_test = true;
 static constexpr float cube_speed = 10;
 
 // multiplayer debugging output
@@ -19,7 +19,7 @@ static constexpr bool debug_multiplayer = false;
 // note. in some cases multithreaded mode is a degradation of performance
 // note. multiplayer mode cannot use 'threaded_grid' because of the
 //       non-deterministic behavior
-static constexpr bool threaded_grid = false;
+static constexpr bool threaded_grid = true;
 static constexpr bool threaded_update = false;
 
 // grid dimensions

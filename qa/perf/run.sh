@@ -5,5 +5,6 @@
 #  :: cat /proc/sys/kernel/perf_event_paranoid
 # -1
 
-perf record -B -e cache-references,cache-misses,branches,branch-misses,cycles,instructions,faults,migrations ./glos 
+#perf record -B -d cache-references,cache-misses,branches,branch-misses,cycles,instructions,faults,migrations ./glos 
+perf record -d ./glos 
 perf report
