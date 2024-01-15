@@ -5,6 +5,8 @@
        only one engine runs so globals in glos namespace for composition of
        the system is ok
 [-] window, shaders into engine
+[ ] cell overlapping objects placed in a global cell to eliminate
+    synchronization at update, collision detection etc
 [ ] look at std::aligned_alloc to align o1store
 [x] cell: break up 'resolve_collisions' for better cache coherence
     -----------------------------------------------------------
