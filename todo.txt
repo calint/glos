@@ -2,7 +2,7 @@
     => would introduce circular reference engine->globs->glob->engine->globs
     => glos namespace contains the instances of the components without any
        circular references
-       only one engine runs so, globals in glos namespace for composition of
+       only one engine runs so globals in glos namespace for composition of
        the system is ok
 [-] window, shaders into engine
 [ ] look at std::aligned_alloc to align o1store
