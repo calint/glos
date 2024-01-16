@@ -1,3 +1,6 @@
+[ ]   glob::load: optimize ranges by merging non-textured materials since all
+      material info is saved in the vertices
+      => texture_id stored in range
 [ ] look at std::aligned_alloc to align o1store
 [x] glob.load_* can only be called once
     => friend class globs and made private functions
@@ -7,8 +10,6 @@
 [x]   fix multithreading issues
 [ ]     in multiplayer threaded grid
 [ ]   grid: static vs moving vs bullets vs scenery objects
-[ ]   glob::load: optimize ranges by merging non-textured materials since all
-      material info is saved in the vertices
 [ ] object: consider making all members private
 [x] cell::resolve_collisions: consider/try making a vector of objects to check collisions
     with if bounding spheres in collision considering cache coherence
