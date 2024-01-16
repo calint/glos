@@ -3,12 +3,13 @@
 // reviewed: 2024-01-04
 // reviewed: 2024-01-06
 // reviewed: 2024-01-10
+// reviewed: 2024-01-16
 
 namespace glos {
 
 class cell final {
-  // object entry in a cell with copied members used in the hot code path for
-  // better cache utilization
+  // object entry in a cell. members used in the hot code path copied for better
+  // cache utilization
   struct entry {
     glm::vec3 position{};
     float radius = 0;
@@ -17,7 +18,8 @@ class cell final {
     object *object = nullptr;
   };
 
-  // entry in list of objects where bounding spheres are in collision
+  // entry in list of objects whose bounding spheres are in collision. further
+  // processed to check for collision between objects with bounding planes
   struct collision {
     object *o1 = nullptr;
     object *o2 = nullptr;
@@ -30,7 +32,7 @@ class cell final {
   std::vector<collision> check_collisions_list{};
 
 public:
-  // called from grid (possibly by multiple threads)
+  // called from grid
   inline void update() const {
     for (entry const &ce : entry_list) {
       if (threaded_grid) {
@@ -39,7 +41,7 @@ public:
           // object is in several cells and may be called from multiple threads
           ce.object->acquire_lock();
           if (ce.object->updated_at_tick == frame_context.frame_num) {
-            // object already updated in a different cell
+            // object already updated in a different cell by a different thread
             ce.object->release_lock();
             continue;
           }
@@ -51,6 +53,7 @@ public:
         if (ce.object->overlaps_cells) [[unlikely]] {
           // object is in several cells and may be called from multiple cells
           if (ce.object->updated_at_tick == frame_context.frame_num) {
+            // already called from a different cell
             continue;
           }
           ce.object->updated_at_tick = uint32_t(frame_context.frame_num);
@@ -328,8 +331,8 @@ private:
     o2->update_planes_world_coordinates();
 
     // planes can be update only once per 'resolve_collisions' pass because
-    // bounding volume objects state do not change because there is no handle
-    // collision implementation (spheres do)
+    // bounding plane objects state do not change because there is no handle
+    // collision implementation such as spheres do
 
     return planes::are_in_collision(o1->planes, o2->planes);
   }

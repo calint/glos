@@ -3,6 +3,7 @@
 // reviewed: 2024-01-04
 // reviewed: 2024-01-06
 // reviewed: 2024-01-10
+// reviewed: 2024-01-16
 
 #include "o1store.hpp"
 #include "planes.hpp"
@@ -32,10 +33,10 @@ public:
   glm::vec3 angular_velocity{}; // in radians/second
   glm::vec3 angle{};            // in radians
   std::vector<const object *> handled_collisions{};
+  bool is_dead = false; // used by cell to avoid events on dead objects
   // -- cell::resolve_collisions
   bool is_sphere = false; // true if object can be considered a sphere
   float mass = 0;         // in kg
-  bool is_dead = false;   // used by cell to avoid events on dead objects
   planes planes{};        // bounding planes (if any)
   std::atomic_flag lock_get_updated_Mmw = ATOMIC_FLAG_INIT;
   glm::vec3 Mmw_pos{}; // position of current Mmw matrix
@@ -94,7 +95,7 @@ public:
 
   inline auto get_updated_Mmw() -> glm::mat4 const & {
     // * synchronize if render and update run on different threads; both racing
-    //   for this
+    //   for this function
     // * in threaded grid when objects in different cells running on different
     //   threads might race for this
     bool const synchronize = threaded_update or threaded_grid;
@@ -209,8 +210,9 @@ public:
   }
 
   inline void apply_allocated_instances() {
-    // retrieve the end of list because during 'update' new objects might be
-    // created which would change the end of list pointer
+    // retrieve the end of list because during objects' 'update' and
+    // 'on_collision' new objects might be created which would change the end of
+    // list pointer
     allocated_list_len_ = store_.allocated_list_len();
     allocated_list_end_ = store_.allocated_list_end();
   }
