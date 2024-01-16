@@ -4,6 +4,7 @@
 // reviewed: 2024-01-06
 // reviewed: 2024-01-07
 // reviewed: 2024-01-10
+// reviewed: 2024-01-16
 
 #include "cell.hpp"
 // #include "task_thread_pool.hpp"
@@ -11,6 +12,9 @@
 namespace glos {
 
 class grid final {
+  std::array<std::array<cell, grid_columns>, grid_rows> cells{};
+  // task_thread_pool::task_thread_pool pool{};
+
 public:
   inline void init() {}
 
@@ -94,10 +98,6 @@ public:
 
   // called from engine
   inline void add(object *o) {
-    // note. flags need to be cleared before object 'update' or
-    // 'resolve_collisions' and this is an opportunity for that without a
-    // separate pass in the loop
-
     if (grid_columns == 1 and grid_rows == 1) {
       // special case
       o->overlaps_cells = false;
@@ -143,9 +143,6 @@ public:
   }
 
 private:
-  std::array<std::array<cell, grid_columns>, grid_rows> cells{};
-  // task_thread_pool::task_thread_pool pool{};
-
   static inline auto clamp(int const i, int const max_plus_one) -> unsigned {
     if (i < 0) {
       return 0;
