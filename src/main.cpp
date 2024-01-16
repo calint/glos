@@ -1,26 +1,27 @@
 // reviewed: 2023-12-22
 // reviewed: 2024-01-04
+// reviewed: 2024-01-16
 
 #include "engine/engine.hpp"
 
-//------------------------------------------------------------------------ main
 auto main(int argc, char *argv[]) -> int {
 
   if (argc > 1 and *argv[1] == 's') {
-    // instance is a server
+    // instance is server
     glos::net_server.init();
     glos::net_server.run();
     glos::net_server.free();
     return 0;
   }
 
+  // instance if client
   puts("\nprogram glos\n");
 
   if (argc > 1 and *argv[1] == 'c') {
     // multiplayer client, enable 'net'
     glos::net.enabled = true;
     if (argc > 2) {
-      // host ip
+      // server ip
       glos::net.host = argv[2];
     }
   }
