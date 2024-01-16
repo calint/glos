@@ -35,7 +35,7 @@ public:
     glUniformMatrix4fv(shaders::umtx_mw, 1, GL_FALSE, glm::value_ptr(mtx_mw));
     glBindVertexArray(vertex_array_id);
     for (range const &mtl_rng : ranges) {
-      material const &mtl = materials.store.at(mtl_rng.material_ix);
+      material const &mtl = materials.at(mtl_rng.material_ix);
       glActiveTexture(GL_TEXTURE0);
       if (mtl.texture_id) {
         glUniform1i(shaders::utex, 0);
@@ -94,9 +94,9 @@ private:
     std::vector<glm::vec2> texture_uv{};
 
     std::string mtl_path{};
-    size_t current_material_ix = 0;
-    size_t vertex_ix = 0;
-    size_t vertex_ix_prv = 0;
+    uint32_t current_material_ix = 0;
+    uint32_t vertex_ix = 0;
+    uint32_t vertex_ix_prv = 0;
     bool is_first_obj = true;
 
     while (*p) {
@@ -174,8 +174,7 @@ private:
         continue;
       }
       if (token_equals(&tk, "f")) {
-        material const &current_material =
-            materials.store.at(current_material_ix);
+        material const &current_material = materials.at(current_material_ix);
         for (unsigned i = 0; i < 3; ++i) {
           // position
           token const ix1_tkn = token_from_string_additional_delim(p, '/');

@@ -35,9 +35,9 @@ public:
 };
 
 class materials final {
-public:
   std::vector<material> store{};
 
+public:
   inline void init() {}
 
   inline void free() { store.clear(); }
@@ -122,7 +122,7 @@ public:
 
   inline auto find_material_ix_or_break(std::string const &path,
                                         std::string const &name) const
-      -> size_t {
+      -> uint32_t {
 
     auto it = std::ranges::find_if(store, [&](material const &mtl) {
       return mtl.path == path and mtl.name == name;
@@ -135,8 +135,10 @@ public:
       std::abort();
     }
 
-    return size_t(std::distance(store.cbegin(), it));
+    return uint32_t(std::distance(store.cbegin(), it));
   }
+
+  inline auto at(uint32_t ix) const -> material const & { return store[ix]; }
 };
 
 inline materials materials{};
