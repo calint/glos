@@ -7,6 +7,8 @@
 namespace glos {
 
 class glob final {
+  friend class globs;
+
   class range final {
   public:
     // index in vertex buffer where triangle data starts
@@ -17,19 +19,17 @@ class glob final {
     uint32_t material_ix = 0;
   };
 
+  GLuint vertex_array_id = 0;
+  GLuint vertex_buffer_id = 0;
+  std::vector<range> ranges{};
+  size_t size_B = 0;
+
 public:
   std::string name{};
   float bounding_radius = 0;
   // planes
   std::vector<glm::vec4> planes_points{};
   std::vector<glm::vec3> planes_normals{};
-
-  inline void free() const {
-    glDeleteBuffers(1, &vertex_buffer_id);
-    glDeleteVertexArrays(1, &vertex_array_id);
-    metrics.buffered_vertex_data -= size_B;
-    --metrics.allocated_globs;
-  }
 
   inline void render(glm::mat4 const &mtx_mw) const {
     glUniformMatrix4fv(shaders::umtx_mw, 1, GL_FALSE, glm::value_ptr(mtx_mw));
@@ -54,8 +54,16 @@ public:
     ++metrics.rendered_globs;
   }
 
+private:
+  inline void free() const {
+    glDeleteBuffers(1, &vertex_buffer_id);
+    glDeleteVertexArrays(1, &vertex_array_id);
+    metrics.buffered_vertex_data -= size_B;
+    --metrics.allocated_globs;
+  }
+
   // loads definition and optional bounding planes from 'obj' files
-  inline void load(char const *obj_path, char const *bounding_planes_path) {
+  inline void load_object(char const *obj_path) {
     printf(" * loading glob from '%s'\n", obj_path);
 
     std::ifstream const file{obj_path};
@@ -228,10 +236,6 @@ public:
 
     ++metrics.allocated_globs;
 
-    if (bounding_planes_path) {
-      load_planes(bounding_planes_path);
-    }
-
     //
     // upload to opengl
     //
@@ -267,12 +271,6 @@ public:
 
     metrics.buffered_vertex_data += size_B;
   }
-
-private:
-  GLuint vertex_array_id = 0;
-  GLuint vertex_buffer_id = 0;
-  std::vector<range> ranges{};
-  size_t size_B = 0;
 
   inline void load_planes(char const *path) {
     // load from blender exported 'obj' file
@@ -367,8 +365,12 @@ public:
 
   inline auto load(char const *obj_path, char const *bounding_planes_path)
       -> uint32_t {
+
     glob g{};
-    g.load(obj_path, bounding_planes_path);
+    g.load_object(obj_path);
+    if (bounding_planes_path) {
+      g.load_planes(bounding_planes_path);
+    }
     store.push_back(std::move(g));
     return uint32_t(store.size() - 1);
   }

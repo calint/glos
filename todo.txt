@@ -1,4 +1,6 @@
 [ ] look at std::aligned_alloc to align o1store
+[x] glob.load_* can only be called once
+    => friend class globs and made private functions
 [ ] release and continue with sandbox game in 'glosi'
 [ ]   render cull cells
 [ ]   render cull objects
