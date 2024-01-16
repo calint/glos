@@ -3,7 +3,7 @@
 [ ]   render cull cells
 [ ]   render cull objects
 [x]   fix multithreading issues
-[ ]     in multiplayer
+[ ]     in multiplayer threaded grid
 [ ]   grid: static vs moving vs bullets vs scenery objects
 [ ]   glob::load: optimize ranges by merging non-textured materials since all
       material info is saved in the vertices
