@@ -62,35 +62,30 @@ void application_init() {
   static_assert(sizeof(tetra) <= objects_instance_size_B);
 
   // load the objects and assign the indexes
+
+  // stock objects
   glob_ix_cube = globs.load("assets/obj/cube.obj", "assets/obj/cube-bv.obj");
-
   glob_ix_tetra = globs.load("assets/obj/tetra.obj", "assets/obj/tetra.obj");
-
   glob_ix_sphere = globs.load("assets/obj/sphere.obj", nullptr);
 
+  // game objects
   glob_ix_ship = globs.load("assets/obj/asteroids/ship.obj",
                             "assets/obj/asteroids/ship.obj");
-
   glob_ix_ship_engine_on =
       globs.load("assets/obj/asteroids/ship_engine_on.obj",
                  "assets/obj/asteroids/ship_engine_on.obj");
-
   glob_ix_bullet = globs.load("assets/obj/asteroids/bullet.obj",
                               "assets/obj/asteroids/bullet.obj");
   glob_ix_asteroid_large =
       globs.load("assets/obj/asteroids/asteroid_large.obj",
                  "assets/obj/asteroids/asteroid_large-bv.obj");
-
   glob_ix_asteroid_medium =
       globs.load("assets/obj/asteroids/asteroid_medium.obj",
                  "assets/obj/asteroids/asteroid_medium.obj");
-
   glob_ix_asteroid_small =
       globs.load("assets/obj/asteroids/asteroid_small.obj",
                  "assets/obj/asteroids/asteroid_small.obj");
-
   glob_ix_fragment = globs.load("assets/obj/asteroids/fragment.obj", nullptr);
-
   glob_ix_power_up = globs.load("assets/obj/asteroids/power_up.obj", nullptr);
 
   // object *skydome = new (objects.alloc()) object{};
