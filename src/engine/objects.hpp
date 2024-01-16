@@ -44,7 +44,7 @@ public:
   glm::vec3 Mmw_scl{}; // scale of current Mmw matrix
   glm::vec3 scale{};   // in meters
   glm::mat4 Mmw{};     // model -> world matrix
-  // -- render
+  // -- cell::render
   uint32_t rendered_at_tick = 0; // used by cell to avoid rendering twice
   uint32_t glob_ix = 0;          // index in globs store
   // -- other
