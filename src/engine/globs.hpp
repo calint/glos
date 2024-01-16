@@ -352,9 +352,9 @@ private:
 };
 
 class globs final {
-public:
   std::vector<glob> store{};
 
+public:
   inline void init() {}
 
   inline void free() {
