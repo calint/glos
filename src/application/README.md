@@ -13,6 +13,9 @@
   - `fragment`
   - `power_up`
   - `ship`
+  - `tetra`
+  - `cube`
+  - `sphere`
 * `utils.hpp` utility functions used by game and game objects
 
 ## notes
