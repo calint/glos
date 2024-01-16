@@ -49,7 +49,7 @@ void application_init() {
   printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
   puts("");
 
-  // assert that classes use fit in objects store slot
+  // assert that classes used fit in objects store slot
   static_assert(sizeof(asteroid_large) <= objects_instance_size_B);
   static_assert(sizeof(asteroid_medium) <= objects_instance_size_B);
   static_assert(sizeof(asteroid_small) <= objects_instance_size_B);
@@ -61,7 +61,7 @@ void application_init() {
   static_assert(sizeof(sphere) <= objects_instance_size_B);
   static_assert(sizeof(tetra) <= objects_instance_size_B);
 
-  // load the objects and assign the indexes
+  // load the objects and assign the glob indexes
 
   // stock objects
   glob_ix_cube = globs.load("assets/obj/cube.obj", "assets/obj/cube-bv.obj");
@@ -161,11 +161,11 @@ static void create_asteroids(unsigned const num) {
   constexpr float v = asteroid_large_speed;
   constexpr float d = game_area_max_x - game_area_min_x;
   for (unsigned i = 0; i < num; ++i) {
-    asteroid_large *ast = new (objects.alloc()) asteroid_large{};
-    ast->position.x = rnd1(d);
-    ast->position.z = rnd1(d);
-    ast->velocity.x = rnd1(v);
-    ast->velocity.z = rnd1(v);
+    asteroid_large *o = new (objects.alloc()) asteroid_large{};
+    o->position.x = rnd1(d);
+    o->position.z = rnd1(d);
+    o->velocity.x = rnd1(v);
+    o->velocity.z = rnd1(v);
   }
 }
 
@@ -184,7 +184,7 @@ static void create_cubes(unsigned const num) {
 // some additional shaders
 static void application_init_shaders() {
   {
-    char const *vtx = R"(
+    constexpr char const *vtx = R"(
 #version 330 core
 uniform mat4 umtx_mw; // model-to-world-matrix
 uniform mat4 umtx_wvp;// world-to-view-to-projection
@@ -198,7 +198,7 @@ void main() {
 }
     )";
 
-    char const *frag = R"(
+    constexpr char const *frag = R"(
 #version 330 core
 out vec4 rgba;
 void main() {
@@ -209,7 +209,7 @@ void main() {
     glos::shaders.load_program_from_source(vtx, frag);
   }
   {
-    char const *vtx = R"(
+    constexpr char const *vtx = R"(
 #version 330 core
 uniform mat4 umtx_mw; // model-to-world-matrix
 uniform mat4 umtx_wvp;// world-to-view-to-projection
@@ -222,7 +222,7 @@ void main() {
 }
     )";
 
-    char const *frag = R"(
+    constexpr char const *frag = R"(
 #version 330 core
 in vec4 vrgba;
 out vec4 rgba;
