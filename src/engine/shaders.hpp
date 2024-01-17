@@ -26,7 +26,7 @@ class shaders final {
   #version 330 core
   uniform mat4 umtx_mw;  // model-to-world-matrix
   uniform mat4 umtx_wvp; // world-to-view-to-projection
-  layout(location = 0) in vec3 apos;
+  layout(location = 0) in vec4 apos;
   layout(location = 1) in vec4 argba;
   layout(location = 2) in vec3 anorm;
   layout(location = 3) in vec2 atex;
@@ -34,7 +34,7 @@ class shaders final {
   out vec3 vnorm;
   out vec2 vtex;
   void main() {
-	  gl_Position = umtx_wvp * umtx_mw * vec4(apos,1);
+	  gl_Position = umtx_wvp * umtx_mw * apos;
 	  vrgba = argba;
 	  vnorm = normalize(transpose(inverse(mat3(umtx_mw))) * anorm);
 	  vtex = atex;
@@ -131,6 +131,7 @@ public:
     glAttachShader(program_id, vertex_shader_id);
     glAttachShader(program_id, fragment_shader_id);
     glLinkProgram(program_id);
+    // glValidateProgram(program_id);
     GLint ok = 0;
     glGetProgramiv(program_id, GL_LINK_STATUS, &ok);
     if (!ok) {
@@ -162,7 +163,7 @@ private:
     glCompileShader(shader_id);
     GLint ok = 0;
     glGetShaderiv(shader_id, GL_COMPILE_STATUS, &ok);
-    if (!ok) {
+    if (not ok) {
       GLchar msg[1024];
       glGetShaderInfoLog(shader_id, sizeof(msg), nullptr, msg);
       fprintf(stderr, "\n%s:%d: compile error in %s shader:\n%s\n", __FILE__,

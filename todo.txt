@@ -2,6 +2,8 @@
     material info is saved in the vertices
     => texture_id stored in range
     => keep with the thought that material properties will be used at rendering
+[ ] time rendering and output in the metrics
+[ ]   optimize rendering
 [ ] struct vertex used for sizeof only
 [ ] use "moving towards each other" vector to cull collision detection
 [ ] look at std::aligned_alloc to align o1store

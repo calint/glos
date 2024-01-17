@@ -151,9 +151,9 @@ public:
       constexpr char const *vtx = R"(
   #version 330 core
   uniform mat4 umtx_wvp; // world-to-view-to-projection
-  layout(location = 0) in vec3 apos; // world coordinates
+  layout(location = 0) in vec4 apos; // world coordinates
   void main() {
-	  gl_Position = umtx_wvp * vec4(apos, 1);
+	  gl_Position = umtx_wvp * apos;
   }
   )";
 

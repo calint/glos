@@ -24,34 +24,42 @@ public:
   float bounding_radius = 0;   // in meters
   uint32_t collision_bits = 0; // mask & bits for collision subscription
   uint32_t collision_mask = 0; // ...
+private:
   bool overlaps_cells = false; // used by grid to flag cell overlap
   // -- cell::update
   std::atomic_flag lock = ATOMIC_FLAG_INIT;
   uint32_t updated_at_tick = 0; // used by cell to avoid updating twice
+public:
   glm::vec3 acceleration{};     // in meters/second^2
   glm::vec3 velocity{};         // in meters/second
   glm::vec3 angular_velocity{}; // in radians/second
   glm::vec3 angle{};            // in radians
+private:
   std::vector<const object *> handled_collisions{};
   bool is_dead = false; // used by cell to avoid events on dead objects
+public:
   // -- cell::resolve_collisions
   bool is_sphere = false; // true if object can be considered a sphere
   float mass = 0;         // in kg
-  planes planes{};        // bounding planes (if any)
+private:
+  planes planes{}; // bounding planes (if any)
   std::atomic_flag lock_get_updated_Mmw = ATOMIC_FLAG_INIT;
   glm::vec3 Mmw_pos{}; // position of current Mmw matrix
   glm::vec3 Mmw_agl{}; // angle of current Mmw matrix
   glm::vec3 Mmw_scl{}; // scale of current Mmw matrix
-  glm::vec3 scale{};   // in meters
-  glm::mat4 Mmw{};     // model -> world matrix
+public:
+  glm::vec3 scale{}; // in meters
+private:
+  glm::mat4 Mmw{}; // model -> world matrix
   // -- cell::render
   uint32_t rendered_at_tick = 0; // used by cell to avoid rendering twice
-  uint32_t glob_ix = 0;          // index in globs store
+public:
+  uint32_t glob_ix = 0; // index in globs store
   // -- other
   // rest of object public state
   net_state *net_state = nullptr; // pointer to signals used by this object
-  object **alloc_ptr;             // initiated at allocate by 'o1store'
   std::string name{};             // instance name
+  object **alloc_ptr;             // initiated at allocate by 'o1store'
 
   // note. 32 bit resolution of 'updated_at_tick' and 'rendered_at_tick' vs 64
   // bit comparison source ok since only checking for equality

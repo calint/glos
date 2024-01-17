@@ -188,13 +188,13 @@ static void application_init_shaders() {
 #version 330 core
 uniform mat4 umtx_mw; // model-to-world-matrix
 uniform mat4 umtx_wvp;// world-to-view-to-projection
-layout(location = 0) in vec3 apos;
+layout(location = 0) in vec4 apos;
 layout(location = 1) in vec4 argba;
 layout(location = 2) in vec3 anorm;
 layout(location = 3) in vec2 atex;
 
 void main() {
-  gl_Position = umtx_wvp * umtx_mw * vec4(apos, 1);
+  gl_Position = umtx_wvp * umtx_mw * apos;
 }
     )";
 
@@ -213,11 +213,11 @@ void main() {
 #version 330 core
 uniform mat4 umtx_mw; // model-to-world-matrix
 uniform mat4 umtx_wvp;// world-to-view-to-projection
-in vec3 apos;
+in vec4 apos;
 in vec4 argba;
 out vec4 vrgba;
 void main() {
-  gl_Position = umtx_wvp * umtx_mw * vec4(apos, 1);
+  gl_Position = umtx_wvp * umtx_mw * apos;
   vrgba = argba;
 }
     )";
