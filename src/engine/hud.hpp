@@ -10,7 +10,7 @@ namespace glos {
 
 class hud final {
 public:
-  size_t program_ix = 0;
+  uint32_t program_ix = 0;
 
   inline void init() {
     if (TTF_Init()) {

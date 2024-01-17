@@ -83,7 +83,7 @@ public:
     glEnable(GL_CULL_FACE);
     glFrontFace(GL_CCW);
 
-    size_t const default_program_ix =
+    uint32_t const default_program_ix =
         load_program_from_source(vertex_shader_source, fragment_shader_source);
 
     GLuint const def_prog_id = programs.at(default_program_ix).id;
@@ -124,7 +124,7 @@ public:
   }
 
   auto load_program_from_source(char const *vert_src, char const *frag_src)
-      -> size_t {
+      -> uint32_t {
     GLuint const program_id = glCreateProgram();
     GLuint const vertex_shader_id = compile(GL_VERTEX_SHADER, vert_src);
     GLuint const fragment_shader_id = compile(GL_FRAGMENT_SHADER, frag_src);
@@ -148,7 +148,7 @@ public:
 
     programs.push_back({program_id});
 
-    return programs.size() - 1;
+    return uint32_t(programs.size() - 1);
   }
 
   inline auto programs_count() const -> size_t { return programs.size(); }
