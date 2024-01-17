@@ -5,6 +5,7 @@
 [ ] time rendering and output in the metrics
 [ ]   optimize rendering
 [ ] struct vertex used for sizeof only
+[ ] texture: transparent textures
 [ ] use "moving towards each other" vector to cull collision detection
 [ ] look at std::aligned_alloc to align o1store
 [ ] convert token.h

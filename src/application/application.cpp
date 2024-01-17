@@ -90,7 +90,7 @@ void application_init() {
 
   // object *skydome = new (objects.alloc()) object{};
   // skydome->glob_ix = globs.load("assets/obj/skydome.obj", nullptr);
-  // skydome->radius = 50;
+  // skydome->bounding_radius = 50;
   // skydome->scale = {50.0f, 50.0f, 50.0f};
 
   if (not performance_test) {

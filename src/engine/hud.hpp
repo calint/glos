@@ -33,6 +33,7 @@ public:
         3, 2, 0  // second triangle
     };
 
+    // define the rectangle
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
 
@@ -46,28 +47,27 @@ public:
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(quad_indices), quad_indices,
                  GL_STATIC_DRAW);
 
-    // Set the vertex attribute pointers
+    glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
                           (GLvoid *)0);
-    glEnableVertexAttribArray(0);
 
+    glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
                           (GLvoid *)(2 * sizeof(float)));
-    glEnableVertexAttribArray(1);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+    // define texture
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture_width, texture_height, 0,
-                 GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-    // Set texture parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, texture_width, texture_height, 0,
+                 GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 
-    glBindTexture(GL_TEXTURE_2D, 0); // Unbind the texture
+    glBindTexture(GL_TEXTURE_2D, 0);
 
     program_ix = shaders.load_program_from_source(vertex_shader_source,
                                                   fragment_shader_source);
