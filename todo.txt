@@ -6,6 +6,7 @@
 [ ]   optimize rendering
 [ ] struct vertex used for sizeof only
 [ ] texture: transparent textures
+[ ] hud: resolve issue with colors
 [ ] use "moving towards each other" vector to cull collision detection
 [ ] look at std::aligned_alloc to align o1store
 [ ] convert token.h
