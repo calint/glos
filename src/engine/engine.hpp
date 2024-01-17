@@ -2,6 +2,7 @@
 // reviewed: 2024-01-04
 // reviewed: 2024-01-06
 // reviewed: 2024-01-10
+// reviewed: 2024-01-16
 
 // all includes used by the subsystems
 #include <GLES3/gl3.h>
@@ -65,8 +66,8 @@ static inline void debug_render_bounding_sphere(glm::mat4 const &Mmw);
 class frame_context {
 public:
   uint64_t frame_num = 0; // frame number (will rollover)
-  uint64_t ms = 0;        // current time since start in milliseconds
-  float dt = 0;           // frame delta time in seconds (time step)
+  uint64_t ms = 0; // current time since start in milliseconds (will rollover)
+  float dt = 0;    // frame delta time in seconds (time step)
 };
 
 // globally accessible current frame info
@@ -176,6 +177,7 @@ public:
     printf(": %15s : %-9zu :\n", "object", sizeof(object));
     printf(": %15s : %-9zu :\n", "glob", sizeof(glob));
     printf(": %15s : %-9zu :\n", "planes", sizeof(planes));
+    printf(": %15s : %-9zu :\n", "cell", sizeof(cell));
     printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
     puts("");
 
@@ -275,6 +277,7 @@ public:
       metrics.at_frame_end(stderr);
     }
 
+    // exit
     if (threaded_update) {
       // trigger update thread incase it is waiting
       std::unique_lock<std::mutex> lock{is_rendering_mutex};
@@ -389,7 +392,7 @@ private:
       grid.resolve_collisions();
     }
 
-    // apply changes done at 'update()' and 'resolve_collisions()'
+    // apply deleted and new objects from 'update()' and 'resolve_collisions()'
     objects.apply_freed_instances();
     objects.apply_allocated_instances();
 
@@ -514,6 +517,9 @@ private:
         case SDLK_e:
           net.next_state.keys |= key_e;
           break;
+        case SDLK_i:
+          net.next_state.keys |= key_i;
+          break;
         case SDLK_j:
           net.next_state.keys |= key_j;
           break;
@@ -525,9 +531,6 @@ private:
           break;
         case SDLK_u:
           net.next_state.keys |= key_u;
-          break;
-        case SDLK_i:
-          net.next_state.keys |= key_i;
           break;
         case SDLK_o:
           net.next_state.keys |= key_o;
@@ -554,6 +557,9 @@ private:
         case SDLK_e:
           net.next_state.keys &= ~key_e;
           break;
+        case SDLK_i:
+          net.next_state.keys &= ~key_i;
+          break;
         case SDLK_j:
           net.next_state.keys &= ~key_j;
           break;
@@ -565,9 +571,6 @@ private:
           break;
         case SDLK_u:
           net.next_state.keys &= ~key_u;
-          break;
-        case SDLK_i:
-          net.next_state.keys &= ~key_i;
           break;
         case SDLK_o:
           net.next_state.keys &= ~key_o;

@@ -3,6 +3,7 @@
 // reviewed: 2024-01-04
 // reviewed: 2024-01-06
 // reviewed: 2024-01-10
+// reviewed: 2024-01-16
 
 namespace glos {
 
@@ -28,14 +29,14 @@ public:
   std::string name{};
   float bounding_radius = 0;
   // planes
-  std::vector<glm::vec4> planes_points{};
+  std::vector<glm::vec4> planes_points{}; // x, y, z, 1
   std::vector<glm::vec3> planes_normals{};
 
-  inline void render(glm::mat4 const &mtx_mw) const {
-    glUniformMatrix4fv(shaders::umtx_mw, 1, GL_FALSE, glm::value_ptr(mtx_mw));
+  inline void render(glm::mat4 const &Mmw) const {
+    glUniformMatrix4fv(shaders::umtx_mw, 1, GL_FALSE, glm::value_ptr(Mmw));
     glBindVertexArray(vertex_array_id);
-    for (range const &mtl_rng : ranges) {
-      material const &mtl = materials.at(mtl_rng.material_ix);
+    for (range const &rng : ranges) {
+      material const &mtl = materials.at(rng.material_ix);
       glActiveTexture(GL_TEXTURE0);
       if (mtl.texture_id) {
         glUniform1i(shaders::utex, 0);
@@ -43,9 +44,9 @@ public:
       } else {
         glBindTexture(GL_TEXTURE_2D, 0);
       }
-      glDrawArrays(GL_TRIANGLES, GLint(mtl_rng.vertex_begin),
-                   GLint(mtl_rng.vertex_count));
-      metrics.rendered_triangles += mtl_rng.vertex_count / 3;
+      glDrawArrays(GL_TRIANGLES, GLint(rng.vertex_begin),
+                   GLint(rng.vertex_count));
+      metrics.rendered_triangles += rng.vertex_count / 3;
       if (mtl.texture_id) {
         glBindTexture(GL_TEXTURE_2D, 0);
       }
@@ -101,10 +102,6 @@ private:
 
     while (*p) {
       token const tk = token_next(&p);
-      if (token_starts_with(&tk, "#")) {
-        p = token_to_including_newline(p);
-        continue;
-      }
       if (token_equals(&tk, "mtllib")) {
         token const t = token_next(&p);
         unsigned const n = token_size(&t);
@@ -133,11 +130,6 @@ private:
                               current_material_ix);
           vertex_ix_prv = vertex_ix;
         }
-        continue;
-      }
-      if (token_equals(&tk, "s")) {
-        // smoothing directive ignored
-        p = token_to_including_newline(p);
         continue;
       }
       if (token_equals(&tk, "v")) {
@@ -217,14 +209,18 @@ private:
         }
         continue;
       }
+      // unknown token
+      if (*(p - 1) != '\n') {
+        p = token_to_including_newline(p);
+      }
     }
     // add the last material range
     ranges.emplace_back(vertex_ix_prv, vertex_ix - vertex_ix_prv,
                         current_material_ix);
 
     unsigned triangles_count = 0;
-    for (range const &r : ranges) {
-      triangles_count += unsigned(r.vertex_count / 3);
+    for (range const &rng : ranges) {
+      triangles_count += rng.vertex_count / 3;
     }
 
     printf("   %zu range%c   %zu vertices   %u triangles   %zu B   radius: "
@@ -313,6 +309,7 @@ private:
       }
       if (token_equals(&t, "f")) {
         // read first vertex in face and create position and normal
+
         // position
         token const ix1_tkn = token_from_string_additional_delim(p, '/');
         p = ix1_tkn.end;

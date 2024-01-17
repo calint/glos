@@ -1,17 +1,14 @@
 #pragma once
 
-typedef struct token {
-  const char *begin;
-  const char *content;
-  const char *content_end;
-  const char *end;
-} token;
-
-#define token_def                                                              \
-  (token) { NULL, NULL, NULL, NULL }
+struct token {
+  char const *begin = nullptr;
+  char const *content = nullptr;
+  char const *content_end = nullptr;
+  char const *end = nullptr;
+};
 
 static inline auto token_size(token const *t) -> unsigned {
-  return (unsigned)(t->content_end - t->content);
+  return unsigned(t->content_end - t->content);
 }
 
 static inline auto token_starts_with(token const *t, char const *str) -> bool {
@@ -48,27 +45,28 @@ static inline auto token_get_uint(token const *t) -> unsigned {
 }
 
 static inline auto token_next(char const **s) -> token {
-  const char *p = *s;
-  token t;
+  char const *p = *s;
+  token t{};
   t.begin = p;
+  // read empty space
   while (true) {
-    if (not *p or not isspace(*p)) {
+    if (*p == '\0' or not isspace(*p)) {
       break;
     }
     ++p;
   }
+  // read token
   t.content = p;
   while (true) {
-    if (not *p or isspace(*p) or *p == ':' or *p == '{' or *p == '}' or
-        *p == ',' or *p == '=' or *p == ';' or *p == '(' or *p == ')' or
-        *p == '!' or *p == '>' or *p == '<') {
+    if (*p == '\0' or isspace(*p)) {
       break;
     }
     ++p;
   }
   t.content_end = p;
+  // read trailing empty space
   while (true) {
-    if (not *p or not isspace(*p)) {
+    if (*p == '\0' or not isspace(*p)) {
       break;
     }
     ++p;
@@ -83,14 +81,14 @@ static inline auto token_from_string_additional_delim(char const *s, char delim)
   token t;
   t.begin = s;
   while (true) {
-    if (not *p or not isspace(*p)) {
+    if (*p == '\0' or not isspace(*p)) {
       break;
     }
     ++p;
   }
   t.content = p;
   while (true) {
-    if (not *p or isspace(*p)) {
+    if (*p == '\0' or isspace(*p)) {
       break;
     }
     if (*p == delim) {
@@ -102,7 +100,7 @@ static inline auto token_from_string_additional_delim(char const *s, char delim)
   }
   t.content_end = p;
   while (true) {
-    if (not *p or not isspace(*p)) {
+    if (*p == '\0' or not isspace(*p)) {
       break;
     }
     ++p;
@@ -113,7 +111,7 @@ static inline auto token_from_string_additional_delim(char const *s, char delim)
 
 static inline auto token_to_including_newline(char const *p) -> char const * {
   while (true) {
-    if (not *p) {
+    if (*p == '\0') {
       return p;
     }
     if (*p == '\n') {
