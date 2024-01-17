@@ -7,6 +7,7 @@
 // * store_id: prints from this template contains the id
 // * return_nullptr_when_no_free_instance_available: aborts if false and no more
 //   free slots
+// * thread_safe: true to synchronize 'allocate_instance' and 'free_instance'
 // * instance_size_B: custom size of object instance used to fit largest object
 //   in an object hierarchy
 //
