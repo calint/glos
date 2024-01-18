@@ -4,9 +4,11 @@
     => keep with the thought that material properties will be used at rendering
 [x] time rendering and output in the metrics
 [ ]   optimize rendering
-[ ] struct vertex used for sizeof only
+[x] struct vertex used for sizeof only
+    => and offsetof when glVertexAttribPointer
 [ ] texture: transparent textures
 [ ] hud: resolve issue with colors
+[x] use offsetof(MyStruct, member1) when glVertexAttribPointer
 [ ] use "moving towards each other" vector to cull collision detection
 [ ] look at std::aligned_alloc to align o1store
 [ ] convert token.h

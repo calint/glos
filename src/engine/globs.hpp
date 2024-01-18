@@ -247,19 +247,19 @@ private:
     // describe the data format
     glEnableVertexAttribArray(shaders::apos);
     glVertexAttribPointer(shaders::apos, 3, GL_FLOAT, GL_FALSE, sizeof(vertex),
-                          (GLvoid *)0);
+                          (GLvoid *)offsetof(vertex, position));
 
     glEnableVertexAttribArray(shaders::argba);
     glVertexAttribPointer(shaders::argba, 4, GL_FLOAT, GL_FALSE, sizeof(vertex),
-                          (GLvoid *)(3 * sizeof(float)));
+                          (GLvoid *)offsetof(vertex, color));
 
     glEnableVertexAttribArray(shaders::anorm);
     glVertexAttribPointer(shaders::anorm, 3, GL_FLOAT, GL_FALSE, sizeof(vertex),
-                          (GLvoid *)((3 + 4) * sizeof(float)));
+                          (GLvoid *)offsetof(vertex, normal));
 
     glEnableVertexAttribArray(shaders::atex);
     glVertexAttribPointer(shaders::atex, 2, GL_FLOAT, GL_FALSE, sizeof(vertex),
-                          (GLvoid *)((3 + 4 + 3) * sizeof(float)));
+                          (GLvoid *)offsetof(vertex, texture));
 
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
