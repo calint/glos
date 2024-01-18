@@ -14,7 +14,7 @@ auto main(int argc, char *argv[]) -> int {
     return 0;
   }
 
-  // instance if client
+  // instance is client
   puts("\nprogram glos\n");
 
   if (argc > 1 and *argv[1] == 'c') {
