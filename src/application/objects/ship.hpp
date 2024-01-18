@@ -49,6 +49,8 @@ public:
       velocity +=
           ship_speed * vec3{-sin(angle.y), 0, -cos(angle.y)} * frame_context.dt;
       glob_ix = glob_ix_ship_engine_on;
+      // note. planes.invalidated = true; not necessary because both globs have
+      //       the same bounding planes
     }
     if (keys & key_a) {
       angular_velocity.y = ship_turn_rate;
