@@ -37,7 +37,8 @@
 [ ] object: update Mmw if it will be rendered
 [ ] object render culling using camera frustum, position and bounding sphere
 [ ] grid cell render culling
-[ ] use glDebugMessageCallback
+[-] use glDebugMessageCallback
+    => not available in opengl es3
 [ ] cmake or premake and automatically download dependencies using git submodules
 [ ] net_server as separate application
 [ ] constexpr everything
