@@ -41,7 +41,7 @@ public:
   // -- cell::resolve_collisions
   bool is_sphere = false; // true if object can be considered a sphere
   float mass = 0;         // in kg
-  planes planes{}; // bounding planes (if any)
+  planes planes{};        // bounding planes (if any)
 private:
   std::atomic_flag lock_get_updated_Mmw = ATOMIC_FLAG_INIT;
   glm::vec3 Mmw_pos{}; // position of current Mmw matrix
