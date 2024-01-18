@@ -64,7 +64,7 @@ void application_init() {
   // load the objects and assign the glob indexes
 
   // stock objects
-  glob_ix_cube = globs.load("assets/obj/cube.obj", "assets/obj/cube-bv.obj");
+  glob_ix_cube = globs.load("assets/obj/cube.obj", "assets/obj/cube-bp.obj");
   glob_ix_tetra = globs.load("assets/obj/tetra.obj", "assets/obj/tetra.obj");
   glob_ix_sphere = globs.load("assets/obj/sphere.obj", nullptr);
 
@@ -75,10 +75,10 @@ void application_init() {
       globs.load("assets/obj/asteroids/ship_engine_on.obj",
                  "assets/obj/asteroids/ship_engine_on.obj");
   glob_ix_bullet = globs.load("assets/obj/asteroids/bullet.obj",
-                              "assets/obj/asteroids/bullet-bv.obj");
+                              "assets/obj/asteroids/bullet-bp.obj");
   glob_ix_asteroid_large =
       globs.load("assets/obj/asteroids/asteroid_large.obj",
-                 "assets/obj/asteroids/asteroid_large-bv.obj");
+                 "assets/obj/asteroids/asteroid_large-bp.obj");
   glob_ix_asteroid_medium =
       globs.load("assets/obj/asteroids/asteroid_medium.obj",
                  "assets/obj/asteroids/asteroid_medium.obj");
