@@ -209,8 +209,10 @@ private:
         }
         continue;
       }
+
       // unknown token
-      if (*(p - 1) != '\n') {
+
+      if (*p != '\0' and *(p - 1) != '\n') {
         p = token_to_including_newline(p);
       }
     }
