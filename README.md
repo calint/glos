@@ -61,4 +61,4 @@ ubuntu packages used:
 ## todo
 * tidy the source in `src/engine/`
 * another sample game in a 3D sandbox-like environment
-* and much more in [todo.txt](https://github.com/calint/glos/blob/master/todo.txt)
+* and much more in [todo.txt](https://github.com/calint/glos/blob/master/notes/todo.txt)
