@@ -47,7 +47,7 @@ public:
     }
 
     fprintf(f, " %7s  %7s  %5s  %7s  %7s  %7s  %6s  %6s  %6s  %9s\n", "ms",
-            "dt_ms", "fps", "rend_ms", "upd_ms", "netlag", "nobj", "drw_o",
+            "dt_ms", "fps", "drw_ms", "upd_ms", "netlag", "nobj", "drw_o",
             "drw_g", "drw_t");
   }
 
