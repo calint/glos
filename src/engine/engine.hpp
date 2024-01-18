@@ -261,8 +261,9 @@ public:
         render_thread_loop_body();
       } else {
         // update runs on main thread
-
+        metrics.render_begin();
         render();
+        metrics.render_end();
 
         metrics.update_begin();
         update_pass_1();
@@ -453,7 +454,9 @@ private:
     // note. render and update have acceptable (?) data races on objects
     // position, angle, scale, glob index etc
 
+    metrics.render_begin();
     render();
+    metrics.render_end();
 
     window.swap_buffers();
 

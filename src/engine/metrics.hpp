@@ -27,6 +27,8 @@ public:
   uint32_t rendered_triangles = 0;
   uint64_t update_begin_tick = 0;
   float update_pass_ms = 0;
+  uint64_t render_begin_tick = 0;
+  float render_pass_ms = 0;
   float net_lag = 0;
   bool enable_print = true;
 
@@ -44,8 +46,9 @@ public:
       return;
     }
 
-    fprintf(f, " %6s  %7s  %5s  %7s  %7s  %6s  %6s  %6s  %9s\n", "ms", "dt_ms",
-            "fps", "upd_ms", "netlag", "nobj", "drw_o", "drw_g", "drw_t");
+    fprintf(f, " %7s  %7s  %5s  %7s  %7s  %7s  %6s  %6s  %6s  %9s\n", "ms",
+            "dt_ms", "fps", "rend_ms", "upd_ms", "netlag", "nobj", "drw_o",
+            "drw_g", "drw_t");
   }
 
   inline void print(FILE *f) const {
@@ -53,10 +56,11 @@ public:
       return;
     }
 
-    fprintf(f, " %06lu  %0.5f  %05u  %0.5f  %0.5f  %06u  %06u  %06u  %09u\n",
-            ms, dt * 1000, fps.average_during_last_interval, update_pass_ms,
-            net_lag, allocated_objects, rendered_objects, rendered_globs,
-            rendered_triangles);
+    fprintf(
+        f, " %07lu  %7.4f  %05u  %7.4f  %7.4f  %7.4f  %06u  %06u  %06u  %09u\n",
+        ms, dt * 1000, fps.average_during_last_interval, render_pass_ms,
+        update_pass_ms, net_lag, allocated_objects, rendered_objects,
+        rendered_globs, rendered_triangles);
   }
 
   inline void update_begin() {
@@ -66,6 +70,16 @@ public:
   inline void update_end() {
     uint64_t const tick = SDL_GetPerformanceCounter();
     update_pass_ms = float(tick - update_begin_tick) * 1000 /
+                     float(SDL_GetPerformanceFrequency());
+  }
+
+  inline void render_begin() {
+    render_begin_tick = SDL_GetPerformanceCounter();
+  }
+
+  inline void render_end() {
+    uint64_t const tick = SDL_GetPerformanceCounter();
+    render_pass_ms = float(tick - render_begin_tick) * 1000 /
                      float(SDL_GetPerformanceFrequency());
   }
 
