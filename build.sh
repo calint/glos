@@ -5,6 +5,7 @@
 # * libsdl2-dev/mantic,now 2.28.3+dfsg-2 amd64
 # * libsdl2-gfx-dev/mantic,now 1.0.4+dfsg-5 amd64
 # * libsdl2-image-dev/mantic,now 2.6.3+dfsg-2 amd64
+# * libsdl2-ttf-dev/mantic,now 2.20.2+dfsg-1 amd64
 # * opengl related packages
 
 set -e
