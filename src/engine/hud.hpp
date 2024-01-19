@@ -133,9 +133,9 @@ public:
     }
 
     glBindTexture(GL_TEXTURE_2D, texture);
-    // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, convertedSurface->w,
-    //              convertedSurface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE,
-    //              convertedSurface->pixels);
+    // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, converted_surface->w,
+    //              converted_surface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE,
+    //              converted_surface->pixels);
     // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture_width, texture_height, 0,
     //              GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
     glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, converted_surface->w,
