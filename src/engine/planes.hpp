@@ -7,6 +7,18 @@
 namespace glos {
 
 class planes final {
+  // cached world coordinate system points and planes
+  // note. there is a point for each plane followed by additional points
+  //       without planes for use in collision detection
+  std::vector<glm::vec4> world_points{}; // x, y, z, 1
+  std::vector<glm::vec4> world_planes{}; // A*X + B*Y + C*Z + D = 0
+  // the components used in the cached points and planes
+  glm::vec3 Mmw_pos{};
+  glm::vec3 Mmw_agl{};
+  glm::vec3 Mmw_scl{};
+  //
+  std::atomic_flag lock = ATOMIC_FLAG_INIT;
+
 public:
   bool invalidated = true;
 
@@ -63,7 +75,7 @@ public:
         // point on plane
         glm::vec3 const &point = world_points[i];
         glm::vec4 &plane = world_planes[i];
-        // d in a*x+b*y+c*z+d=0 stored in w
+        // D in A*x+B*y+C*z+D=0 stored in w
         plane.w = -glm::dot(glm::vec3{plane}, point);
       }
       // save the state of the cache
@@ -109,7 +121,7 @@ public:
   // edge and the sphere is close to it from the "front" because there are
   // positions where the sphere is "within" the collision planes "outside" the
   // volume
-  // workaround: add some more planes to the volume at the "pointy" edges
+  // workaround: add more planes to the volume at the "pointy" edges
   inline auto are_in_collision_with_sphere(glm::vec3 const &position,
                                            float const radius) const -> bool {
 
@@ -119,74 +131,7 @@ public:
     return std::ranges::all_of(world_planes, [&](glm::vec4 const &plane) {
       return glm::dot(point, plane) / glm::length(glm::vec3{plane}) <= radius;
     });
-
-    // bool const definitely_no =
-    //     std::ranges::any_of(world_planes, [&](glm::vec4 const &plane) {
-    //       return glm::dot(point, plane) / glm::length(glm::vec3{plane}) >
-    //              radius;
-    //     });
-
-    // if (definitely_no) {
-    //   printf("definitely no\n");
-    //   return false;
-    // }
-
-    // for (glm::vec4 const &wp : world_points) {
-    //   glm::vec3 const nml = glm::normalize(wp - point);
-    //   glm::vec3 const pt_on_plane = nml * radius;
-    //   glm::vec3 const v = glm::vec3{wp} - pt_on_plane;
-    //   float const d = glm::dot(v, nml);
-    //   if (d < 0) {
-    //     printf("found point behind plane\n");
-    //     return true;
-    //   }
-    // }
-
-    // return false;
   }
-
-  // // there are cases that give false positive
-  // inline auto is_in_collision_with_sphere_sat(glm::vec3 const &pos,
-  //                                             float const radius) const
-  //     -> bool {
-
-  //   // check for separation along each normal
-  //   for (glm::vec4 const &plane : world_planes) {
-  //     glm::vec3 nml{plane};
-
-  //     float min_projection = glm::dot(glm::vec3{world_points[0]}, nml);
-  //     float max_projection = min_projection;
-
-  //     // project both the sphere and the convex volume onto the normal
-  //     size_t const n = world_planes.size();
-  //     for (size_t i = 1; i < n; ++i) {
-  //       glm::vec3 const &point = world_points[i];
-  //       float const projection = glm::dot(point, nml);
-  //       if (projection < min_projection) {
-  //         min_projection = projection;
-  //       } else if (projection > max_projection) {
-  //         max_projection = projection;
-  //       }
-  //     }
-
-  //     float const sphere_projection = glm::dot(pos, nml);
-
-  //     // check for separation
-  //     if (sphere_projection + radius < min_projection or
-  //         sphere_projection - radius > max_projection) {
-  //       return false; // separating axis found, no collision
-  //     }
-
-  //     debug_render_wcs_line(nml * (sphere_projection + radius),
-  //                           nml * (sphere_projection - radius),
-  //                           {1.0f, 0.0f, 0.0f, 0.5f});
-
-  //     debug_render_wcs_line(nml * min_projection, nml * max_projection,
-  //                           {0.0f, 0.0f, 1.0f, 0.5f});
-  //   }
-
-  //   return true; // no separating axis found, collision detected
-  // }
 
   inline void acquire_lock() {
     while (lock.test_and_set(std::memory_order_acquire)) {
@@ -200,18 +145,5 @@ public:
     return pns1.is_any_point_in_volume(pns2) or
            pns2.is_any_point_in_volume(pns1);
   }
-
-private:
-  // cached world coordinate system points and planes
-  // note. there is a point for each plane followed by additional points
-  //       without planes for use in collision detection
-  std::vector<glm::vec4> world_points{}; // x, y, z, 1
-  std::vector<glm::vec4> world_planes{}; // A*X + B*Y + C*Z + D = 0
-  // the components used in the cached points and normals
-  glm::vec3 Mmw_pos{};
-  glm::vec3 Mmw_agl{};
-  glm::vec3 Mmw_scl{};
-  //
-  std::atomic_flag lock = ATOMIC_FLAG_INIT;
 };
 } // namespace glos
