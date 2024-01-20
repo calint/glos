@@ -4,9 +4,9 @@
 //
 // * type: object type. 'type' must contain public field 'type **alloc_ptr'
 // * instance_count: number of preallocated objects
-// * store_id: prints from this template contains the id
-// * return_nullptr_when_no_free_instance_available: aborts if false and no more
-//   free slots
+// * store_id: id used when printing to identify the o1store
+// * return_nullptr_when_no_free_instance_available: if false aborts with
+//   printout when no free slot available
 // * thread_safe: true to synchronize 'allocate_instance' and 'free_instance'
 // * instance_size_B: custom size of object instance used to fit largest object
 //   in an object hierarchy

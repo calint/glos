@@ -6,6 +6,7 @@
 [ ] shaders: make uniform and attribute locations dynamic
 [x] time rendering and output in the metrics
 [ ]   optimize rendering
+[ ]   render list to avoid data races when update thread runs in parallel
 [x] struct vertex used for sizeof only
     => and offsetof when glVertexAttribPointer
 [ ] texture: transparent textures
