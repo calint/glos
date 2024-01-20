@@ -3,6 +3,7 @@
     => texture_id stored in range
     => keep with the thought that material properties will be used at rendering
 [ ] if objects can't overlap several grids then threading can be done in a deterministic way
+[ ] shaders: make uniform and attribute locations dynamic
 [x] time rendering and output in the metrics
 [ ]   optimize rendering
 [x] struct vertex used for sizeof only
