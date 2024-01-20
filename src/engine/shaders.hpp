@@ -59,10 +59,10 @@ class shaders final {
 
 public:
   // vertex attributes layout in shaders
-  static constexpr GLuint apos = 0;
-  static constexpr GLuint argba = 1;
-  static constexpr GLuint anorm = 2;
-  static constexpr GLuint atex = 3;
+  static constexpr GLint apos = 0;
+  static constexpr GLint argba = 1;
+  static constexpr GLint anorm = 2;
+  static constexpr GLint atex = 3;
   // uniform matrixes
   static constexpr GLint umtx_mw = 0;  // model->world matrix
   static constexpr GLint umtx_wvp = 1; // world->view->projection matrix
