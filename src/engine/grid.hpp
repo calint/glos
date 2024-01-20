@@ -143,12 +143,13 @@ public:
   }
 
 private:
-  static inline auto clamp(int const i, int const max_plus_one) -> unsigned {
+  static inline auto clamp(int const i, unsigned const max_plus_one)
+      -> unsigned {
     if (i < 0) {
       return 0;
     }
-    if (i >= max_plus_one) {
-      return unsigned(max_plus_one - 1);
+    if (unsigned(i) >= max_plus_one) {
+      return max_plus_one - 1;
     }
     return unsigned(i);
   }
