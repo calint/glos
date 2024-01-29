@@ -448,7 +448,7 @@ private:
     });
   }
 
-  void render_thread_loop_body() {
+  inline void render_thread_loop_body() {
     // wait for update thread to remove and add objects to grid
     std::unique_lock<std::mutex> lock{is_rendering_mutex};
     is_rendering_cv.wait(lock, [this] { return is_rendering; });

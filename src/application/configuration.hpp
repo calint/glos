@@ -66,19 +66,6 @@ static constexpr uint32_t cb_hero_bullet = 1U << 1U;
 static constexpr uint32_t cb_asteroid = 1U << 2U;
 static constexpr uint32_t cb_power_up = 1U << 3U;
 
-// glob indexes (are set by 'application_init()' when loading)
-static uint32_t glob_ix_ship = 0;
-static uint32_t glob_ix_ship_engine_on = 0;
-static uint32_t glob_ix_bullet = 0;
-static uint32_t glob_ix_asteroid_large = 0;
-static uint32_t glob_ix_asteroid_medium = 0;
-static uint32_t glob_ix_asteroid_small = 0;
-static uint32_t glob_ix_fragment = 0;
-static uint32_t glob_ix_power_up = 0;
-static uint32_t glob_ix_cube = 0;
-static uint32_t glob_ix_tetra = 0;
-static uint32_t glob_ix_sphere = 0;
-
 // settings
 static constexpr unsigned asteroid_level = 2;
 
@@ -128,9 +115,22 @@ static constexpr float game_area_min_z =
 static constexpr float game_area_max_z =
     game_area_half_z + asteroid_large_scale;
 
+// glob indexes (are set by 'application_init()' when loading)
+static uint32_t glob_ix_ship = 0;
+static uint32_t glob_ix_ship_engine_on = 0;
+static uint32_t glob_ix_bullet = 0;
+static uint32_t glob_ix_asteroid_large = 0;
+static uint32_t glob_ix_asteroid_medium = 0;
+static uint32_t glob_ix_asteroid_small = 0;
+static uint32_t glob_ix_fragment = 0;
+static uint32_t glob_ix_power_up = 0;
+static uint32_t glob_ix_cube = 0;
+static uint32_t glob_ix_tetra = 0;
+static uint32_t glob_ix_sphere = 0;
+
 // used when 'debug_multiplayer' is true to give objects unique numbers
 static std::atomic<unsigned> counter = 0;
 
 // render debugging (runtime modifiable)
-inline bool debug_object_planes_normals = false;
-inline bool debug_object_bounding_sphere = false;
+static bool debug_object_planes_normals = false;
+static bool debug_object_bounding_sphere = false;

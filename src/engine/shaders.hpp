@@ -122,8 +122,8 @@ public:
     programs.clear();
   }
 
-  auto load_program_from_source(char const *vert_src, char const *frag_src)
-      -> uint32_t {
+  inline auto load_program_from_source(char const *vert_src,
+                                       char const *frag_src) -> uint32_t {
     GLuint const program_id = glCreateProgram();
     GLuint const vertex_shader_id = compile(GL_VERTEX_SHADER, vert_src);
     GLuint const fragment_shader_id = compile(GL_FRAGMENT_SHADER, frag_src);
