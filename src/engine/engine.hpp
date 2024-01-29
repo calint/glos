@@ -82,13 +82,13 @@ inline uint32_t glob_ix_bounding_sphere = 0;
 //
 
 // called at initiation
-void application_init();
+static void application_init();
 // called by update thread when an update is done
-void application_on_update_done();
+static void application_on_update_done();
 // called by render thread when a frame has been rendered
-void application_on_render_done();
+static void application_on_render_done();
 // called at shutdown
-void application_free();
+static void application_free();
 
 //
 #include "objects.hpp"
@@ -261,9 +261,7 @@ public:
         render_thread_loop_body();
       } else {
         // update runs on main thread
-        metrics.render_begin();
         render();
-        metrics.render_end();
 
         metrics.update_begin();
         update_pass_1();
@@ -318,7 +316,9 @@ private:
   std::condition_variable is_rendering_cv{};
 
   inline void render() {
+    metrics.render_begin();
     if (not is_render) {
+      metrics.render_end();
       return;
     }
 
@@ -354,6 +354,8 @@ private:
     grid.render();
 
     application_on_render_done();
+
+    metrics.render_end();
   }
 
   inline void update_pass_1() {
@@ -454,9 +456,7 @@ private:
     // note. render and update have acceptable (?) data races on objects
     // position, angle, scale, glob index etc
 
-    metrics.render_begin();
     render();
-    metrics.render_end();
 
     window.swap_buffers();
 
@@ -613,7 +613,7 @@ private:
   }
 };
 
-inline engine engine{};
+static engine engine{};
 
 // debugging (highly inefficient) function for rendering world coordinate system
 // lines

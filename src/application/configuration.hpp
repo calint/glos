@@ -36,10 +36,6 @@ static constexpr bool o1store_check_free_limits = false;
 // metrics print to console
 static constexpr bool metrics_print = true;
 
-// render debugging (runtime modifiable)
-inline bool debug_object_planes_normals = false;
-inline bool debug_object_bounding_sphere = false;
-
 // initially render the hud
 static constexpr bool hud_enabled = true;
 
@@ -134,3 +130,7 @@ static constexpr float game_area_max_z =
 
 // used when 'debug_multiplayer' is true to give objects unique numbers
 static std::atomic<unsigned> counter = 0;
+
+// render debugging (runtime modifiable)
+inline bool debug_object_planes_normals = false;
+inline bool debug_object_bounding_sphere = false;

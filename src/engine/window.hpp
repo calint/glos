@@ -114,5 +114,5 @@ private:
   }
 };
 
-inline window window{};
+static window window{};
 }; // namespace glos

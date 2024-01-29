@@ -178,5 +178,5 @@ private:
 )";
 };
 
-inline hud hud{};
+static hud hud{};
 } // namespace glos

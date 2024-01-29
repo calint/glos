@@ -180,5 +180,5 @@ private:
   //       delta time for frame (dt) and current server time in ms
 };
 
-inline net_server net_server{};
+static net_server net_server{};
 } // namespace glos

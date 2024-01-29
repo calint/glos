@@ -378,5 +378,5 @@ public:
   }
 };
 
-inline globs globs{};
+static globs globs{};
 } // namespace glos

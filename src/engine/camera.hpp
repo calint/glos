@@ -61,5 +61,5 @@ public:
   }
 };
 
-inline camera camera{};
+static camera camera{};
 } // namespace glos

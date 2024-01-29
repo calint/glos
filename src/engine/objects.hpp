@@ -235,5 +235,5 @@ private:
   size_t allocated_list_len_ = 0;
 };
 
-inline objects objects{};
+static objects objects{};
 } // namespace glos

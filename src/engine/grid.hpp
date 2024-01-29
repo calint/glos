@@ -155,5 +155,5 @@ private:
   }
 };
 
-inline grid grid{};
+static grid grid{};
 } // namespace glos

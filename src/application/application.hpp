@@ -1,8 +1,6 @@
 // reviewed: 2024-01-04
 // reviewed: 2024-01-08
 
-#include "../engine/engine.hpp"
-
 // make common used namespace available in game code
 using namespace glos;
 using namespace glm;
@@ -27,7 +25,7 @@ static void create_asteroids(unsigned num);
 static void create_cubes(unsigned num);
 
 // engine interface
-void application_init() {
+static void application_init() {
   application_init_shaders();
 
   printf("\ntime is %lu ms\n\n", frame_context.ms);
@@ -133,7 +131,7 @@ void application_init() {
 }
 
 // engine interface
-void application_on_update_done() {
+static void application_on_update_done() {
   if (performance_test) {
     return;
   }
@@ -145,7 +143,7 @@ void application_on_update_done() {
 }
 
 // engine interface
-void application_on_render_done() {
+static void application_on_render_done() {
   if (score != score_prv) {
     score_prv = score;
     std::array<char, 256> buf{};
@@ -155,7 +153,7 @@ void application_on_render_done() {
 }
 
 // engine interface
-void application_free() {}
+static void application_free() {}
 
 static void create_asteroids(unsigned const num) {
   constexpr float v = asteroid_large_speed;

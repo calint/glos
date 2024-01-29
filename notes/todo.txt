@@ -2,13 +2,18 @@
     material info is saved in the vertices
     => texture_id stored in range
     => keep with the thought that material properties will be used at rendering
+[x] consider making application.cpp into application.hpp
+    => good enough for small applications considering compile time
 [ ] if objects can't overlap several grids then threading can be done in a deterministic way
+    => process multithreaded grid even rows then odd rows
 [ ] shaders: make uniform and attribute locations dynamic
 [x] time rendering and output in the metrics
 [ ]   optimize rendering
 [ ]   render list to avoid data races when update thread runs in parallel
 [x] struct vertex used for sizeof only
     => and offsetof when glVertexAttribPointer
+[ ] struct vertex: use glm::vecX instead of float[]
+[x] metrics.render_begin() and end() in render()
 [ ] texture: transparent textures
 [ ] hud: resolve issue with colors
 [x] use offsetof(MyStruct, member1) when glVertexAttribPointer

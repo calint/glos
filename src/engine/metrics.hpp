@@ -122,5 +122,5 @@ public:
   }
 };
 
-inline metrics metrics{};
+static metrics metrics{};
 } // namespace glos

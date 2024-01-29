@@ -169,5 +169,5 @@ private:
   }
 };
 
-inline net net{};
+static net net{};
 } // namespace glos

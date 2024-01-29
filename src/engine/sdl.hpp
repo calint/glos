@@ -21,5 +21,5 @@ public:
   inline void free() { SDL_Quit(); }
 };
 
-inline sdl sdl{};
+static sdl sdl{};
 } // namespace glos

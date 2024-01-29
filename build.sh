@@ -12,7 +12,7 @@ set -e
 
 #CC="g++ -std=c++20 -Wno-changes-meaning -fanalyzer"
 CC="clang++ -std=c++20"
-SRC="src/main.cpp src/application/application.cpp"
+SRC="src/main.cpp"
 BIN="glos"
 CFLAGS="-Wfatal-errors $(sdl2-config --cflags)"
 LIBS="-ltbb -lGL -lSDL2_image -lSDL2_ttf $(sdl2-config --libs)"

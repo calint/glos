@@ -18,7 +18,8 @@ public:
     glGenTextures(1, &id);
     glBindTexture(GL_TEXTURE_2D, id);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+                    GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
@@ -32,6 +33,7 @@ public:
     }
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, surface->w, surface->h, 0, GL_RGB,
                  GL_UNSIGNED_BYTE, surface->pixels);
+    glGenerateMipmap(GL_TEXTURE_2D);
     size_B = size_t(surface->w * surface->h) * sizeof(uint32_t);
     SDL_FreeSurface(surface);
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -69,5 +71,5 @@ private:
   std::unordered_map<std::string, texture> store{};
 };
 
-inline textures textures{};
+static textures textures{};
 } // namespace glos

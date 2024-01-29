@@ -81,7 +81,6 @@ public:
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
-    glFrontFace(GL_CCW);
 
     uint32_t const default_program_ix =
         load_program_from_source(vertex_shader_source, fragment_shader_source);
@@ -196,5 +195,5 @@ public:
   }
 };
 
-inline shaders shaders{};
+static shaders shaders{};
 } // namespace glos

@@ -2,7 +2,10 @@
 // reviewed: 2024-01-04
 // reviewed: 2024-01-16
 
+//
 #include "engine/engine.hpp"
+//
+#include "application/application.hpp"
 
 auto main(int argc, char *argv[]) -> int {
 

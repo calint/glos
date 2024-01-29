@@ -142,5 +142,5 @@ public:
   inline auto at(uint32_t ix) const -> material const & { return store[ix]; }
 };
 
-inline materials materials{};
+static materials materials{};
 } // namespace glos
