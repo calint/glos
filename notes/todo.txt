@@ -6,6 +6,8 @@
     => good enough for small applications considering compile time
 [ ] if objects can't overlap several grids then threading can be done in a deterministic way
     => process multithreaded grid even rows then odd rows
+[ ] assets embedded in static executable with the goal of a one file, no dependencies unit
+    => map<path,data>
 [ ] shaders: make uniform and attribute locations dynamic
 [x] time rendering and output in the metrics
 [ ]   optimize rendering
