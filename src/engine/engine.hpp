@@ -71,10 +71,10 @@ public:
 };
 
 // globally accessible current frame info
-inline frame_context frame_context{};
+static frame_context frame_context{};
 
 // a sphere used when debugging object bounding sphere (set at 'init()')
-inline uint32_t glob_ix_bounding_sphere = 0;
+static uint32_t glob_ix_bounding_sphere = 0;
 } // namespace glos
 
 //
@@ -105,13 +105,13 @@ struct color {
 };
 
 // color to clear screen with
-inline color background_color{0, 0, 0};
+static color background_color{0, 0, 0};
 
 // ambient light used by shader
-inline glm::vec3 ambient_light = glm::normalize(glm::vec3{0, 1, 1});
+static glm::vec3 ambient_light = glm::normalize(glm::vec3{0, 1, 1});
 
 // object the camera should follow
-inline object *camera_follow_object = nullptr;
+static object *camera_follow_object = nullptr;
 
 // signal bit corresponding to keyboard key
 static constexpr uint32_t key_w = 1U << 0U;
