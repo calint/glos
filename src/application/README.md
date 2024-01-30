@@ -1,6 +1,6 @@
 # table of contents
 * `configuration.hpp` contains constants and global variables used by engine and game
-* `application.cpp` contains game logic and implements the interface to engine
+* `application.hpp` contains game logic and implements the interface to engine
   - `application_init()` called at init
   - `application_on_update_done()` called after objects have been updated and collisions resolved. may create and change state of objects
   - `application_on_render_done()` called when render frame is done. may not create or change state of objects
