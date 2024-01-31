@@ -98,13 +98,6 @@ public:
 
   // called from engine
   inline void add(object *o) {
-    if (grid_columns == 1 and grid_rows == 1) {
-      // special case
-      o->overlaps_cells = false;
-      cells[0][0].add(o);
-      return;
-    }
-
     constexpr float gw = grid_cell_size * grid_columns;
     constexpr float gh = grid_cell_size * grid_rows;
 
@@ -116,10 +109,10 @@ public:
     float const zt = gh / 2 + o->position.z - r;
     float const zb = gh / 2 + o->position.z + r;
 
-    unsigned const xil = clamp(int(xl / grid_cell_size), grid_columns);
-    unsigned const xir = clamp(int(xr / grid_cell_size), grid_columns);
-    unsigned const zit = clamp(int(zt / grid_cell_size), grid_rows);
-    unsigned const zib = clamp(int(zb / grid_cell_size), grid_rows);
+    unsigned const xil = clamp(int(xl / grid_cell_size), grid_columns - 1);
+    unsigned const xir = clamp(int(xr / grid_cell_size), grid_columns - 1);
+    unsigned const zit = clamp(int(zt / grid_cell_size), grid_rows - 1);
+    unsigned const zib = clamp(int(zb / grid_cell_size), grid_rows - 1);
 
     // add to cells
     for (unsigned z = zit; z <= zib; ++z) {
@@ -143,13 +136,12 @@ public:
   }
 
 private:
-  static inline auto clamp(int const i, unsigned const max_plus_one)
-      -> unsigned {
+  static inline auto clamp(int const i, unsigned const max) -> unsigned {
     if (i < 0) {
       return 0;
     }
-    if (unsigned(i) >= max_plus_one) {
-      return max_plus_one - 1;
+    if (unsigned(i) > max) {
+      return max;
     }
     return unsigned(i);
   }
