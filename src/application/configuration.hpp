@@ -67,7 +67,7 @@ static constexpr uint32_t cb_asteroid = 1U << 2U;
 static constexpr uint32_t cb_power_up = 1U << 3U;
 
 // settings
-static constexpr unsigned asteroid_level = 2;
+static constexpr unsigned asteroid_level = 3;
 
 static constexpr float asteroid_large_agl_vel_rnd = glm::radians(45.0f);
 static constexpr float asteroid_large_speed = 10;

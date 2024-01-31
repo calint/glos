@@ -2,12 +2,20 @@
     material info is saved in the vertices
     => texture_id stored in range
     => keep with the thought that material properties will be used at rendering
+[ ] spawn asteroids outside the viewport
 [x] consider making application.cpp into application.hpp
     => good enough for small applications considering compile time
 [ ] if objects can't overlap several grids then threading can be done in a deterministic way
     => process multithreaded grid even rows then odd rows
+    => the debug_multiplayer log is not equal since the order of the cells in an even or
+       odd row do not get processed in a deterministic way
+    => example. processed rows runs in parallel with the cells requesting random numbers
+       in a non-deterministic way
+    => each processed row uses a random number generator
 [ ] assets embedded in static executable with the goal of a one file, no dependencies unit
     => map<path,data>
+[ ] if object overlaps grid horizontally then there is no need for synchronization 
+    since a thread processes a whole row
 [ ] shaders: make uniform and attribute locations dynamic
 [x] time rendering and output in the metrics
 [ ]   optimize rendering
