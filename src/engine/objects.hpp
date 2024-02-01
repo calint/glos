@@ -211,7 +211,9 @@ public:
     return allocated_list_len_;
   }
 
-  inline auto allocated_list_end() const { return allocated_list_end_; }
+  inline auto allocated_list_end() const -> object ** {
+    return allocated_list_end_;
+  }
 
   inline auto allocated_list() const -> object ** {
     return store_.allocated_list();
