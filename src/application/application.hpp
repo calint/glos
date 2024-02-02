@@ -23,6 +23,7 @@ static std::atomic<unsigned> asteroids_alive{0};
 static void application_init_shaders();
 static void create_asteroids(unsigned num);
 static void create_cubes(unsigned num);
+static void create_spheres(unsigned num);
 
 // engine interface
 static void application_init() {
@@ -108,7 +109,19 @@ static void application_init() {
       p->net_state = &net.states[1];
     }
   } else {
-    create_cubes(objects_count);
+    switch (performance_test_type) {
+    case 1:
+      create_cubes(objects_count);
+      break;
+    case 2:
+      create_spheres(objects_count);
+      break;
+    default:
+      fprintf(stderr, "\n%s:%d: unknown 'performance_test_type' '%d'\n",
+              __FILE__, __LINE__, performance_test_type);
+      fflush(stderr);
+      std::abort();
+    }
   }
 
   // setup light and camera
@@ -172,6 +185,18 @@ static void create_cubes(unsigned const num) {
   constexpr float d = game_area_max_x - game_area_min_x;
   for (unsigned i = 0; i < num; ++i) {
     cube *o = new (objects.alloc()) cube{};
+    o->position.x = rnd1(d);
+    o->position.z = rnd1(d);
+    o->velocity.x = rnd1(v);
+    o->velocity.z = rnd1(v);
+  }
+}
+
+static void create_spheres(unsigned const num) {
+  constexpr float v = sphere_speed;
+  constexpr float d = game_area_max_x - game_area_min_x;
+  for (unsigned i = 0; i < num; ++i) {
+    sphere *o = new (objects.alloc()) sphere{};
     o->position.x = rnd1(d);
     o->position.z = rnd1(d);
     o->velocity.x = rnd1(v);

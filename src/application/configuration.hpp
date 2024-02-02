@@ -4,16 +4,18 @@
 // reviewed: 2024-01-06
 // reviewed: 2024-01-08
 
-//
-// definitions used by engine
-//
-
-// true if performance test case instead of game
-static constexpr bool performance_test = false;
+// game or performance test
+static constexpr unsigned performance_test_type = 0; // 0: none (game)  1: cubes  2: spheres
+static constexpr bool performance_test = performance_test_type != 0;
 static constexpr float cube_speed = 10;
+static constexpr float sphere_speed = 10;
 
 // multiplayer debugging output
 static constexpr bool debug_multiplayer = false;
+
+//
+// definitions used by engine
+//
 
 // multithreaded grid
 // note. in some cases multithreaded mode is a degradation of performance

@@ -1,3 +1,41 @@
+[x] performance test, multithreaded grid, cubes
+    :: valgrind --tool=cachegrind --cache-sim=yes ./glos
+    ==1129483== 
+    ==1129483== I refs:        17,420,009,494
+    ==1129483== I1  misses:           497,066
+    ==1129483== LLi misses:           132,894
+    ==1129483== I1  miss rate:           0.00%
+    ==1129483== LLi miss rate:           0.00%
+    ==1129483== 
+    ==1129483== D refs:         5,321,080,226  (4,400,899,278 rd   + 920,180,948 wr)
+    ==1129483== D1  misses:        28,405,252  (   22,412,389 rd   +   5,992,863 wr)
+    ==1129483== LLd misses:        16,082,876  (   12,602,289 rd   +   3,480,587 wr)
+    ==1129483== D1  miss rate:            0.5% (          0.5%     +         0.7%  )
+    ==1129483== LLd miss rate:            0.3% (          0.3%     +         0.4%  )
+    ==1129483== 
+    ==1129483== LL refs:           28,902,318  (   22,909,455 rd   +   5,992,863 wr)
+    ==1129483== LL misses:         16,215,770  (   12,735,183 rd   +   3,480,587 wr)
+    ==1129483== LL miss rate:             0.1% (          0.1%     +         0.4%  )
+
+[x] performance test, multithreaded grid, spheres
+    :: valgrind --tool=cachegrind --cache-sim=yes ./glos
+    ==1128356== 
+    ==1128356== I refs:        13,531,903,079
+    ==1128356== I1  misses:           486,177
+    ==1128356== LLi misses:           103,695
+    ==1128356== I1  miss rate:           0.00%
+    ==1128356== LLi miss rate:           0.00%
+    ==1128356== 
+    ==1128356== D refs:         4,122,897,496  (3,423,007,408 rd   + 699,890,088 wr)
+    ==1128356== D1  misses:        19,475,895  (   16,417,767 rd   +   3,058,128 wr)
+    ==1128356== LLd misses:         9,203,957  (    8,008,938 rd   +   1,195,019 wr)
+    ==1128356== D1  miss rate:            0.5% (          0.5%     +         0.4%  )
+    ==1128356== LLd miss rate:            0.2% (          0.2%     +         0.2%  )
+    ==1128356== 
+    ==1128356== LL refs:           19,962,072  (   16,903,944 rd   +   3,058,128 wr)
+    ==1128356== LL misses:          9,307,652  (    8,112,633 rd   +   1,195,019 wr)
+    ==1128356== LL miss rate:             0.1% (          0.0%     +         0.2%  )
+
 [ ] spawn asteroids outside the viewport
 [ ] release and continue with sandbox game in 'glosi'
 [ ]   render cull cells

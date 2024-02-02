@@ -18,7 +18,7 @@ public:
     is_sphere = true;
     mass = 1;
     collision_bits = cb_power_up;
-    collision_mask = cb_hero;
+    collision_mask = cb_power_up;
   }
 
   inline ~sphere() override {
@@ -32,6 +32,8 @@ public:
     if (not object::update()) {
       return false;
     }
+
+    game_area_roll(position);
 
     return true;
   }
