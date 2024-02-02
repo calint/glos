@@ -92,7 +92,7 @@ static void application_init() {
   // skydome->bounding_radius = 50;
   // skydome->scale = {50.0f, 50.0f, 50.0f};
 
-  if (not performance_test) {
+  if (not is_performance_test) {
     // setup scene
     if (net.enabled) {
       // multiplayer mode
@@ -145,7 +145,7 @@ static void application_init() {
 
 // engine interface
 static void application_on_update_done() {
-  if (performance_test) {
+  if (is_performance_test) {
     return;
   }
 

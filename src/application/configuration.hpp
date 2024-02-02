@@ -6,7 +6,7 @@
 
 // game or performance test
 static constexpr unsigned performance_test_type = 0; // 0: none (game)  1: cubes  2: spheres
-static constexpr bool performance_test = performance_test_type != 0;
+static constexpr bool is_performance_test = performance_test_type != 0;
 static constexpr float cube_speed = 10;
 static constexpr float sphere_speed = 10;
 
@@ -26,8 +26,8 @@ static constexpr bool threaded_update = false;
 
 // grid dimensions
 static constexpr float grid_size =
-    performance_test ? 3200 : 40; // square side in e.g. meters
-static constexpr unsigned grid_rows = performance_test ? 16 : 4;
+    is_performance_test ? 3200 : 40; // square side in e.g. meters
+static constexpr unsigned grid_rows = is_performance_test ? 16 : 4;
 static constexpr unsigned grid_columns = grid_rows;
 static constexpr float grid_cell_size = grid_size / grid_rows;
 
@@ -44,7 +44,7 @@ static constexpr bool hud_enabled = true;
 // window dimensions
 static constexpr unsigned window_width = 1024;
 static constexpr unsigned window_height = 1024;
-static constexpr bool window_vsync = performance_test ? false : true;
+static constexpr bool window_vsync = is_performance_test ? false : true;
 // note. vsync should be on when not doing performance tests
 
 // number of players in networked mode
@@ -52,7 +52,7 @@ static constexpr unsigned net_players = 2;
 
 // number of preallocated objects
 static constexpr unsigned objects_count =
-    performance_test ? 64 * 1024 : 1 * 1024;
+    is_performance_test ? 64 * 1024 : 1 * 1024;
 
 // maximum size of any object instance in bytes
 static constexpr size_t objects_instance_size_B = 512;
