@@ -1,5 +1,5 @@
 [x] performance test, multithreaded grid, cubes
-        :: valgrind --tool=cachegrind --cache-sim=yes ./glos
+    :: valgrind --tool=cachegrind --cache-sim=yes ./glos
     ==1154883== 
     ==1154883== I refs:        61,393,398,538
     ==1154883== I1  misses:           599,480
