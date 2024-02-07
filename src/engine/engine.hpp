@@ -700,7 +700,7 @@ static inline void debug_render_bounding_sphere(glm::mat4 const &Mmw) {
 }
 
 // debugging (highly inefficient) function for rendering world coordinate system
-// lines
+// points
 static inline void debug_render_wcs_points(std::vector<glm::vec3> const &points,
                                            glm::vec4 const &color) {
   GLuint vao = 0;
