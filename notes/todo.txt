@@ -64,6 +64,16 @@
 [x] time rendering and output in the metrics
 [ ]   optimize rendering
 [ ]   render list to avoid data races when update thread runs in parallel
+[ ] collision detection: large sphere vs "pointy" convex volume gives false positives
+    when the sphere is in front of the "pointy" part because the planes outside the object
+    give false positive with distance to plane being closer to sphere than radius
+    => more planes can be added to the "pointy" object
+    => sat method (separating axis theorem) using normals for projection axis
+       has edge cases and does give false positives
+    => one more test on axis from sphere position to closest point in volume
+    => got it to work in 2D but not in 3D
+[ ] planes: bool for the case where scaling is uniform to optimize collision detection
+    with sphere by removing the division by the length of the normal vector
 [x] struct vertex used for sizeof only
     => and offsetof when glVertexAttribPointer
 [ ] struct vertex: use glm::vecX instead of float[]
@@ -117,12 +127,6 @@
 [x] o1store: nice exit when objects exceeded capacity
 [x] examine plane representation Ax + By + Cz + D = 0 where w is D
     then get distance: dot(plane, point);
-[x] collision detection: large sphere vs "pointy" convex volume gives false positives
-    when the sphere is in front of the "pointy" part because the planes outside the object
-    give false positive with distance to plane being closer to sphere than radius
-    => more planes can be added to the "pointy" object
-    => sat method (separating axis theorem) using normals for projection axis
-       has edge cases and does give false positives
 [-] move texures into materials, materials into globs, globs into engine
     => would introduce circular reference engine->globs->glob->engine->globs
     => glos namespace contains the instances of the components without any

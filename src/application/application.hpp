@@ -107,6 +107,17 @@ static void application_init() {
       // single player mode
       ship *p = new (objects.alloc()) ship{};
       p->net_state = &net.states[1];
+
+      // // collision test
+      // sphere *s = new (objects.alloc()) sphere{};
+      // s->scale = {2.0f, 2.0f, 2.0f};
+      // s->bounding_radius = globs.at(s->glob_ix).bounding_radius * s->scale.x;
+
+      // s->net_state = &net.states[1];
+
+      // cube *c = new (objects.alloc()) cube{};
+      // c->scale.y = 10;
+      // c->bounding_radius = 5;
     }
   } else {
     switch (performance_test_type) {
@@ -189,6 +200,7 @@ static void create_cubes(unsigned const num) {
     o->position.z = rnd1(d);
     o->velocity.x = rnd1(v);
     o->velocity.z = rnd1(v);
+    o->angular_velocity.y = radians(20.0f);
   }
 }
 

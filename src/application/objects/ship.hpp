@@ -39,10 +39,11 @@ public:
     angular_velocity = {0, 0, 0};
     glob_ix = glob_ix_ship;
 
-    uint64_t const keys = net_state->keys;
-    if (not keys) {
+    if (net_state == nullptr) {
       return true;
     }
+
+    uint64_t const keys = net_state->keys;
 
     // handle ship controls
     if (keys & key_w) {

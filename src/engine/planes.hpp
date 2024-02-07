@@ -59,6 +59,7 @@ public:
         world_planes.reserve(normals.size());
         for (glm::vec3 const &normal : normals) {
           glm::vec3 const world_normal = N * normal;
+          // note. world_normal length may not be 1 due to scaling
           world_planes.emplace_back(glm::vec4{world_normal, 0});
           // note. D component (distance to plane from origin along the normal)
           // in plane equation is set to 0 and will be updated when world_points
@@ -119,18 +120,106 @@ public:
   // works in cases where the sphere is much smaller than the convex volume
   // e.g. bullets vs walls. gives false positives when the volume has "pointy"
   // edge and the sphere is close to it from the "front" because there are
-  // positions where the sphere is "within" the collision planes "outside" the
-  // volume
+  // positions where the sphere is "within" the collision planes although
+  // "outside" the volume
   // workaround: add more planes to the volume at the "pointy" edges
   inline auto are_in_collision_with_sphere(glm::vec3 const &position,
                                            float const radius) const -> bool {
 
-    // return is_in_collision_with_sphere_sat(position, radius);
+    // return are_in_collision_with_sphere_sat(position, radius);
 
     glm::vec4 const point{position, 1.0f};
     return std::ranges::all_of(world_planes, [&](glm::vec4 const &plane) {
       return glm::dot(point, plane) / glm::length(glm::vec3{plane}) <= radius;
+      // note. division by length of plane normal is necessary because normal
+      //       may not be unit vector due to scaling
     });
+  }
+
+  // note. gives false positives. works in 2D.
+  inline auto are_in_collision_with_sphere_sat(glm::vec3 const &position,
+                                               float const radius) const
+      -> bool {
+
+    // check for separation along each normal
+    for (glm::vec4 const &plane : world_planes) {
+      glm::vec3 const plane_normal = glm::normalize(glm::vec3{plane});
+
+      float min_projection = glm::dot(glm::vec3{world_points[0]}, plane_normal);
+      float max_projection = min_projection;
+
+      // project both the sphere and the convex volume onto the plane normal
+      size_t const n = world_planes.size();
+      for (unsigned i = 1; i < n; ++i) {
+        glm::vec3 const &point = world_points[i];
+        float const projection = glm::dot(point, plane_normal);
+        if (projection < min_projection) {
+          min_projection = projection;
+        } else if (projection > max_projection) {
+          max_projection = projection;
+        }
+      }
+
+      float const sphere_projection = glm::dot(position, plane_normal);
+
+      // check for separation
+      if (sphere_projection + radius < min_projection or
+          sphere_projection - radius > max_projection) {
+        return false; // separating axis found, no collision
+      }
+    }
+
+    // find the closest world point in planes to sphere
+    glm::vec3 closest_point{};
+    float min_distance_sq = std::numeric_limits<float>::max();
+    for (glm::vec4 const &point : world_points) {
+      glm::vec3 const v = glm::vec3{point} - position;
+      float const distance_sq = glm::dot(v, v);
+      if (distance_sq < min_distance_sq) {
+        min_distance_sq = distance_sq;
+        closest_point = point;
+      }
+    }
+
+    debug_render_wcs_line(closest_point, closest_point + glm::vec3{0.2f, 0, 0},
+                          {1.0f, 1.0f, 1.0f, 1.0f});
+
+    // make that into an axis and check for separation
+    glm::vec3 const axis = glm::normalize(closest_point - position);
+
+    // debug_render_wcs_line(glm::vec3{0, 0, 0}, axis * 4.0f,
+    //                       {0.0f, 1.0f, 0.0f, 1.0f});
+
+    // project both the sphere and the convex volume onto the axis
+    float volume_min_projection = glm::dot(glm::vec3{world_points[0]}, axis);
+    float volume_max_projection = volume_min_projection;
+    size_t const n = world_points.size();
+    for (unsigned i = 1; i < n; ++i) {
+      float const projection = glm::dot(glm::vec3{world_points[i]}, axis);
+      volume_min_projection = std::min(volume_min_projection, projection);
+      volume_max_projection = std::max(volume_max_projection, projection);
+    }
+
+    float const sphere_projection = glm::dot(position, axis);
+
+    debug_render_wcs_line(axis * (sphere_projection - radius),
+                          axis * (sphere_projection + radius),
+                          {1.0f, 0.0f, 0.0f, 1.0f});
+
+    debug_render_wcs_line(axis * volume_min_projection,
+                          axis * volume_max_projection,
+                          {1.0f, 1.0f, 1.0f, 0.5f});
+
+    // check for separation along the axis
+    if (sphere_projection + radius < volume_min_projection or
+        sphere_projection - radius > volume_max_projection) {
+      return false; // separating axis found, no collision
+    }
+
+    // debug_render_wcs_line(pos, pos + axis, {0.0f, 1.0f, 0.0f, 1.0f});
+
+    // no separating axis found, collision detected
+    return true;
   }
 
   inline void acquire_lock() {
