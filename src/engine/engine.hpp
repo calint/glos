@@ -60,6 +60,9 @@ static inline void debug_render_wcs_line(glm::vec3 const &from_wcs,
                                          glm::vec3 const &to_wcs,
                                          glm::vec4 const &color);
 
+static inline void debug_render_wcs_points(std::vector<glm::vec3> const &points,
+                                           glm::vec4 const &color);
+
 static inline void debug_render_bounding_sphere(glm::mat4 const &Mmw);
 
 // information about the current frame
@@ -166,6 +169,30 @@ public:
   }
 )";
       shader_program_ix_render_line =
+          shaders.load_program_from_source(vtx, frag);
+    }
+
+    // points rendering shader
+    {
+      constexpr char const *vtx = R"(
+  #version 330 core
+  uniform mat4 umtx_wvp; // world-to-view-to-projection
+  layout(location = 0) in vec4 apos; // world coordinates
+  void main() {
+	  gl_Position = umtx_wvp * apos;
+    gl_PointSize = 5.0;
+  }
+  )";
+
+      constexpr char const *frag = R"(
+  #version 330 core
+  uniform vec4 ucolor;
+  out vec4 rgba;
+  void main() {
+    rgba = ucolor;
+  }
+)";
+      shader_program_ix_render_points =
           shaders.load_program_from_source(vtx, frag);
     }
 
@@ -292,6 +319,9 @@ private:
                                     glm::vec3 const &to_wcs,
                                     glm::vec4 const &color);
 
+  friend void debug_render_wcs_points(std::vector<glm::vec3> const &points,
+                                      glm::vec4 const &color);
+
   static constexpr float rad_over_degree = 2.0f * glm::pi<float>() / 360.0f;
   uint64_t frame_num = 0;
   bool is_resolve_collisions = true;
@@ -304,6 +334,8 @@ private:
   float mouse_sensitivity = 1.5f;
   // index of shader that renders world coordinate system line
   size_t shader_program_ix_render_line = 0;
+  // index of shader that renders world coordinate system points
+  size_t shader_program_ix_render_points = 0;
   // index of current shader
   size_t shader_program_ix = 0;
   // index of previous shader
@@ -665,6 +697,48 @@ static inline void debug_render_bounding_sphere(glm::mat4 const &Mmw) {
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   globs.at(glob_ix_bounding_sphere).render(Mmw);
   glDisable(GL_BLEND);
+}
+
+// debugging (highly inefficient) function for rendering world coordinate system
+// lines
+static inline void debug_render_wcs_points(std::vector<glm::vec3> const &points,
+                                           glm::vec4 const &color) {
+  GLuint vao = 0;
+  glGenVertexArrays(1, &vao);
+  glBindVertexArray(vao);
+
+  GLuint vbo = 0;
+  glGenBuffers(1, &vbo);
+  glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+  glBufferData(GL_ARRAY_BUFFER, GLsizeiptr(points.size() * sizeof(glm::vec3)),
+               points.data(), GL_STATIC_DRAW);
+  glEnableVertexAttribArray(0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid *)0);
+
+  camera.update_matrix_wvp();
+
+  shaders.use_program(engine.shader_program_ix_render_points);
+
+  glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(camera.Mwvp));
+  glUniform4fv(1, 1, glm::value_ptr(color));
+
+  glDisable(GL_DEPTH_TEST);
+  glDepthMask(GL_FALSE);
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glDrawArrays(GL_POINTS, 0, GLsizei(points.size()));
+  glDisable(GL_BLEND);
+  glDepthMask(GL_TRUE);
+  glEnable(GL_DEPTH_TEST);
+
+  glBindVertexArray(0);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+  glDeleteBuffers(1, &vbo);
+  glDeleteVertexArrays(1, &vao);
+
+  shaders.use_program(engine.shader_program_ix);
 }
 
 } // namespace glos

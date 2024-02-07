@@ -94,11 +94,11 @@ public:
       debug_render_wcs_line(point, point + plane, {1, 0, 0, 0.5f});
     }
     size_t const m = world_points.size();
+    std::vector<glm::vec3> points{};
     for (size_t i = n; i < m; ++i) {
-      glm::vec4 const &point = world_points.at(i);
-      debug_render_wcs_line(point, point + glm::vec4{0, 0.2f, -0.2f, 1.0f},
-                            {1, 1, 1, 0.5f});
+      points.emplace_back(world_points.at(i));
     }
+    debug_render_wcs_points(points, {1, 1, 1, 0.5f});
     release_lock();
   }
 
