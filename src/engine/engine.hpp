@@ -180,7 +180,7 @@ public:
   layout(location = 0) in vec4 apos; // world coordinates
   void main() {
 	  gl_Position = umtx_wvp * apos;
-    gl_PointSize = 5.0;
+    // gl_PointSize = 5.0;
   }
   )";
 
