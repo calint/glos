@@ -167,7 +167,7 @@ public:
   void main() {
     rgba = ucolor;
   }
-)";
+  )";
       shader_program_ix_render_line =
           shaders.load_program_from_source(vtx, frag);
     }
@@ -191,7 +191,7 @@ public:
   void main() {
     rgba = ucolor;
   }
-)";
+  )";
       shader_program_ix_render_points =
           shaders.load_program_from_source(vtx, frag);
     }
