@@ -56,6 +56,7 @@
     since a thread processes a whole row
 [ ] assets embedded in static executable with the goal of a one file, no dependencies unit
     => map<path,data>
+[ ] collision detection of convex volume vs convex volume using separating axis theorem
 [ ] glob::load: optimize ranges by merging non-textured materials since all
     material info is saved in the vertices
     => texture_id stored in range
