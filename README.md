@@ -16,10 +16,10 @@ intention:
 * explore legacy opengl rendering
 * intuitive programming of game objects and logic
 * game code written in `src/application/`
-* collision detection
+* collision detection (that is "good enough" for games)
   - sphere vs sphere
-  - sphere vs convex volume
-  - convex volume vs convex volume
+  - sphere vs convex volume (with false positives at corners)
+  - convex volume vs convex volume (tests points inside convex hull)
 * collision reaction
   - sphere vs sphere
   - sphere vs convex volume _(todo)_

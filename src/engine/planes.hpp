@@ -130,9 +130,10 @@ public:
 
     glm::vec4 const point{position, 1.0f};
     return std::ranges::all_of(world_planes, [&](glm::vec4 const &plane) {
-      return glm::dot(point, plane) / glm::length(glm::vec3{plane}) <= radius;
+      return glm::dot(point, plane) <= radius * glm::length(glm::vec3{plane});
       // note. division by length of plane normal is necessary because normal
-      //       may not be unit vector due to scaling
+      //       may not be unit vector due to scaling. division moved to the
+      //       right-hand side for slightly faster operation than division
     });
   }
 

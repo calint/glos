@@ -108,7 +108,6 @@ static void application_init() {
       ship *p = new (objects.alloc()) ship{};
       p->net_state = &net.states[1];
 
-      // // collision test
       // sphere *s = new (objects.alloc()) sphere{};
       // s->scale = {2.0f, 2.0f, 2.0f};
       // s->bounding_radius = globs.at(s->glob_ix).bounding_radius * s->scale.x;
@@ -116,8 +115,8 @@ static void application_init() {
       // s->net_state = &net.states[1];
 
       // cube *c = new (objects.alloc()) cube{};
-      // c->scale.y = 10;
-      // c->bounding_radius = 5;
+      // c->scale.x = 10;
+      // c->bounding_radius = 20; // bypass bounding radius check
     }
   } else {
     switch (performance_test_type) {
