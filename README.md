@@ -18,12 +18,12 @@ intention:
 * game code written in `src/application/`
 * collision detection (that is "good enough" for games)
   - sphere vs sphere
-  - sphere vs convex volume (with false positives at corners)
-  - convex volume vs convex volume (tests points inside convex hull)
+  - sphere vs convex hull
+  - convex hull vs convex hull
 * collision reaction
   - sphere vs sphere
-  - sphere vs convex volume _(todo)_
-  - convex volume vs convex volume _(todo)_
+  - sphere vs convex hull _(todo)_
+  - convex hull vs convex hull _(todo)_
 
 ubuntu packages used:
 * libglm-dev: opengl math
