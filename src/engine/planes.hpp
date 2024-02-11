@@ -125,7 +125,7 @@ public:
   inline auto are_in_collision_with_sphere(glm::vec3 const &position,
                                            float const radius) const -> bool {
 
-    return are_in_collision_with_sphere_sat(position, radius);
+    // return are_in_collision_with_sphere_sat(position, radius);
 
     glm::vec4 const point{position, 1.0f};
     return std::ranges::all_of(world_planes, [&](glm::vec4 const &plane) {
