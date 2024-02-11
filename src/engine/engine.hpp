@@ -418,7 +418,7 @@ private:
       grid.print();
     }
 
-    // note. data racing between render and update thread on objects
+    // note: data racing between render and update thread on objects
     // position, angle, scale glob index is ok (?)
 
     grid.update();
@@ -485,7 +485,7 @@ private:
     std::unique_lock<std::mutex> lock{is_rendering_mutex};
     is_rendering_cv.wait(lock, [this] { return is_rendering; });
 
-    // note. render and update have acceptable (?) data races on objects
+    // note: render and update have acceptable (?) data races on objects
     // position, angle, scale, glob index etc
 
     render();

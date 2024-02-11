@@ -61,12 +61,12 @@ public:
   std::string name{};             // instance name
   object **alloc_ptr;             // initiated at allocate by 'o1store'
 
-  // note. 32 bit resolution of 'updated_at_tick' and 'rendered_at_tick' vs 64
+  // note: 32 bit resolution of 'updated_at_tick' and 'rendered_at_tick' vs 64
   // bit comparison source ok since only checking for equality
 
 public:
   inline virtual ~object() = default;
-  // note. 'delete obj;' may not be used because memory is managed by 'o1store'.
+  // note: 'delete obj;' may not be used because memory is managed by 'o1store'.
   //       destructor is invoked in the 'objects.apply_free()'
 
   inline virtual void render() {
@@ -194,11 +194,11 @@ public:
 
   inline void free() {
     object **const end = store_.allocated_list_end();
-    // note. important to get the 'end' outside the loop because objects may
+    // note: important to get the 'end' outside the loop because objects may
     //       allocate new objects in the loop and that would change 'end'
     for (object **it = store_.allocated_list(); it < end; ++it) {
       object *obj = *it;
-      obj->~object(); // note. the freeing of memory is done by 'o1store'
+      obj->~object(); // note: the freeing of memory is done by 'o1store'
     }
     //? what if destructor created objects
   }

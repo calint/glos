@@ -111,12 +111,16 @@ static void application_init() {
       // sphere *s = new (objects.alloc()) sphere{};
       // s->scale = {2.0f, 2.0f, 2.0f};
       // s->bounding_radius = globs.at(s->glob_ix).bounding_radius * s->scale.x;
-
       // s->net_state = &net.states[1];
 
-      // cube *c = new (objects.alloc()) cube{};
-      // c->scale.x = 10;
-      // c->bounding_radius = 20; // bypass bounding radius check
+      // cube *c1 = new (objects.alloc()) cube{};
+      // c1->scale.z = 5;
+      // c1->bounding_radius = 20; // bypass bounding radius check
+      // c1->net_state = &net.states[1];
+
+      // cube *c2 = new (objects.alloc()) cube{};
+      // c2->scale.y = 10;
+      // c2->bounding_radius = 20; // bypass bounding radius check
     }
   } else {
     switch (performance_test_type) {
@@ -140,7 +144,7 @@ static void application_init() {
   camera.type = camera::type::ORTHOGONAL;
   camera.position = {0, 50, 0};
   camera.look_at = {0, 0, -0.0001f};
-  // note. -0.0001f because of the math of 'look at'
+  // note: -0.0001f because of the math of 'look at'
   camera.ortho_min_x = -game_area_half_x;
   camera.ortho_min_y = -game_area_half_z;
   camera.ortho_max_x = game_area_half_x;

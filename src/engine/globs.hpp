@@ -85,7 +85,7 @@ private:
       size_t const found = file_path.find_last_of('/');
       if (found != std::string::npos) {
         base_dir_path = file_path.substr(0, found + 1);
-        // note. +1 to include '/'
+        // note: +1 to include '/'
       }
     }
 

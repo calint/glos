@@ -175,7 +175,7 @@ public:
     if (!instance_size_B) {
       return &all_[ix];
     }
-    // note. if instance size is specified do pointer shenanigans
+    // note: if instance size is specified do pointer shenanigans
     return reinterpret_cast<type *>(reinterpret_cast<char *>(all_) +
                                     instance_size_B * ix);
   }

@@ -8,7 +8,7 @@ namespace glos {
 
 class planes final {
   // cached world coordinate system points and planes
-  // note. there is a point for each plane followed by additional points
+  // note: there is a point for each plane followed by additional points
   //       without planes for use in collision detection
   std::vector<glm::vec4> world_points{}; // x, y, z, 1
   std::vector<glm::vec4> world_planes{}; // A*X + B*Y + C*Z + D = 0
@@ -59,9 +59,9 @@ public:
         world_planes.reserve(normals.size());
         for (glm::vec3 const &normal : normals) {
           glm::vec3 const world_normal = N * normal;
-          // note. world_normal length may not be 1 due to scaling
+          // note: world_normal length may not be 1 due to scaling
           world_planes.emplace_back(glm::vec4{world_normal, 0});
-          // note. D component (distance to plane from origin along the normal)
+          // note: D component (distance to plane from origin along the normal)
           // in plane equation is set to 0 and will be updated when world_points
           // change
         }
@@ -118,26 +118,25 @@ public:
   }
 
   // works in cases where the sphere is much smaller than the convex volume
-  // e.g. bullets vs walls. gives false positives when the volume has "pointy"
-  // edge and the sphere is close to it from the "front" because there are
-  // positions where the sphere is "within" the collision planes although
-  // "outside" the volume
-  // workaround: add more planes to the volume at the "pointy" edges
+  // e.g. bullets vs walls. gives false positives at corners because there are
+  // positions where the sphere is within the collision planes although outside
+  // the volume
+  // workaround: add planes to the volume at the corners
   inline auto are_in_collision_with_sphere(glm::vec3 const &position,
                                            float const radius) const -> bool {
 
-    // return are_in_collision_with_sphere_sat(position, radius);
+    return are_in_collision_with_sphere_sat(position, radius);
 
     glm::vec4 const point{position, 1.0f};
     return std::ranges::all_of(world_planes, [&](glm::vec4 const &plane) {
       return glm::dot(point, plane) <= radius * glm::length(glm::vec3{plane});
-      // note. division by length of plane normal is necessary because normal
+      // note: division by length of plane normal is necessary because normal
       //       may not be unit vector due to scaling. division moved to the
       //       right-hand side for slightly faster operation than division
     });
   }
 
-  // note. gives false positives. works in 2D.
+  // note: gives false positives. works in 2D.
   inline auto are_in_collision_with_sphere_sat(glm::vec3 const &position,
                                                float const radius) const
       -> bool {
@@ -154,11 +153,8 @@ public:
       for (unsigned i = 1; i < n; ++i) {
         glm::vec3 const &point = world_points[i];
         float const projection = glm::dot(point, plane_normal);
-        if (projection < min_projection) {
-          min_projection = projection;
-        } else if (projection > max_projection) {
-          max_projection = projection;
-        }
+        min_projection = std::min(min_projection, projection);
+        max_projection = std::max(max_projection, projection);
       }
 
       float const sphere_projection = glm::dot(position, plane_normal);
@@ -182,8 +178,7 @@ public:
       }
     }
 
-    debug_render_wcs_line(closest_point, closest_point + glm::vec3{0.2f, 0, 0},
-                          {1.0f, 1.0f, 1.0f, 1.0f});
+    debug_render_wcs_points({closest_point}, {1.0f, 1.0f, 1.0f, 1.0f});
 
     // make that into an axis and check for separation
     glm::vec3 const axis = glm::normalize(closest_point - position);
@@ -230,6 +225,8 @@ public:
 
   inline void release_lock() { lock.clear(std::memory_order_release); }
 
+  // tests whether any point in 'pns1' is within the volume defined by 'pns2'
+  // and vice versa
   inline static auto are_in_collision(planes const &pns1, planes const &pns2)
       -> bool {
     return pns1.is_any_point_in_volume(pns2) or

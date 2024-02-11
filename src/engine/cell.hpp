@@ -68,7 +68,7 @@ public:
         continue;
       }
 
-      // note. opportunity to clear the list prior to 'resolve_collisions'
+      // note: opportunity to clear the list prior to 'resolve_collisions'
       ce.object->clear_handled_collisions();
     }
   }

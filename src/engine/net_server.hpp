@@ -110,7 +110,7 @@ public:
     printf(" * entering loop\n");
     uint64_t t0 = SDL_GetPerformanceCounter();
     while (true) {
-      // note. state[0] contains server info sent to all clients
+      // note: state[0] contains server info sent to all clients
       //       state[1] etc are the client states
       for (unsigned i = 1; i < net_players + 1; ++i) {
         ssize_t const n = recv(clients_fd[i], &state[i], sizeof(state[i]), 0);
@@ -176,7 +176,7 @@ private:
   int server_fd = 0;
   std::array<int, net_players + 1> clients_fd{};
   std::array<net_state, net_players + 1> state{};
-  // note. state[0] is used by server to broadcast to all clients
+  // note: state[0] is used by server to broadcast to all clients
   //       delta time for frame (dt) and current server time in ms
 };
 

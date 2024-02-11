@@ -50,7 +50,7 @@ public:
       velocity +=
           ship_speed * vec3{-sin(angle.y), 0, -cos(angle.y)} * frame_context.dt;
       glob_ix = glob_ix_ship_engine_on;
-      // note. planes.invalidated = true; not necessary because both globs have
+      // note: planes.invalidated = true; not necessary because both globs have
       //       the same bounding planes
     }
     if (keys & key_a) {
@@ -114,8 +114,8 @@ private:
 
     mat4 const &M = get_updated_Mmw();
     vec3 const forward_vec = -normalize(vec3{M[2]});
-    // note. M[2] is third column: z-axis
-    // note. forward for object model space is negative z
+    // note: M[2] is third column: z-axis
+    // note: forward for object model space is negative z
 
     switch (bullet_level) {
     case 0: {

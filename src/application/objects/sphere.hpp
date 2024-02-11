@@ -63,6 +63,7 @@ public:
     if (keys & key_k) {
       camera.position = {0, 0, 50};
     }
+
     return true;
   }
 

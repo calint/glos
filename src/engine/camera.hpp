@@ -11,7 +11,7 @@ public:
   enum class type { LOOK_AT, ANGLE, ORTHOGONAL };
   glm::vec3 position{0, 50, 0};
   glm::vec3 look_at{0, 0, -0.0001f};
-  // note. -0.0001f because of the math of 'look at'
+  // note: -0.0001f because of the math of 'look at'
   glm::vec3 angle{0, 0, 0};
   float near_plane = 0.1f;
   float far_plane = 300;

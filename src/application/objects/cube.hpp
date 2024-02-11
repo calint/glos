@@ -34,6 +34,43 @@ public:
 
     game_area_roll(position);
 
+    if (net_state == nullptr) {
+      return true;
+    }
+
+    velocity = {0, 0, 0};
+    angular_velocity = {0, 0, 0};
+
+    uint64_t const keys = net_state->keys;
+
+    // handle ship controls
+    float const v = 1;
+    float const a = radians(10.0f);
+    if (keys & key_w) {
+      velocity.z = -v;
+    }
+    if (keys & key_s) {
+      velocity.z = v;
+    }
+    if (keys & key_a) {
+      velocity.x = -v;
+    }
+    if (keys & key_d) {
+      velocity.x = v;
+    }
+    if (keys & key_q) {
+      angular_velocity.y = a;
+    }
+    if (keys & key_e) {
+      angular_velocity.y = -a;
+    }
+    if (keys & key_i) {
+      camera.position = {0, 50, 0};
+    }
+    if (keys & key_k) {
+      camera.position = {0, 0, 50};
+    }
+
     return true;
   }
 

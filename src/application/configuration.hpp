@@ -18,8 +18,8 @@ static constexpr bool debug_multiplayer = false;
 //
 
 // multithreaded grid
-// note. in some cases multithreaded mode is a degradation of performance
-// note. multiplayer mode cannot use 'threaded_grid' because of the
+// note: in some cases multithreaded mode is a degradation of performance
+// note: multiplayer mode cannot use 'threaded_grid' because of the
 //       non-deterministic behavior
 static constexpr bool threaded_grid = false;
 static constexpr bool threaded_update = false;
@@ -45,7 +45,7 @@ static constexpr bool hud_enabled = true;
 static constexpr unsigned window_width = 1024;
 static constexpr unsigned window_height = 1024;
 static constexpr bool window_vsync = is_performance_test ? false : true;
-// note. vsync should be on when not doing performance tests
+// note: vsync should be on when not doing performance tests
 
 // number of players in networked mode
 static constexpr unsigned net_players = 2;
