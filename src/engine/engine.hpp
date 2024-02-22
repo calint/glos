@@ -136,7 +136,7 @@ public:
     // set random number generator seed for deterministic behaviour
     srand(0);
 
-    // initiate subsystems
+    // initiate subsystems, order matters
     metrics.init();
     net.init();
     sdl.init();

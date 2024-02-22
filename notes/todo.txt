@@ -56,6 +56,8 @@
     since a thread processes a whole row
 [ ] assets embedded in static executable with the goal of a one file, no dependencies unit
     => map<path,data>
+[ ] o1store: check alignment of *all calloc to match object size
+    => use std::aligned_alloc and std::free
 [ ] collision detection of convex volume vs convex volume using separating axis theorem
 [ ] glob::load: optimize ranges by merging non-textured materials since all
     material info is saved in the vertices
