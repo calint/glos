@@ -1,3 +1,7 @@
+[ ] use source_location rather than __FILE__ and __LINE__
+[ ] use c++ random number generator rather than rand()
+[ ] rand() is not thread-safe
+[ ] use io stream rather than 'token'
 [x] performance test, multithreaded grid, cubes
     :: valgrind --tool=cachegrind --cache-sim=yes ./glos
     ==1154883== 
@@ -56,9 +60,10 @@
     since a thread processes a whole row
 [ ] assets embedded in static executable with the goal of a one file, no dependencies unit
     => map<path,data>
-[ ] o1store: check alignment of *all calloc to match object size
+[ ] o1store: check alignment of '*all' calloc to match object size
     => use std::aligned_alloc and std::free
 [ ] collision detection of convex volume vs convex volume using separating axis theorem
+    => current method appropriate for intended application
 [ ] glob::load: optimize ranges by merging non-textured materials since all
     material info is saved in the vertices
     => texture_id stored in range
@@ -90,8 +95,6 @@
 [ ] object: consider making all members private
 [ ] object: changing glob_ix should invalidate planes
     => for now planes.invalidated flag
-[ ] use c++ random number generator
-[ ] rand() is not thread-safe
 [ ] cell.update does what object::update does since it always returns true
 [ ] bounding box. OBB 3 normals, width, height
     check if point is inside: 3 dot products + additions and comparisons

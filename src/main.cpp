@@ -14,7 +14,7 @@ auto main(int argc, char *argv[]) -> int {
     glos::net_server.init();
     glos::net_server.run();
     glos::net_server.free();
-    return 0;
+    return EXIT_SUCCESS;
   }
 
   // instance is client
@@ -30,10 +30,7 @@ auto main(int argc, char *argv[]) -> int {
   }
 
   glos::engine.init();
-
   glos::engine.run();
-
   glos::engine.free();
-
-  return 0;
+  return EXIT_SUCCESS;
 }

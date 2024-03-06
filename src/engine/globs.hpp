@@ -8,8 +8,6 @@
 namespace glos {
 
 class glob final {
-  friend class globs;
-
   class range final {
   public:
     // index in vertex buffer where triangle data starts
@@ -31,6 +29,13 @@ public:
   // planes
   std::vector<glm::vec4> planes_points{}; // x, y, z, 1
   std::vector<glm::vec3> planes_normals{};
+
+  inline glob(char const *obj_path, char const *bounding_planes_path) {
+    load_object(obj_path);
+    if (bounding_planes_path) {
+      load_planes(bounding_planes_path);
+    }
+  }
 
   inline void render(glm::mat4 const &Mmw) const {
     glUniformMatrix4fv(shaders::umtx_mw, 1, GL_FALSE, glm::value_ptr(Mmw));
@@ -55,7 +60,6 @@ public:
     ++metrics.rendered_globs;
   }
 
-private:
   inline void free() const {
     glDeleteBuffers(1, &vertex_buffer_id);
     glDeleteVertexArrays(1, &vertex_array_id);
@@ -63,6 +67,7 @@ private:
     --metrics.allocated_globs;
   }
 
+private:
   // loads definition and optional bounding planes from 'obj' files
   inline void load_object(char const *obj_path) {
     printf(" * loading glob from '%s'\n", obj_path);
@@ -364,12 +369,7 @@ public:
   inline auto load(char const *obj_path, char const *bounding_planes_path)
       -> uint32_t {
 
-    glob g{};
-    g.load_object(obj_path);
-    if (bounding_planes_path) {
-      g.load_planes(bounding_planes_path);
-    }
-    store.push_back(std::move(g));
+    store.emplace_back(obj_path, bounding_planes_path);
     return uint32_t(store.size() - 1);
   }
 
