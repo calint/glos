@@ -1,3 +1,4 @@
+[ ] exceptions rather than std::abort()
 [ ] use source_location rather than __FILE__ and __LINE__
 [ ] use c++ random number generator rather than rand()
 [ ] rand() is not thread-safe
