@@ -1,8 +1,8 @@
 [x] exceptions rather than std::abort()
 [x] use source_location rather than __FILE__ and __LINE__
+[ ] use io stream rather than 'token'
 [ ] use c++ random number generator rather than rand()
 [ ] rand() is not thread-safe
-[ ] use io stream rather than 'token'
 [x] performance test, multithreaded grid, cubes
     :: valgrind --tool=cachegrind --cache-sim=yes ./glos
     ==1154883== 
