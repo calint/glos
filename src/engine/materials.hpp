@@ -47,10 +47,7 @@ public:
     printf("   * loading materials from '%s'\n", path);
     std::ifstream const file{path};
     if (not file) {
-      fprintf(stderr, "\n%s:%d: cannot open file '%s'\n", __FILE__, __LINE__,
-              path);
-      fflush(stderr);
-      std::abort();
+      throw glos_exception{std::format("cannot open file '{}'", path)};
     }
     std::stringstream buffer{};
     buffer << file.rdbuf();
@@ -130,10 +127,8 @@ public:
     });
 
     if (it == store.cend()) {
-      fprintf(stderr, "\n%s:%d: cannot find material: path '%s' name '%s'\n",
-              __FILE__, __LINE__, path.c_str(), name.c_str());
-      fflush(stderr);
-      std::abort();
+      throw glos_exception{
+          std::format("cannot find material: path '{}' name '{}'", path, name)};
     }
 
     return uint32_t(std::distance(store.cbegin(), it));

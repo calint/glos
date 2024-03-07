@@ -131,10 +131,7 @@ static void application_init() {
       create_spheres(objects_count);
       break;
     default:
-      fprintf(stderr, "\n%s:%d: unknown 'performance_test_type' '%d'\n",
-              __FILE__, __LINE__, performance_test_type);
-      fflush(stderr);
-      std::abort();
+      throw glos_exception{std::format("unknown 'performance_test_type' '{}'", performance_test_type)};
     }
   }
 

@@ -13,7 +13,9 @@
 #include <arpa/inet.h>
 #include <atomic>
 #include <condition_variable>
+#include <exception>
 #include <execution>
+#include <format>
 #include <fstream>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -23,6 +25,7 @@
 #include <iostream>
 #include <mutex>
 #include <netinet/tcp.h>
+#include <source_location>
 #include <sstream>
 #include <string>
 #include <sys/socket.h>
@@ -30,6 +33,8 @@
 #include <vector>
 
 // include order of subsystems relevant
+#include "glos_exception.hpp"
+//
 #include "../application/configuration.hpp"
 //
 #include "metrics.hpp"
@@ -229,8 +234,12 @@ public:
     metrics.fps.calculation_interval_ms = 1000;
     metrics.enable_print = metrics_print;
 
-    application_init();
-
+    // try {
+      application_init();
+    // } catch (glos_exception const &ex) {
+    //   std::cerr << ex << std::endl;
+    //   std::terminate();
+    // }
     // apply new objects create at 'application_init()'
     objects.apply_allocated_instances();
 

@@ -11,10 +11,8 @@ class sdl final {
 public:
   inline void init() {
     if (SDL_Init(SDL_INIT_VIDEO)) {
-      fprintf(stderr, "\n%s:%d: cannot initiate sdl video: %s\n", __FILE__,
-              __LINE__, SDL_GetError());
-      fflush(stderr);
-      std::abort();
+      throw glos_exception{
+          std::format("cannot initiate sdl video: {}", SDL_GetError())};
     }
   }
 

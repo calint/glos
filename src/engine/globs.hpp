@@ -74,10 +74,7 @@ private:
 
     std::ifstream const file{obj_path};
     if (not file) {
-      fprintf(stderr, "\n%s:%d: cannot open file '%s'\n", __FILE__, __LINE__,
-              obj_path);
-      fflush(stderr);
-      std::abort();
+      throw glos_exception{std::format("cannot open file '{}'", obj_path)};
     }
     std::stringstream buffer{};
     buffer << file.rdbuf();
@@ -279,10 +276,7 @@ private:
     printf("   * loading planes from '%s'\n", path);
     std::ifstream const file{path};
     if (not file) {
-      fprintf(stderr, "\n%s:%d: cannot open file '%s'\n", __FILE__, __LINE__,
-              path);
-      fflush(stderr);
-      std::abort();
+      throw glos_exception{std::format("cannot open file '{}'", path)};
     }
     std::stringstream buffer{};
     buffer << file.rdbuf();

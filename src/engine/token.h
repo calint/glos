@@ -37,9 +37,7 @@ static inline auto token_get_uint(token const *t) -> unsigned {
   int const i = atoi(t->content);
   //?  assuming file ends with whitespace, error?
   if (i < 0) {
-    fprintf(stderr, "\n%s:%d: unexpected int\n", __FILE__, __LINE__);
-    fflush(stderr);
-    std::abort();
+    throw glos_exception{std::format("unexpected signed int: {}", i)};
   }
   return (unsigned)i;
 }

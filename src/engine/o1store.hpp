@@ -43,10 +43,8 @@ public:
         static_cast<type **>(calloc(instance_count, sizeof(type *)));
 
     if (!all_ or !free_bgn_ or !alloc_bgn_ or !del_bgn_) {
-      fprintf(stderr, "\n%s:%d: store %u: cannot allocate arrays\n", __FILE__,
-              __LINE__, store_id);
-      fflush(stderr);
-      std::abort();
+      throw glos_exception{
+          std::format("store {}: cannot allocate arrays", store_id)};
     }
 
     free_end_ = free_bgn_ + instance_count;
@@ -85,12 +83,10 @@ public:
       if (return_nullptr_when_no_free_instance_available) {
         return nullptr;
       } else {
-        fprintf(stderr,
-                "\n%s:%d: store %u: out of free instances. consider increasing "
-                "the size of the store.\n",
-                __FILE__, __LINE__, store_id);
-        fflush(stderr);
-        std::abort();
+        throw glos_exception{
+            std::format("store {}: out of free instances. consider increasing "
+                        "the size of the store.",
+                        store_id)};
       }
     }
     type *inst = *free_ptr_;
@@ -112,20 +108,14 @@ public:
 
     if (o1store_check_free_limits) {
       if (del_ptr_ >= del_end_) {
-        fprintf(stderr, "\n%s:%d: store %u: free overrun\n", __FILE__, __LINE__,
-                store_id);
-        fflush(stderr);
-        std::abort();
+        throw glos_exception{std::format("store {}: free overrun", store_id)};
       }
     }
 
     if (o1store_check_double_free) {
       for (type **it = del_bgn_; it < del_ptr_; ++it) {
         if (*it == inst) {
-          fprintf(stderr, "\n%s:%d: store %u: double free\n", __FILE__,
-                  __LINE__, store_id);
-          fflush(stderr);
-          std::abort();
+          throw glos_exception{std::format("store {}: double free", store_id)};
         }
       }
     }

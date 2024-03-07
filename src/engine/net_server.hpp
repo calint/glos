@@ -14,27 +14,20 @@ public:
 
   inline void init() {
     if (SDL_Init(SDL_INIT_TIMER)) {
-      fprintf(stderr, "\n%s:%d: cannot initiate sdl timer: %s\n", __FILE__,
-              __LINE__, SDL_GetError());
-      fflush(stderr);
-      std::abort();
+      throw glos_exception{
+          std::format("cannot initiate sdl timer: {}", SDL_GetError())};
     }
 
     server_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (server_fd == -1) {
-      fprintf(stderr, "\n%s:%d: cannot create socket\n", __FILE__, __LINE__);
-      fflush(stderr);
-      std::abort();
+      throw glos_exception{"cannot create socket"};
     }
 
     {
       int flag = 1;
       if (setsockopt(server_fd, IPPROTO_TCP, TCP_NODELAY, &flag,
                      sizeof(flag))) {
-        fprintf(stderr, "\n%s:%d: cannot set TCP_NODELAY\n", __FILE__,
-                __LINE__);
-        fflush(stderr);
-        std::abort();
+        throw glos_exception{"cannot set TCP_NODELAY"};
       }
     }
 
@@ -44,16 +37,11 @@ public:
     server.sin_port = htons(port);
 
     if (bind(server_fd, (struct sockaddr *)&server, sizeof(server))) {
-      fprintf(stderr, "\n%s:%d: cannot bind socket\n", __FILE__, __LINE__);
-      fflush(stderr);
-      std::abort();
+      throw glos_exception{"cannot bind socket"};
     }
 
     if (listen(server_fd, net_players)) {
-      fprintf(stderr, "\n%s:%d: ", __FILE__, __LINE__);
-      perror("");
-      fflush(stderr);
-      std::abort();
+      throw glos_exception{strerror(errno)};
     }
 
     printf(" * waiting for %u players to connect on port %u\n", net_players,
@@ -62,19 +50,13 @@ public:
     for (unsigned i = 1; i < net_players + 1; ++i) {
       clients_fd[i] = accept(server_fd, nullptr, nullptr);
       if (clients_fd[i] == -1) {
-        fprintf(stderr, "\n%s:%d: ", __FILE__, __LINE__);
-        perror("");
-        fflush(stderr);
-        std::abort();
+        throw glos_exception{strerror(errno)};
       }
 
       int flag = 1;
       if (setsockopt(clients_fd[i], IPPROTO_TCP, TCP_NODELAY, &flag,
                      sizeof(flag))) {
-        fprintf(stderr, "\n%s:%d: ", __FILE__, __LINE__);
-        perror("");
-        fflush(stderr);
-        std::abort();
+        throw glos_exception{strerror(errno)};
       }
 
       printf(" * player %u of %u connected\n", i, net_players);
@@ -90,18 +72,13 @@ public:
       nip.player_ix = i;
       ssize_t const n = send(clients_fd[i], &nip, sizeof(nip), 0);
       if (n == -1) {
-        fprintf(stderr, "\n%s:%d: could not send initial packet to player %u: ",
-                __FILE__, __LINE__, i);
-        perror("");
-        fflush(stderr);
-        std::abort();
+        throw glos_exception{
+            std::format("could not send initial packet to player {}: {}", i,
+                        strerror(errno))};
       }
       if (size_t(n) != sizeof(nip)) {
-        fprintf(stderr, "\n%s:%d: incomplete send to player %u: ", __FILE__,
-                __LINE__, i);
-        perror("");
-        fflush(stderr);
-        std::abort();
+        throw glos_exception{std::format("incomplete send to player {}: {}", i,
+                                         strerror(errno))};
       }
     }
   }
@@ -115,22 +92,15 @@ public:
       for (unsigned i = 1; i < net_players + 1; ++i) {
         ssize_t const n = recv(clients_fd[i], &state[i], sizeof(state[i]), 0);
         if (n == -1) {
-          fprintf(stderr, "\n%s:%d: player %u: ", __FILE__, __LINE__, i);
-          perror("");
-          fflush(stderr);
-          std::abort();
+          throw glos_exception{
+              std::format("player {}: {}", i, strerror(errno))};
         }
         if (n == 0) {
-          fprintf(stderr, "\n%s:%d: player %u: disconnected\n", __FILE__,
-                  __LINE__, i);
-          fflush(stderr);
-          std::abort();
+          throw glos_exception{std::format("player {}: disconnected", i)};
         }
         if (size_t(n) != sizeof(state[i])) {
-          fprintf(stderr, "\n%s:%d: player %u: read was incomplete\n", __FILE__,
-                  __LINE__, i);
-          fflush(stderr);
-          std::abort();
+          throw glos_exception{
+              std::format("player {}: read was incomplete", i)};
         }
       }
 
@@ -146,16 +116,12 @@ public:
       for (unsigned i = 1; i < net_players + 1; ++i) {
         ssize_t const n = send(clients_fd[i], state.data(), sizeof(state), 0);
         if (n == -1) {
-          fprintf(stderr, "\n%s:%d: player %u: ", __FILE__, __LINE__, i);
-          perror("");
-          fflush(stderr);
-          std::abort();
+          throw glos_exception{
+              std::format("player {}: {}", i, strerror(errno))};
         }
         if (size_t(n) != sizeof(state)) {
-          fprintf(stderr, "\n%s:%d: player %u: send was incomplete\n", __FILE__,
-                  __LINE__, i);
-          fflush(stderr);
-          std::abort();
+          throw glos_exception{
+              std::format("player {}: send was incomplete", i)};
         }
       }
     }

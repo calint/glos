@@ -34,11 +34,7 @@ public:
 
   inline void init() {
     if (net_players < 1) {
-      fprintf(stderr,
-              "\n%s:%d: configuration 'net_players' must be at least 1\n",
-              __FILE__, __LINE__);
-      fflush(stderr);
-      std::abort();
+      throw glos_exception{"configuration 'net_players' must be at least 1"};
     }
 
     if (not enabled) {
@@ -47,17 +43,12 @@ public:
 
     fd = socket(AF_INET, SOCK_STREAM, 0);
     if (fd == -1) {
-      fprintf(stderr, "\n%s:%d: ", __FILE__, __LINE__);
-      perror("");
-      fflush(stderr);
-      std::abort();
+      throw glos_exception{strerror(errno)};
     }
 
     int flag = 1;
     if (setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, &flag, sizeof(flag))) {
-      fprintf(stderr, "\n%s:%d: cannot set TCP_NODELAY\n", __FILE__, __LINE__);
-      fflush(stderr);
-      std::abort();
+      throw glos_exception{"cannot set TCP_NODELAY"};
     }
 
     struct sockaddr_in server {};
@@ -67,30 +58,20 @@ public:
 
     printf("[ net ] connecting to '%s' on port %u\n", host, port);
     if (connect(fd, (struct sockaddr *)&server, sizeof(server)) < 0) {
-      fprintf(stderr, "\n%s:%d: ", __FILE__, __LINE__);
-      perror("");
-      fflush(stderr);
-      std::abort();
+      throw glos_exception{strerror(errno)};
     }
 
     printf("[ net ] connected. waiting for go ahead\n");
     net_init_packet nip{};
     ssize_t const n = recv(fd, &nip, sizeof(nip), 0);
     if (n == -1) {
-      fprintf(stderr, "%s:%d: ", __FILE__, __LINE__);
-      perror("");
-      fflush(stderr);
-      std::abort();
+      throw glos_exception{strerror(errno)};
     }
     if (n == 0) {
-      fprintf(stderr, "%s:%d: server disconnected\n", __FILE__, __LINE__);
-      fflush(stderr);
-      std::abort();
+      throw glos_exception{"server disconnected"};
     }
     if (size_t(n) != sizeof(nip)) {
-      fprintf(stderr, "%s:%d: incomplete receive\n", __FILE__, __LINE__);
-      fflush(stderr);
-      std::abort();
+      throw glos_exception{"incomplete receive"};
     }
 
     // get server assigned player index and time in milliseconds
@@ -121,21 +102,13 @@ public:
     // receive signals from previous frame
     ssize_t const n = recv(fd, states.data(), sizeof(states), 0);
     if (n == -1) {
-      fprintf(stderr, "\n%s:%d: ", __FILE__, __LINE__);
-      perror("");
-      fflush(stderr);
-      std::abort();
+      throw glos_exception{strerror(errno)};
     }
     if (n == 0) {
-      fprintf(stderr, "\n%s:%d: server disconnected\n", __FILE__, __LINE__);
-      fflush(stderr);
-      std::abort();
+      throw glos_exception{"server disconnected"};
     }
     if (size_t(n) != sizeof(states)) {
-      fprintf(stderr, "\n%s:%d: incomplete read of states\n", __FILE__,
-              __LINE__);
-      fflush(stderr);
-      std::abort();
+      throw glos_exception{"incomplete read of states"};
     }
 
     // send current frame signals
@@ -156,15 +129,10 @@ private:
   inline void send_state() const {
     ssize_t const n = send(fd, &next_state, sizeof(next_state), 0);
     if (n == -1) {
-      fprintf(stderr, "\n%s:%d: ", __FILE__, __LINE__);
-      perror("");
-      fflush(stderr);
-      std::abort();
+      throw glos_exception{strerror(errno)};
     }
     if (size_t(n) != sizeof(next_state)) {
-      fprintf(stderr, "\n%s:%d: incomplete send\n", __FILE__, __LINE__);
-      fflush(stderr);
-      std::abort();
+      throw glos_exception{"incomplete send"};
     }
   }
 };
