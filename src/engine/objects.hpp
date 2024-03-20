@@ -51,10 +51,9 @@ public:
   glm::vec3 scale{}; // in meters
 private:
   glm::mat4 Mmw{}; // model -> world matrix
+  uint32_t glob_ix_ = 0; // index in globs store
   // -- cell::render
   uint32_t rendered_at_tick = 0; // used by cell to avoid rendering twice
-private:
-  uint32_t glob_ix_ = 0; // index in globs store
 public:
   // -- other
   // rest of object public state
