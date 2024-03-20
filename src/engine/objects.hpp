@@ -145,7 +145,7 @@ public:
     glob_ix_ = i;
   }
 
-  inline auto glob_ix() -> uint32_t { return glob_ix_; }
+  inline auto glob_ix() const -> uint32_t { return glob_ix_; }
 
 private:
   inline auto is_Mmw_valid() const -> bool {
