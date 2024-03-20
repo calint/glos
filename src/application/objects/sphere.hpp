@@ -12,9 +12,9 @@ public:
       printf("%lu: %lu: create %s\n", frame_context.frame_num, frame_context.ms,
              name.c_str());
     }
-    glob_ix = glob_ix_sphere;
+    glob_ix(glob_ix_sphere);
     scale = {1.0f, 1.0f, 1.0f};
-    bounding_radius = globs.at(glob_ix).bounding_radius * scale.x;
+    bounding_radius = globs.at(glob_ix()).bounding_radius * scale.x;
     is_sphere = true;
     mass = 1;
     collision_bits = cb_power_up;

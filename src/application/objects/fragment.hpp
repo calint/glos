@@ -14,9 +14,9 @@ public:
       printf("%lu: %lu: create %s\n", frame_context.frame_num, frame_context.ms,
              name.c_str());
     }
-    glob_ix = glob_ix_fragment;
+    glob_ix(glob_ix_fragment);
     scale = {0.5f, 0.5f, 0.5f};
-    bounding_radius = globs.at(glob_ix).bounding_radius * scale.x;
+    bounding_radius = globs.at(glob_ix()).bounding_radius * scale.x;
     mass = 10;
     collision_bits = cb_none;
     collision_mask = cb_none;

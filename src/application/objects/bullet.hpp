@@ -14,9 +14,9 @@ public:
       printf("%lu: %lu: create %s\n", frame_context.frame_num, frame_context.ms,
              name.c_str());
     }
-    glob_ix = glob_ix_bullet;
+    glob_ix(glob_ix_bullet);
     scale = {1, 1, 1};
-    bounding_radius = globs.at(glob_ix).bounding_radius * scale.x;
+    bounding_radius = globs.at(glob_ix()).bounding_radius * scale.x;
     mass = 5;
     collision_bits = cb_hero_bullet;
     collision_mask = cb_asteroid;

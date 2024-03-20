@@ -12,9 +12,9 @@ public:
       printf("%lu: %lu: create %s\n", frame_context.frame_num, frame_context.ms,
              name.c_str());
     }
-    glob_ix = glob_ix_tetra;
+    glob_ix(glob_ix_tetra);
     scale = {2.0f, 1.0f, 7.0f};
-    bounding_radius = globs.at(glob_ix).bounding_radius * scale.x;
+    bounding_radius = globs.at(glob_ix()).bounding_radius * scale.x;
     // angular_velocity.z = radians(20.0f);
     mass = 10;
     collision_bits = cb_power_up;

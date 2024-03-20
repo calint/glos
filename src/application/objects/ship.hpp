@@ -14,9 +14,9 @@ public:
       printf("%lu: %lu: create %s\n", frame_context.frame_num, frame_context.ms,
              name.c_str());
     }
-    glob_ix = glob_ix_ship;
+    glob_ix(glob_ix_ship);
     scale = {1, 1, 1};
-    bounding_radius = globs.at(glob_ix).bounding_radius * scale.x;
+    bounding_radius = globs.at(glob_ix()).bounding_radius * scale.x;
     mass = 150;
     collision_bits = cb_hero;
     collision_mask = cb_asteroid | cb_power_up;
@@ -37,7 +37,7 @@ public:
     game_area_roll(position);
 
     angular_velocity = {0, 0, 0};
-    glob_ix = glob_ix_ship;
+    glob_ix(glob_ix_ship);
 
     if (net_state == nullptr) {
       return true;
@@ -49,9 +49,7 @@ public:
     if (keys & key_w) {
       velocity +=
           ship_speed * vec3{-sin(angle.y), 0, -cos(angle.y)} * frame_context.dt;
-      glob_ix = glob_ix_ship_engine_on;
-      // note: planes.invalidated = true; not necessary because both globs have
-      //       the same bounding planes
+      glob_ix(glob_ix_ship_engine_on);
     }
     if (keys & key_a) {
       angular_velocity.y = ship_turn_rate;

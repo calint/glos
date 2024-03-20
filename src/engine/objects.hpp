@@ -53,8 +53,9 @@ private:
   glm::mat4 Mmw{}; // model -> world matrix
   // -- cell::render
   uint32_t rendered_at_tick = 0; // used by cell to avoid rendering twice
+private:
+  uint32_t glob_ix_ = 0; // index in globs store
 public:
-  uint32_t glob_ix = 0; // index in globs store
   // -- other
   // rest of object public state
   net_state *net_state = nullptr; // pointer to signals used by this object
@@ -70,7 +71,7 @@ public:
   //       destructor is invoked in the 'objects.apply_free()'
 
   inline virtual void render() {
-    globs.at(glob_ix).render(get_updated_Mmw());
+    globs.at(glob_ix_).render(get_updated_Mmw());
 
     if (debug_object_planes_normals) {
       planes.debug_render_normals();
@@ -90,7 +91,7 @@ public:
 
     if (debug_object_planes_normals) {
       glm::mat4 const &M = get_updated_Mmw();
-      glob const &g = globs.at(glob_ix);
+      glob const &g = globs.at(glob_ix_);
       planes.update_model_to_world(g.planes_points, g.planes_normals, M,
                                    position, angle, scale);
     }
@@ -137,6 +138,15 @@ public:
     return Mmw;
   }
 
+  inline void glob_ix(uint32_t const i) {
+    if (glob_ix_ != i) {
+      planes.invalidated = true;
+    }
+    glob_ix_ = i;
+  }
+
+  inline auto glob_ix() -> uint32_t { return glob_ix_; }
+
 private:
   inline auto is_Mmw_valid() const -> bool {
     return position == Mmw_pos and angle == Mmw_agl and scale == Mmw_scl;
@@ -162,7 +172,7 @@ private:
       planes.acquire_lock();
     }
 
-    glob const &g = globs.at(glob_ix);
+    glob const &g = globs.at(glob_ix_);
     glm::mat4 const &M = get_updated_Mmw();
     planes.update_model_to_world(g.planes_points, g.planes_normals, M, Mmw_pos,
                                  Mmw_agl, Mmw_scl);
