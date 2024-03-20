@@ -35,7 +35,7 @@ public:
   glm::vec3 angular_velocity{}; // in radians/second
   glm::vec3 angle{};            // in radians
 private:
-  std::vector<const object *> handled_collisions{};
+  std::vector<object const *> handled_collisions{};
   bool is_dead = false; // used by cell to avoid events on dead objects
 public:
   // -- cell::resolve_collisions
