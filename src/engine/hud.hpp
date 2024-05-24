@@ -12,7 +12,7 @@ class hud final {
 public:
   uint32_t program_ix = 0;
 
-  inline void init() {
+  inline auto init() -> void {
     if (TTF_Init()) {
       throw glos_exception{
           std::format("cannot initiate ttf: {}", TTF_GetError())};
@@ -71,7 +71,7 @@ public:
                                                   fragment_shader_source);
   }
 
-  inline void free() {
+  inline auto free() -> void {
     if (font) {
       TTF_CloseFont(font);
     }
@@ -82,7 +82,7 @@ public:
     glDeleteTextures(1, &texture);
   }
 
-  inline void load_font(char const *ttf_path, int const size) {
+  inline auto load_font(char const *ttf_path, int const size) -> void {
     font = TTF_OpenFont(ttf_path, size);
     if (not font) {
       throw glos_exception{
@@ -90,7 +90,7 @@ public:
     }
   }
 
-  inline void render() const {
+  inline auto render() const -> void {
     // glEnable(GL_BLEND);
     // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDisable(GL_DEPTH_TEST);
@@ -106,7 +106,8 @@ public:
     glEnable(GL_DEPTH_TEST);
   }
 
-  inline void print(char const *text, SDL_Color color, int x, int y) const {
+  inline auto print(char const *text, SDL_Color color, int x,
+                    int y) const -> void {
     SDL_Surface *text_surface = TTF_RenderUTF8_Blended(font, text, color);
     // ARGB8888
     // printf("Surface Format: %s\n",

@@ -9,14 +9,14 @@ namespace glos {
 
 class sdl final {
 public:
-  inline void init() {
+  inline auto init() -> void {
     if (SDL_Init(SDL_INIT_VIDEO)) {
       throw glos_exception{
           std::format("cannot initiate sdl video: {}", SDL_GetError())};
     }
   }
 
-  inline void free() { SDL_Quit(); }
+  inline auto free() -> void { SDL_Quit(); }
 };
 
 static sdl sdl{};

@@ -16,12 +16,12 @@ class grid final {
   // task_thread_pool::task_thread_pool pool{};
 
 public:
-  inline void init() {}
+  inline auto init() -> void {}
 
-  inline void free() {}
+  inline auto free() -> void {}
 
   // called from engine
-  inline void update() {
+  inline auto update() -> void {
     if (threaded_grid) {
       std::for_each(std::execution::par_unseq, std::cbegin(cells),
                     std::cend(cells), [](auto const &row) {
@@ -50,7 +50,7 @@ public:
   }
 
   // called from engine
-  inline void resolve_collisions() {
+  inline auto resolve_collisions() -> void {
     if (threaded_grid) {
       std::for_each(std::execution::par_unseq, std::begin(cells),
                     std::end(cells), [](auto &row) {
@@ -79,7 +79,7 @@ public:
   }
 
   // called from engine
-  inline void render() const {
+  inline auto render() const -> void {
     for (auto const &row : cells) {
       for (cell const &c : row) {
         c.render();
@@ -88,7 +88,7 @@ public:
   }
 
   // called from engine
-  inline void clear() {
+  inline auto clear() -> void {
     for (auto &row : cells) {
       for (cell &c : row) {
         c.clear();
@@ -97,7 +97,7 @@ public:
   }
 
   // called from engine
-  inline void add(object *o) {
+  inline auto add(object *o) -> void {
     constexpr float gw = grid_cell_size * grid_columns;
     constexpr float gh = grid_cell_size * grid_rows;
 
@@ -125,7 +125,7 @@ public:
     o->overlaps_cells = (xil != xir or zit != zib);
   }
 
-  inline void print() const {
+  inline auto print() const -> void {
     for (auto const &row : cells) {
       for (cell const &c : row) {
         printf(" %04zu ", c.objects_count());

@@ -28,11 +28,11 @@ public:
   float ortho_min_y = -50;
   float ortho_max_y = 50;
 
-  inline void init() {}
+  inline auto init() -> void {}
 
-  inline void free() {}
+  inline auto free() -> void {}
 
-  inline void update_matrix_wvp() {
+  inline auto update_matrix_wvp() -> void {
     switch (type) {
     case type::LOOK_AT: {
       float const aspect_ratio = height == 0 ? 1 : (width / height);

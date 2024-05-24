@@ -32,16 +32,16 @@ public:
   float net_lag = 0;
   bool enable_print = true;
 
-  inline void init() {}
+  inline auto init() -> void {}
 
-  inline void free() {}
+  inline auto free() -> void {}
 
-  inline void begin() {
+  inline auto begin() -> void {
     timer_tick_at_start_of_frame = SDL_GetPerformanceCounter();
     fps.time_at_start_of_interval_ms = SDL_GetTicks64();
   }
 
-  inline void print_headers(FILE *f) const {
+  inline auto print_headers(FILE *f) const -> void {
     if (not enable_print) {
       return;
     }
@@ -51,7 +51,7 @@ public:
             "drw_g", "drw_t");
   }
 
-  inline void print(FILE *f) const {
+  inline auto print(FILE *f) const -> void {
     if (not enable_print) {
       return;
     }
@@ -63,27 +63,27 @@ public:
         rendered_globs, rendered_triangles);
   }
 
-  inline void update_begin() {
+  inline auto update_begin() -> void {
     update_begin_tick = SDL_GetPerformanceCounter();
   }
 
-  inline void update_end() {
+  inline auto update_end() -> void {
     uint64_t const tick = SDL_GetPerformanceCounter();
     update_pass_ms = float(tick - update_begin_tick) * 1000 /
                      float(SDL_GetPerformanceFrequency());
   }
 
-  inline void render_begin() {
+  inline auto render_begin() -> void {
     render_begin_tick = SDL_GetPerformanceCounter();
   }
 
-  inline void render_end() {
+  inline auto render_end() -> void {
     uint64_t const tick = SDL_GetPerformanceCounter();
     render_pass_ms = float(tick - render_begin_tick) * 1000 /
                      float(SDL_GetPerformanceFrequency());
   }
 
-  inline void at_frame_begin() {
+  inline auto at_frame_begin() -> void {
     ++fps.frame_count;
     rendered_objects = 0;
     rendered_globs = 0;
@@ -92,7 +92,7 @@ public:
     net_lag = 0;
   }
 
-  inline void at_frame_end(FILE *f) {
+  inline auto at_frame_end(FILE *f) -> void {
     {
       uint64_t const t1 = SDL_GetPerformanceCounter();
       uint64_t const dt_ticks = t1 - timer_tick_at_start_of_frame;

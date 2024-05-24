@@ -18,7 +18,7 @@ class shaders final {
   public:
     GLuint id = 0;
 
-    inline void use() const { glUseProgram(id); }
+    inline auto use() const -> void { glUseProgram(id); }
   };
 
   // default shader source
@@ -71,7 +71,7 @@ public:
   // uniform ambient light
   static constexpr GLint ulht = 3; // light vector
 
-  inline void init() {
+  inline auto init() -> void {
     puts("");
     gl_print_string("GL_VENDOR", GL_VENDOR);
     gl_print_string("GL_RENDERER", GL_RENDERER);
@@ -115,7 +115,7 @@ public:
     puts("");
   }
 
-  inline void free() {
+  inline auto free() -> void {
     for (program const &p : programs) {
       glDeleteProgram(p.id);
     }
@@ -149,11 +149,13 @@ public:
 
   inline auto programs_count() const -> size_t { return programs.size(); }
 
-  inline void use_program(size_t const ix) const { programs.at(ix).use(); }
+  inline auto use_program(size_t const ix) const -> void {
+    programs.at(ix).use();
+  }
 
 private:
-  static inline auto compile(GLenum const shader_type, char const *src)
-      -> GLuint {
+  static inline auto compile(GLenum const shader_type,
+                             char const *src) -> GLuint {
     GLuint const shader_id = glCreateShader(shader_type);
     glShaderSource(shader_id, 1, &src, nullptr);
     glCompileShader(shader_id);
@@ -172,13 +174,14 @@ public:
   //
   // static functions
   //
-  static inline void gl_print_string(char const *name, GLenum const gl_str) {
+  static inline auto gl_print_string(char const *name,
+                                     GLenum const gl_str) -> void {
     char const *str = (char const *)glGetString(gl_str);
     printf("%s = %s\n", name, str);
   }
 
-  static inline auto shader_name_for_type(GLenum const shader_type)
-      -> char const * {
+  static inline auto
+  shader_name_for_type(GLenum const shader_type) -> char const * {
     switch (shader_type) {
     case GL_VERTEX_SHADER:
       return "vertex";

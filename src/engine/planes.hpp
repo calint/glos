@@ -24,11 +24,11 @@ public:
 
   // points and normals are in model coordinates
   // Mmw matrix was constructed using pos, agl, scl
-  inline void update_model_to_world(std::vector<glm::vec4> const &points,
+  inline auto update_model_to_world(std::vector<glm::vec4> const &points,
                                     std::vector<glm::vec3> const &normals,
                                     glm::mat4 const &Mmw, glm::vec3 const &pos,
                                     glm::vec3 const &agl,
-                                    glm::vec3 const &scl) {
+                                    glm::vec3 const &scl) -> void {
 
     bool const angle_scale_changed = Mmw_agl != agl or Mmw_scl != scl;
 
@@ -85,7 +85,7 @@ public:
     }
   }
 
-  inline void debug_render_normals() {
+  inline auto debug_render_normals() -> void {
     acquire_lock();
     size_t const n = world_planes.size();
     for (unsigned i = 0; i < n; ++i) {
@@ -137,9 +137,9 @@ public:
   }
 
   // note: gives false positives. works in 2D.
-  inline auto are_in_collision_with_sphere_sat(glm::vec3 const &position,
-                                               float const radius) const
-      -> bool {
+  inline auto
+  are_in_collision_with_sphere_sat(glm::vec3 const &position,
+                                   float const radius) const -> bool {
 
     // check for separation along each normal
     for (glm::vec4 const &plane : world_planes) {
@@ -218,17 +218,17 @@ public:
     return true;
   }
 
-  inline void acquire_lock() {
+  inline auto acquire_lock() -> void {
     while (lock.test_and_set(std::memory_order_acquire)) {
     }
   }
 
-  inline void release_lock() { lock.clear(std::memory_order_release); }
+  inline auto release_lock() -> void { lock.clear(std::memory_order_release); }
 
   // tests whether any point in 'pns1' is within the volume defined by 'pns2'
   // and vice versa
-  inline static auto are_in_collision(planes const &pns1, planes const &pns2)
-      -> bool {
+  inline static auto are_in_collision(planes const &pns1,
+                                      planes const &pns2) -> bool {
     return pns1.is_any_point_in_volume(pns2) or
            pns2.is_any_point_in_volume(pns1);
   }

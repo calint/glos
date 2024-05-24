@@ -37,7 +37,7 @@ public:
     }
   }
 
-  inline void render(glm::mat4 const &Mmw) const {
+  inline auto render(glm::mat4 const &Mmw) const -> void {
     glUniformMatrix4fv(shaders::umtx_mw, 1, GL_FALSE, glm::value_ptr(Mmw));
     glBindVertexArray(vertex_array_id);
     for (range const &rng : ranges) {
@@ -60,7 +60,7 @@ public:
     ++metrics.rendered_globs;
   }
 
-  inline void free() const {
+  inline auto free() const -> void {
     glDeleteBuffers(1, &vertex_buffer_id);
     glDeleteVertexArrays(1, &vertex_array_id);
     metrics.buffered_vertex_data -= size_B;
@@ -69,7 +69,7 @@ public:
 
 private:
   // loads definition and optional bounding planes from 'obj' files
-  inline void load_object(char const *obj_path) {
+  inline auto load_object(char const *obj_path) -> void {
     printf(" * loading glob from '%s'\n", obj_path);
 
     std::ifstream const file{obj_path};
@@ -271,7 +271,7 @@ private:
     metrics.buffered_vertex_data += size_B;
   }
 
-  inline void load_planes(char const *path) {
+  inline auto load_planes(char const *path) -> void {
     // load from blender exported 'obj' file
     printf("   * loading planes from '%s'\n", path);
     std::ifstream const file{path};
@@ -352,16 +352,16 @@ class globs final {
   std::vector<glob> store{};
 
 public:
-  inline void init() {}
+  inline auto init() -> void {}
 
-  inline void free() {
+  inline auto free() -> void {
     for (glob const &g : store) {
       g.free();
     }
   }
 
-  inline auto load(char const *obj_path, char const *bounding_planes_path)
-      -> uint32_t {
+  inline auto load(char const *obj_path,
+                   char const *bounding_planes_path) -> uint32_t {
 
     store.emplace_back(obj_path, bounding_planes_path);
     return uint32_t(store.size() - 1);

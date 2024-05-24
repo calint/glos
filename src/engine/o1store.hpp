@@ -101,7 +101,7 @@ public:
   }
 
   // adds instance to list of instances to be freed with 'apply_free()'
-  void free_instance(type *inst) {
+  auto free_instance(type *inst) -> void {
     if (thread_safe) {
       acquire_lock();
     }
@@ -129,7 +129,7 @@ public:
   }
 
   // deallocates the instances that have been freed
-  void apply_free() {
+  auto apply_free() -> void {
     for (type **it = del_bgn_; it < del_ptr_; ++it) {
       type *inst_deleted = *it;
       alloc_ptr_--;
@@ -178,10 +178,10 @@ public:
                               3 * instance_count * sizeof(type *));
   }
 
-  inline void acquire_lock() {
+  inline auto acquire_lock() -> void {
     while (lock.test_and_set(std::memory_order_acquire)) {
     }
   }
 
-  inline void release_lock() { lock.clear(std::memory_order_release); }
+  inline auto release_lock() -> void { lock.clear(std::memory_order_release); }
 };

@@ -50,7 +50,7 @@ private:
 public:
   glm::vec3 scale{}; // in meters
 private:
-  glm::mat4 Mmw{}; // model -> world matrix
+  glm::mat4 Mmw{};       // model -> world matrix
   uint32_t glob_ix_ = 0; // index in globs store
   // -- cell::render
   uint32_t rendered_at_tick = 0; // used by cell to avoid rendering twice
@@ -69,7 +69,7 @@ public:
   // note: 'delete obj;' may not be used because memory is managed by 'o1store'.
   //       destructor is invoked in the 'objects.apply_free()'
 
-  inline virtual void render() {
+  inline virtual auto render() -> void {
     globs.at(glob_ix_).render(get_updated_Mmw());
 
     if (debug_object_planes_normals) {
@@ -137,7 +137,7 @@ public:
     return Mmw;
   }
 
-  inline void glob_ix(uint32_t const i) {
+  inline auto glob_ix(uint32_t const i) -> void {
     if (glob_ix_ != i) {
       planes.invalidated = true;
     }
@@ -151,7 +151,7 @@ private:
     return position == Mmw_pos and angle == Mmw_agl and scale == Mmw_scl;
   }
 
-  inline void clear_handled_collisions() { handled_collisions.clear(); }
+  inline auto clear_handled_collisions() -> void { handled_collisions.clear(); }
 
   inline auto is_collision_handled_and_if_not_add(object const *obj) -> bool {
     bool const found =
@@ -164,7 +164,7 @@ private:
     return found;
   }
 
-  inline void update_planes_world_coordinates() {
+  inline auto update_planes_world_coordinates() -> void {
     bool const synchronize = threaded_grid and overlaps_cells;
 
     if (synchronize) {
@@ -186,22 +186,22 @@ private:
                       glm::vec3(bounding_radius));
   }
 
-  inline void acquire_lock() {
+  inline auto acquire_lock() -> void {
     while (lock.test_and_set(std::memory_order_acquire)) {
     }
   }
 
-  inline void release_lock() { lock.clear(std::memory_order_release); }
+  inline auto release_lock() -> void { lock.clear(std::memory_order_release); }
 };
 
 class objects final {
 public:
-  inline void init() {
+  inline auto init() -> void {
     // initiate list size and end pointer
     apply_allocated_instances();
   }
 
-  inline void free() {
+  inline auto free() -> void {
     object **const end = store_.allocated_list_end();
     // note: important to get the 'end' outside the loop because objects may
     //       allocate new objects in the loop and that would change 'end'
@@ -214,7 +214,7 @@ public:
 
   inline auto alloc() -> object * { return store_.allocate_instance(); }
 
-  inline void free(object *o) { store_.free_instance(o); }
+  inline auto free(object *o) -> void { store_.free_instance(o); }
 
   inline auto allocated_list_len() const -> size_t {
     return allocated_list_len_;
@@ -228,7 +228,7 @@ public:
     return store_.allocated_list();
   }
 
-  inline void apply_allocated_instances() {
+  inline auto apply_allocated_instances() -> void {
     // retrieve the end of list because during objects' 'update' and
     // 'on_collision' new objects might be created which would change the end of
     // list pointer
@@ -236,7 +236,7 @@ public:
     allocated_list_end_ = store_.allocated_list_end();
   }
 
-  inline void apply_freed_instances() { store_.apply_free(); }
+  inline auto apply_freed_instances() -> void { store_.apply_free(); }
 
 private:
   o1store<object, objects_count, 0, false, threaded_grid,

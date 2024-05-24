@@ -105,7 +105,7 @@ public:
   }
 
 private:
-  inline void fire() {
+  inline auto fire() -> void {
     if (ready_to_fire_at_ms > frame_context.ms) {
       return;
     }

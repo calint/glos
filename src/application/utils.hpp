@@ -35,7 +35,7 @@ inline static auto rnd3(int const rem) -> bool {
   return (r % rem) == 0;
 }
 
-inline static void game_area_roll(glm::vec3 &position) {
+inline static auto game_area_roll(glm::vec3 &position) -> void {
   // approximately correct. can be done better.
 
   if (position.x < game_area_min_x) {
@@ -63,7 +63,7 @@ inline static auto is_outside_game_area(glm::vec3 const &position) -> bool {
          position.z < game_area_min_z or position.z > game_area_max_z;
 }
 
-inline static void power_up_by_chance(glm::vec3 const &position) {
+inline static auto power_up_by_chance(glm::vec3 const &position) -> void {
   if (not rnd3(power_up_chance_rem)) {
     return;
   }

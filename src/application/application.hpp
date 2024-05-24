@@ -20,13 +20,13 @@ static std::atomic<unsigned> asteroids_alive{0};
 #include "objects/tetra.hpp"
 
 // forward declarations
-static void application_init_shaders();
-static void create_asteroids(unsigned num);
-static void create_cubes(unsigned num);
-static void create_spheres(unsigned num);
+static auto application_init_shaders() -> void;
+static auto create_asteroids(unsigned num) -> void;
+static auto create_cubes(unsigned num) -> void;
+static auto create_spheres(unsigned num) -> void;
 
 // engine interface
-static void application_init() {
+static auto application_init() -> void {
   application_init_shaders();
 
   printf("\ntime is %lu ms\n\n", frame_context.ms);
@@ -131,7 +131,8 @@ static void application_init() {
       create_spheres(objects_count);
       break;
     default:
-      throw glos_exception{std::format("unknown 'performance_test_type' '{}'", performance_test_type)};
+      throw glos_exception{std::format("unknown 'performance_test_type' '{}'",
+                                       performance_test_type)};
     }
   }
 
@@ -155,7 +156,7 @@ static void application_init() {
 }
 
 // engine interface
-static void application_on_update_done() {
+static auto application_on_update_done() -> void {
   if (is_performance_test) {
     return;
   }
@@ -167,7 +168,7 @@ static void application_on_update_done() {
 }
 
 // engine interface
-static void application_on_render_done() {
+static auto application_on_render_done() -> void {
   if (score != score_prv) {
     score_prv = score;
     std::array<char, 256> buf{};
@@ -177,9 +178,9 @@ static void application_on_render_done() {
 }
 
 // engine interface
-static void application_free() {}
+static auto application_free() -> void {}
 
-static void create_asteroids(unsigned const num) {
+static auto create_asteroids(unsigned const num) -> void {
   constexpr float v = asteroid_large_speed;
   constexpr float d = game_area_max_x - game_area_min_x;
   for (unsigned i = 0; i < num; ++i) {
@@ -191,7 +192,7 @@ static void create_asteroids(unsigned const num) {
   }
 }
 
-static void create_cubes(unsigned const num) {
+static auto create_cubes(unsigned const num) -> void {
   constexpr float v = cube_speed;
   constexpr float d = game_area_max_x - game_area_min_x;
   for (unsigned i = 0; i < num; ++i) {
@@ -204,7 +205,7 @@ static void create_cubes(unsigned const num) {
   }
 }
 
-static void create_spheres(unsigned const num) {
+static auto create_spheres(unsigned const num) -> void {
   constexpr float v = sphere_speed;
   constexpr float d = game_area_max_x - game_area_min_x;
   for (unsigned i = 0; i < num; ++i) {
@@ -217,7 +218,7 @@ static void create_spheres(unsigned const num) {
 }
 
 // some additional shaders
-static void application_init_shaders() {
+static auto application_init_shaders() -> void {
   {
     constexpr char const *vtx = R"(
 #version 330 core

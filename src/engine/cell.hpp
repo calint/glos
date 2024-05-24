@@ -33,7 +33,7 @@ class cell final {
 
 public:
   // called from grid
-  inline void update() const {
+  inline auto update() const -> void {
     for (entry const &ce : entry_list) {
       if (threaded_grid) {
         // multithreaded mode
@@ -73,14 +73,14 @@ public:
     }
   }
 
-  inline void resolve_collisions() {
+  inline auto resolve_collisions() -> void {
     make_check_collisions_list();
     process_check_collisions_list();
     handle_check_collisions_list();
   }
 
   // called from grid (from only one thread)
-  inline void render() const {
+  inline auto render() const -> void {
     for (entry const &ce : entry_list) {
       if (ce.object->overlaps_cells) [[unlikely]] {
         // check if object has been rendered by another cell
@@ -95,15 +95,15 @@ public:
   }
 
   // called from grid (from only one thread)
-  inline void clear() { entry_list.clear(); }
+  inline auto clear() -> void { entry_list.clear(); }
 
   // called from grid (from only one thread)
-  inline void add(object *o) {
+  inline auto add(object *o) -> void {
     entry_list.emplace_back(o->position, o->bounding_radius, o->collision_bits,
                             o->collision_mask, o);
   }
 
-  inline void print() const {
+  inline auto print() const -> void {
     unsigned i = 0;
     for (entry const &ce : entry_list) {
       if (i++) {
@@ -118,7 +118,7 @@ public:
 
 private:
   // called from grid (possibly by multiple threads)
-  inline void make_check_collisions_list() {
+  inline auto make_check_collisions_list() -> void {
     check_collisions_list.clear();
 
     // thread safe because 'entry_list' does not change during
@@ -152,7 +152,7 @@ private:
     }
   }
 
-  inline void process_check_collisions_list() {
+  inline auto process_check_collisions_list() -> void {
     for (collision &cc : check_collisions_list) {
       // bounding spheres are in collision
       object *Oi = cc.o1;
@@ -193,7 +193,7 @@ private:
     }
   }
 
-  inline void handle_check_collisions_list() const {
+  inline auto handle_check_collisions_list() const -> void {
     for (collision const &cc : check_collisions_list) {
       if (not cc.is_collision) {
         continue;
@@ -231,7 +231,7 @@ private:
     }
   }
 
-  static inline void handle_sphere_collision(object *Oi, object *Oj) {
+  static inline auto handle_sphere_collision(object *Oi, object *Oj) -> void {
     // synchronize objects that overlap cells
 
     if (threaded_grid and Oi->overlaps_cells) {
@@ -312,9 +312,9 @@ private:
     return false;
   }
 
-  static inline auto bounding_spheres_are_in_collision(entry const &ce1,
-                                                       entry const &ce2)
-      -> bool {
+  static inline auto
+  bounding_spheres_are_in_collision(entry const &ce1,
+                                    entry const &ce2) -> bool {
 
     glm::vec3 const v = ce2.position - ce1.position;
     float const d = ce1.radius + ce2.radius;
@@ -324,8 +324,8 @@ private:
     return diff < 0;
   }
 
-  static inline auto bounding_planes_are_in_collision(object *o1, object *o2)
-      -> bool {
+  static inline auto bounding_planes_are_in_collision(object *o1,
+                                                      object *o2) -> bool {
 
     o1->update_planes_world_coordinates();
     o2->update_planes_world_coordinates();

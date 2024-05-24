@@ -12,7 +12,7 @@ class net_server final {
 public:
   uint16_t port = 8085;
 
-  inline void init() {
+  inline auto init() -> void {
     if (SDL_Init(SDL_INIT_TIMER)) {
       throw glos_exception{
           std::format("cannot initiate sdl timer: {}", SDL_GetError())};
@@ -83,7 +83,7 @@ public:
     }
   }
 
-  inline void run() {
+  inline auto run() -> void {
     printf(" * entering loop\n");
     uint64_t t0 = SDL_GetPerformanceCounter();
     while (true) {
@@ -127,7 +127,7 @@ public:
     }
   }
 
-  inline void free() {
+  inline auto free() -> void {
     size_t const n = clients_fd.size();
     for (unsigned i = 1; i < n; i++) {
       close(clients_fd[i]);

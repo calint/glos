@@ -39,11 +39,11 @@ class materials final {
   std::vector<material> store{};
 
 public:
-  inline void init() {}
+  inline auto init() -> void {}
 
-  inline void free() { store.clear(); }
+  inline auto free() -> void { store.clear(); }
 
-  inline void load(char const *path) {
+  inline auto load(char const *path) -> void {
     printf("   * loading materials from '%s'\n", path);
     std::ifstream const file{path};
     if (not file) {
@@ -118,9 +118,9 @@ public:
     }
   }
 
-  inline auto find_material_ix_or_break(std::string const &path,
-                                        std::string const &name) const
-      -> uint32_t {
+  inline auto
+  find_material_ix_or_break(std::string const &path,
+                            std::string const &name) const -> uint32_t {
 
     auto it = std::ranges::find_if(store, [&](material const &mtl) {
       return mtl.path == path and mtl.name == name;

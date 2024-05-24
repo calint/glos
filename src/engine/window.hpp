@@ -9,7 +9,7 @@ namespace glos {
 
 class window final {
 public:
-  inline void init() {
+  inline auto init() -> void {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
@@ -42,13 +42,13 @@ public:
     gl_print_context_profile_and_version();
   }
 
-  inline void free() {
+  inline auto free() -> void {
     SDL_DestroyRenderer(sdl_renderer);
     SDL_GL_DeleteContext(sdl_gl_context);
     SDL_DestroyWindow(sdl_window);
   }
 
-  inline void swap_buffers() const { SDL_GL_SwapWindow(sdl_window); }
+  inline auto swap_buffers() const -> void { SDL_GL_SwapWindow(sdl_window); }
 
   inline auto get_width_and_height() const -> std::pair<int, int> {
     int w = 0;
@@ -62,7 +62,7 @@ private:
   SDL_Renderer *sdl_renderer = nullptr;
   SDL_GLContext sdl_gl_context = nullptr;
 
-  static inline void gl_print_context_profile_and_version() {
+  static inline auto gl_print_context_profile_and_version() -> void {
     int value = 0;
     if (SDL_GL_GetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, &value)) {
       throw glos_exception{
