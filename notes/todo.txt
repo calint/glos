@@ -8,6 +8,8 @@
 [ ]   render cull objects
 [x]   fix multithreading issues
 [ ]     in multiplayer threaded grid
+[ ]       if object max bounding radius is less than half a grid cell size then threading
+          every other row works in a deterministic way
 [ ]   grid: static vs moving vs bullets vs scenery objects
 [ ] if objects can't overlap several grids then threading can be done in a deterministic way
     => process multithreaded grid even rows then odd rows
