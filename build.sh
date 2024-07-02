@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # dependencies (in ubuntu 24.04 installation):
 # * clang++ version 18.1.3
 # * libglm-dev/noble,noble,now 0.9.9.8+ds-7
@@ -11,7 +11,7 @@
 set -e
 cd $(dirname "$0")
 
-#CC="g++ -std=c++20 -Wno-changes-meaning -fanalyzer"
+#CC="g++ -std=c++23 -Wno-changes-meaning"
 CC="clang++ -std=c++23"
 SRC="src/main.cpp"
 BIN="glos"

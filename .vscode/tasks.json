@@ -4,7 +4,10 @@
         {
             "label": "glos build",
             "type": "shell",
-            "group": "build",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
             "options": {
                 "cwd": "${workspaceFolder}"
             },
