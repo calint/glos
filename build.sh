@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # dependencies (in ubuntu installation):
 # * libglm-dev/mantic,mantic,now 0.9.9.8+ds-7 all: opengl math
 # * libtbb-dev/mantic 2021.9.0-2ubuntu1 i386: for parallel unsequenced `for_each`
@@ -7,11 +7,11 @@
 # * libsdl2-image-dev/mantic,now 2.6.3+dfsg-2 amd64
 # * libsdl2-ttf-dev/mantic,now 2.20.2+dfsg-1 amd64
 # * opengl related packages
-
 set -e
+cd $(dirname "$0")
 
 #CC="g++ -std=c++20 -Wno-changes-meaning -fanalyzer"
-CC="clang++ -std=c++20"
+CC="clang++ -std=c++23"
 SRC="src/main.cpp"
 BIN="glos"
 CFLAGS="-Wfatal-errors $(sdl2-config --cflags)"
