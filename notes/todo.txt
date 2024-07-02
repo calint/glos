@@ -50,8 +50,6 @@
 [ ] look at std::aligned_alloc to align o1store
 [ ] convert token.h
 [ ] object: consider making all members private
-[x] object: changing glob_ix should invalidate planes
-    => for now planes.invalidated flag
 [ ] cell.update does what object::update does since it always returns true
 [ ] bounding box. OBB 3 normals, width, height
     check if point is inside: 3 dot products + additions and comparisons
