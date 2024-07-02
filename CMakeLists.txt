@@ -1,9 +1,11 @@
-# dependencies (in ubuntu installation):
-# * libglm-dev/mantic,mantic,now 0.9.9.8+ds-7 all: opengl math
-# * libtbb-dev/mantic 2021.9.0-2ubuntu1 i386: for parallel unsequenced `for_each`
-# * libsdl2-dev/mantic,now 2.28.3+dfsg-2 amd64
-# * libsdl2-gfx-dev/mantic,now 1.0.4+dfsg-5 amd64
-# * libsdl2-image-dev/mantic,now 2.6.3+dfsg-2 amd64
+# dependencies (in ubuntu 24.04 installation):
+# * clang++ version 18.1.3
+# * libglm-dev/noble,noble,now 0.9.9.8+ds-7
+# * libtbb-dev/noble,now 2021.11.0-2ubuntu2
+# * libsdl2-dev/noble,now 2.30.0+dfsg-1build3
+# * libsdl2-gfx-dev/noble,now 1.0.4+dfsg-5build1
+# * libsdl2-image-dev/noble,now 2.8.2+dfsg-1build2
+# * libsdl2-ttf-dev/noble,now 2.22.0+dfsg-1
 # * opengl related packages
 
 cmake_minimum_required(VERSION 3.7)
