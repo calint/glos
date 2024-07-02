@@ -40,7 +40,7 @@
     => sat method (separating axis theorem) using normals for projection axis
        has edge cases and does give false positives
     => one more test on axis from sphere position to closest point in volume
-    => works in 2D but not in 3D
+       => works in 2D but not in 3D
 [ ] planes: bool for the case where scaling is uniform to optimize collision detection
     with sphere by removing the division by the length of the normal vector
 [ ] struct vertex: use glm::vecX instead of float[]
