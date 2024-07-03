@@ -37,7 +37,6 @@
   - descriptive and verbose
   - snake case
   - lower case
-  - private members have suffix `_`
 * use of public members in classes
   - public members are moved to private scope when not used outside the class
   - when a change to a public member triggers other actions, accessors are written, and member is moved to private scope
