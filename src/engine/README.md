@@ -58,3 +58,18 @@ regarding `threaded_update` and `threaded_grid`
      ...                              ...                              
    -----------------------------<== * trigger update
 ```
+## globals
+in order of dependency:
+* metrics
+* net
+* net_server
+* sdl
+* window
+* shaders
+* camera
+* hud
+* textures
+* materials
+* globs
+* objects
+* grid
