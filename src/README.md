@@ -26,7 +26,7 @@
 * right to left notation `Type const &inst` instead of `const Type &inst`
   - for consistency, `const` is written after the type such as `char const *ptr` instead of `const char *ptr` and `float const x` instead of `const float x`
   - idea is that type name is an annotation that can be replaced by `auto`
-* unsigned type is used where negative values don't make sense
+* unsigned types are used where negative values don't make sense
 * `++i` instead of `i++`
   - for consistency with incrementing iterators, increments and decrements are done in prefix
 * casting such as `char(getchar())` is ok for readability
