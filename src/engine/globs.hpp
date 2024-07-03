@@ -106,7 +106,7 @@ private:
       token const tk = token_next(&p);
       if (token_equals(&tk, "mtllib")) {
         token const t = token_next(&p);
-        unsigned const n = token_size(&t);
+        uint32_t const n = token_size(&t);
         std::string const file_name{t.content, t.content + n};
         mtl_path = base_dir_path + file_name;
         materials.load(mtl_path.c_str());
@@ -115,14 +115,14 @@ private:
       if (token_equals(&tk, "o") and is_first_obj) {
         is_first_obj = false;
         token const t = token_next(&p);
-        unsigned const n = token_size(&t);
+        uint32_t const n = token_size(&t);
         name = std::string{t.content, t.content + n};
         printf("   %s\n", name.c_str());
         continue;
       }
       if (token_equals(&tk, "usemtl")) {
         token const t = token_next(&p);
-        unsigned const n = token_size(&t);
+        uint32_t const n = token_size(&t);
         std::string const mtl_name = {t.content, t.content + n};
         current_material_ix =
             materials.find_material_ix_or_break(mtl_path, mtl_name);
@@ -169,24 +169,24 @@ private:
       }
       if (token_equals(&tk, "f")) {
         material const &current_material = materials.at(current_material_ix);
-        for (unsigned i = 0; i < 3; ++i) {
+        for (uint32_t i = 0; i < 3; ++i) {
           // position
           token const ix1_tkn = token_from_string_additional_delim(p, '/');
           p = ix1_tkn.end;
-          unsigned const ix1 = token_get_uint(&ix1_tkn);
+          uint32_t const ix1 = token_get_uint(&ix1_tkn);
           glm::vec3 const &position = positions.at(ix1 - 1);
 
           // texture
           token const ix2_tkn = token_from_string_additional_delim(p, '/');
           p = ix2_tkn.end;
-          unsigned const ix2 = token_get_uint(&ix2_tkn);
+          uint32_t const ix2 = token_get_uint(&ix2_tkn);
           glm::vec2 const &texture =
               ix2 ? texture_uv.at(ix2 - 1) : glm::vec2{0, 0};
 
           // normal
           token const ix3_tkn = token_from_string_additional_delim(p, '/');
           p = ix3_tkn.end;
-          unsigned const ix3 = token_get_uint(&ix3_tkn);
+          uint32_t const ix3 = token_get_uint(&ix3_tkn);
           glm::vec3 const &normal = normals.at(ix3 - 1);
 
           // add to buffer
@@ -222,7 +222,7 @@ private:
     ranges.emplace_back(vertex_ix_prv, vertex_ix - vertex_ix_prv,
                         current_material_ix);
 
-    unsigned triangles_count = 0;
+    uint32_t triangles_count = 0;
     for (range const &rng : ranges) {
       triangles_count += rng.vertex_count / 3;
     }
@@ -314,7 +314,7 @@ private:
         // position
         token const ix1_tkn = token_from_string_additional_delim(p, '/');
         p = ix1_tkn.end;
-        unsigned const ix1 = token_get_uint(&ix1_tkn);
+        uint32_t const ix1 = token_get_uint(&ix1_tkn);
         glm::vec4 const &point = points.at(ix1 - 1);
 
         // texture, skip
@@ -324,7 +324,7 @@ private:
         // normal
         token const ix3_tkn = token_from_string_additional_delim(p, '/');
         p = ix3_tkn.end;
-        unsigned const ix3 = token_get_uint(&ix3_tkn);
+        uint32_t const ix3 = token_get_uint(&ix3_tkn);
         glm::vec3 const &normal = normals.at(ix3 - 1);
 
         planes_points.emplace_back(point);

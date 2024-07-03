@@ -6,10 +6,10 @@ using namespace glos;
 using namespace glm;
 
 // game state
-static unsigned level = 0; // no racing
-static unsigned score = 0; // racing ok
-static unsigned score_prv = score;
-static std::atomic<unsigned> asteroids_alive{0};
+static uint32_t level = 0; // no racing
+static uint32_t score = 0; // racing ok
+static uint32_t score_prv = score;
+static std::atomic<uint32_t> asteroids_alive{0};
 
 // objects
 #include "objects/asteroid_large.hpp"
@@ -21,9 +21,9 @@ static std::atomic<unsigned> asteroids_alive{0};
 
 // forward declarations
 static auto application_init_shaders() -> void;
-static auto create_asteroids(unsigned num) -> void;
-static auto create_cubes(unsigned num) -> void;
-static auto create_spheres(unsigned num) -> void;
+static auto create_asteroids(uint32_t num) -> void;
+static auto create_cubes(uint32_t num) -> void;
+static auto create_spheres(uint32_t num) -> void;
 
 // engine interface
 static auto application_init() -> void {
@@ -180,10 +180,10 @@ static auto application_on_render_done() -> void {
 // engine interface
 static auto application_free() -> void {}
 
-static auto create_asteroids(unsigned const num) -> void {
+static auto create_asteroids(uint32_t const num) -> void {
   constexpr float v = asteroid_large_speed;
   constexpr float d = game_area_max_x - game_area_min_x;
-  for (unsigned i = 0; i < num; ++i) {
+  for (uint32_t i = 0; i < num; ++i) {
     asteroid_large *o = new (objects.alloc()) asteroid_large{};
     o->position.x = rnd1(d);
     o->position.z = rnd1(d);
@@ -192,10 +192,10 @@ static auto create_asteroids(unsigned const num) -> void {
   }
 }
 
-static auto create_cubes(unsigned const num) -> void {
+static auto create_cubes(uint32_t const num) -> void {
   constexpr float v = cube_speed;
   constexpr float d = game_area_max_x - game_area_min_x;
-  for (unsigned i = 0; i < num; ++i) {
+  for (uint32_t i = 0; i < num; ++i) {
     cube *o = new (objects.alloc()) cube{};
     o->position.x = rnd1(d);
     o->position.z = rnd1(d);
@@ -205,10 +205,10 @@ static auto create_cubes(unsigned const num) -> void {
   }
 }
 
-static auto create_spheres(unsigned const num) -> void {
+static auto create_spheres(uint32_t const num) -> void {
   constexpr float v = sphere_speed;
   constexpr float d = game_area_max_x - game_area_min_x;
-  for (unsigned i = 0; i < num; ++i) {
+  for (uint32_t i = 0; i < num; ++i) {
     sphere *o = new (objects.alloc()) sphere{};
     o->position.x = rnd1(d);
     o->position.z = rnd1(d);

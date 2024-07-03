@@ -88,7 +88,7 @@ public:
   inline auto debug_render_normals() -> void {
     acquire_lock();
     size_t const n = world_planes.size();
-    for (unsigned i = 0; i < n; ++i) {
+    for (uint32_t i = 0; i < n; ++i) {
       glm::vec4 const &point = world_points.at(i);
       glm::vec4 const &plane = world_planes.at(i);
       debug_render_wcs_line(point, point + plane, {1, 0, 0, 0.5f});
@@ -150,7 +150,7 @@ public:
 
       // project both the sphere and the convex volume onto the plane normal
       size_t const n = world_planes.size();
-      for (unsigned i = 1; i < n; ++i) {
+      for (uint32_t i = 1; i < n; ++i) {
         glm::vec3 const &point = world_points[i];
         float const projection = glm::dot(point, plane_normal);
         min_projection = std::min(min_projection, projection);
@@ -190,7 +190,7 @@ public:
     float volume_min_projection = glm::dot(glm::vec3{world_points[0]}, axis);
     float volume_max_projection = volume_min_projection;
     size_t const n = world_points.size();
-    for (unsigned i = 1; i < n; ++i) {
+    for (uint32_t i = 1; i < n; ++i) {
       float const projection = glm::dot(glm::vec3{world_points[i]}, axis);
       volume_min_projection = std::min(volume_min_projection, projection);
       volume_max_projection = std::max(volume_max_projection, projection);

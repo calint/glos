@@ -7,8 +7,8 @@ struct token {
   char const *end = nullptr;
 };
 
-static inline auto token_size(token const *t) -> unsigned {
-  return unsigned(t->content_end - t->content);
+static inline auto token_size(token const *t) -> uint32_t {
+  return uint32_t(t->content_end - t->content);
 }
 
 static inline auto token_starts_with(token const *t, char const *str) -> bool {
@@ -33,13 +33,13 @@ static inline auto token_get_float(token const *t) -> float {
   return float(atof(t->content)); //? assuming file ends with whitespace
 }
 
-static inline auto token_get_uint(token const *t) -> unsigned {
+static inline auto token_get_uint(token const *t) -> uint32_t {
   int const i = atoi(t->content);
   //?  assuming file ends with whitespace, error?
   if (i < 0) {
     throw glos_exception{std::format("unexpected signed int: {}", i)};
   }
-  return (unsigned)i;
+  return uint32_t(i);
 }
 
 static inline auto token_next(char const **s) -> token {
@@ -73,8 +73,8 @@ static inline auto token_next(char const **s) -> token {
   return t;
 }
 
-static inline auto token_from_string_additional_delim(char const *s, char delim)
-    -> token {
+static inline auto token_from_string_additional_delim(char const *s,
+                                                      char delim) -> token {
   const char *p = s;
   token t;
   t.begin = s;

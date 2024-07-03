@@ -63,7 +63,7 @@ public:
       if (token_starts_with(&t, "newmtl")) {
         store.push_back({});
         token const tk = token_next(&p);
-        unsigned const n = token_size(&tk);
+        uint32_t const n = token_size(&tk);
         store.back().path = std::string{path};
         store.back().name = std::string{tk.content, tk.content + n};
         printf("     %s\n", store.back().name.c_str());
@@ -110,7 +110,7 @@ public:
       if (token_equals(&t, "map_Kd")) {
         // texture path
         token const tk = token_next(&p);
-        unsigned const n = token_size(&tk);
+        uint32_t const n = token_size(&tk);
         store.back().map_Kd = std::string{tk.content, tk.content + n};
         store.back().texture_id = textures.find_id_or_load(store.back().map_Kd);
         continue;

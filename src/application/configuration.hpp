@@ -5,7 +5,8 @@
 // reviewed: 2024-01-08
 
 // game or performance test
-static constexpr unsigned performance_test_type = 0; // 0: none (game)  1: cubes  2: spheres
+static constexpr uint32_t performance_test_type =
+    0; // 0: none (game)  1: cubes  2: spheres
 static constexpr bool is_performance_test = performance_test_type != 0;
 static constexpr float cube_speed = 10;
 static constexpr float sphere_speed = 10;
@@ -27,8 +28,8 @@ static constexpr bool threaded_update = false;
 // grid dimensions
 static constexpr float grid_size =
     is_performance_test ? 3200 : 40; // square side in e.g. meters
-static constexpr unsigned grid_rows = is_performance_test ? 16 : 4;
-static constexpr unsigned grid_columns = grid_rows;
+static constexpr uint32_t grid_rows = is_performance_test ? 16 : 4;
+static constexpr uint32_t grid_columns = grid_rows;
 static constexpr float grid_cell_size = grid_size / grid_rows;
 
 // o1store debugging (assertions should be on in development)
@@ -42,16 +43,16 @@ static constexpr bool metrics_print = true;
 static constexpr bool hud_enabled = true;
 
 // window dimensions
-static constexpr unsigned window_width = 1024;
-static constexpr unsigned window_height = 1024;
+static constexpr uint32_t window_width = 1024;
+static constexpr uint32_t window_height = 1024;
 static constexpr bool window_vsync = is_performance_test ? false : true;
 // note: vsync should be on when not doing performance tests
 
 // number of players in networked mode
-static constexpr unsigned net_players = 2;
+static constexpr uint32_t net_players = 2;
 
 // number of preallocated objects
-static constexpr unsigned objects_count =
+static constexpr uint32_t objects_count =
     is_performance_test ? 64 * 1024 : 1 * 1024;
 
 // maximum size of any object instance in bytes
@@ -69,17 +70,17 @@ static constexpr uint32_t cb_asteroid = 1U << 2U;
 static constexpr uint32_t cb_power_up = 1U << 3U;
 
 // settings
-static constexpr unsigned asteroid_level = 2;
+static constexpr uint32_t asteroid_level = 2;
 
 static constexpr float asteroid_large_agl_vel_rnd = glm::radians(45.0f);
 static constexpr float asteroid_large_speed = 10;
 static constexpr float asteroid_large_scale = 2;
-static constexpr unsigned asteroid_large_split = 4;
+static constexpr uint32_t asteroid_large_split = 4;
 static constexpr float asteroid_large_split_speed = 6;
 static constexpr float asteroid_large_split_agl_vel_rnd = glm::radians(120.0f);
 
 static constexpr float asteroid_medium_scale = 1.2f;
-static constexpr unsigned asteroid_medium_split = 4;
+static constexpr uint32_t asteroid_medium_split = 4;
 static constexpr float asteroid_medium_split_speed = 6;
 static constexpr float asteroid_medium_split_agl_vel_rnd = glm::radians(200.0f);
 
@@ -88,14 +89,14 @@ static constexpr float asteroid_small_scale = 0.75f;
 static constexpr float ship_turn_rate = glm::radians(120.0f);
 static constexpr float ship_speed = 6;
 static constexpr float ship_bullet_speed = 17;
-static constexpr unsigned ship_bullet_fire_interval_ms = 1'000;
-static constexpr unsigned ship_bullet_level_1_fire_count = 5;
+static constexpr uint32_t ship_bullet_fire_interval_ms = 1'000;
+static constexpr uint32_t ship_bullet_level_1_fire_count = 5;
 static constexpr float ship_bullet_spread = 4;
 
 static constexpr float bullet_fragment_agl_vel_rnd = glm::radians(360.0f);
 
 static constexpr int power_up_chance_rem = 5;
-static constexpr unsigned power_up_lifetime_ms = 30'000;
+static constexpr uint32_t power_up_lifetime_ms = 30'000;
 
 // game area based on grid and biggest object
 static constexpr float game_area_half_x = grid_size / 2;
@@ -131,7 +132,7 @@ static uint32_t glob_ix_tetra = 0;
 static uint32_t glob_ix_sphere = 0;
 
 // used when 'debug_multiplayer' is true to give objects unique numbers
-static std::atomic<unsigned> counter = 0;
+static std::atomic<uint32_t> counter = 0;
 
 // render debugging (runtime modifiable)
 static bool debug_object_planes_normals = false;

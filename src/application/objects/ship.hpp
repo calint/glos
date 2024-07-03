@@ -125,7 +125,7 @@ private:
       break;
     }
     case 1: {
-      for (unsigned i = 0; i < ship_bullet_level_1_fire_count; ++i) {
+      for (uint32_t i = 0; i < ship_bullet_level_1_fire_count; ++i) {
         bullet *blt = new (objects.alloc()) bullet{};
         blt->position = position + forward_vec;
         blt->angle = angle;

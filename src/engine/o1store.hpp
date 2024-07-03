@@ -13,7 +13,7 @@
 //
 
 template <typename type, size_t const instance_count,
-          unsigned const store_id = 0,
+          uint32_t const store_id = 0,
           bool const return_nullptr_when_no_free_instance_available = false,
           bool const thread_safe = false, size_t const instance_size_B = 0>
 class o1store final {

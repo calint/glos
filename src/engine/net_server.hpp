@@ -47,7 +47,7 @@ public:
     printf(" * waiting for %u players to connect on port %u\n", net_players,
            port);
 
-    for (unsigned i = 1; i < net_players + 1; ++i) {
+    for (uint32_t i = 1; i < net_players + 1; ++i) {
       clients_fd[i] = accept(server_fd, nullptr, nullptr);
       if (clients_fd[i] == -1) {
         throw glos_exception{strerror(errno)};
@@ -89,7 +89,7 @@ public:
     while (true) {
       // note: state[0] contains server info sent to all clients
       //       state[1] etc are the client states
-      for (unsigned i = 1; i < net_players + 1; ++i) {
+      for (uint32_t i = 1; i < net_players + 1; ++i) {
         ssize_t const n = recv(clients_fd[i], &state[i], sizeof(state[i]), 0);
         if (n == -1) {
           throw glos_exception{
@@ -113,7 +113,7 @@ public:
       state[0].look_angle_x = dt;
       state[0].keys = SDL_GetTicks64();
 
-      for (unsigned i = 1; i < net_players + 1; ++i) {
+      for (uint32_t i = 1; i < net_players + 1; ++i) {
         ssize_t const n = send(clients_fd[i], state.data(), sizeof(state), 0);
         if (n == -1) {
           throw glos_exception{
@@ -129,7 +129,7 @@ public:
 
   inline auto free() -> void {
     size_t const n = clients_fd.size();
-    for (unsigned i = 1; i < n; i++) {
+    for (uint32_t i = 1; i < n; i++) {
       close(clients_fd[i]);
       clients_fd[i] = 0;
     }

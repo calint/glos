@@ -109,14 +109,14 @@ public:
     float const zt = gh / 2 + o->position.z - r;
     float const zb = gh / 2 + o->position.z + r;
 
-    unsigned const xil = clamp(int(xl / grid_cell_size), grid_columns - 1);
-    unsigned const xir = clamp(int(xr / grid_cell_size), grid_columns - 1);
-    unsigned const zit = clamp(int(zt / grid_cell_size), grid_rows - 1);
-    unsigned const zib = clamp(int(zb / grid_cell_size), grid_rows - 1);
+    uint32_t const xil = clamp(int(xl / grid_cell_size), grid_columns - 1);
+    uint32_t const xir = clamp(int(xr / grid_cell_size), grid_columns - 1);
+    uint32_t const zit = clamp(int(zt / grid_cell_size), grid_rows - 1);
+    uint32_t const zib = clamp(int(zb / grid_cell_size), grid_rows - 1);
 
     // add to cells
-    for (unsigned z = zit; z <= zib; ++z) {
-      for (unsigned x = xil; x <= xir; ++x) {
+    for (uint32_t z = zit; z <= zib; ++z) {
+      for (uint32_t x = xil; x <= xir; ++x) {
         cell &c = cells[z][x];
         c.add(o);
       }
@@ -136,14 +136,14 @@ public:
   }
 
 private:
-  static inline auto clamp(int const i, unsigned const max) -> unsigned {
+  static inline auto clamp(int const i, uint32_t const max) -> uint32_t {
     if (i < 0) {
       return 0;
     }
-    if (unsigned(i) > max) {
+    if (uint32_t(i) > max) {
       return max;
     }
-    return unsigned(i);
+    return uint32_t(i);
   }
 };
 

@@ -104,7 +104,7 @@ public:
   }
 
   inline auto print() const -> void {
-    unsigned i = 0;
+    uint32_t i = 0;
     for (entry const &ce : entry_list) {
       if (i++) {
         printf(", ");
@@ -128,8 +128,8 @@ private:
       return;
     }
 
-    for (unsigned i = 0; i < len - 1; ++i) {
-      for (unsigned j = i + 1; j < len; ++j) {
+    for (uint32_t i = 0; i < len - 1; ++i) {
+      for (uint32_t j = i + 1; j < len; ++j) {
 
         entry const &Oi = entry_list[i];
         entry const &Oj = entry_list[j];

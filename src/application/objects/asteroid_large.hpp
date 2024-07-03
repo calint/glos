@@ -56,7 +56,7 @@ public:
 
     score += 10;
 
-    for (unsigned i = 0; i < asteroid_large_split; ++i) {
+    for (uint32_t i = 0; i < asteroid_large_split; ++i) {
       asteroid_medium *ast = new (objects.alloc()) asteroid_medium{};
       float const rd2 = bounding_radius / 2;
       vec3 const rp = {rnd1(rd2), 0, rnd1(rd2)};
