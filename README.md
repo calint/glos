@@ -2,7 +2,7 @@
 
 experimental 3d multiplayer game framework using simple data layer 2 and opengl es3 in c++ 20
 
-intention:
+## intention
 * multiplayer framework
   - synchronized client input signals
   - clients render at the rate of the slowest client
@@ -25,7 +25,7 @@ intention:
   - sphere vs convex volume _(todo)_
   - convex volume vs convex volume _(todo)_
 
-ubuntu packages used:
+## ubuntu packages used
 * libglm-dev: opengl math
 * libtbb-dev: parallel unsequenced `for_each`
 * sdl2 related packages
