@@ -39,6 +39,6 @@
   - lower case
 * use of public members in classes
   - public members are moved to private scope when not used outside the class
-  - when a change to a public member triggers other actions, accessors with same name are written, and then member is moved to the private scope witch suffix `_`
+  - when a change to a public member triggers other actions, accessors with same name are written, and then member is moved to the private scope with suffix `_`
 * "Plain Old C++ Object" preferred
 * "Rule of None" preferred
