@@ -109,10 +109,10 @@ public:
     float const zt = gh / 2 + o->position.z - r;
     float const zb = gh / 2 + o->position.z + r;
 
-    uint32_t const xil = clamp(int(xl / grid_cell_size), grid_columns - 1);
-    uint32_t const xir = clamp(int(xr / grid_cell_size), grid_columns - 1);
-    uint32_t const zit = clamp(int(zt / grid_cell_size), grid_rows - 1);
-    uint32_t const zib = clamp(int(zb / grid_cell_size), grid_rows - 1);
+    uint32_t const xil = clamp(int32_t(xl / grid_cell_size), grid_columns - 1);
+    uint32_t const xir = clamp(int32_t(xr / grid_cell_size), grid_columns - 1);
+    uint32_t const zit = clamp(int32_t(zt / grid_cell_size), grid_rows - 1);
+    uint32_t const zib = clamp(int32_t(zb / grid_cell_size), grid_rows - 1);
 
     // add to cells
     for (uint32_t z = zit; z <= zib; ++z) {
@@ -136,7 +136,7 @@ public:
   }
 
 private:
-  static inline auto clamp(int const i, uint32_t const max) -> uint32_t {
+  static inline auto clamp(int32_t const i, uint32_t const max) -> uint32_t {
     if (i < 0) {
       return 0;
     }
