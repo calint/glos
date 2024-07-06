@@ -15,6 +15,9 @@
         => processed rows runs in parallel with the cells requesting random numbers
            in a non-deterministic way
            => each row has a random number generator
+        => order of object creation matters and diverges
+           => each row buffers the objects created during the multithreaded phase
+              then added to store while single threaded
         => no need for synchronization because same object will not be processed in more
            than one thread
 [ ] if object overlaps grid horizontally then there is no need for synchronization 
