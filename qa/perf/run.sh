@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # enable prof for users
 #  :: echo -1 | sudo tee /proc/sys/kernel/perf_event_paranoid
 # -1
