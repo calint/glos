@@ -7,7 +7,6 @@
 // reviewed: 2024-01-16
 
 #include "cell.hpp"
-// #include "task_thread_pool.hpp"
 
 namespace glos {
 
@@ -29,16 +28,6 @@ public:
                         c.update();
                       }
                     });
-
-      // for (auto const &row : cells) {
-      //   pool.submit_detach([&row]() {
-      //     for (cell const &c : row) {
-      //       c.update();
-      //     }
-      //   });
-      // }
-      // pool.wait_for_tasks();
-
       return;
     }
 
@@ -58,16 +47,6 @@ public:
                         c.resolve_collisions();
                       }
                     });
-
-      // for (auto const &row : cells) {
-      //   pool.submit_detach([&row]() {
-      //     for (cell const &c : row) {
-      //       c.resolve_collisions();
-      //     }
-      //   });
-      // }
-      // pool.wait_for_tasks();
-
       return;
     }
 
