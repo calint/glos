@@ -9,7 +9,7 @@
 [ ]   render cull objects
 [x]   fix multithreading issues
 [ ]     in multiplayer threaded grid
-[ ]     if objects max bounding radius is less than half a grid cell size then threading
+        if objects max bounding radius is less than half a grid cell size then threading
         can be done in deterministic way
         => process multithreaded grid even rows then odd rows
         => processed rows runs in parallel with the cells requesting random numbers
