@@ -339,6 +339,7 @@ private:
   bool is_running = true;
   bool is_render = true;
   bool is_render_hud = hud_enabled;
+  bool is_render_grid = false;
   bool is_mouse_mode = false;
   float mouse_rad_over_pixels = rad_over_degree * .02f;
   float mouse_sensitivity = 1.5f;
@@ -394,6 +395,10 @@ private:
     }
 
     grid.render();
+
+    if (is_render_grid) {
+      grid.debug_render_grid();
+    }
 
     application_on_render_done();
 
@@ -647,6 +652,9 @@ private:
           break;
         case SDLK_F7:
           is_render_hud = !is_render_hud;
+          break;
+        case SDLK_F8:
+          is_render_grid = !is_render_grid;
           break;
         }
         break;

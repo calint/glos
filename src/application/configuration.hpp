@@ -5,8 +5,9 @@
 // reviewed: 2024-01-08
 
 // game or performance test
-static constexpr uint32_t performance_test_type =
-    0; // 0: none (game)  1: cubes  2: spheres
+// 0: none (game)  1: cubes  2: spheres
+static constexpr uint32_t performance_test_type = 0;
+
 static constexpr bool is_performance_test = performance_test_type != 0;
 static constexpr float cube_speed = 10;
 static constexpr float sphere_speed = 10;
