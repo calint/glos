@@ -30,9 +30,9 @@ public:
                                     glm::vec3 const &agl,
                                     glm::vec3 const &scl) -> void {
 
-    bool const angle_scale_changed = Mmw_agl != agl or Mmw_scl != scl;
+    bool const angle_scale_changed = Mmw_agl != agl || Mmw_scl != scl;
 
-    if (invalidated or pos != Mmw_pos or angle_scale_changed) {
+    if (invalidated || pos != Mmw_pos || angle_scale_changed) {
       // world points and normals are not in sync with object Mmw
       world_points.clear();
       world_points.reserve(points.size());
@@ -41,13 +41,13 @@ public:
         world_points.emplace_back(world_point);
       }
 
-      if (invalidated or angle_scale_changed) {
+      if (invalidated || angle_scale_changed) {
         // the generalized solution is:
         // glm::mat3 const N = glm::transpose(glm::inverse(glm::mat3(Mmw)));
         // but since it is known how Mmw is composed a less expensive operations
         // is done
 
-        bool const is_uniform_scale = scl.x == scl.y and scl.y == scl.z;
+        bool const is_uniform_scale = scl.x == scl.y && scl.y == scl.z;
 
         glm::mat3 const N =
             is_uniform_scale
@@ -160,7 +160,7 @@ public:
       float const sphere_projection = glm::dot(position, plane_normal);
 
       // check for separation
-      if (sphere_projection + radius < min_projection or
+      if (sphere_projection + radius < min_projection ||
           sphere_projection - radius > max_projection) {
         return false; // separating axis found, no collision
       }
@@ -207,7 +207,7 @@ public:
                           {1.0f, 1.0f, 1.0f, 0.5f});
 
     // check for separation along the axis
-    if (sphere_projection + radius < volume_min_projection or
+    if (sphere_projection + radius < volume_min_projection ||
         sphere_projection - radius > volume_max_projection) {
       return false; // separating axis found, no collision
     }
@@ -229,7 +229,7 @@ public:
   // and vice versa
   inline static auto are_in_collision(planes const &pns1,
                                       planes const &pns2) -> bool {
-    return pns1.is_any_point_in_volume(pns2) or
+    return pns1.is_any_point_in_volume(pns2) ||
            pns2.is_any_point_in_volume(pns1);
   }
 };

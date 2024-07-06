@@ -84,7 +84,7 @@ public:
 
   inline auto load_font(char const *ttf_path, int const size) -> void {
     font = TTF_OpenFont(ttf_path, size);
-    if (not font) {
+    if (!font) {
       throw glos_exception{
           std::format("cannot load font '{}': {}", ttf_path, TTF_GetError())};
     }
@@ -113,14 +113,14 @@ public:
     // printf("Surface Format: %s\n",
     //        SDL_GetPixelFormatName(text_surface->format->format));
 
-    if (not text_surface) {
+    if (!text_surface) {
       throw glos_exception{
           std::format("cannot render text: {}", SDL_GetError())};
     }
 
     SDL_Surface *converted_surface =
         SDL_ConvertSurfaceFormat(text_surface, SDL_PIXELFORMAT_RGBA8888, 0);
-    if (not converted_surface) {
+    if (!converted_surface) {
       throw glos_exception{
           std::format("cannot convert surface: {}", SDL_GetError())};
     }

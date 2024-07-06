@@ -37,7 +37,7 @@ public:
       throw glos_exception{"configuration 'net_players' must be at least 1"};
     }
 
-    if (not enabled) {
+    if (!enabled) {
       return;
     }
 
@@ -83,7 +83,7 @@ public:
   }
 
   inline auto free() -> void {
-    if (not enabled) {
+    if (!enabled) {
       return;
     }
 

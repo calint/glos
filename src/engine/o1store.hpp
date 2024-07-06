@@ -42,7 +42,7 @@ public:
     del_ptr_ = del_bgn_ =
         static_cast<type **>(calloc(instance_count, sizeof(type *)));
 
-    if (!all_ or !free_bgn_ or !alloc_bgn_ or !del_bgn_) {
+    if (!all_ || !free_bgn_ || !alloc_bgn_ || !del_bgn_) {
       throw glos_exception{
           std::format("store {}: cannot allocate arrays", store_id)};
     }

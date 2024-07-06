@@ -42,7 +42,7 @@ public:
   }
 
   inline auto print_headers(FILE *f) const -> void {
-    if (not enable_print) {
+    if (!enable_print) {
       return;
     }
 
@@ -52,7 +52,7 @@ public:
   }
 
   inline auto print(FILE *f) const -> void {
-    if (not enable_print) {
+    if (!enable_print) {
       return;
     }
 

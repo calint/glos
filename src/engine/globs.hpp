@@ -73,7 +73,7 @@ private:
     printf(" * loading glob from '%s'\n", obj_path);
 
     std::ifstream const file{obj_path};
-    if (not file) {
+    if (!file) {
       throw glos_exception{std::format("cannot open file '{}'", obj_path)};
     }
     std::stringstream buffer{};
@@ -112,7 +112,7 @@ private:
         materials.load(mtl_path.c_str());
         continue;
       }
-      if (token_equals(&tk, "o") and is_first_obj) {
+      if (token_equals(&tk, "o") && is_first_obj) {
         is_first_obj = false;
         token const t = token_next(&p);
         uint32_t const n = token_size(&t);
@@ -214,7 +214,7 @@ private:
 
       // unknown token
 
-      if (*p != '\0' and *(p - 1) != '\n') {
+      if (*p != '\0' && *(p - 1) != '\n') {
         p = token_to_including_newline(p);
       }
     }
@@ -275,7 +275,7 @@ private:
     // load from blender exported 'obj' file
     printf("   * loading planes from '%s'\n", path);
     std::ifstream const file{path};
-    if (not file) {
+    if (!file) {
       throw glos_exception{std::format("cannot open file '{}'", path)};
     }
     std::stringstream buffer{};

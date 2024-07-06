@@ -28,7 +28,7 @@ public:
   }
 
   inline auto update() -> bool override {
-    if (not object::update()) {
+    if (!object::update()) {
       return false;
     }
 

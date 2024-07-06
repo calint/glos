@@ -9,7 +9,7 @@
 
 auto main(int argc, char *argv[]) -> int {
 
-  if (argc > 1 and *argv[1] == 's') {
+  if (argc > 1 && *argv[1] == 's') {
     // instance is server
     glos::net_server.init();
     glos::net_server.run();
@@ -20,7 +20,7 @@ auto main(int argc, char *argv[]) -> int {
   // instance is client
   puts("\nprogram glos\n");
 
-  if (argc > 1 and *argv[1] == 'c') {
+  if (argc > 1 && *argv[1] == 'c') {
     // multiplayer client, enable 'net'
     glos::net.enabled = true;
     if (argc > 2) {
@@ -32,5 +32,4 @@ auto main(int argc, char *argv[]) -> int {
   glos::engine.init();
   glos::engine.run();
   glos::engine.free();
-
 }

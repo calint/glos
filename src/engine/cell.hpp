@@ -62,7 +62,7 @@ public:
 
       // only one thread at a time is here for 'ce.object'
 
-      if (not ce.object->update()) {
+      if (!ce.object->update()) {
         ce.object->is_dead = true;
         objects.free(ce.object);
         continue;
@@ -140,8 +140,8 @@ private:
         bool const Oj_subscribed_to_collisions_with_Oi =
             Oj.collision_mask & Oi.collision_bits;
 
-        if ((Oi_subscribed_to_collisions_with_Oj or
-             Oj_subscribed_to_collisions_with_Oi) and
+        if ((Oi_subscribed_to_collisions_with_Oj ||
+             Oj_subscribed_to_collisions_with_Oi) &&
             bounding_spheres_are_in_collision(Oi, Oj)) {
 
           check_collisions_list.emplace_back(
@@ -158,7 +158,7 @@ private:
       object *Oi = cc.o1;
       object *Oj = cc.o2;
 
-      if (Oi->is_sphere and Oj->is_sphere) {
+      if (Oi->is_sphere && Oj->is_sphere) {
         cc.is_collision = true;
         continue;
       }
@@ -195,7 +195,7 @@ private:
 
   inline auto handle_check_collisions_list() const -> void {
     for (collision const &cc : check_collisions_list) {
-      if (not cc.is_collision) {
+      if (!cc.is_collision) {
         continue;
       }
 
@@ -203,7 +203,7 @@ private:
       object *Oi = cc.o1;
       object *Oj = cc.o2;
 
-      if (Oi->is_sphere and Oj->is_sphere) {
+      if (Oi->is_sphere && Oj->is_sphere) {
         bool const Oi_already_handled_Oj = cc.Oi_subscribed_to_collision_with_Oj
                                                ? dispatch_collision(Oi, Oj)
                                                : false;
@@ -213,8 +213,7 @@ private:
 
         // check if collision has already been handled, possibly on a different
         // thread in a different cell
-        if (not Oi_already_handled_Oj and not Oj_already_handled_Oi)
-            [[likely]] {
+        if (!Oi_already_handled_Oj && !Oj_already_handled_Oi) [[likely]] {
           // collision has not been handled during this frame by any cell
           handle_sphere_collision(Oi, Oj);
         }
@@ -234,10 +233,10 @@ private:
   static inline auto handle_sphere_collision(object *Oi, object *Oj) -> void {
     // synchronize objects that overlap cells
 
-    if (threaded_grid and Oi->overlaps_cells) {
+    if (threaded_grid && Oi->overlaps_cells) {
       Oi->acquire_lock();
     }
-    if (threaded_grid and Oj->overlaps_cells) {
+    if (threaded_grid && Oj->overlaps_cells) {
       Oj->acquire_lock();
     }
 
@@ -247,13 +246,13 @@ private:
     float const relative_velocity_along_collision_normal =
         glm::dot(Oj->velocity - Oi->velocity, collision_normal);
 
-    if (relative_velocity_along_collision_normal >= 0 or
+    if (relative_velocity_along_collision_normal >= 0 ||
         std::isnan(relative_velocity_along_collision_normal)) {
       // sphere are not moving towards each other
-      if (threaded_grid and Oj->overlaps_cells) {
+      if (threaded_grid && Oj->overlaps_cells) {
         Oj->release_lock();
       }
-      if (threaded_grid and Oi->overlaps_cells) {
+      if (threaded_grid && Oi->overlaps_cells) {
         Oi->release_lock();
       }
       return;
@@ -269,10 +268,10 @@ private:
     Oi->velocity += impulse * Oj->mass * collision_normal;
     Oj->velocity -= impulse * Oi->mass * collision_normal;
 
-    if (threaded_grid and Oj->overlaps_cells) {
+    if (threaded_grid && Oj->overlaps_cells) {
       Oj->release_lock();
     }
-    if (threaded_grid and Oi->overlaps_cells) {
+    if (threaded_grid && Oi->overlaps_cells) {
       Oi->release_lock();
     }
   }
@@ -281,15 +280,15 @@ private:
   static inline auto dispatch_collision(object *receiver, object *obj) -> bool {
     // if object overlaps cells then this code might be called by several
     // threads at the same time from different cells
-    bool const synchronize = threaded_grid and receiver->overlaps_cells;
+    bool const synchronize = threaded_grid && receiver->overlaps_cells;
 
     if (synchronize) {
       receiver->acquire_lock();
     }
 
-    // if both objects overlap cells then the same collision is detected and
+    // if both objects overlap cells then the same collision is detected &&
     // dispatched in multiple cells
-    if (receiver->overlaps_cells and obj->overlaps_cells and
+    if (receiver->overlaps_cells && obj->overlaps_cells &&
         receiver->is_collision_handled_and_if_not_add(obj)) {
       // collision already dispatched for this 'receiver' and 'obj'
       if (synchronize) {
@@ -300,7 +299,7 @@ private:
 
     // only one thread at a time can be here for 'receiver'
 
-    if (not receiver->is_dead and not receiver->on_collision(obj)) {
+    if (!receiver->is_dead && !receiver->on_collision(obj)) {
       receiver->is_dead = true;
       objects.free(receiver);
     }

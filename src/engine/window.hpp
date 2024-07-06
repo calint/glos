@@ -19,13 +19,13 @@ public:
     sdl_window =
         SDL_CreateWindow("glos", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                          window_width, window_height, SDL_WINDOW_OPENGL);
-    if (not sdl_window) {
+    if (!sdl_window) {
       throw glos_exception{
           std::format("cannot create window: {}", SDL_GetError())};
     }
 
     sdl_gl_context = SDL_GL_CreateContext(sdl_window);
-    if (not sdl_gl_context) {
+    if (!sdl_gl_context) {
       throw glos_exception{
           std::format("cannot create gl context: {}", SDL_GetError())};
     }
@@ -34,7 +34,7 @@ public:
         sdl_window, -1,
         window_vsync ? (SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC)
                      : (SDL_RENDERER_ACCELERATED));
-    if (not sdl_renderer) {
+    if (!sdl_renderer) {
       throw glos_exception{
           std::format("cannot create renderer: {}", SDL_GetError())};
     }

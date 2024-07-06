@@ -288,7 +288,7 @@ public:
       handle_events();
 
       // check if quit was received
-      if (not is_running) {
+      if (!is_running) {
         break;
       }
 
@@ -358,7 +358,7 @@ private:
 
   inline auto render() -> void {
     metrics.render_begin();
-    if (not is_render) {
+    if (!is_render) {
       metrics.render_end();
       return;
     }
@@ -465,9 +465,9 @@ private:
           // wait until render thread is done before removing and adding objects
           // to grid
           std::unique_lock<std::mutex> lock{is_rendering_mutex};
-          is_rendering_cv.wait(lock, [this] { return not is_rendering; });
+          is_rendering_cv.wait(lock, [this] { return !is_rendering; });
 
-          if (not is_running) {
+          if (!is_running) {
             return;
           }
 
@@ -624,13 +624,13 @@ private:
           SDL_SetRelativeMouseMode(is_mouse_mode ? SDL_TRUE : SDL_FALSE);
           break;
         case SDLK_F1:
-          is_print_grid = not is_print_grid;
+          is_print_grid = !is_print_grid;
           break;
         case SDLK_F2:
-          is_resolve_collisions = not is_resolve_collisions;
+          is_resolve_collisions = !is_resolve_collisions;
           break;
         case SDLK_F3:
-          is_render = not is_render;
+          is_render = !is_render;
           break;
         case SDLK_F4:
           ++shader_program_ix;
@@ -639,13 +639,13 @@ private:
           }
           break;
         case SDLK_F5:
-          debug_object_planes_normals = not debug_object_planes_normals;
+          debug_object_planes_normals = !debug_object_planes_normals;
           break;
         case SDLK_F6:
-          debug_object_bounding_sphere = not debug_object_bounding_sphere;
+          debug_object_bounding_sphere = !debug_object_bounding_sphere;
           break;
         case SDLK_F7:
-          is_render_hud = not is_render_hud;
+          is_render_hud = !is_render_hud;
           break;
         }
         break;

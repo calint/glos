@@ -19,7 +19,7 @@ static inline auto token_equals(token const *t, char const *str) -> bool {
   char const *p = t->content;
   while (true) {
     if (p == t->content_end) {
-      return not *str;
+      return !*str;
     }
     if (*p != *str) {
       return false;
@@ -48,7 +48,7 @@ static inline auto token_next(char const **s) -> token {
   t.begin = p;
   // read empty space
   while (true) {
-    if (*p == '\0' or not isspace(*p)) {
+    if (*p == '\0' || !isspace(*p)) {
       break;
     }
     ++p;
@@ -56,7 +56,7 @@ static inline auto token_next(char const **s) -> token {
   // read token
   t.content = p;
   while (true) {
-    if (*p == '\0' or isspace(*p)) {
+    if (*p == '\0' || isspace(*p)) {
       break;
     }
     ++p;
@@ -64,7 +64,7 @@ static inline auto token_next(char const **s) -> token {
   t.content_end = p;
   // read trailing empty space
   while (true) {
-    if (*p == '\0' or not isspace(*p)) {
+    if (*p == '\0' || !isspace(*p)) {
       break;
     }
     ++p;
@@ -79,14 +79,14 @@ static inline auto token_from_string_additional_delim(char const *s,
   token t;
   t.begin = s;
   while (true) {
-    if (*p == '\0' or not isspace(*p)) {
+    if (*p == '\0' || !isspace(*p)) {
       break;
     }
     ++p;
   }
   t.content = p;
   while (true) {
-    if (*p == '\0' or isspace(*p)) {
+    if (*p == '\0' || isspace(*p)) {
       break;
     }
     if (*p == delim) {
@@ -98,7 +98,7 @@ static inline auto token_from_string_additional_delim(char const *s,
   }
   t.content_end = p;
   while (true) {
-    if (*p == '\0' or not isspace(*p)) {
+    if (*p == '\0' || !isspace(*p)) {
       break;
     }
     ++p;

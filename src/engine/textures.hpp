@@ -25,7 +25,7 @@ public:
 
     printf(" * loading texture %u from '%s'\n", id, path.c_str());
     SDL_Surface *surface = IMG_Load(path.c_str());
-    if (not surface) {
+    if (!surface) {
       throw glos_exception{std::format("cannot load image from '{}'", path)};
     }
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, surface->w, surface->h, 0, GL_RGB,

@@ -161,7 +161,7 @@ private:
     glCompileShader(shader_id);
     GLint ok = 0;
     glGetShaderiv(shader_id, GL_COMPILE_STATUS, &ok);
-    if (not ok) {
+    if (!ok) {
       GLchar msg[1024];
       glGetShaderInfoLog(shader_id, sizeof(msg), nullptr, msg);
       throw glos_exception{std::format("compile error in {} shader:\n{}",

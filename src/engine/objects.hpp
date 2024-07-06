@@ -106,7 +106,7 @@ public:
     //   for this function
     // * in threaded grid when objects in different cells running on different
     //   threads might race for this
-    bool const synchronize = threaded_update or threaded_grid;
+    bool const synchronize = threaded_update || threaded_grid;
 
     if (synchronize) {
       while (lock_get_updated_Mmw.test_and_set(std::memory_order_acquire)) {
@@ -148,7 +148,7 @@ public:
 
 private:
   inline auto is_Mmw_valid() const -> bool {
-    return position == Mmw_pos and angle == Mmw_agl and scale == Mmw_scl;
+    return position == Mmw_pos && angle == Mmw_agl && scale == Mmw_scl;
   }
 
   inline auto clear_handled_collisions() -> void { handled_collisions.clear(); }
@@ -157,7 +157,7 @@ private:
     bool const found =
         std::ranges::find(handled_collisions, obj) != handled_collisions.cend();
 
-    if (not found) {
+    if (!found) {
       handled_collisions.push_back(obj);
     }
 
@@ -165,7 +165,7 @@ private:
   }
 
   inline auto update_planes_world_coordinates() -> void {
-    bool const synchronize = threaded_grid and overlaps_cells;
+    bool const synchronize = threaded_grid && overlaps_cells;
 
     if (synchronize) {
       planes.acquire_lock();

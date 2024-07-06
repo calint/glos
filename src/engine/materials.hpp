@@ -46,7 +46,7 @@ public:
   inline auto load(char const *path) -> void {
     printf("   * loading materials from '%s'\n", path);
     std::ifstream const file{path};
-    if (not file) {
+    if (!file) {
       throw glos_exception{std::format("cannot open file '{}'", path)};
     }
     std::stringstream buffer{};
@@ -74,8 +74,8 @@ public:
         store.back().Ns = token_get_float(&tk);
         continue;
       }
-      if (token_equals(&t, "Ka") or token_equals(&t, "Kd") or
-          token_equals(&t, "Ks") or token_equals(&t, "Ke")) {
+      if (token_equals(&t, "Ka") || token_equals(&t, "Kd") ||
+          token_equals(&t, "Ks") || token_equals(&t, "Ke")) {
         glm::vec3 v{};
         token const x = token_next(&p);
         v.x = token_get_float(&x);
@@ -123,7 +123,7 @@ public:
                             std::string const &name) const -> uint32_t {
 
     auto it = std::ranges::find_if(store, [&](material const &mtl) {
-      return mtl.path == path and mtl.name == name;
+      return mtl.path == path && mtl.name == name;
     });
 
     if (it == store.cend()) {

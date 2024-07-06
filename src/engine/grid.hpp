@@ -122,7 +122,7 @@ public:
       }
     }
 
-    o->overlaps_cells = (xil != xir or zit != zib);
+    o->overlaps_cells = (xil != xir || zit != zib);
   }
 
   inline auto print() const -> void {
