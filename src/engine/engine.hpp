@@ -26,6 +26,7 @@
 #include <iostream>
 #include <mutex>
 #include <netinet/tcp.h>
+#include <random>
 #include <source_location>
 #include <sstream>
 #include <string>
@@ -100,6 +101,8 @@ static auto application_on_render_done() -> void;
 static auto application_free() -> void;
 
 //
+#include "random_numbers.hpp"
+//
 #include "objects.hpp"
 //
 #include "grid.hpp"
@@ -139,9 +142,6 @@ static constexpr uint32_t key_o = 1U << 11U;
 class engine final {
 public:
   inline auto init() -> void {
-    // set random number generator seed for deterministic behaviour
-    srand(0);
-
     // initiate subsystems, order matters
     metrics.init();
     net.init();

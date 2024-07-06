@@ -30,10 +30,12 @@ class cell final {
 
   std::vector<entry> entry_list{};
   std::vector<collision> check_collisions_list{};
+  random_numbers random_numbers{};
 
 public:
   // called from grid
-  inline auto update() const -> void {
+  inline auto update() -> void {
+    object_context ctx{frame_context.dt, random_numbers};
     for (entry const &ce : entry_list) {
       if (threaded_grid) {
         // multithreaded mode
@@ -62,7 +64,7 @@ public:
 
       // only one thread at a time is here for 'ce.object'
 
-      if (!ce.object->update()) {
+      if (!ce.object->update(ctx)) {
         ce.object->is_dead = true;
         objects.free(ce.object);
         continue;
@@ -193,7 +195,8 @@ private:
     }
   }
 
-  inline auto handle_check_collisions_list() const -> void {
+  inline auto handle_check_collisions_list() -> void {
+    object_context ctx{frame_context.dt, random_numbers};
     for (collision const &cc : check_collisions_list) {
       if (!cc.is_collision) {
         continue;
@@ -205,10 +208,10 @@ private:
 
       if (Oi->is_sphere && Oj->is_sphere) {
         bool const Oi_already_handled_Oj = cc.Oi_subscribed_to_collision_with_Oj
-                                               ? dispatch_collision(Oi, Oj)
+                                               ? dispatch_collision(ctx, Oi, Oj)
                                                : false;
         bool const Oj_already_handled_Oi = cc.Oj_subscribed_to_collision_with_Oi
-                                               ? dispatch_collision(Oj, Oi)
+                                               ? dispatch_collision(ctx, Oj, Oi)
                                                : false;
 
         // check if collision has already been handled, possibly on a different
@@ -221,11 +224,11 @@ private:
       }
 
       if (cc.Oi_subscribed_to_collision_with_Oj) {
-        dispatch_collision(Oi, Oj);
+        dispatch_collision(ctx, Oi, Oj);
       }
 
       if (cc.Oj_subscribed_to_collision_with_Oi) {
-        dispatch_collision(Oj, Oi);
+        dispatch_collision(ctx, Oj, Oi);
       }
     }
   }
@@ -277,7 +280,8 @@ private:
   }
 
   // returns true if collision with 'obj' has already been handled by 'receiver'
-  static inline auto dispatch_collision(object *receiver, object *obj) -> bool {
+  static inline auto dispatch_collision(object_context &ctx, object *receiver,
+                                        object *obj) -> bool {
     // if object overlaps cells then this code might be called by several
     // threads at the same time from different cells
     bool const synchronize = threaded_grid && receiver->overlaps_cells;
@@ -299,7 +303,7 @@ private:
 
     // only one thread at a time can be here for 'receiver'
 
-    if (!receiver->is_dead && !receiver->on_collision(obj)) {
+    if (!receiver->is_dead && !receiver->on_collision(ctx, obj)) {
       receiver->is_dead = true;
       objects.free(receiver);
     }

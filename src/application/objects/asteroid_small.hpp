@@ -35,8 +35,8 @@ public:
     --asteroids_alive;
   }
 
-  inline auto update() -> bool override {
-    if (!object::update()) {
+  inline auto update(object_context &ctx) -> bool override {
+    if (!object::update(ctx)) {
       return false;
     }
 
@@ -45,7 +45,7 @@ public:
     return true;
   }
 
-  inline auto on_collision(object *o) -> bool override {
+  inline auto on_collision(object_context &ctx, object *o) -> bool override {
     if (debug_multiplayer) {
       printf("%lu: %lu: %s collision with %s\n", frame_context.frame_num,
              frame_context.ms, name.c_str(), o->name.c_str());
@@ -53,7 +53,7 @@ public:
 
     score += 100;
 
-    power_up_by_chance(position);
+    power_up_by_chance(ctx.rand, position);
 
     return false;
   }

@@ -23,8 +23,11 @@ static constexpr bool debug_multiplayer = false;
 // note: in some cases multithreaded mode is a degradation of performance
 // note: multiplayer mode cannot use 'threaded_grid' because of the
 //       non-deterministic behavior
-static constexpr bool threaded_grid = false;
+static constexpr bool threaded_grid = true;
 static constexpr bool threaded_update = false;
+
+// random number generator
+static constexpr uint32_t random_number_generator_seed = 0;
 
 // grid dimensions
 static constexpr float grid_size =
@@ -71,7 +74,8 @@ static constexpr uint32_t cb_asteroid = 1U << 2U;
 static constexpr uint32_t cb_power_up = 1U << 3U;
 
 // settings
-static constexpr uint32_t asteroid_level = 2;
+// static constexpr uint32_t asteroid_level = 2;
+static constexpr uint32_t asteroid_level = 10;
 
 static constexpr float asteroid_large_agl_vel_rnd = glm::radians(45.0f);
 static constexpr float asteroid_large_speed = 10;

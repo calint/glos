@@ -10,6 +10,12 @@
 
 namespace glos {
 
+class object_context final {
+public:
+  float dt;
+  random_numbers &rand;
+};
+
 class object {
   friend class grid;
   friend class cell;
@@ -82,7 +88,7 @@ public:
   }
 
   // returns false if object has died, true otherwise
-  inline virtual auto update() -> bool {
+  inline virtual auto update(object_context &ctx) -> bool {
     float const dt = frame_context.dt;
     velocity += acceleration * dt;
     position += velocity * dt;
@@ -99,7 +105,9 @@ public:
   }
 
   // returns false if object has died, true otherwise
-  inline virtual auto on_collision(object *obj) -> bool { return true; }
+  inline virtual auto on_collision(object_context &ctx, object *obj) -> bool {
+    return true;
+  }
 
   inline auto get_updated_Mmw() -> glm::mat4 const & {
     // * synchronize if render and update run on different threads; both racing

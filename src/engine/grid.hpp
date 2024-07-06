@@ -7,43 +7,48 @@
 // reviewed: 2024-01-16
 
 #include "cell.hpp"
-// #include "task_thread_pool.hpp"
 
 namespace glos {
 
 class grid final {
   std::array<std::array<cell, grid_columns>, grid_rows> cells{};
-  // task_thread_pool::task_thread_pool pool{};
+  std::vector<std::array<cell, grid_columns> *> even_rows{};
+  std::vector<std::array<cell, grid_columns> *> odd_rows{};
 
 public:
-  inline auto init() -> void {}
+  inline auto init() -> void {
+    for (uint32_t i = 0; i < grid_rows; ++i) {
+      if (i % 2) {
+        odd_rows.push_back(&cells[i]);
+      } else {
+        even_rows.push_back(&cells[i]);
+      }
+    }
+  }
 
   inline auto free() -> void {}
 
   // called from engine
   inline auto update() -> void {
     if (threaded_grid) {
-      std::for_each(std::execution::par_unseq, std::cbegin(cells),
-                    std::cend(cells), [](auto const &row) {
-                      for (cell const &c : row) {
+      std::for_each(std::execution::par_unseq, std::cbegin(even_rows),
+                    std::cend(even_rows), [](auto row_array) {
+                      for (cell &c : *row_array) {
                         c.update();
                       }
                     });
 
-      // for (auto const &row : cells) {
-      //   pool.submit_detach([&row]() {
-      //     for (cell const &c : row) {
-      //       c.update();
-      //     }
-      //   });
-      // }
-      // pool.wait_for_tasks();
-
+      std::for_each(std::execution::par_unseq, std::cbegin(odd_rows),
+                    std::cend(odd_rows), [](auto row_array) {
+                      for (cell &c : *row_array) {
+                        c.update();
+                      }
+                    });
       return;
     }
 
-    for (auto const &row : cells) {
-      for (cell const &c : row) {
+    for (auto &row : cells) {
+      for (cell &c : row) {
         c.update();
       }
     }
@@ -52,21 +57,19 @@ public:
   // called from engine
   inline auto resolve_collisions() -> void {
     if (threaded_grid) {
-      std::for_each(std::execution::par_unseq, std::begin(cells),
-                    std::end(cells), [](auto &row) {
-                      for (cell &c : row) {
+      std::for_each(std::execution::par_unseq, std::begin(even_rows),
+                    std::end(even_rows), [](auto row_array) {
+                      for (cell &c : *row_array) {
                         c.resolve_collisions();
                       }
                     });
 
-      // for (auto const &row : cells) {
-      //   pool.submit_detach([&row]() {
-      //     for (cell const &c : row) {
-      //       c.resolve_collisions();
-      //     }
-      //   });
-      // }
-      // pool.wait_for_tasks();
+      std::for_each(std::execution::par_unseq, std::begin(odd_rows),
+                    std::end(odd_rows), [](auto row_array) {
+                      for (cell &c : *row_array) {
+                        c.resolve_collisions();
+                      }
+                    });
 
       return;
     }
@@ -98,6 +101,8 @@ public:
 
   // called from engine
   inline auto add(object *o) -> void {
+    assert(o->bounding_radius < grid_cell_size / 2);
+
     constexpr float gw = grid_cell_size * grid_columns;
     constexpr float gh = grid_cell_size * grid_rows;
 

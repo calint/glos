@@ -29,8 +29,8 @@ public:
     }
   }
 
-  inline auto update() -> bool override {
-    if (!object::update()) {
+  inline auto update(object_context &ctx) -> bool override {
+    if (!object::update(ctx)) {
       return false;
     }
 
@@ -58,7 +58,7 @@ public:
       angular_velocity.y = -ship_turn_rate;
     }
     if (keys & key_j) {
-      fire();
+      fire(ctx);
     }
     if (keys & key_o) {
       velocity = {0, 0, 0};
@@ -72,7 +72,7 @@ public:
     return true;
   }
 
-  inline auto on_collision(object *o) -> bool override {
+  inline auto on_collision(object_context &ctx, object *o) -> bool override {
     if (debug_multiplayer) {
       printf("%lu: %lu: %s collision with %s\n", frame_context.frame_num,
              frame_context.ms, name.c_str(), o->name.c_str());
@@ -93,11 +93,11 @@ public:
         }
       }
     } else if (o->collision_bits & cb_asteroid) {
-      angle.y += radians(rnd1(45));
+      angle.y += radians(rnd1(ctx.rand, 45));
 
       fragment *frg = new (objects.alloc()) fragment{};
       frg->position = o->position;
-      frg->angular_velocity = vec3{rnd1(bullet_fragment_agl_vel_rnd)};
+      frg->angular_velocity = vec3{rnd1(ctx.rand, bullet_fragment_agl_vel_rnd)};
       frg->death_time_ms = frame_context.ms + 500;
     }
 
@@ -105,7 +105,7 @@ public:
   }
 
 private:
-  inline auto fire() -> void {
+  inline auto fire(object_context &ctx) -> void {
     if (ready_to_fire_at_ms > frame_context.ms) {
       return;
     }
@@ -131,8 +131,8 @@ private:
         blt->angle = angle;
         blt->velocity = ship_bullet_speed * forward_vec;
         constexpr float sp = ship_bullet_spread;
-        blt->velocity.x += rnd1(sp);
-        blt->velocity.z += rnd1(sp);
+        blt->velocity.x += rnd1(ctx.rand, sp);
+        blt->velocity.z += rnd1(ctx.rand, sp);
       }
       ready_to_fire_at_ms = frame_context.ms + bullet_fire_rate_ms;
       break;

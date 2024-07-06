@@ -8,8 +8,8 @@
 #include "objects/power_up.hpp"
 //
 
-inline static auto rnd1(float const range) -> float {
-  int const r = rand();
+inline static auto rnd1(random_numbers &rand, float const range) -> float {
+  int const r = rand.next();
   if (debug_multiplayer) {
     printf("%lu: %lu: rnd1: %d\n", frame_context.frame_num, frame_context.ms,
            r);
@@ -17,8 +17,9 @@ inline static auto rnd1(float const range) -> float {
   return float(r) / float(RAND_MAX) * range - range / 2;
 }
 
-inline static auto rnd2(float const zero_to_range) -> float {
-  int const r = rand();
+inline static auto rnd2(random_numbers &rand,
+                        float const zero_to_range) -> float {
+  int const r = rand.next();
   if (debug_multiplayer) {
     printf("%lu: %lu: rnd2: %d\n", frame_context.frame_num, frame_context.ms,
            r);
@@ -26,8 +27,8 @@ inline static auto rnd2(float const zero_to_range) -> float {
   return float(r) / float(RAND_MAX) * zero_to_range;
 }
 
-inline static auto rnd3(int const rem) -> bool {
-  int const r = rand();
+inline static auto rnd3(random_numbers &rand, int const rem) -> bool {
+  int const r = rand.next();
   if (debug_multiplayer) {
     printf("%lu: %lu: rnd3: %d\n", frame_context.frame_num, frame_context.ms,
            r);
@@ -63,8 +64,9 @@ inline static auto is_outside_game_area(glm::vec3 const &position) -> bool {
          position.z < game_area_min_z || position.z > game_area_max_z;
 }
 
-inline static auto power_up_by_chance(glm::vec3 const &position) -> void {
-  if (!rnd3(power_up_chance_rem)) {
+inline static auto power_up_by_chance(random_numbers &rand,
+                                      glm::vec3 const &position) -> void {
+  if (!rnd3(rand, power_up_chance_rem)) {
     return;
   }
 

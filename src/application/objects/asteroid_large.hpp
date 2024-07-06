@@ -11,7 +11,7 @@
 
 class asteroid_large final : public object {
 public:
-  inline asteroid_large() {
+  inline asteroid_large(object_context &ctx) {
     name = "asteroid_large";
     if (debug_multiplayer) {
       ++counter;
@@ -25,7 +25,7 @@ public:
     mass = 1500;
     collision_bits = cb_asteroid;
     collision_mask = cb_hero_bullet | cb_hero;
-    angular_velocity.y = rnd1(asteroid_large_agl_vel_rnd);
+    angular_velocity.y = rnd1(ctx.rand, asteroid_large_agl_vel_rnd);
     ++asteroids_alive;
   }
 
@@ -38,8 +38,8 @@ public:
     --asteroids_alive;
   }
 
-  inline auto update() -> bool override {
-    if (!object::update()) {
+  inline auto update(object_context &ctx) -> bool override {
+    if (!object::update(ctx)) {
       return false;
     }
 
@@ -48,7 +48,7 @@ public:
     return true;
   }
 
-  inline auto on_collision(object *o) -> bool override {
+  inline auto on_collision(object_context &ctx, object *o) -> bool override {
     if (debug_multiplayer) {
       printf("%lu: %lu: %s collision with %s\n", frame_context.frame_num,
              frame_context.ms, name.c_str(), o->name.c_str());
@@ -59,11 +59,12 @@ public:
     for (uint32_t i = 0; i < asteroid_large_split; ++i) {
       asteroid_medium *ast = new (objects.alloc()) asteroid_medium{};
       float const rd2 = bounding_radius / 2;
-      vec3 const rp = {rnd1(rd2), 0, rnd1(rd2)};
+      vec3 const rp = {rnd1(ctx.rand, rd2), 0, rnd1(ctx.rand, rd2)};
       ast->position = position + rp;
       ast->velocity =
-          velocity + rnd2(asteroid_large_split_speed) * normalize(rp);
-      ast->angular_velocity = vec3{rnd1(asteroid_large_split_agl_vel_rnd)};
+          velocity + rnd2(ctx.rand, asteroid_large_split_speed) * normalize(rp);
+      ast->angular_velocity =
+          vec3{rnd1(ctx.rand, asteroid_large_split_agl_vel_rnd)};
     }
 
     return false;

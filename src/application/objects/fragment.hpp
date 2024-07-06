@@ -29,8 +29,8 @@ public:
     }
   }
 
-  inline auto update() -> bool override {
-    if (!object::update()) {
+  inline auto update(object_context &ctx) -> bool override {
+    if (!object::update(ctx)) {
       return false;
     }
 

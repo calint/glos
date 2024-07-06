@@ -184,24 +184,28 @@ static auto application_free() -> void {}
 static auto create_asteroids(uint32_t const num) -> void {
   constexpr float v = asteroid_large_speed;
   constexpr float d = game_area_max_x - game_area_min_x;
+  random_numbers rand{};
+  object_context ctx{0, rand};
   for (uint32_t i = 0; i < num; ++i) {
-    asteroid_large *o = new (objects.alloc()) asteroid_large{};
-    o->position.x = rnd1(d);
-    o->position.z = rnd1(d);
-    o->velocity.x = rnd1(v);
-    o->velocity.z = rnd1(v);
+    asteroid_large *o = new (objects.alloc()) asteroid_large{ctx};
+    o->position.x = rnd1(ctx.rand, d);
+    o->position.z = rnd1(ctx.rand, d);
+    o->velocity.x = rnd1(ctx.rand, v);
+    o->velocity.z = rnd1(ctx.rand, v);
   }
 }
 
 static auto create_cubes(uint32_t const num) -> void {
   constexpr float v = cube_speed;
   constexpr float d = game_area_max_x - game_area_min_x;
+  random_numbers rand{};
+  object_context ctx{0, rand};
   for (uint32_t i = 0; i < num; ++i) {
     cube *o = new (objects.alloc()) cube{};
-    o->position.x = rnd1(d);
-    o->position.z = rnd1(d);
-    o->velocity.x = rnd1(v);
-    o->velocity.z = rnd1(v);
+    o->position.x = rnd1(ctx.rand, d);
+    o->position.z = rnd1(ctx.rand, d);
+    o->velocity.x = rnd1(ctx.rand, v);
+    o->velocity.z = rnd1(ctx.rand, v);
     o->angular_velocity.y = radians(20.0f);
   }
 }
@@ -209,12 +213,14 @@ static auto create_cubes(uint32_t const num) -> void {
 static auto create_spheres(uint32_t const num) -> void {
   constexpr float v = sphere_speed;
   constexpr float d = game_area_max_x - game_area_min_x;
+  random_numbers rand{};
+  object_context ctx{0, rand};
   for (uint32_t i = 0; i < num; ++i) {
     sphere *o = new (objects.alloc()) sphere{};
-    o->position.x = rnd1(d);
-    o->position.z = rnd1(d);
-    o->velocity.x = rnd1(v);
-    o->velocity.z = rnd1(v);
+    o->position.x = rnd1(ctx.rand, d);
+    o->position.z = rnd1(ctx.rand, d);
+    o->velocity.x = rnd1(ctx.rand, v);
+    o->velocity.z = rnd1(ctx.rand, v);
   }
 }
 
