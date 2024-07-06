@@ -15,6 +15,7 @@
 #include <condition_variable>
 #include <exception>
 #include <execution>
+#include <filesystem>
 #include <format>
 #include <fstream>
 #include <glm/glm.hpp>

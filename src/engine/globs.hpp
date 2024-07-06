@@ -69,22 +69,13 @@ public:
 
 private:
   // loads definition and optional bounding planes from 'obj' files
-  inline auto load_object(char const *obj_path) -> void {
-    printf(" * loading glob from '%s'\n", obj_path);
+  inline auto load_object(std::filesystem::path path) -> void {
+    printf(" * loading glob from '%s'\n", path.string().c_str());
 
-    std::ifstream file{obj_path};
+    std::ifstream file{path};
     if (!file) {
-      throw glos_exception{std::format("cannot open file '{}'", obj_path)};
-    }
-
-    std::string base_dir_path{};
-    {
-      std::string const file_path = obj_path;
-      size_t const found = file_path.find_last_of('/');
-      if (found != std::string::npos) {
-        base_dir_path = file_path.substr(0, found + 1);
-        // note: +1 to include '/'
-      }
+      throw glos_exception{
+          std::format("cannot open file '{}'", path.string().c_str())};
     }
 
     std::vector<float> vertices{};
@@ -106,7 +97,7 @@ private:
 
       if (token == "mtllib") {
         line_stream >> token;
-        mtl_path = base_dir_path + token;
+        mtl_path = (path.parent_path() / token).string();
         materials.load(mtl_path.c_str());
         continue;
 
@@ -239,12 +230,13 @@ private:
     metrics.buffered_vertex_data += size_B;
   }
 
-  inline auto load_planes(char const *path) -> void {
+  inline auto load_planes(std::filesystem::path path) -> void {
     // load from blender exported 'obj' file
-    printf("   * loading planes from '%s'\n", path);
+    printf("   * loading planes from '%s'\n", path.string().c_str());
     std::ifstream file{path};
     if (!file) {
-      throw glos_exception{std::format("cannot open file '{}'", path)};
+      throw glos_exception{
+          std::format("cannot open file '{}'", path.string().c_str())};
     }
 
     std::vector<glm::vec4> points{};
