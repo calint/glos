@@ -43,10 +43,12 @@ public:
 
   inline auto load(char const *path) -> void {
     printf("   * loading materials from '%s'\n", path);
+
     std::ifstream file{path};
     if (!file) {
       throw glos_exception{std::format("cannot open file '{}'", path)};
     }
+
     std::string line{};
     while (std::getline(file, line)) {
       std::istringstream line_stream{line};
@@ -62,7 +64,7 @@ public:
         mtl.path = std::string{path};
         line_stream >> mtl.name;
         store.push_back(mtl);
-        printf("     %s\n", store.back().name.c_str());
+        printf("     %s\n", mtl.name.c_str());
         continue;
       }
 
