@@ -4,7 +4,7 @@ class glos_exception : public std::exception {
 public:
   std::string message{};
 
-  inline glos_exception(
+  inline explicit glos_exception(
       std::string const &msg,
       std::source_location const &src_loc = std::source_location::current())
       : message{std::format("{}:{} - {}: {}", src_loc.file_name(),

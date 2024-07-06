@@ -1,96 +1,72 @@
-tis  9 jan 2024 15:55:37 CET
-/home/c/w/glos/qa/lint/../../src/application/application.cpp:138:5: warning: use auto when initializing with new to avoid duplicating the type name [hicpp-use-auto,modernize-use-auto]
-    asteroid_large *ast = new (objects.alloc()) asteroid_large{};
-    ^~~~~~~~~~~~~~
-    auto
-/home/c/w/glos/qa/lint/../../src/engine/../application/../engine/engine.hpp:205:15: warning: method 'free' can be made static [readability-convert-member-functions-to-static]
-  inline void free() {
-              ^
-  static 
-/home/c/w/glos/qa/lint/../../src/engine/../application/../engine/engine.hpp:610:64: warning: use nullptr [hicpp-use-nullptr,modernize-use-nullptr]
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid *)0);
-                                                               ^
-                                                               nullptr
-/home/c/w/glos/qa/lint/../../src/engine/../application/objects/../utils.hpp:12:17: warning: rand() has limited randomness; use C++11 random library instead [cert-msc30-c,cert-msc50-cpp]
-  int const r = rand();
-                ^
-/home/c/w/glos/qa/lint/../../src/engine/../application/objects/../utils.hpp:12:17: warning: function is not thread safe [concurrency-mt-unsafe]
-/home/c/w/glos/qa/lint/../../src/engine/../application/objects/../utils.hpp:21:17: warning: rand() has limited randomness; use C++11 random library instead [cert-msc30-c,cert-msc50-cpp]
-  int const r = rand();
-                ^
-/home/c/w/glos/qa/lint/../../src/engine/../application/objects/../utils.hpp:21:17: warning: function is not thread safe [concurrency-mt-unsafe]
-/home/c/w/glos/qa/lint/../../src/engine/../application/objects/../utils.hpp:30:17: warning: rand() has limited randomness; use C++11 random library instead [cert-msc30-c,cert-msc50-cpp]
-  int const r = rand();
-                ^
-/home/c/w/glos/qa/lint/../../src/engine/../application/objects/../utils.hpp:30:17: warning: function is not thread safe [concurrency-mt-unsafe]
-/home/c/w/glos/qa/lint/../../src/engine/../application/objects/../utils.hpp:61:3: warning: use auto when initializing with new to avoid duplicating the type name [hicpp-use-auto,modernize-use-auto]
-  power_up *pu = new (objects.alloc()) power_up{};
-  ^~~~~~~~
-  auto
-/home/c/w/glos/qa/lint/../../src/engine/../application/objects/asteroid_large.hpp:60:7: warning: use auto when initializing with new to avoid duplicating the type name [hicpp-use-auto,modernize-use-auto]
-      asteroid_medium *ast = new (objects.alloc()) asteroid_medium{};
-      ^~~~~~~~~~~~~~~
-      auto
-/home/c/w/glos/qa/lint/../../src/engine/../application/objects/asteroid_medium.hpp:59:7: warning: use auto when initializing with new to avoid duplicating the type name [hicpp-use-auto,modernize-use-auto]
-      asteroid_small *ast = new (objects.alloc()) asteroid_small{};
-      ^~~~~~~~~~~~~~
-      auto
-/home/c/w/glos/qa/lint/../../src/engine/../application/objects/bullet.hpp:50:5: warning: use auto when initializing with new to avoid duplicating the type name [hicpp-use-auto,modernize-use-auto]
-    fragment *frg = new (objects.alloc()) fragment{};
-    ^~~~~~~~
-    auto
-/home/c/w/glos/qa/lint/../../src/engine/../application/objects/ship.hpp:89:7: warning: use auto when initializing with new to avoid duplicating the type name [hicpp-use-auto,modernize-use-auto]
-      fragment *frg = new (objects.alloc()) fragment{};
-      ^~~~~~~~
-      auto
-/home/c/w/glos/qa/lint/../../src/engine/../application/objects/ship.hpp:111:7: warning: use auto when initializing with new to avoid duplicating the type name [hicpp-use-auto,modernize-use-auto]
-      bullet *blt = new (objects.alloc()) bullet{};
-      ^~~~~~
-      auto
-/home/c/w/glos/qa/lint/../../src/engine/../application/objects/ship.hpp:120:9: warning: use auto when initializing with new to avoid duplicating the type name [hicpp-use-auto,modernize-use-auto]
-        bullet *blt = new (objects.alloc()) bullet{};
-        ^~~~~~
-        auto
-/home/c/w/glos/qa/lint/../../src/engine/../application/../engine/engine.hpp:205:15: warning: method 'free' can be made static [readability-convert-member-functions-to-static]
-  inline void free() {
-              ^
-  static 
-/home/c/w/glos/qa/lint/../../src/engine/../application/../engine/engine.hpp:610:64: warning: use nullptr [hicpp-use-nullptr,modernize-use-nullptr]
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid *)0);
-                                                               ^
-                                                               nullptr
-/home/c/w/glos/qa/lint/../../src/engine/glob.hpp:249:37: warning: use nullptr [hicpp-use-nullptr,modernize-use-nullptr]
-                          (GLvoid *)0);
-                                    ^
-                                    nullptr
-/home/c/w/glos/qa/lint/../../src/engine/hud.hpp:51:37: warning: use nullptr [hicpp-use-nullptr,modernize-use-nullptr]
-                          (GLvoid *)0);
-                                    ^
-                                    nullptr
-/home/c/w/glos/qa/lint/../../src/engine/net_server.hpp:61:23: warning: prefer accept4() to accept() because accept4() allows SOCK_CLOEXEC [android-cloexec-accept]
-      clients_fd[i] = accept(server_fd, nullptr, nullptr);
-                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                      accept4(server_fd, nullptr, nullptr, SOCK_CLOEXEC)
-/home/c/w/glos/qa/lint/../../src/engine/object.hpp:11:7: warning: constructor does not initialize these fields: alloc_ptr [cppcoreguidelines-pro-type-member-init,hicpp-member-init]
-class object {
-      ^
-/home/c/w/glos/qa/lint/../../src/engine/object.hpp:64:44: warning: parameter 'obj' is unused [misc-unused-parameters]
-  inline virtual auto on_collision(object *obj) -> bool { return true; }
-                                           ^~~
-                                            /*obj*/
-/home/c/w/glos/qa/lint/../../src/engine/sdl.hpp:10:15: warning: method 'init' can be made static [readability-convert-member-functions-to-static]
-  inline void init() {
-              ^
-  static 
-/home/c/w/glos/qa/lint/../../src/engine/sdl.hpp:19:15: warning: method 'free' can be made static [readability-convert-member-functions-to-static]
-  inline void free() { SDL_Quit(); }
-              ^
-  static 
-/home/c/w/glos/qa/lint/../../src/engine/texture.hpp:60:25: warning: std::move of the variable 'tex' of the trivially-copyable type 'texture' has no effect [hicpp-move-const-arg,performance-move-const-arg]
-    store.insert({path, std::move(tex)});
-                        ^
-/home/c/w/glos/qa/lint/../../src/engine/token.h:3:1: warning: use 'using' instead of 'typedef' [modernize-use-using]
-typedef struct token {
-^~~~~~~~~~~~~~~~~~~~~~
-tis  9 jan 2024 15:56:42 CET
-tis  9 jan 2024 16:02:25 CET
+sön  7 jul 2024 01:33:10 CEST
+/home/c/w/glos/qa/lint/../../src/main.cpp:10:1: warning: a trailing return type is disallowed for this function declaration [fuchsia-trailing-return]
+   10 | auto main(int argc, char *argv[]) -> int {
+      | ^
+/home/c/w/glos/qa/lint/../../src/main.cpp:10:6: warning: an exception may be thrown in function 'main' which should not throw exceptions [bugprone-exception-escape]
+   10 | auto main(int argc, char *argv[]) -> int {
+      |      ^
+/home/c/w/glos/qa/lint/../../src/main.cpp:10:6: warning: declaration must be enclosed within the 'LIBC_NAMESPACE' namespace [llvmlibc-implementation-in-namespace]
+/home/c/w/glos/qa/lint/../../src/main.cpp:12:20: warning: do not use pointer arithmetic [cppcoreguidelines-pro-bounds-pointer-arithmetic]
+   12 |   if (argc > 1 && *argv[1] == 's') {
+      |                    ^
+/home/c/w/glos/qa/lint/../../src/main.cpp:14:11: warning: no header providing "glos::net_server" is directly included [misc-include-cleaner]
+    9 | 
+   10 | auto main(int argc, char *argv[]) -> int {
+   11 | 
+   12 |   if (argc > 1 && *argv[1] == 's') {
+   13 |     // instance is server
+   14 |     glos::net_server.init();
+      |           ^
+/home/c/w/glos/qa/lint/../../src/main.cpp:18:12: warning: no header providing "EXIT_SUCCESS" is directly included [misc-include-cleaner]
+    9 | 
+   10 | auto main(int argc, char *argv[]) -> int {
+   11 | 
+   12 |   if (argc > 1 && *argv[1] == 's') {
+   13 |     // instance is server
+   14 |     glos::net_server.init();
+   15 |     glos::net_server.run();
+   16 |     glos::net_server.free();
+   17 | 
+   18 |     return EXIT_SUCCESS;
+      |            ^
+/home/c/w/glos/qa/lint/../../src/main.cpp:22:3: warning: do not call c-style vararg functions [cppcoreguidelines-pro-type-vararg,hicpp-vararg]
+   22 |   printf("\nprogram glos\n\n");
+      |   ^
+/home/c/w/glos/qa/lint/../../src/main.cpp:22:3: warning: no header providing "printf" is directly included [misc-include-cleaner]
+    9 | 
+   10 | auto main(int argc, char *argv[]) -> int {
+   11 | 
+   12 |   if (argc > 1 && *argv[1] == 's') {
+   13 |     // instance is server
+   14 |     glos::net_server.init();
+   15 |     glos::net_server.run();
+   16 |     glos::net_server.free();
+   17 | 
+   18 |     return EXIT_SUCCESS;
+   19 |   }
+   20 | 
+   21 |   // instance is client
+   22 |   printf("\nprogram glos\n\n");
+      |   ^
+/home/c/w/glos/qa/lint/../../src/main.cpp:22:3: warning: use 'std::println' instead of 'printf' [modernize-use-std-print]
+    6 |   printf("\nprogram glos\n\n");
+      |   ^~~~~~ ~~~~~~~~~~~~~~~~~~~~
+      |   std::println "\nprogram glos\n"
+/home/c/w/glos/qa/lint/../../src/main.cpp:24:21: warning: do not use pointer arithmetic [cppcoreguidelines-pro-bounds-pointer-arithmetic]
+   24 |   if (argc > 1 and *argv[1] == 'c') {
+      |                     ^
+/home/c/w/glos/qa/lint/../../src/main.cpp:26:11: warning: no header providing "glos::net" is directly included [misc-include-cleaner]
+    9 |     glos::net.enabled = true;
+      |           ^
+/home/c/w/glos/qa/lint/../../src/main.cpp:29:24: warning: do not use pointer arithmetic [cppcoreguidelines-pro-bounds-pointer-arithmetic]
+   29 |       glos::net.host = argv[2];
+      |                        ^
+sön  7 jul 2024 01:33:48 CEST
+sön  7 jul 2024 01:34:09 CEST
+sön  7 jul 2024 01:35:59 CEST
+sön  7 jul 2024 01:36:31 CEST
+sön  7 jul 2024 01:36:49 CEST
+sön  7 jul 2024 01:37:17 CEST
+sön  7 jul 2024 01:37:45 CEST
+sön  7 jul 2024 01:38:48 CEST
+sön  7 jul 2024 01:38:50 CEST
