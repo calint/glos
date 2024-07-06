@@ -49,7 +49,8 @@
 [ ] hud: resolve issue with colors
 [ ] use "moving towards each other" vector to cull collision detection
 [ ] look at std::aligned_alloc to align o1store
-[ ] convert token.h
+[x] convert token.h
+    => removed. using stream
 [ ] object: consider making all members private
 [ ] cell.update does what object::update does since it always returns true
 [ ] bounding box. OBB 3 normals, width, height
@@ -68,7 +69,7 @@
 [ ] cmake or premake and automatically download dependencies using git submodules
 [ ] net_server as separate application
 [ ] constexpr everything
-[ ] fix itm anti-pattern
+[ ] fix itm (initiate-then-modify) anti-pattern
 [ ] note about the absolute texture path in mtl files
 [ ] object size and content is not cache friendly. consider components
 [ ] multiple collision detection convex volumes per object
