@@ -202,13 +202,7 @@ public:
   }
 
   inline auto free() -> void {
-    object **const end = store_.allocated_list_end();
-    // note: important to get the 'end' outside the loop because objects may
-    //       allocate new objects in the loop and that would change 'end'
-    for (object **it = store_.allocated_list(); it < end; ++it) {
-      object *obj = *it;
-      obj->~object(); // note: the freeing of memory is done by 'o1store'
-    }
+    for_each_allocated([](object *o) { o->~object(); });
     //? what if destructor created objects
   }
 
@@ -220,12 +214,12 @@ public:
     return allocated_list_len_;
   }
 
-  inline auto allocated_list_end() const -> object ** {
-    return allocated_list_end_;
-  }
-
-  inline auto allocated_list() const -> object ** {
-    return store_.allocated_list();
+  inline auto for_each_allocated(auto &&func) -> void {
+    object **const end = store_.allocated_list_end();
+    for (object **it = store_.allocated_list(); it < end; ++it) {
+      object *obj = *it;
+      func(obj);
+    }
   }
 
   inline auto apply_allocated_instances() -> void {
