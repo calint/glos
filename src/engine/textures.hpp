@@ -4,8 +4,6 @@
 // reviewed: 2024-01-10
 // reviewed: 2024-01-16
 
-#include "metrics.hpp"
-
 namespace glos {
 
 class texture final {
