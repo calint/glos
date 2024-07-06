@@ -155,12 +155,13 @@ private:
           glm::vec3 const &normal = normals.at(ix3 - 1);
 
           // add to buffer
+
           // position
           vertices.push_back(position.x);
           vertices.push_back(position.y);
           vertices.push_back(position.z);
           // color
-          vertices.push_back(current_material.Kd.r);
+          vertices.push_back(current_material.Kd.r); // color
           vertices.push_back(current_material.Kd.g);
           vertices.push_back(current_material.Kd.b);
           vertices.push_back(current_material.d); // opacity
@@ -279,6 +280,7 @@ private:
 
         planes_points.emplace_back(point);
         planes_normals.emplace_back(normal);
+
         continue;
       }
       // unknown token
