@@ -29,7 +29,7 @@ class o1store final {
   std::atomic_flag lock = ATOMIC_FLAG_INIT;
 
 public:
-  o1store() {
+  inline o1store() {
     if (instance_size_B) {
       all_ = static_cast<type *>(calloc(instance_count, instance_size_B));
     } else {
@@ -63,7 +63,7 @@ public:
     }
   }
 
-  ~o1store() {
+  inline ~o1store() {
     free(all_);
     free(alloc_bgn_);
     free(free_bgn_);
@@ -72,7 +72,7 @@ public:
 
   // allocates an instance
   // returns nullptr if instance could not be allocated
-  auto allocate_instance() -> type * {
+  inline auto allocate_instance() -> type * {
     if (thread_safe) {
       acquire_lock();
     }
@@ -101,7 +101,7 @@ public:
   }
 
   // adds instance to list of instances to be freed with 'apply_free()'
-  auto free_instance(type *inst) -> void {
+  inline auto free_instance(type *inst) -> void {
     if (thread_safe) {
       acquire_lock();
     }
@@ -129,7 +129,7 @@ public:
   }
 
   // deallocates the instances that have been freed
-  auto apply_free() -> void {
+  inline auto apply_free() -> void {
     for (type **it = del_bgn_; it < del_ptr_; ++it) {
       type *inst_deleted = *it;
       alloc_ptr_--;
@@ -158,7 +158,9 @@ public:
   inline auto all_list() const -> type * { return all_; }
 
   // returns the length of 'all' list
-  constexpr auto all_list_len() const -> size_t { return instance_count; }
+  inline constexpr auto all_list_len() const -> size_t {
+    return instance_count;
+  }
 
   // returns instance at index 'ix' from 'all' list
   inline auto instance(size_t ix) const -> type * {
@@ -171,7 +173,7 @@ public:
   }
 
   // returns the size of allocated heap memory in bytes
-  constexpr auto allocated_data_size_B() const -> size_t {
+  inline constexpr auto allocated_data_size_B() const -> size_t {
     return instance_size_B ? (instance_count * instance_size_B +
                               3 * instance_count * sizeof(type *))
                            : (instance_count * sizeof(type) +
