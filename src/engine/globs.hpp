@@ -160,7 +160,7 @@ private:
           line_stream >> ix1 >> slash >> ix2 >> slash >> ix3;
 
           glm::vec3 const &position = positions.at(ix1 - 1);
-          glm::vec2 const &texture = ix2 ? texture_uv.at(ix2 - 1) : glm::vec2{};
+          glm::vec2 const &texture = texture_uv.at(ix2 - 1);
           glm::vec3 const &normal = normals.at(ix3 - 1);
 
           // add to buffer
@@ -255,15 +255,18 @@ private:
       std::istringstream line_stream{line};
       std::string token{};
       line_stream >> token;
+
       if (token == "v") {
         glm::vec4 point{};
         line_stream >> point.x >> point.y >> point.z;
         point.w = 1.0f;
         points.push_back(point);
+
       } else if (token == "vn") {
         glm::vec3 normal{};
         line_stream >> normal.x >> normal.y >> normal.z;
         normals.push_back(normal);
+
       } else if (token == "f") {
         uint32_t ix1 = 0;
         uint32_t ix2 = 0;
@@ -278,8 +281,10 @@ private:
           line_stream >> ix2 >> slash;
         }
         line_stream >> ix3;
+
         glm::vec4 const &point = points.at(ix1 - 1);
         glm::vec3 const &normal = normals.at(ix3 - 1);
+
         planes_points.emplace_back(point);
         planes_normals.emplace_back(normal);
         continue;

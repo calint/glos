@@ -23,12 +23,12 @@ public:
   std::string path{};
   std::string name{};
   float Ns = 0;
-  glm::vec3 Ka{0};
-  glm::vec3 Kd{0};
-  glm::vec3 Ks{0};
-  glm::vec3 Ke{0};
+  glm::vec3 Ka{};
+  glm::vec3 Kd{}; // color RGB
+  glm::vec3 Ks{};
+  glm::vec3 Ke{};
   float Ni = 0;
-  float d = 0;
+  float d = 0; // opacity
   std::string map_Kd{};
   GLuint texture_id = 0;
 };
