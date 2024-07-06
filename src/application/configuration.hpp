@@ -130,6 +130,7 @@ static uint32_t glob_ix_power_up = 0;
 static uint32_t glob_ix_cube = 0;
 static uint32_t glob_ix_tetra = 0;
 static uint32_t glob_ix_sphere = 0;
+static uint32_t glob_ix_skydome = 0;
 
 // used when 'debug_multiplayer' is true to give objects unique numbers
 static std::atomic<uint32_t> counter = 0;

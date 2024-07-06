@@ -1,5 +1,5 @@
 [x] object: when glob_ix changes invalidate bounding planes
-[ ] use io stream rather than 'token'
+[x] use io stream rather than 'token'
 [ ] use c++ random number generator rather than rand()
 [ ] rand() is not thread-safe
 [ ] spawn asteroids outside the viewport

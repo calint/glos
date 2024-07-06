@@ -5,8 +5,6 @@
 // reviewed: 2024-01-10
 // reviewed: 2024-01-16
 
-#include "token.h"
-
 namespace glos {
 
 // newmtl texture
@@ -45,73 +43,62 @@ public:
 
   inline auto load(char const *path) -> void {
     printf("   * loading materials from '%s'\n", path);
-    std::ifstream const file{path};
+    std::ifstream file{path};
     if (!file) {
       throw glos_exception{std::format("cannot open file '{}'", path)};
     }
-    std::stringstream buffer{};
-    buffer << file.rdbuf();
-    std::string const content = buffer.str();
-    char const *p = content.c_str();
-    while (*p) {
-      token const t = token_next(&p);
-      if (token_starts_with(&t, "#")) {
-        // comment line
-        p = token_to_including_newline(p);
+    std::string line{};
+    while (std::getline(file, line)) {
+      std::istringstream line_stream{line};
+      std::string token{};
+      line_stream >> token;
+
+      if (token.starts_with("#")) {
         continue;
       }
-      if (token_starts_with(&t, "newmtl")) {
-        store.push_back({});
-        token const tk = token_next(&p);
-        uint32_t const n = token_size(&tk);
-        store.back().path = std::string{path};
-        store.back().name = std::string{tk.content, tk.content + n};
+
+      if (token == "newmtl") {
+        material mtl{};
+        mtl.path = std::string{path};
+        line_stream >> mtl.name;
+        store.push_back(mtl);
         printf("     %s\n", store.back().name.c_str());
         continue;
       }
-      if (token_equals(&t, "Ns")) {
-        token const tk = token_next(&p);
-        store.back().Ns = token_get_float(&tk);
+
+      if (token == "Ns") {
+        line_stream >> store.back().Ns;
         continue;
       }
-      if (token_equals(&t, "Ka") || token_equals(&t, "Kd") ||
-          token_equals(&t, "Ks") || token_equals(&t, "Ke")) {
+
+      if (token == "Ka" || token == "Kd" || token == "Ks" || token == "Ke") {
         glm::vec3 v{};
-        token const x = token_next(&p);
-        v.x = token_get_float(&x);
-        token const y = token_next(&p);
-        v.y = token_get_float(&y);
-        token const z = token_next(&p);
-        v.z = token_get_float(&z);
-        if (token_equals(&t, "Ka")) {
+        line_stream >> v.x >> v.y >> v.z;
+        if (token == "Ka") {
           store.back().Ka = v;
-        } else if (token_equals(&t, "Kd")) {
+        } else if (token == "Kd") {
           store.back().Kd = v;
-        } else if (token_equals(&t, "Ks")) {
+        } else if (token == "Ks") {
           store.back().Ks = v;
-        } else if (token_equals(&t, "Ke")) {
+        } else if (token == "Ke") {
           store.back().Ke = v;
         }
         continue;
       }
 
-      if (token_equals(&t, "Ni")) {
-        token const tk = token_next(&p);
-        store.back().Ni = token_get_float(&tk);
+      if (token == "Ni") {
+        line_stream >> store.back().Ni;
         continue;
       }
 
-      if (token_equals(&t, "d")) {
-        token const tk = token_next(&p);
-        store.back().d = token_get_float(&tk);
+      if (token == "d") {
+        line_stream >> store.back().d;
         continue;
       }
 
-      if (token_equals(&t, "map_Kd")) {
+      if (token == "map_Kd") {
         // texture path
-        token const tk = token_next(&p);
-        uint32_t const n = token_size(&tk);
-        store.back().map_Kd = std::string{tk.content, tk.content + n};
+        line_stream >> store.back().map_Kd;
         store.back().texture_id = textures.find_id_or_load(store.back().map_Kd);
         continue;
       }

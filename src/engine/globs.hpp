@@ -72,14 +72,10 @@ private:
   inline auto load_object(char const *obj_path) -> void {
     printf(" * loading glob from '%s'\n", obj_path);
 
-    std::ifstream const file{obj_path};
+    std::ifstream file{obj_path};
     if (!file) {
       throw glos_exception{std::format("cannot open file '{}'", obj_path)};
     }
-    std::stringstream buffer{};
-    buffer << file.rdbuf();
-    std::string const content = buffer.str();
-    char const *p = content.c_str();
 
     std::string base_dir_path{};
     {
@@ -102,30 +98,28 @@ private:
     uint32_t vertex_ix_prv = 0;
     bool is_first_obj = true;
 
-    while (*p) {
-      token const tk = token_next(&p);
-      if (token_equals(&tk, "mtllib")) {
-        token const t = token_next(&p);
-        uint32_t const n = token_size(&t);
-        std::string const file_name{t.content, t.content + n};
-        mtl_path = base_dir_path + file_name;
+    std::string line{};
+    while (std::getline(file, line)) {
+      std::istringstream line_stream{line};
+      std::string token{};
+      line_stream >> token;
+
+      if (token == "mtllib") {
+        line_stream >> token;
+        mtl_path = base_dir_path + token;
         materials.load(mtl_path.c_str());
         continue;
-      }
-      if (token_equals(&tk, "o") && is_first_obj) {
+
+      } else if (token == "o" && is_first_obj) {
         is_first_obj = false;
-        token const t = token_next(&p);
-        uint32_t const n = token_size(&t);
-        name = std::string{t.content, t.content + n};
-        printf("   %s\n", name.c_str());
+        line_stream >> name;
+        std::cout << "   " << name << "\n";
         continue;
-      }
-      if (token_equals(&tk, "usemtl")) {
-        token const t = token_next(&p);
-        uint32_t const n = token_size(&t);
-        std::string const mtl_name = {t.content, t.content + n};
+
+      } else if (token == "usemtl") {
+        line_stream >> token;
         current_material_ix =
-            materials.find_material_ix_or_break(mtl_path, mtl_name);
+            materials.find_material_ix_or_break(mtl_path, token);
         if (vertex_ix_prv != vertex_ix) {
           // is not the first 'usemtl' directive
           ranges.emplace_back(vertex_ix_prv, vertex_ix - vertex_ix_prv,
@@ -133,60 +127,40 @@ private:
           vertex_ix_prv = vertex_ix;
         }
         continue;
-      }
-      if (token_equals(&tk, "v")) {
-        token const tx = token_next(&p);
-        float const x = token_get_float(&tx);
-        token const ty = token_next(&p);
-        float const y = token_get_float(&ty);
-        token const tz = token_next(&p);
-        float const z = token_get_float(&tz);
-        positions.emplace_back(x, y, z);
 
+      } else if (token == "v") {
+        glm::vec3 position{};
+        line_stream >> position.x >> position.y >> position.z;
+        positions.push_back(position);
         float const r = glm::length(positions.back());
         if (r > bounding_radius) {
           bounding_radius = r;
         }
         continue;
-      }
-      if (token_equals(&tk, "vt")) {
-        token const tu = token_next(&p);
-        float const u = token_get_float(&tu);
-        token const tv = token_next(&p);
-        float const v = token_get_float(&tv);
-        texture_uv.emplace_back(u, v);
+
+      } else if (token == "vt") {
+        glm::vec2 tex_uv{};
+        line_stream >> tex_uv.x >> tex_uv.y;
+        texture_uv.push_back(tex_uv);
         continue;
-      }
-      if (token_equals(&tk, "vn")) {
-        token const tx = token_next(&p);
-        float const x = token_get_float(&tx);
-        token const ty = token_next(&p);
-        float const y = token_get_float(&ty);
-        token const tz = token_next(&p);
-        float const z = token_get_float(&tz);
-        normals.emplace_back(x, y, z);
-        continue;
-      }
-      if (token_equals(&tk, "f")) {
+
+      } else if (token == "vn") {
+        glm::vec3 normal{};
+        line_stream >> normal.x >> normal.y >> normal.z;
+        normals.push_back(normal);
+
+      } else if (token == "f") {
         material const &current_material = materials.at(current_material_ix);
         for (uint32_t i = 0; i < 3; ++i) {
-          // position
-          token const ix1_tkn = token_from_string_additional_delim(p, '/');
-          p = ix1_tkn.end;
-          uint32_t const ix1 = token_get_uint(&ix1_tkn);
+          uint32_t ix1 = 0;
+          uint32_t ix2 = 0;
+          uint32_t ix3 = 0;
+          char slash = '\0';
+
+          line_stream >> ix1 >> slash >> ix2 >> slash >> ix3;
+
           glm::vec3 const &position = positions.at(ix1 - 1);
-
-          // texture
-          token const ix2_tkn = token_from_string_additional_delim(p, '/');
-          p = ix2_tkn.end;
-          uint32_t const ix2 = token_get_uint(&ix2_tkn);
-          glm::vec2 const &texture =
-              ix2 ? texture_uv.at(ix2 - 1) : glm::vec2{0, 0};
-
-          // normal
-          token const ix3_tkn = token_from_string_additional_delim(p, '/');
-          p = ix3_tkn.end;
-          uint32_t const ix3 = token_get_uint(&ix3_tkn);
+          glm::vec2 const &texture = ix2 ? texture_uv.at(ix2 - 1) : glm::vec2{};
           glm::vec3 const &normal = normals.at(ix3 - 1);
 
           // add to buffer
@@ -210,12 +184,6 @@ private:
           ++vertex_ix;
         }
         continue;
-      }
-
-      // unknown token
-
-      if (*p != '\0' && *(p - 1) != '\n') {
-        p = token_to_including_newline(p);
       }
     }
     // add the last material range
@@ -274,68 +242,49 @@ private:
   inline auto load_planes(char const *path) -> void {
     // load from blender exported 'obj' file
     printf("   * loading planes from '%s'\n", path);
-    std::ifstream const file{path};
+    std::ifstream file{path};
     if (!file) {
       throw glos_exception{std::format("cannot open file '{}'", path)};
     }
-    std::stringstream buffer{};
-    buffer << file.rdbuf();
-    std::string const content = buffer.str();
-    char const *p = content.c_str();
 
     std::vector<glm::vec4> points{};
     std::vector<glm::vec3> normals{};
 
-    while (*p) {
-      token const t = token_next(&p);
-      if (token_equals(&t, "v")) {
-        token const tx = token_next(&p);
-        float const x = token_get_float(&tx);
-        token const ty = token_next(&p);
-        float const y = token_get_float(&ty);
-        token const tz = token_next(&p);
-        float const z = token_get_float(&tz);
-        points.emplace_back(x, y, z, 1.0f);
-        continue;
-      }
-      if (token_equals(&t, "vn")) {
-        token const tx = token_next(&p);
-        float const x = token_get_float(&tx);
-        token const ty = token_next(&p);
-        float const y = token_get_float(&ty);
-        token const tz = token_next(&p);
-        float const z = token_get_float(&tz);
-        normals.emplace_back(x, y, z);
-        continue;
-      }
-      if (token_equals(&t, "f")) {
-        // read first vertex in face and create position and normal
-
-        // position
-        token const ix1_tkn = token_from_string_additional_delim(p, '/');
-        p = ix1_tkn.end;
-        uint32_t const ix1 = token_get_uint(&ix1_tkn);
+    std::string line{};
+    while (std::getline(file, line)) {
+      std::istringstream line_stream{line};
+      std::string token{};
+      line_stream >> token;
+      if (token == "v") {
+        glm::vec4 point{};
+        line_stream >> point.x >> point.y >> point.z;
+        point.w = 1.0f;
+        points.push_back(point);
+      } else if (token == "vn") {
+        glm::vec3 normal{};
+        line_stream >> normal.x >> normal.y >> normal.z;
+        normals.push_back(normal);
+      } else if (token == "f") {
+        uint32_t ix1 = 0;
+        uint32_t ix2 = 0;
+        uint32_t ix3 = 0;
+        char slash = '\0';
+        line_stream >> ix1 >> slash;
+        if (line_stream.peek() == '/') {
+          // handle the case where there is no texture
+          ix2 = 0;
+          line_stream.ignore();
+        } else {
+          line_stream >> ix2 >> slash;
+        }
+        line_stream >> ix3;
         glm::vec4 const &point = points.at(ix1 - 1);
-
-        // texture, skip
-        token const ix2_tkn = token_from_string_additional_delim(p, '/');
-        p = ix2_tkn.end;
-
-        // normal
-        token const ix3_tkn = token_from_string_additional_delim(p, '/');
-        p = ix3_tkn.end;
-        uint32_t const ix3 = token_get_uint(&ix3_tkn);
         glm::vec3 const &normal = normals.at(ix3 - 1);
-
         planes_points.emplace_back(point);
         planes_normals.emplace_back(normal);
-
-        // ignore the other vertices
-        p = token_to_including_newline(p);
         continue;
       }
       // unknown token
-      p = token_to_including_newline(p);
     }
     // add points not connected to normals to 'plane_points'
     for (glm::vec4 const &pt : points) {

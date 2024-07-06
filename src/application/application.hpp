@@ -87,8 +87,9 @@ static auto application_init() -> void {
   glob_ix_fragment = globs.load("assets/obj/asteroids/fragment.obj", nullptr);
   glob_ix_power_up = globs.load("assets/obj/asteroids/power_up.obj", nullptr);
 
+  // glob_ix_skydome = globs.load("assets/obj/skydome.obj", nullptr);
   // object *skydome = new (objects.alloc()) object{};
-  // skydome->glob_ix = globs.load("assets/obj/skydome.obj", nullptr);
+  // skydome->glob_ix(glob_ix_skydome);
   // skydome->bounding_radius = 50;
   // skydome->scale = {50.0f, 50.0f, 50.0f};
 
