@@ -74,7 +74,7 @@ private:
 
     std::ifstream file{path};
     if (!file) {
-      throw glos_exception{
+      throw exception{
           std::format("cannot open file '{}'", path.string().c_str())};
     }
 
@@ -236,7 +236,7 @@ private:
     printf("   * loading planes from '%s'\n", path.string().c_str());
     std::ifstream file{path};
     if (!file) {
-      throw glos_exception{
+      throw exception{
           std::format("cannot open file '{}'", path.string().c_str())};
     }
 

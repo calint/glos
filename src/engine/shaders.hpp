@@ -136,7 +136,7 @@ public:
     if (!ok) {
       GLchar msg[1024];
       glGetProgramInfoLog(program_id, sizeof(msg), nullptr, msg);
-      throw glos_exception{std::format("program linking error:\n{}", msg)};
+      throw exception{std::format("program linking error:\n{}", msg)};
     }
 
     glDeleteShader(vertex_shader_id);
@@ -164,8 +164,8 @@ private:
     if (!ok) {
       GLchar msg[1024];
       glGetShaderInfoLog(shader_id, sizeof(msg), nullptr, msg);
-      throw glos_exception{std::format("compile error in {} shader:\n{}",
-                                       shader_name_for_type(shader_type), msg)};
+      throw exception{std::format("compile error in {} shader:\n{}",
+                                  shader_name_for_type(shader_type), msg)};
     }
     return shader_id;
   }

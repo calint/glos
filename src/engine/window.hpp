@@ -20,13 +20,12 @@ public:
         SDL_CreateWindow("glos", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                          window_width, window_height, SDL_WINDOW_OPENGL);
     if (!sdl_window) {
-      throw glos_exception{
-          std::format("cannot create window: {}", SDL_GetError())};
+      throw exception{std::format("cannot create window: {}", SDL_GetError())};
     }
 
     sdl_gl_context = SDL_GL_CreateContext(sdl_window);
     if (!sdl_gl_context) {
-      throw glos_exception{
+      throw exception{
           std::format("cannot create gl context: {}", SDL_GetError())};
     }
 
@@ -35,7 +34,7 @@ public:
         window_vsync ? (SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC)
                      : (SDL_RENDERER_ACCELERATED));
     if (!sdl_renderer) {
-      throw glos_exception{
+      throw exception{
           std::format("cannot create renderer: {}", SDL_GetError())};
     }
 
@@ -65,7 +64,7 @@ private:
   static inline auto gl_print_context_profile_and_version() -> void {
     int value = 0;
     if (SDL_GL_GetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, &value)) {
-      throw glos_exception{
+      throw exception{
           std::format("cannot get opengl attribute: {}", SDL_GetError())};
     }
     printf("SDL_GL_CONTEXT_PROFILE_MASK = ");
@@ -89,13 +88,13 @@ private:
     printf(" (%d)\n", value);
 
     if (SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &value)) {
-      throw glos_exception{
+      throw exception{
           std::format("cannot get opengl attribute: {}", SDL_GetError())};
     }
     printf("SDL_GL_CONTEXT_MAJOR_VERSION = %d\n", value);
 
     if (SDL_GL_GetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, &value)) {
-      throw glos_exception{
+      throw exception{
           std::format("cannot get opengl attribute: {}", SDL_GetError())};
     }
     printf("SDL_GL_CONTEXT_MINOR_VERSION = %d\n", value);

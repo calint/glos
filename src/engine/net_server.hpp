@@ -14,20 +14,20 @@ public:
 
   inline auto init() -> void {
     if (SDL_Init(SDL_INIT_TIMER)) {
-      throw glos_exception{
+      throw exception{
           std::format("cannot initiate sdl timer: {}", SDL_GetError())};
     }
 
     server_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (server_fd == -1) {
-      throw glos_exception{"cannot create socket"};
+      throw exception{"cannot create socket"};
     }
 
     {
       int flag = 1;
       if (setsockopt(server_fd, IPPROTO_TCP, TCP_NODELAY, &flag,
                      sizeof(flag))) {
-        throw glos_exception{"cannot set TCP_NODELAY"};
+        throw exception{"cannot set TCP_NODELAY"};
       }
     }
 
@@ -37,11 +37,11 @@ public:
     server.sin_port = htons(port);
 
     if (bind(server_fd, (struct sockaddr *)&server, sizeof(server))) {
-      throw glos_exception{"cannot bind socket"};
+      throw exception{"cannot bind socket"};
     }
 
     if (listen(server_fd, net_players)) {
-      throw glos_exception{strerror(errno)};
+      throw exception{strerror(errno)};
     }
 
     printf(" * waiting for %u players to connect on port %u\n", net_players,
@@ -50,13 +50,13 @@ public:
     for (uint32_t i = 1; i < net_players + 1; ++i) {
       clients_fd[i] = accept(server_fd, nullptr, nullptr);
       if (clients_fd[i] == -1) {
-        throw glos_exception{strerror(errno)};
+        throw exception{strerror(errno)};
       }
 
       int flag = 1;
       if (setsockopt(clients_fd[i], IPPROTO_TCP, TCP_NODELAY, &flag,
                      sizeof(flag))) {
-        throw glos_exception{strerror(errno)};
+        throw exception{strerror(errno)};
       }
 
       printf(" * player %u of %u connected\n", i, net_players);
@@ -72,13 +72,13 @@ public:
       nip.player_ix = i;
       ssize_t const n = send(clients_fd[i], &nip, sizeof(nip), 0);
       if (n == -1) {
-        throw glos_exception{
+        throw exception{
             std::format("could not send initial packet to player {}: {}", i,
                         strerror(errno))};
       }
       if (size_t(n) != sizeof(nip)) {
-        throw glos_exception{std::format("incomplete send to player {}: {}", i,
-                                         strerror(errno))};
+        throw exception{std::format("incomplete send to player {}: {}", i,
+                                    strerror(errno))};
       }
     }
   }
@@ -92,15 +92,13 @@ public:
       for (uint32_t i = 1; i < net_players + 1; ++i) {
         ssize_t const n = recv(clients_fd[i], &state[i], sizeof(state[i]), 0);
         if (n == -1) {
-          throw glos_exception{
-              std::format("player {}: {}", i, strerror(errno))};
+          throw exception{std::format("player {}: {}", i, strerror(errno))};
         }
         if (n == 0) {
-          throw glos_exception{std::format("player {}: disconnected", i)};
+          throw exception{std::format("player {}: disconnected", i)};
         }
         if (size_t(n) != sizeof(state[i])) {
-          throw glos_exception{
-              std::format("player {}: read was incomplete", i)};
+          throw exception{std::format("player {}: read was incomplete", i)};
         }
       }
 
@@ -116,12 +114,10 @@ public:
       for (uint32_t i = 1; i < net_players + 1; ++i) {
         ssize_t const n = send(clients_fd[i], state.data(), sizeof(state), 0);
         if (n == -1) {
-          throw glos_exception{
-              std::format("player {}: {}", i, strerror(errno))};
+          throw exception{std::format("player {}: {}", i, strerror(errno))};
         }
         if (size_t(n) != sizeof(state)) {
-          throw glos_exception{
-              std::format("player {}: send was incomplete", i)};
+          throw exception{std::format("player {}: send was incomplete", i)};
         }
       }
     }

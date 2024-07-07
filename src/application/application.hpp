@@ -132,8 +132,8 @@ static auto application_init() -> void {
       create_spheres(objects_count);
       break;
     default:
-      throw glos_exception{std::format("unknown 'performance_test_type' '{}'",
-                                       performance_test_type)};
+      throw exception{std::format("unknown 'performance_test_type' '{}'",
+                                  performance_test_type)};
     }
   }
 

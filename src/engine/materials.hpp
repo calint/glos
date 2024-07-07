@@ -46,7 +46,7 @@ public:
 
     std::ifstream file{path};
     if (!file) {
-      throw glos_exception{std::format("cannot open file '{}'", path)};
+      throw exception{std::format("cannot open file '{}'", path)};
     }
 
     std::string line{};
@@ -116,7 +116,7 @@ public:
     });
 
     if (it == store.cend()) {
-      throw glos_exception{
+      throw exception{
           std::format("cannot find material: path '{}' name '{}'", path, name)};
     }
 

@@ -11,7 +11,7 @@ class sdl final {
 public:
   inline auto init() -> void {
     if (SDL_Init(SDL_INIT_VIDEO)) {
-      throw glos_exception{
+      throw exception{
           std::format("cannot initiate sdl video: {}", SDL_GetError())};
     }
   }

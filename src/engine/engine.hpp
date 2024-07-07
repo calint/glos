@@ -34,7 +34,7 @@
 #include <vector>
 
 // include order of subsystems relevant
-#include "glos_exception.hpp"
+#include "exception.hpp"
 //
 #include "../application/configuration.hpp"
 //
@@ -237,7 +237,7 @@ public:
 
     // try {
     application_init();
-    // } catch (glos_exception const &ex) {
+    // } catch (exception const &ex) {
     //   std::cerr << ex << std::endl;
     //   std::terminate();
     // }

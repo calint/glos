@@ -14,8 +14,7 @@ public:
 
   inline auto init() -> void {
     if (TTF_Init()) {
-      throw glos_exception{
-          std::format("cannot initiate ttf: {}", TTF_GetError())};
+      throw exception{std::format("cannot initiate ttf: {}", TTF_GetError())};
     }
 
     constexpr GLfloat quad_vertices[] = {
@@ -85,7 +84,7 @@ public:
   inline auto load_font(char const *ttf_path, int const size) -> void {
     font = TTF_OpenFont(ttf_path, size);
     if (!font) {
-      throw glos_exception{
+      throw exception{
           std::format("cannot load font '{}': {}", ttf_path, TTF_GetError())};
     }
   }
@@ -111,8 +110,7 @@ public:
     SDL_Surface *text_surface = TTF_RenderUTF8_Blended(font, text, color);
 
     if (!text_surface) {
-      throw glos_exception{
-          std::format("cannot render text: {}", SDL_GetError())};
+      throw exception{std::format("cannot render text: {}", SDL_GetError())};
     }
 
     // printf("Surface Format: %s\n",
@@ -123,7 +121,7 @@ public:
         SDL_ConvertSurfaceFormat(text_surface, SDL_PIXELFORMAT_RGBA8888, 0);
 
     if (!converted_surface) {
-      throw glos_exception{
+      throw exception{
           std::format("cannot convert surface: {}", SDL_GetError())};
     }
 

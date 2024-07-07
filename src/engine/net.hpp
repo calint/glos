@@ -34,7 +34,7 @@ public:
 
   inline auto init() -> void {
     if (net_players < 1) {
-      throw glos_exception{"configuration 'net_players' must be at least 1"};
+      throw exception{"configuration 'net_players' must be at least 1"};
     }
 
     if (!enabled) {
@@ -43,12 +43,12 @@ public:
 
     fd = socket(AF_INET, SOCK_STREAM, 0);
     if (fd == -1) {
-      throw glos_exception{strerror(errno)};
+      throw exception{strerror(errno)};
     }
 
     int flag = 1;
     if (setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, &flag, sizeof(flag))) {
-      throw glos_exception{"cannot set TCP_NODELAY"};
+      throw exception{"cannot set TCP_NODELAY"};
     }
 
     struct sockaddr_in server {};
@@ -58,20 +58,20 @@ public:
 
     printf("[ net ] connecting to '%s' on port %u\n", host, port);
     if (connect(fd, (struct sockaddr *)&server, sizeof(server)) < 0) {
-      throw glos_exception{strerror(errno)};
+      throw exception{strerror(errno)};
     }
 
     printf("[ net ] connected. waiting for go ahead\n");
     net_init_packet nip{};
     ssize_t const n = recv(fd, &nip, sizeof(nip), 0);
     if (n == -1) {
-      throw glos_exception{strerror(errno)};
+      throw exception{strerror(errno)};
     }
     if (n == 0) {
-      throw glos_exception{"server disconnected"};
+      throw exception{"server disconnected"};
     }
     if (size_t(n) != sizeof(nip)) {
-      throw glos_exception{"incomplete receive"};
+      throw exception{"incomplete receive"};
     }
 
     // get server assigned player index and time in milliseconds
@@ -102,13 +102,13 @@ public:
     // receive signals from previous frame
     ssize_t const n = recv(fd, states.data(), sizeof(states), 0);
     if (n == -1) {
-      throw glos_exception{strerror(errno)};
+      throw exception{strerror(errno)};
     }
     if (n == 0) {
-      throw glos_exception{"server disconnected"};
+      throw exception{"server disconnected"};
     }
     if (size_t(n) != sizeof(states)) {
-      throw glos_exception{"incomplete read of states"};
+      throw exception{"incomplete read of states"};
     }
 
     // send current frame signals
@@ -129,10 +129,10 @@ private:
   inline auto send_state() const -> void {
     ssize_t const n = send(fd, &next_state, sizeof(next_state), 0);
     if (n == -1) {
-      throw glos_exception{strerror(errno)};
+      throw exception{strerror(errno)};
     }
     if (size_t(n) != sizeof(next_state)) {
-      throw glos_exception{"incomplete send"};
+      throw exception{"incomplete send"};
     }
   }
 };

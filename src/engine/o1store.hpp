@@ -12,6 +12,8 @@
 //   in an object hierarchy
 //
 
+namespace glos {
+
 template <typename type, size_t const instance_count,
           uint32_t const store_id = 0,
           bool const return_nullptr_when_no_free_instance_available = false,
@@ -43,7 +45,7 @@ public:
         static_cast<type **>(calloc(instance_count, sizeof(type *)));
 
     if (!all_ || !free_bgn_ || !alloc_bgn_ || !del_bgn_) {
-      throw glos_exception{
+      throw exception{
           std::format("store {}: cannot allocate arrays", store_id)};
     }
 
@@ -83,7 +85,7 @@ public:
       if (return_nullptr_when_no_free_instance_available) {
         return nullptr;
       } else {
-        throw glos_exception{
+        throw exception{
             std::format("store {}: out of free instances. consider increasing "
                         "the size of the store.",
                         store_id)};
@@ -108,14 +110,14 @@ public:
 
     if (o1store_check_free_limits) {
       if (del_ptr_ >= del_end_) {
-        throw glos_exception{std::format("store {}: free overrun", store_id)};
+        throw exception{std::format("store {}: free overrun", store_id)};
       }
     }
 
     if (o1store_check_double_free) {
       for (type **it = del_bgn_; it < del_ptr_; ++it) {
         if (*it == inst) {
-          throw glos_exception{std::format("store {}: double free", store_id)};
+          throw exception{std::format("store {}: double free", store_id)};
         }
       }
     }
@@ -187,3 +189,4 @@ public:
 
   inline auto release_lock() -> void { lock.clear(std::memory_order_release); }
 };
+} // namespace glos
