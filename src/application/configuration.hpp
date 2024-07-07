@@ -4,19 +4,8 @@
 // reviewed: 2024-01-06
 // reviewed: 2024-01-08
 
-// game or performance test
-// 0: none (game)  1: cubes  2: spheres
-static constexpr uint32_t performance_test_type = 0;
-
-static constexpr bool is_performance_test = performance_test_type != 0;
-static constexpr float cube_speed = 10;
-static constexpr float sphere_speed = 10;
-
-// multiplayer debugging output
-static constexpr bool debug_multiplayer = false;
-
 //
-// definitions used by engine
+// configuration used by engine
 //
 
 // multithreaded grid
@@ -25,13 +14,6 @@ static constexpr bool debug_multiplayer = false;
 //       non-deterministic behavior
 static constexpr bool threaded_grid = false;
 static constexpr bool threaded_update = false;
-
-// grid dimensions
-static constexpr float grid_size =
-    is_performance_test ? 3200 : 40; // square side in e.g. meters
-static constexpr uint32_t grid_rows = is_performance_test ? 16 : 4;
-static constexpr uint32_t grid_columns = grid_rows;
-static constexpr float grid_cell_size = grid_size / grid_rows;
 
 // o1store debugging (assertions should be on in development)
 static constexpr bool o1store_check_double_free = false;
@@ -43,6 +25,30 @@ static constexpr bool metrics_print = true;
 // initially render the hud
 static constexpr bool hud_enabled = true;
 
+// render debugging (runtime modifiable)
+static bool debug_object_planes_normals = false;
+static bool debug_object_bounding_sphere = false;
+
+//
+// configuration used by the game
+//
+
+// game or performance test
+// 0: none (game)  1: cubes  2: spheres
+static constexpr uint32_t performance_test_type = 0;
+
+static constexpr bool is_performance_test = performance_test_type != 0;
+static constexpr float cube_speed = 10;
+static constexpr float sphere_speed = 10;
+
+// grid dimensions
+static constexpr float grid_size = is_performance_test ? 3200 : 40;
+// square side in e.g. meters
+
+static constexpr uint32_t grid_rows = is_performance_test ? 16 : 4;
+static constexpr uint32_t grid_columns = grid_rows;
+static constexpr float grid_cell_size = grid_size / grid_rows;
+
 // window dimensions
 static constexpr uint32_t window_width = 1024;
 static constexpr uint32_t window_height = 1024;
@@ -52,16 +58,15 @@ static constexpr bool window_vsync = is_performance_test ? false : true;
 // number of players in networked mode
 static constexpr uint32_t net_players = 2;
 
-// number of preallocated objects
-static constexpr uint32_t objects_count =
-    is_performance_test ? 64 * 1024 : 1 * 1024;
+// multiplayer debugging output
+static constexpr bool debug_multiplayer = false;
 
 // maximum size of any object instance in bytes
 static constexpr size_t objects_instance_size_B = 512;
 
-//
-// definitions used by game
-//
+// number of preallocated objects
+static constexpr uint32_t objects_count =
+    is_performance_test ? 64 * 1024 : 1 * 1024;
 
 // collision bits
 static constexpr uint32_t cb_none = 0;
@@ -135,7 +140,3 @@ static uint32_t glob_ix_skydome = 0;
 
 // used when 'debug_multiplayer' is true to give objects unique numbers
 static std::atomic<uint32_t> counter = 0;
-
-// render debugging (runtime modifiable)
-static bool debug_object_planes_normals = false;
-static bool debug_object_bounding_sphere = false;
