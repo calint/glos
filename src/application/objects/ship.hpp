@@ -60,14 +60,15 @@ public:
     if (keys & key_j) {
       fire();
     }
-    if (keys & key_o) {
-      velocity = {0, 0, 0};
-    }
-    if (keys & key_i) {
-      camera.position = {0, 50, 0};
-    }
     if (keys & key_k) {
-      camera.position = {0, 0, 50};
+      camera.type = camera::type::LOOK_AT;
+      camera.position = {0, 30, 30};
+      camera.look_at = {0, 0, -0.0001f};
+    }
+    if (keys & key_l) {
+      camera.type = camera::type::ORTHOGONAL;
+      camera.position = {0, 50, 0};
+      camera.look_at = {0, 0, -0.0001f};
     }
     return true;
   }

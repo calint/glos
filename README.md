@@ -42,6 +42,7 @@ experimental 3d multiplayer game framework using simple data layer 2 and opengl 
   - a: rotate left
   - d: rotate right
   - j: fire
+  - k, l: cameras
   - F1: print cells
   - F2: collisions on/off (this will make clients out-of-sync)
   - F3: render on/off
@@ -49,6 +50,7 @@ experimental 3d multiplayer game framework using simple data layer 2 and opengl 
   - F5: render normals on/off
   - F6: render bounding spheres on/off
   - F7: hud on/off
+  - F8: render grid cells on/off
 
 ![starting multiplayer mode](https://github.com/calint/glos/assets/1920811/ed27167b-525e-4696-8a0c-2cb2fb52ec14)
 
