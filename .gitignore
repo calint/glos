@@ -1,10 +1,8 @@
-/Debug/
 /glos
 /gmon.out
 /perf.data*
 /cachegrind.out.*
 /qa/linaro-map/*
 /build/
-/log1
-/log2
+/sanitize.log
 /.vscode/settings.json
