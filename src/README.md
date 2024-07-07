@@ -15,6 +15,8 @@
   - increases compile time and is not scalable; however, this framework is intended for smallish applications
 * use of `static` storage and function declarations
   - gives compiler opportunity to optimize
+* use of global variables
+  - the application is a singleton with the namespace `glos` being the container of the components
 * include order relevant
   - subsystems are included in dependency order making the program readable top-down
   - most `hpp` files also define a global instance or instances of the defined type 
