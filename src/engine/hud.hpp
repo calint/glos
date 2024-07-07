@@ -109,28 +109,29 @@ public:
   inline auto print(char const *text, SDL_Color color, int x,
                     int y) const -> void {
     SDL_Surface *text_surface = TTF_RenderUTF8_Blended(font, text, color);
-    // ARGB8888
-    // printf("Surface Format: %s\n",
-    //        SDL_GetPixelFormatName(text_surface->format->format));
 
     if (!text_surface) {
       throw glos_exception{
           std::format("cannot render text: {}", SDL_GetError())};
     }
 
+    // printf("Surface Format: %s\n",
+    //        SDL_GetPixelFormatName(text_surface->format->format));
+    // ARGB8888
+
     SDL_Surface *converted_surface =
         SDL_ConvertSurfaceFormat(text_surface, SDL_PIXELFORMAT_RGBA8888, 0);
+
     if (!converted_surface) {
       throw glos_exception{
           std::format("cannot convert surface: {}", SDL_GetError())};
     }
 
+    // printf("Surface Format: %s\n",
+    //        SDL_GetPixelFormatName(converted_surface->format->format));
+    // RGBA8888
+
     glBindTexture(GL_TEXTURE_2D, texture);
-    // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, converted_surface->w,
-    //              converted_surface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE,
-    //              converted_surface->pixels);
-    // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture_width, texture_height, 0,
-    //              GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
     glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, converted_surface->w,
                     converted_surface->h, GL_RGBA, GL_UNSIGNED_BYTE,
                     converted_surface->pixels);
