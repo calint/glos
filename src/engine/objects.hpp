@@ -4,6 +4,7 @@
 // reviewed: 2024-01-06
 // reviewed: 2024-01-10
 // reviewed: 2024-01-16
+// reviewed: 2024-07-08
 
 #include "o1store.hpp"
 #include "planes.hpp"
@@ -36,7 +37,7 @@ public:
   glm::vec3 angle{};            // in radians
 private:
   std::vector<object const *> handled_collisions{};
-  bool is_dead = false; // used by cell to avoid events on dead objects
+  bool is_dead = false; // used by 'cell' to avoid events to dead objects
 public:
   // -- cell::resolve_collisions
   bool is_sphere = false; // true if object can be considered a sphere
@@ -53,7 +54,7 @@ private:
   glm::mat4 Mmw{};       // model -> world matrix
   uint32_t glob_ix_ = 0; // index in globs store
   // -- cell::render
-  uint32_t rendered_at_tick = 0; // used by cell to avoid rendering twice
+  uint32_t rendered_at_tick = 0; // used by 'cell' to avoid rendering twice
 public:
   // -- other
   // rest of object public state
@@ -147,12 +148,15 @@ public:
   inline auto glob_ix() const -> uint32_t { return glob_ix_; }
 
 private:
+  // called from 'object' in thread safe way
   inline auto is_Mmw_valid() const -> bool {
     return position == Mmw_pos && angle == Mmw_agl && scale == Mmw_scl;
   }
 
+  // called from 'cell' in thread safe way
   inline auto clear_handled_collisions() -> void { handled_collisions.clear(); }
 
+  // called from 'cell' in thread safe way
   inline auto is_collision_handled_and_if_not_add(object const *obj) -> bool {
     bool const found =
         std::ranges::find(handled_collisions, obj) != handled_collisions.cend();
@@ -164,6 +168,7 @@ private:
     return found;
   }
 
+  // called from 'cell' in thread safe way
   inline auto update_planes_world_coordinates() -> void {
     bool const synchronize = threaded_grid && overlaps_cells;
 
@@ -202,7 +207,7 @@ public:
   }
 
   inline auto free() -> void {
-    for_each_allocated([](object *o) { o->~object(); });
+    for_each([](object *o) { o->~object(); });
     //? what if destructor created objects
   }
 
@@ -214,9 +219,9 @@ public:
     return allocated_list_len_;
   }
 
-  inline auto for_each_allocated(auto &&func) -> void {
-    object **const end = store_.allocated_list_end();
-    for (object **it = store_.allocated_list(); it < end; ++it) {
+  inline auto for_each(auto &&func) -> void {
+    for (object **it = store_.allocated_list(); it < allocated_list_end_;
+         ++it) {
       object *obj = *it;
       func(obj);
     }
@@ -224,8 +229,8 @@ public:
 
   inline auto apply_allocated_instances() -> void {
     // retrieve the end of list because during objects' 'update' and
-    // 'on_collision' new objects might be created which would change the end of
-    // list pointer
+    // 'on_collision' new objects might be created which would change the
+    // end-of-list pointer
     allocated_list_len_ = store_.allocated_list_len();
     allocated_list_end_ = store_.allocated_list_end();
   }

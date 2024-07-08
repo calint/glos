@@ -410,7 +410,7 @@ private:
     grid.clear();
 
     // add all allocated objects to the grid
-    objects.for_each_allocated([](object *o) { grid.add(o); });
+    objects.for_each([](object *o) { grid.add(o); });
 
     // update frame context used throughout the frame
     // in multiplayer mode use dt and ms from server
