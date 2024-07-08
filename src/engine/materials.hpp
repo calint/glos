@@ -4,19 +4,9 @@
 // reviewed: 2024-01-06
 // reviewed: 2024-01-10
 // reviewed: 2024-01-16
+// reviewed: 2024-07-08
 
 namespace glos {
-
-// newmtl texture
-// Ns 96.078431
-// Ka 1.000000 1.000000 1.000000
-// Kd 0.640000 0.640000 0.640000
-// Ks 0.500000 0.500000 0.500000
-// Ke 0.000000 0.000000 0.000000
-// Ni 1.000000
-// d 1.000000
-// illum 2
-// map_Kd /home/c/w/glos/logo.jpeg
 
 class material final {
 public:
@@ -41,6 +31,19 @@ public:
 
   inline auto free() -> void { store.clear(); }
 
+  // sample of text to parse:
+
+  // newmtl texture
+  // Ns 96.078431
+  // Ka 1.000000 1.000000 1.000000
+  // Kd 0.640000 0.640000 0.640000
+  // Ks 0.500000 0.500000 0.500000
+  // Ke 0.000000 0.000000 0.000000
+  // Ni 1.000000
+  // d 1.000000
+  // illum 2
+  // map_Kd /home/c/w/glos/logo.jpeg
+
   inline auto load(char const *path) -> void {
     printf("   * loading materials from '%s'\n", path);
 
@@ -55,55 +58,49 @@ public:
       std::string token{};
       line_stream >> token;
 
-      if (token.starts_with("#")) {
-        continue;
-      }
-
       if (token == "newmtl") {
         material mtl{};
         mtl.path = std::string{path};
         line_stream >> mtl.name;
         store.push_back(mtl);
         printf("     %s\n", mtl.name.c_str());
-        continue;
-      }
 
-      if (token == "Ns") {
+      } else if (token == "Ns") {
         line_stream >> store.back().Ns;
-        continue;
-      }
 
-      if (token == "Ka" || token == "Kd" || token == "Ks" || token == "Ke") {
+      } else if (token == "Ka") {
         glm::vec3 v{};
         line_stream >> v.x >> v.y >> v.z;
-        if (token == "Ka") {
-          store.back().Ka = v;
-        } else if (token == "Kd") {
-          store.back().Kd = v;
-        } else if (token == "Ks") {
-          store.back().Ks = v;
-        } else if (token == "Ke") {
-          store.back().Ke = v;
-        }
-        continue;
-      }
+        store.back().Ka = v;
 
-      if (token == "Ni") {
+      } else if (token == "Kd") {
+        glm::vec3 v{};
+        line_stream >> v.x >> v.y >> v.z;
+        store.back().Kd = v;
+
+      } else if (token == "Ks") {
+        glm::vec3 v{};
+        line_stream >> v.x >> v.y >> v.z;
+        store.back().Ks = v;
+
+      } else if (token == "Ke") {
+        glm::vec3 v{};
+        line_stream >> v.x >> v.y >> v.z;
+        store.back().Ke = v;
+
+      } else if (token == "Ni") {
         line_stream >> store.back().Ni;
-        continue;
-      }
 
-      if (token == "d") {
+      } else if (token == "d") {
         line_stream >> store.back().d;
-        continue;
-      }
 
-      if (token == "map_Kd") {
+      } else if (token == "map_Kd") {
         // texture path
         line_stream >> store.back().map_Kd;
         store.back().texture_id = textures.find_id_or_load(store.back().map_Kd);
-        continue;
       }
+
+      // unknown token
     }
   }
 
