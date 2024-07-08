@@ -1,8 +1,8 @@
+/.vscode/settings.json
+/build/
 /glos
 /gmon.out
 /perf.data*
 /cachegrind.out.*
-/qa/linaro-map/*
-/build/
-/sanitize.log
-/.vscode/settings.json
+/sanitize.log*
+/qa/linaro-map/
