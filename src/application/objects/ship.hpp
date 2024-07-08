@@ -63,12 +63,14 @@ public:
     if (keys & key_k) {
       camera.type = camera::type::LOOK_AT;
       camera.position = {0, 30, 30};
-      camera.look_at = {0, 0, -0.0001f};
+      camera.look_at = {0, 0, -.000001f};
+      // note: -.000001f because of the math of 'look at'
     }
     if (keys & key_l) {
       camera.type = camera::type::ORTHOGONAL;
       camera.position = {0, 50, 0};
-      camera.look_at = {0, 0, -0.0001f};
+      camera.look_at = {0, 0, -.000001f};
+      // note: -.000001f because of the math of 'look at'
     }
     return true;
   }

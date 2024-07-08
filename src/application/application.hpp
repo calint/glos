@@ -142,8 +142,8 @@ static auto application_init() -> void {
 
   camera.type = camera::type::ORTHOGONAL;
   camera.position = {0, 50, 0};
-  camera.look_at = {0, 0, -0.0001f};
-  // note: -0.0001f because of the math of 'look at'
+  camera.look_at = {0, 0, -.000001f};
+  // note: -.000001f because of the math of 'look at'
   camera.ortho_min_x = -game_area_half_x;
   camera.ortho_min_y = -game_area_half_z;
   camera.ortho_max_x = game_area_half_x;
