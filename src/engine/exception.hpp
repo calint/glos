@@ -1,4 +1,5 @@
 #pragma once
+// reviewed: 2024-07-08
 
 namespace glos {
 
