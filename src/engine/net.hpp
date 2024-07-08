@@ -3,6 +3,7 @@
 // reviewed: 2024-01-04
 // reviewed: 2024-01-06
 // reviewed: 2024-01-10
+// reviewed: 2024-07-08
 
 namespace glos {
 
@@ -26,6 +27,8 @@ public:
   bool enabled = false;
   net_state next_state{};
   std::array<net_state, net_players + 1> states{};
+  // note: +1 because index 0 is used for server message to clients
+
   uint32_t player_ix = 1;
   float dt = 0;
   uint64_t ms = 0;
@@ -114,7 +117,7 @@ public:
     // send current frame signals
     send_state();
 
-    // get server dt and time from server state
+    // get server 'dt' and time 'ms' from server state
     dt = states[0].look_angle_x;
     ms = states[0].keys;
 

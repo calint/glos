@@ -3,6 +3,7 @@
 // reviewed: 2024-01-04
 // reviewed: 2024-01-06
 // reviewed: 2024-01-10
+// reviewed: 2024-07-08
 
 #include "net.hpp"
 
@@ -66,7 +67,7 @@ public:
 
     net_init_packet nip{};
     nip.ms = SDL_GetTicks64();
-    // send the assigned player index to clients
+    // send the assigned player index and time to clients
     for (uint32_t i = 1; i < net_players + 1; ++i) {
       // send initial packet to clients
       nip.player_ix = i;
