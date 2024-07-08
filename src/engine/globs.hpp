@@ -4,10 +4,12 @@
 // reviewed: 2024-01-06
 // reviewed: 2024-01-10
 // reviewed: 2024-01-16
+// reviewed: 2024-07-08
 
 namespace glos {
 
 class glob final {
+  // a range of triangles rendered with a specified material
   class range final {
   public:
     // index in vertex buffer where triangle data starts
@@ -29,6 +31,9 @@ public:
   // planes
   std::vector<glm::vec4> planes_points{}; // x, y, z, 1
   std::vector<glm::vec3> planes_normals{};
+  // note: each normal has a point at the same index; however there might be
+  // additional points in 'planes_points' to better define a volume and points
+  // it contains
 
   inline glob(char const *obj_path, char const *bounding_planes_path) {
     load_object(obj_path);
@@ -68,7 +73,7 @@ public:
   }
 
 private:
-  // loads definition and optional bounding planes from 'obj' files
+  // loads definition of object from and 'obj' file
   inline auto load_object(std::filesystem::path path) -> void {
     printf(" * loading glob from '%s'\n", path.string().c_str());
 
@@ -110,7 +115,7 @@ private:
       } else if (token == "usemtl") {
         line_stream >> token;
         current_material_ix =
-            materials.find_material_ix_or_break(mtl_path, token);
+            materials.find_material_ix_or_throw(mtl_path, token);
         if (vertex_ix_prv != vertex_ix) {
           // is not the first 'usemtl' directive
           ranges.emplace_back(vertex_ix_prv, vertex_ix - vertex_ix_prv,
@@ -123,7 +128,7 @@ private:
         glm::vec3 position{};
         line_stream >> position.x >> position.y >> position.z;
         positions.push_back(position);
-        float const r = glm::length(positions.back());
+        float const r = glm::length(position);
         if (r > bounding_radius) {
           bounding_radius = r;
         }
@@ -161,10 +166,10 @@ private:
           vertices.push_back(position.y);
           vertices.push_back(position.z);
           // color
-          vertices.push_back(current_material.Kd.r); // color
-          vertices.push_back(current_material.Kd.g);
-          vertices.push_back(current_material.Kd.b);
-          vertices.push_back(current_material.d); // opacity
+          vertices.push_back(current_material.Kd.r); // color red
+          vertices.push_back(current_material.Kd.g); // green
+          vertices.push_back(current_material.Kd.b); // blue
+          vertices.push_back(current_material.d);    // opacity
           // normal
           vertices.push_back(normal.x);
           vertices.push_back(normal.y);
@@ -210,6 +215,7 @@ private:
     glEnableVertexAttribArray(shaders::apos);
     glVertexAttribPointer(shaders::apos, 3, GL_FLOAT, GL_FALSE, sizeof(vertex),
                           (GLvoid *)offsetof(vertex, position));
+    // note: 'vertex' defined in 'shaders.hpp'
 
     glEnableVertexAttribArray(shaders::argba);
     glVertexAttribPointer(shaders::argba, 4, GL_FLOAT, GL_FALSE, sizeof(vertex),

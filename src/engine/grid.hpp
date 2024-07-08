@@ -5,6 +5,7 @@
 // reviewed: 2024-01-07
 // reviewed: 2024-01-10
 // reviewed: 2024-01-16
+// reviewed: 2024-07-08
 
 #include "cell.hpp"
 
@@ -12,7 +13,6 @@ namespace glos {
 
 class grid final {
   std::array<std::array<cell, grid_columns>, grid_rows> cells{};
-  // task_thread_pool::task_thread_pool pool{};
 
 public:
   inline auto init() -> void {}

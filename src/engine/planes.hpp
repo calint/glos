@@ -3,6 +3,7 @@
 // reviewed: 2024-01-06
 // reviewed: 2024-01-10
 // reviewed: 2024-01-16
+// reviewed: 2024-07-08
 
 namespace glos {
 
@@ -132,11 +133,11 @@ public:
       return glm::dot(point, plane) <= radius * glm::length(glm::vec3{plane});
       // note: division by length of plane normal is necessary because normal
       //       may not be unit vector due to scaling. division moved to the
-      //       right-hand side for slightly faster operation than division
+      //       right-hand side as multiplication for slightly faster operation
     });
   }
 
-  // note: gives false positives. works in 2D.
+  // note: gives false positives. works in 2D. (not used)
   inline auto
   are_in_collision_with_sphere_sat(glm::vec3 const &position,
                                    float const radius) const -> bool {

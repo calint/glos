@@ -4,12 +4,13 @@
 // reviewed: 2024-01-06
 // reviewed: 2024-01-10
 // reviewed: 2024-01-16
+// reviewed: 2024-07-08
 
 namespace glos {
 
 class cell final {
-  // object entry in a cell. members used in the hot code path copied for better
-  // cache utilization
+  // object entry in a cell. object members used in the hot code path copied for
+  // better cache utilization
   struct entry {
     glm::vec3 position{};
     float radius = 0;
@@ -18,8 +19,8 @@ class cell final {
     object *object = nullptr;
   };
 
-  // entry in list of objects whose bounding spheres are in collision. further
-  // processed to check for collision between objects with bounding planes
+  // entry in list of objects whose bounding spheres are in collision. if not
+  // spheres further processed to check for collision using bounding planes
   struct collision {
     object *o1 = nullptr;
     object *o2 = nullptr;
@@ -117,12 +118,10 @@ public:
   inline auto objects_count() const -> size_t { return entry_list.size(); }
 
 private:
-  // called from grid (possibly by multiple threads)
+  // called from one thread
   inline auto make_check_collisions_list() -> void {
     check_collisions_list.clear();
 
-    // thread safe because 'entry_list' does not change during
-    // 'resolve_collisions'
     size_t const len = entry_list.size();
     if (len < 2) {
       return;
@@ -152,6 +151,7 @@ private:
     }
   }
 
+  // called from one thread
   inline auto process_check_collisions_list() -> void {
     for (collision &cc : check_collisions_list) {
       // bounding spheres are in collision
@@ -193,6 +193,7 @@ private:
     }
   }
 
+  // called from one thread
   inline auto handle_check_collisions_list() const -> void {
     for (collision const &cc : check_collisions_list) {
       if (!cc.is_collision) {

@@ -108,7 +108,7 @@ public:
   }
 
   inline auto
-  find_material_ix_or_break(std::string const &path,
+  find_material_ix_or_throw(std::string const &path,
                             std::string const &name) const -> uint32_t {
 
     auto it = std::ranges::find_if(store, [&](material const &mtl) {
