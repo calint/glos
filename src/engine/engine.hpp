@@ -3,6 +3,7 @@
 // reviewed: 2024-01-06
 // reviewed: 2024-01-10
 // reviewed: 2024-01-16
+// reviewed: 2024-07-08
 
 // all includes used by the subsystems
 #include <GLES3/gl3.h>
@@ -59,9 +60,10 @@
 #include "materials.hpp"
 //
 #include "globs.hpp"
-//
+
 namespace glos {
-// debugging functions
+
+// forward declaration of debugging functions
 static inline auto debug_render_wcs_line(glm::vec3 const &from_wcs,
                                          glm::vec3 const &to_wcs,
                                          glm::vec4 const &color) -> void;
@@ -87,23 +89,26 @@ static uint32_t glob_ix_bounding_sphere = 0;
 } // namespace glos
 
 //
+#include "objects.hpp"
+//
+#include "grid.hpp"
+//
+
+//
 // application interface
 //
 
 // called at initiation
 static auto application_init() -> void;
+
 // called by update thread when an update is done
 static auto application_on_update_done() -> void;
+
 // called by render thread when a frame has been rendered
 static auto application_on_render_done() -> void;
+
 // called at shutdown
 static auto application_free() -> void;
-
-//
-#include "objects.hpp"
-//
-#include "grid.hpp"
-//
 
 namespace glos {
 
@@ -224,7 +229,7 @@ public:
         globs.load("assets/obj/bounding_sphere.obj", nullptr);
 
     // initiate 'frame_context' with current time from server or local timer
-    // incase 'application_init()' needs time
+    // in case 'application_init()' needs current time
     frame_context = {
         0,
         net.enabled ? net.ms : SDL_GetTicks64(),
@@ -235,12 +240,8 @@ public:
     metrics.fps.calculation_interval_ms = 1000;
     metrics.enable_print = metrics_print;
 
-    // try {
     application_init();
-    // } catch (exception const &ex) {
-    //   std::cerr << ex << std::endl;
-    //   std::terminate();
-    // }
+
     // apply new objects create at 'application_init()'
     objects.apply_allocated_instances();
 
@@ -413,10 +414,9 @@ private:
     objects.for_each([](object *o) { grid.add(o); });
 
     // update frame context used throughout the frame
-    // in multiplayer mode use dt and ms from server
-    // in single player mode use dt from previous frame and current ms
+    //  in multiplayer mode use 'dt' and 'ms' from server
+    //   in single player mode use 'dt' from previous frame and current 'ms'
     ++frame_num;
-
     if (net.enabled) {
       frame_context = {frame_num, net.ms, net.dt};
     } else {
@@ -430,7 +430,7 @@ private:
     }
 
     // note: data racing between render and update thread on objects
-    // position, angle, scale glob index is ok (?)
+    //  position, angle, scale glob index is ok (?)
 
     grid.update();
 
@@ -451,8 +451,7 @@ private:
 
     // update signals from network or local
     if (net.enabled) {
-      // receive signals from previous frame and send signals of current
-      // frame
+      // receive signals from previous frame and send signals of current frame
       net.receive_and_send();
     } else {
       // copy signals to active player
@@ -514,6 +513,7 @@ private:
     SDL_Event event = {};
     while (SDL_PollEvent(&event)) {
       switch (event.type) {
+
       case SDL_WINDOWEVENT: {
         switch (event.window.event) {
         case SDL_WINDOWEVENT_SIZE_CHANGED: {
@@ -527,9 +527,11 @@ private:
         }
         break;
       }
+
       case SDL_QUIT:
         is_running = false;
         break;
+
       case SDL_MOUSEMOTION: {
         if (event.motion.xrel != 0) {
           net.next_state.look_angle_y += (float)event.motion.xrel *
@@ -543,6 +545,7 @@ private:
         }
         break;
       }
+
       case SDL_KEYDOWN:
         switch (event.key.keysym.sym) {
         case SDLK_w:
@@ -583,6 +586,7 @@ private:
           break;
         }
         break;
+
       case SDL_KEYUP:
         switch (event.key.keysym.sym) {
         case SDLK_w:
@@ -662,7 +666,7 @@ private:
 static engine engine{};
 
 // debugging (highly inefficient) function for rendering world coordinate system
-// lines
+//  lines
 static inline auto debug_render_wcs_line(glm::vec3 const &from_wcs,
                                          glm::vec3 const &to_wcs,
                                          glm::vec4 const &color) -> void {
@@ -714,7 +718,7 @@ static inline auto debug_render_bounding_sphere(glm::mat4 const &Mmw) -> void {
 }
 
 // debugging (highly inefficient) function for rendering world coordinate system
-// points
+//  points
 static inline auto debug_render_wcs_points(std::vector<glm::vec3> const &points,
                                            glm::vec4 const &color) -> void {
   GLuint vao = 0;
