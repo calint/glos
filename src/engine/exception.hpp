@@ -3,7 +3,7 @@
 
 namespace glos {
 
-class exception : public std::exception {
+class exception final : public std::exception {
 public:
   std::string message{};
 

@@ -74,7 +74,7 @@ static inline auto debug_render_wcs_points(std::vector<glm::vec3> const &points,
 static inline auto debug_render_bounding_sphere(glm::mat4 const &Mmw) -> void;
 
 // information about the current frame
-class frame_context {
+class frame_context final {
 public:
   uint64_t frame_num = 0; // frame number (will rollover)
   uint64_t ms = 0; // current time since start in milliseconds (will rollover)
@@ -112,7 +112,7 @@ static auto application_free() -> void;
 
 namespace glos {
 
-struct color {
+struct color final {
   GLclampf red;
   GLclampf green;
   GLclampf blue;
