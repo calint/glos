@@ -3,6 +3,7 @@
 // reviewed: 2024-01-04
 // reviewed: 2024-01-06
 // reviewed: 2024-01-10
+// reviewed: 2024-07-08
 
 namespace glos {
 
@@ -99,7 +100,7 @@ public:
       dt = float(dt_ticks) / float(SDL_GetPerformanceFrequency());
       timer_tick_at_start_of_frame = t1;
 
-      if (dt > 0.1) {
+      if (dt > 0.1f) {
         dt = 0.1f; // minimum 10 fps
       } else if (dt == 0) {
         dt = 0.000001f; // maximum 100'000 fps
@@ -113,8 +114,7 @@ public:
       return;
     }
 
-    fps.average_during_last_interval =
-        fps.frame_count * uint32_t(1000) / uint32_t(dt_interval);
+    fps.average_during_last_interval = fps.frame_count * 1000 / dt_interval;
     fps.time_at_start_of_interval_ms = t1;
     fps.frame_count = 0;
 
