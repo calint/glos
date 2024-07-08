@@ -11,6 +11,7 @@
 // * instance_size_B: custom size of object instance used to fit largest object
 //   in an object hierarchy
 //
+// reviewed: 2024-07-08
 
 namespace glos {
 
@@ -140,7 +141,7 @@ public:
       *(inst_deleted->alloc_ptr) = inst_to_move;
       free_ptr_--;
       *free_ptr_ = inst_deleted;
-      inst_deleted->~object();
+      inst_deleted->~type();
     }
     del_ptr_ = del_bgn_;
   }
