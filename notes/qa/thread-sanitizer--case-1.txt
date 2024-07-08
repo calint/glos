@@ -84,7 +84,8 @@ WARNING: ThreadSanitizer: data race (pid=3987481)
 
 SUMMARY: ThreadSanitizer: data race /usr/include/glm/./ext/../detail/type_vec3.inl:1046:73 in bool glm::operator==<float, (glm::qualifier)0>(glm::vec<3, float, (glm::qualifier)0> const&, glm::vec<3, float, (glm::qualifier)0> const&)
 
-
-
+---------------------------------------------------------------------------------------------------
+analysis:
+---------------------------------------------------------------------------------------------------
 glos::grid::update() and glos::grid::resolve_collisions() do not run in parallel => false positive?
 
