@@ -3,6 +3,7 @@
 // reviewed: 2024-01-04
 // reviewed: 2024-01-06
 // reviewed: 2024-01-10
+// reviewed: 2024-07-08
 
 namespace glos {
 
@@ -14,6 +15,7 @@ struct vertex {
 };
 
 class shaders final {
+
   class program final {
   public:
     GLuint id = 0;
@@ -64,8 +66,8 @@ public:
   static constexpr GLint anorm = 2;
   static constexpr GLint atex = 3;
   // uniform matrixes
-  static constexpr GLint umtx_mw = 0;  // model->world matrix
-  static constexpr GLint umtx_wvp = 1; // world->view->projection matrix
+  static constexpr GLint umtx_mw = 0;  // model -> world matrix
+  static constexpr GLint umtx_wvp = 1; // world -> view -> projection matrix
   // uniform textures
   static constexpr GLint utex = 2; // texture mapper
   // uniform ambient light
@@ -85,8 +87,9 @@ public:
     uint32_t const default_program_ix =
         load_program_from_source(vertex_shader_source, fragment_shader_source);
 
-    GLuint const def_prog_id = programs.at(default_program_ix).id;
     programs.at(default_program_ix).use();
+
+    GLuint const def_prog_id = programs.at(default_program_ix).id;
 
     printf("shader uniforms locations:\n");
     printf(":-%10s-:-%7s-:\n", "----------", "-------");
@@ -149,7 +152,7 @@ public:
 
   inline auto programs_count() const -> size_t { return programs.size(); }
 
-  inline auto use_program(size_t const ix) const -> void {
+  inline auto use_program(uint32_t const ix) const -> void {
     programs.at(ix).use();
   }
 

@@ -344,13 +344,13 @@ private:
   float mouse_rad_over_pixels = rad_over_degree * .02f;
   float mouse_sensitivity = 1.5f;
   // index of shader that renders world coordinate system line
-  size_t shader_program_ix_render_line = 0;
+  uint32_t shader_program_ix_render_line = 0;
   // index of shader that renders world coordinate system points
-  size_t shader_program_ix_render_points = 0;
+  uint32_t shader_program_ix_render_points = 0;
   // index of current shader
-  size_t shader_program_ix = 0;
+  uint32_t shader_program_ix = 0;
   // index of previous shader
-  size_t shader_program_ix_prv = shader_program_ix;
+  uint32_t shader_program_ix_prv = shader_program_ix;
 
   // synchronization of update and render thread
   std::thread update_thread{};
@@ -367,7 +367,7 @@ private:
 
     // check if shader program has changed
     if (shader_program_ix_prv != shader_program_ix) {
-      printf(" * switching to program at index %zu\n", shader_program_ix);
+      printf(" * switching to program at index %u\n", shader_program_ix);
       shaders.use_program(shader_program_ix);
       shader_program_ix_prv = shader_program_ix;
     }
