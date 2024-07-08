@@ -3,6 +3,7 @@
 // reviewed: 2024-01-04
 // reviewed: 2024-01-06
 // reviewed: 2024-01-08
+// reviewed: 2024-07-08
 
 //
 // configuration used by engine
@@ -124,7 +125,7 @@ static constexpr float game_area_min_z =
 static constexpr float game_area_max_z =
     game_area_half_z + asteroid_large_scale;
 
-// glob indexes (are set by 'application_init()' when loading)
+// glob indexes (are set by 'application_init()' when loading models)
 static uint32_t glob_ix_ship = 0;
 static uint32_t glob_ix_ship_engine_on = 0;
 static uint32_t glob_ix_bullet = 0;

@@ -1,14 +1,14 @@
 #pragma once
 // reviewed: 2024-01-04
 // reviewed: 2024-01-08
+// reviewed: 2024-07-08
 
 class power_up final : public object {
 public:
   inline power_up() {
-    name = "power_up";
     if (debug_multiplayer) {
       ++counter;
-      name.append(1, '_').append(std::to_string(counter));
+      name.append("power_up_").append(std::to_string(counter));
       printf("%lu: %lu: create %s\n", frame_context.frame_num, frame_context.ms,
              name.c_str());
     }

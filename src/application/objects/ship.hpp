@@ -1,16 +1,16 @@
 #pragma once
 // reviewed: 2024-01-04
 // reviewed: 2024-01-08
+// reviewed: 2024-07-08
 
 #include "bullet.hpp"
 
 class ship final : public object {
 public:
   inline ship() {
-    name = "hero";
     if (debug_multiplayer) {
       ++counter;
-      name.append(1, '_').append(std::to_string(counter));
+      name.append("hero_").append(std::to_string(counter));
       printf("%lu: %lu: create %s\n", frame_context.frame_num, frame_context.ms,
              name.c_str());
     }
@@ -36,7 +36,7 @@ public:
 
     game_area_roll(position);
 
-    angular_velocity = {0, 0, 0};
+    angular_velocity = {};
     glob_ix(glob_ix_ship);
 
     if (net_state == nullptr) {

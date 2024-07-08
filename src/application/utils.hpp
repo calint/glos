@@ -1,11 +1,10 @@
 #pragma once
 // reviewed: 2024-01-04
 // reviewed: 2024-01-08
+// reviewed: 2024-07-08
 
 // include order matters
 #include "configuration.hpp"
-//
-#include "objects/power_up.hpp"
 //
 
 inline static auto rnd1(float const range) -> float {
@@ -61,14 +60,4 @@ inline static auto is_outside_game_area(glm::vec3 const &position) -> bool {
   return position.x < game_area_min_x || position.x > game_area_max_x ||
          position.y < game_area_min_y || position.y > game_area_max_y ||
          position.z < game_area_min_z || position.z > game_area_max_z;
-}
-
-inline static auto power_up_by_chance(glm::vec3 const &position) -> void {
-  if (!rnd3(power_up_chance_rem)) {
-    return;
-  }
-
-  power_up *pu = new (objects.alloc()) power_up{};
-  pu->position = position;
-  pu->angular_velocity.y = radians(90.0f);
 }

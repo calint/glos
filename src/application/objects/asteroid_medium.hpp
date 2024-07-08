@@ -1,6 +1,7 @@
 #pragma once
 // reviewed: 2024-01-04
 // reviewed: 2024-01-08
+// reviewed: 2024-07-08
 
 // include order relevant
 #include "../configuration.hpp"
@@ -12,10 +13,9 @@
 class asteroid_medium final : public object {
 public:
   inline asteroid_medium() {
-    name = "asteroid_medium";
     if (debug_multiplayer) {
       ++counter;
-      name.append(1, '_').append(std::to_string(counter));
+      name.append("asteroid_medium_").append(std::to_string(counter));
       printf("%lu: %lu: create %s\n", frame_context.frame_num, frame_context.ms,
              name.c_str());
     }
@@ -57,11 +57,11 @@ public:
 
     for (uint32_t i = 0; i < asteroid_medium_split; ++i) {
       asteroid_small *ast = new (objects.alloc()) asteroid_small{};
-      float const rd2 = bounding_radius / 2;
-      vec3 const rp = {rnd1(rd2), 0, rnd1(rd2)};
-      ast->position = position + rp;
+      float const br = bounding_radius / 2;
+      vec3 const rel_pos = {rnd1(br), 0, rnd1(br)};
+      ast->position = position + rel_pos;
       ast->velocity =
-          velocity + rnd2(asteroid_medium_split_speed) * normalize(rp);
+          velocity + rnd2(asteroid_medium_split_speed) * normalize(rel_pos);
       ast->angular_velocity = vec3{rnd1(asteroid_medium_split_agl_vel_rnd)};
     }
 

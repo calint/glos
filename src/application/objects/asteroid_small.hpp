@@ -1,19 +1,21 @@
 #pragma once
 // reviewed: 2024-01-04
 // reviewed: 2024-01-08
+// reviewed: 2024-07-08
 
 // include order relevant
 #include "../configuration.hpp"
+//
+#include "power_up.hpp"
 //
 #include "../utils.hpp"
 
 class asteroid_small final : public object {
 public:
   inline asteroid_small() {
-    name = "asteroid_small";
     if (debug_multiplayer) {
       ++counter;
-      name.append(1, '_').append(std::to_string(counter));
+      name.append("asteroid_small_").append(std::to_string(counter));
       printf("%lu: %lu: create %s\n", frame_context.frame_num, frame_context.ms,
              name.c_str());
     }
@@ -53,7 +55,11 @@ public:
 
     score += 100;
 
-    power_up_by_chance(position);
+    if (rnd3(power_up_chance_rem)) {
+      power_up *pu = new (objects.alloc()) power_up{};
+      pu->position = position;
+      pu->angular_velocity.y = radians(90.0f);
+    }
 
     return false;
   }

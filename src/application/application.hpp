@@ -1,5 +1,7 @@
+#pragma once
 // reviewed: 2024-01-04
 // reviewed: 2024-01-08
+// reviewed: 2024-07-08
 
 // make common used namespace available in game code
 using namespace glos;
@@ -111,20 +113,6 @@ static auto application_init() -> void {
       // single player mode
       ship *p = new (objects.alloc()) ship{};
       p->net_state = &net.states[1];
-
-      // sphere *s = new (objects.alloc()) sphere{};
-      // s->scale = {2.0f, 2.0f, 2.0f};
-      // s->bounding_radius = globs.at(s->glob_ix).bounding_radius * s->scale.x;
-      // s->net_state = &net.states[1];
-
-      // cube *c1 = new (objects.alloc()) cube{};
-      // c1->scale.z = 5;
-      // c1->bounding_radius = 20; // bypass bounding radius check
-      // c1->net_state = &net.states[1];
-
-      // cube *c2 = new (objects.alloc()) cube{};
-      // c2->scale.y = 10;
-      // c2->bounding_radius = 20; // bypass bounding radius check
     }
   } else {
     switch (performance_test_type) {
@@ -152,10 +140,6 @@ static auto application_init() -> void {
   camera.ortho_max_x = game_area_half_x;
   camera.ortho_max_y = game_area_half_z;
 
-  // camera.type = camera::type::LOOK_AT;
-  // camera.position = {0, 30, 30};
-  // camera.look_at = {0, 0, -0.0001f};
-
   hud.load_font("assets/fonts/digital-7 (mono).ttf", 20);
 }
 
@@ -174,10 +158,10 @@ static auto application_on_update_done() -> void {
 // engine interface
 static auto application_on_render_done() -> void {
   if (score != score_prv) {
-    score_prv = score;
     std::array<char, 256> buf{};
     sprintf(buf.data(), "score: %06u", score);
     hud.print(buf.data(), SDL_Color{255, 0, 0, 255}, 60, 10);
+    score_prv = score;
   }
 }
 

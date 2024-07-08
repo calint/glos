@@ -1,14 +1,14 @@
 #pragma once
 // reviewed: 2024-01-04
 // reviewed: 2024-01-08
+// reviewed: 2024-07-08
 
 class sphere final : public object {
 public:
   inline sphere() {
-    name = "sphere";
     if (debug_multiplayer) {
       ++counter;
-      name.append(1, '_').append(std::to_string(counter));
+      name.append("sphere_").append(std::to_string(counter));
       printf("%lu: %lu: create %s\n", frame_context.frame_num, frame_context.ms,
              name.c_str());
     }
@@ -39,7 +39,7 @@ public:
       return true;
     }
 
-    velocity = {0, 0, 0};
+    velocity = {};
 
     uint64_t const keys = net_state->keys;
 

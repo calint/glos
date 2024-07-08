@@ -1,14 +1,14 @@
 #pragma once
 // reviewed: 2024-01-04
 // reviewed: 2024-01-08
+// reviewed: 2024-07-08
 
 class cube final : public object {
 public:
   inline cube() {
-    name = "cube";
     if (debug_multiplayer) {
       ++counter;
-      name.append(1, '_').append(std::to_string(counter));
+      name.append("cube_").append(std::to_string(counter));
       printf("%lu: %lu: create %s\n", frame_context.frame_num, frame_context.ms,
              name.c_str());
     }
@@ -38,12 +38,12 @@ public:
       return true;
     }
 
-    velocity = {0, 0, 0};
-    angular_velocity = {0, 0, 0};
+    velocity = {};
+    angular_velocity = {};
 
     uint64_t const keys = net_state->keys;
 
-    // handle ship controls
+    // handle controls
     float const v = 1;
     float const a = radians(10.0f);
     if (keys & key_w) {
