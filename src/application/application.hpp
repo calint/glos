@@ -98,8 +98,6 @@ static auto application_init() -> void {
   skydome->bounding_radius = skydome_scale;
   skydome->scale = {skydome_scale, skydome_scale, skydome_scale};
 
-  // background_color = {1, 1, 1}; //! fix 'hud' so that background color works
-
   if (!is_performance_test) {
     // setup scene
     if (net.enabled) {
@@ -129,6 +127,8 @@ static auto application_init() -> void {
                                   performance_test_type)};
     }
   }
+
+  // background_color = {1, 1, 1}; //! fix 'hud' so that background color works
 
   // setup light and camera
   ambient_light = normalize(vec3{1, 1, 1});
