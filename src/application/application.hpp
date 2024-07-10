@@ -126,8 +126,7 @@ static auto application_init() -> void {
       ship *p = new (objects.alloc()) ship{};
       p->net_state = &net.states[1];
       hero = p;
-
-      create_ufo();
+      // create_ufo();
     }
   } else {
     switch (performance_test_type) {
