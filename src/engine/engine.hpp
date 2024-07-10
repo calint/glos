@@ -411,7 +411,7 @@ private:
   }
 
   // in 'threaded_update' runs before render and update is done parallel in
-  // 'update_pass_2()'
+  //  'update_pass_2()'
   inline auto update_pass_1() -> void {
     // remove all objects from grid
     grid.clear();
@@ -471,7 +471,7 @@ private:
       while (true) {
         {
           // wait until render thread is done before removing and adding objects
-          // to grid
+          //  to grid
           std::unique_lock<std::mutex> lock{is_rendering_mutex};
           is_rendering_cv.wait(lock, [this] { return !is_rendering; });
 
@@ -503,7 +503,7 @@ private:
     is_rendering_cv.wait(lock, [this] { return is_rendering; });
 
     // note: render and update have acceptable (?) data races on objects
-    // position, angle, scale, glob index etc
+    //  position, angle, scale, glob index etc
 
     render();
 
