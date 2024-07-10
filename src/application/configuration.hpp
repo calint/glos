@@ -76,6 +76,7 @@ static constexpr uint32_t cb_hero_bullet = 1U << 1U;
 static constexpr uint32_t cb_asteroid = 1U << 2U;
 static constexpr uint32_t cb_power_up = 1U << 3U;
 static constexpr uint32_t cb_ufo = 1U << 4U;
+static constexpr uint32_t cb_ufo_bullet = 1U << 5U;
 
 // settings
 static constexpr uint32_t asteroid_level = 2;
@@ -109,6 +110,7 @@ static constexpr uint32_t power_up_lifetime_ms = 30'000;
 static constexpr float ufo_velocity = 15;
 static constexpr float ufo_power_up_velocity = 5;
 static constexpr uint32_t ufo_power_ups_at_death = 4;
+static constexpr float ufo_bullet_velocity = 7;
 
 // game area based on grid and biggest object
 static constexpr float game_area_half_x = grid_size / 2;
@@ -144,6 +146,7 @@ static uint32_t glob_ix_tetra = 0;
 static uint32_t glob_ix_sphere = 0;
 static uint32_t glob_ix_skydome = 0;
 static uint32_t glob_ix_ufo = 0;
+static uint32_t glob_ix_ufo_bullet = 0;
 
 // used when 'debug_multiplayer' is true to give objects unique numbers
 static std::atomic<uint32_t> counter = 0;

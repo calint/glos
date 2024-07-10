@@ -3,7 +3,11 @@
 // reviewed: 2024-01-08
 // reviewed: 2024-07-08
 
+#include "ufo_bullet.hpp"
+
 class ufo final : public object {
+  uint64_t next_fire_ms = 0;
+
 public:
   inline ufo() {
     if (debug_multiplayer) {
@@ -18,6 +22,7 @@ public:
     bounding_radius = globs.at(glob_ix()).bounding_radius * scale.x;
     is_sphere = true;
     mass = 20;
+    next_fire_ms = frame_context.ms + 3000;
     collision_bits = cb_ufo;
     collision_mask = cb_hero_bullet;
   }
@@ -36,6 +41,16 @@ public:
     }
 
     game_area_roll(position);
+
+    if (next_fire_ms < frame_context.ms) {
+      next_fire_ms = frame_context.ms + 3000;
+      if (hero) {
+        ufo_bullet *ub = new (objects.alloc()) ufo_bullet{};
+        vec3 dir = glm::normalize(hero->position - position);
+        ub->position = position;
+        ub->velocity = ufo_bullet_velocity * dir;
+      }
+    }
 
     return true;
   }

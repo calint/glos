@@ -13,6 +13,7 @@ static uint32_t score = 0; // racing ok
 static uint32_t score_prv = score;
 static std::atomic<uint32_t> asteroids_alive{0};
 static std::atomic<uint32_t> ufos_alive{0};
+static object *hero = nullptr;
 
 // forward declarations
 static auto application_init_shaders() -> void;
@@ -51,6 +52,7 @@ static auto application_init() -> void {
   printf(": %15s : %-9zu :\n", "sphere", sizeof(sphere));
   printf(": %15s : %-9zu :\n", "tetra", sizeof(tetra));
   printf(": %15s : %-9zu :\n", "ufo", sizeof(ufo));
+  printf(": %15s : %-9zu :\n", "ufo_bullet", sizeof(ufo_bullet));
   printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
   puts("");
 
@@ -66,6 +68,7 @@ static auto application_init() -> void {
   static_assert(sizeof(sphere) <= objects_instance_size_B);
   static_assert(sizeof(tetra) <= objects_instance_size_B);
   static_assert(sizeof(ufo) <= objects_instance_size_B);
+  static_assert(sizeof(ufo_bullet) <= objects_instance_size_B);
 
   // load the objects and assign the glob indexes
 
@@ -94,6 +97,8 @@ static auto application_init() -> void {
   glob_ix_fragment = globs.load("assets/obj/asteroids/fragment.obj", nullptr);
   glob_ix_power_up = globs.load("assets/obj/asteroids/power_up.obj", nullptr);
   glob_ix_ufo = globs.load("assets/obj/asteroids/ufo.obj", nullptr);
+  glob_ix_ufo_bullet =
+      globs.load("assets/obj/asteroids/ufo_bullet.obj", nullptr);
 
   glob_ix_skydome = globs.load("assets/obj/skydome.obj", nullptr);
 
@@ -111,6 +116,7 @@ static auto application_init() -> void {
       ship *p1 = new (objects.alloc()) ship{};
       p1->position.x = -5;
       p1->net_state = &net.states[1];
+      hero = p1;
 
       ship *p2 = new (objects.alloc()) ship{};
       p2->position.x = 5;
@@ -119,6 +125,7 @@ static auto application_init() -> void {
       // single player mode
       ship *p = new (objects.alloc()) ship{};
       p->net_state = &net.states[1];
+      hero = p;
     }
   } else {
     switch (performance_test_type) {
