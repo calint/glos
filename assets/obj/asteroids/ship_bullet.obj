@@ -1,6 +1,6 @@
 # Blender 3.6.2
 # www.blender.org
-mtllib bullet.mtl
+mtllib ship_bullet.mtl
 o bullet
 v 0.000000 0.030000 -0.500000
 v 0.000000 0.030000 0.500000

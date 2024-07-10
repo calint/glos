@@ -3,7 +3,7 @@
 // reviewed: 2024-01-08
 // reviewed: 2024-07-08
 
-#include "bullet.hpp"
+#include "ship_bullet.hpp"
 
 class ship final : public object {
 public:
@@ -120,7 +120,7 @@ private:
 
     switch (bullet_level) {
     case 0: {
-      bullet *blt = new (objects.alloc()) bullet{};
+      ship_bullet *blt = new (objects.alloc()) ship_bullet{};
       blt->position = position + forward_vec;
       blt->angle = angle;
       blt->velocity = ship_bullet_speed * forward_vec;
@@ -129,7 +129,7 @@ private:
     }
     case 1: {
       for (uint32_t i = 0; i < ship_bullet_level_1_fire_count; ++i) {
-        bullet *blt = new (objects.alloc()) bullet{};
+        ship_bullet *blt = new (objects.alloc()) ship_bullet{};
         blt->position = position + forward_vec;
         blt->angle = angle;
         blt->velocity = ship_bullet_speed * forward_vec;

@@ -5,9 +5,9 @@
 
 #include "fragment.hpp"
 
-class bullet final : public object {
+class ship_bullet final : public object {
 public:
-  inline bullet() {
+  inline ship_bullet() {
     if (debug_multiplayer) {
       ++counter;
       name.append("bullet_").append(std::to_string(counter));
@@ -22,7 +22,7 @@ public:
     collision_mask = cb_asteroid | cb_ufo;
   }
 
-  inline ~bullet() override {
+  inline ~ship_bullet() override {
     if (debug_multiplayer) {
       printf("%lu: %lu: free %s\n", frame_context.frame_num, frame_context.ms,
              name.c_str());

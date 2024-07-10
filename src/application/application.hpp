@@ -44,7 +44,7 @@ static auto application_init() -> void {
   printf(": %15s : %-9zu :\n", "asteroid_large", sizeof(asteroid_large));
   printf(": %15s : %-9zu :\n", "asteroid_medium", sizeof(asteroid_medium));
   printf(": %15s : %-9zu :\n", "asteroid_small", sizeof(asteroid_small));
-  printf(": %15s : %-9zu :\n", "bullet", sizeof(bullet));
+  printf(": %15s : %-9zu :\n", "ship_bullet", sizeof(ship_bullet));
   printf(": %15s : %-9zu :\n", "fragment", sizeof(fragment));
   printf(": %15s : %-9zu :\n", "power_up", sizeof(power_up));
   printf(": %15s : %-9zu :\n", "ship", sizeof(ship));
@@ -60,7 +60,7 @@ static auto application_init() -> void {
   static_assert(sizeof(asteroid_large) <= objects_instance_size_B);
   static_assert(sizeof(asteroid_medium) <= objects_instance_size_B);
   static_assert(sizeof(asteroid_small) <= objects_instance_size_B);
-  static_assert(sizeof(bullet) <= objects_instance_size_B);
+  static_assert(sizeof(ship_bullet) <= objects_instance_size_B);
   static_assert(sizeof(fragment) <= objects_instance_size_B);
   static_assert(sizeof(power_up) <= objects_instance_size_B);
   static_assert(sizeof(ship) <= objects_instance_size_B);
@@ -73,7 +73,7 @@ static auto application_init() -> void {
   // load the objects and assign the glob indexes
 
   // stock objects
-  glob_ix_cube = globs.load("assets/obj/cube.obj", "assets/obj/cube-bp.obj");
+  glob_ix_cube = globs.load("assets/obj/cube.obj", "assets/obj/cube_bp.obj");
   glob_ix_tetra = globs.load("assets/obj/tetra.obj", "assets/obj/tetra.obj");
   glob_ix_sphere = globs.load("assets/obj/sphere.obj", nullptr);
 
@@ -83,11 +83,11 @@ static auto application_init() -> void {
   glob_ix_ship_engine_on =
       globs.load("assets/obj/asteroids/ship_engine_on.obj",
                  "assets/obj/asteroids/ship_engine_on.obj");
-  glob_ix_bullet = globs.load("assets/obj/asteroids/bullet.obj",
-                              "assets/obj/asteroids/bullet-bp.obj");
+  glob_ix_bullet = globs.load("assets/obj/asteroids/ship_bullet.obj",
+                              "assets/obj/asteroids/ship_bullet_bp.obj");
   glob_ix_asteroid_large =
       globs.load("assets/obj/asteroids/asteroid_large.obj",
-                 "assets/obj/asteroids/asteroid_large-bp.obj");
+                 "assets/obj/asteroids/asteroid_large_bp.obj");
   glob_ix_asteroid_medium =
       globs.load("assets/obj/asteroids/asteroid_medium.obj",
                  "assets/obj/asteroids/asteroid_medium.obj");
@@ -126,6 +126,8 @@ static auto application_init() -> void {
       ship *p = new (objects.alloc()) ship{};
       p->net_state = &net.states[1];
       hero = p;
+
+      create_ufo();
     }
   } else {
     switch (performance_test_type) {
