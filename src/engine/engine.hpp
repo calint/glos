@@ -343,12 +343,12 @@ private:
                                       glm::vec4 const &color) -> void;
 
   uint64_t frame_num = 0;
-  bool is_resolve_collisions = true;
-  bool is_print_grid = false;
   bool is_running = true;
   bool is_render = true;
   bool is_render_hud = hud_enabled;
+  bool is_resolve_collisions = true;
   bool is_render_grid = false;
+  bool is_print_grid = false;
   bool is_mouse_mode = false;
   // index of shader that renders world coordinate system line
   uint32_t shader_program_ix_render_line = 0;
