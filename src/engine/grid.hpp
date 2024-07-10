@@ -118,10 +118,12 @@ public:
     constexpr float gw = grid_cell_size * grid_columns;
     constexpr float gh = grid_cell_size * grid_rows;
     for (float z = -gh / 2; z <= gh / 2; z += grid_cell_size) {
-      debug_render_wcs_line({-gw / 2, 0, z}, {gw / 2, 0, z}, {0, 1, 0, 1});
+      debug_render_wcs_line({-gw / 2, 0, z}, {gw / 2, 0, z}, {0, 1, 0, 1},
+                            false);
     }
     for (float x = -gw / 2; x <= gw / 2; x += grid_cell_size) {
-      debug_render_wcs_line({x, 0, -gh / 2}, {x, 0, gh / 2}, {0, 1, 0, 1});
+      debug_render_wcs_line({x, 0, -gh / 2}, {x, 0, gh / 2}, {0, 1, 0, 1},
+                            false);
     }
   }
 

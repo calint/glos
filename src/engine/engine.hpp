@@ -67,7 +67,8 @@ namespace glos {
 // forward declaration of debugging functions
 static inline auto debug_render_wcs_line(glm::vec3 const &from_wcs,
                                          glm::vec3 const &to_wcs,
-                                         glm::vec4 const &color) -> void;
+                                         glm::vec4 const &color,
+                                         bool const depth_test) -> void;
 
 static inline auto debug_render_wcs_points(std::vector<glm::vec3> const &points,
                                            glm::vec4 const &color) -> void;
@@ -335,7 +336,8 @@ public:
 private:
   friend auto debug_render_wcs_line(glm::vec3 const &from_wcs,
                                     glm::vec3 const &to_wcs,
-                                    glm::vec4 const &color) -> void;
+                                    glm::vec4 const &color,
+                                    bool const depth_test) -> void;
 
   friend auto debug_render_wcs_points(std::vector<glm::vec3> const &points,
                                       glm::vec4 const &color) -> void;
@@ -676,7 +678,8 @@ static engine engine{};
 //  lines
 static inline auto debug_render_wcs_line(glm::vec3 const &from_wcs,
                                          glm::vec3 const &to_wcs,
-                                         glm::vec4 const &color) -> void {
+                                         glm::vec4 const &color,
+                                         bool const depth_test) -> void {
   GLuint vao = 0;
   glGenVertexArrays(1, &vao);
   glBindVertexArray(vao);
@@ -699,15 +702,18 @@ static inline auto debug_render_wcs_line(glm::vec3 const &from_wcs,
   glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(camera.Mwvp));
   glUniform4fv(1, 1, glm::value_ptr(color));
 
-  glDisable(GL_DEPTH_TEST);
-  glDepthMask(GL_FALSE);
+  if (!depth_test) {
+    glDisable(GL_DEPTH_TEST);
+    glDepthMask(GL_FALSE);
+  }
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glDrawArrays(GL_LINES, 0, 2);
   glDisable(GL_BLEND);
-  glDepthMask(GL_TRUE);
-  glEnable(GL_DEPTH_TEST);
-
+  if (!depth_test) {
+    glDepthMask(GL_TRUE);
+    glEnable(GL_DEPTH_TEST);
+  }
   glBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
 

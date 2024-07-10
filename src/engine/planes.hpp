@@ -92,7 +92,7 @@ public:
     for (uint32_t i = 0; i < n; ++i) {
       glm::vec4 const &point = world_points.at(i);
       glm::vec4 const &plane = world_planes.at(i);
-      debug_render_wcs_line(point, point + plane, {1, 0, 0, 0.5f});
+      debug_render_wcs_line(point, point + plane, {1, 0, 0, 0.5f}, false);
     }
     size_t const m = world_points.size();
     std::vector<glm::vec3> points{};
@@ -201,11 +201,11 @@ public:
 
     debug_render_wcs_line(axis * (sphere_projection - radius),
                           axis * (sphere_projection + radius),
-                          {1.0f, 0.0f, 0.0f, 1.0f});
+                          {1.0f, 0.0f, 0.0f, 1.0f}, false);
 
     debug_render_wcs_line(axis * volume_min_projection,
                           axis * volume_max_projection,
-                          {1.0f, 1.0f, 1.0f, 0.5f});
+                          {1.0f, 1.0f, 1.0f, 0.5f}, false);
 
     // check for separation along the axis
     if (sphere_projection + radius < volume_min_projection ||
