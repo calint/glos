@@ -4,6 +4,7 @@
 // reviewed: 2024-01-10
 // reviewed: 2024-01-16
 // reviewed: 2024-07-08
+// reviewed: 2024-07-10
 
 // all includes used by the subsystems
 #include <GLES3/gl3.h>
@@ -127,6 +128,12 @@ static glm::vec3 ambient_light = glm::normalize(glm::vec3{0, 1, 1});
 // object the camera should follow
 static object *camera_follow_object = nullptr;
 
+static constexpr float rad_over_degree = 2.0f * glm::pi<float>() / 360.0f;
+
+// mouse settings
+static float mouse_rad_over_pixels = rad_over_degree * .02f;
+static float mouse_sensitivity = 1.5f;
+
 // signal bit corresponding to keyboard key
 static constexpr uint32_t key_w = 1U << 0U;
 static constexpr uint32_t key_a = 1U << 1U;
@@ -229,7 +236,7 @@ public:
         globs.load("assets/obj/bounding_sphere.obj", nullptr);
 
     // initiate 'frame_context' with current time from server or local timer
-    // in case 'application_init()' needs current time
+    //  in case 'application_init()' needs current time
     frame_context = {
         0,
         net.enabled ? net.ms : SDL_GetTicks64(),
@@ -333,7 +340,6 @@ private:
   friend auto debug_render_wcs_points(std::vector<glm::vec3> const &points,
                                       glm::vec4 const &color) -> void;
 
-  static constexpr float rad_over_degree = 2.0f * glm::pi<float>() / 360.0f;
   uint64_t frame_num = 0;
   bool is_resolve_collisions = true;
   bool is_print_grid = false;
@@ -342,8 +348,6 @@ private:
   bool is_render_hud = hud_enabled;
   bool is_render_grid = false;
   bool is_mouse_mode = false;
-  float mouse_rad_over_pixels = rad_over_degree * .02f;
-  float mouse_sensitivity = 1.5f;
   // index of shader that renders world coordinate system line
   uint32_t shader_program_ix_render_line = 0;
   // index of shader that renders world coordinate system points
@@ -406,6 +410,8 @@ private:
     metrics.render_end();
   }
 
+  // in 'threaded_update' runs before render and update is done parallel in
+  // 'update_pass_2()'
   inline auto update_pass_1() -> void {
     // remove all objects from grid
     grid.clear();
@@ -424,6 +430,7 @@ private:
     }
   }
 
+  // in 'threaded_update' runs in parallel with rendering
   inline auto update_pass_2() const -> void {
     if (is_print_grid) {
       grid.print();
@@ -510,7 +517,7 @@ private:
 
   inline auto handle_events() -> void {
     // poll events
-    SDL_Event event = {};
+    SDL_Event event{};
     while (SDL_PollEvent(&event)) {
       switch (event.type) {
 
