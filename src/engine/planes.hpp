@@ -44,9 +44,9 @@ public:
 
       if (invalidated || angle_scale_changed) {
         // the generalized solution is:
-        // glm::mat3 const N = glm::transpose(glm::inverse(glm::mat3(Mmw)));
-        // but since it is known how Mmw is composed a less expensive operations
-        // is done
+        //  glm::mat3 const N = glm::transpose(glm::inverse(glm::mat3(Mmw)));
+        //   but since it is known how Mmw is composed a less expensive
+        //    operations is done
 
         bool const is_uniform_scale = scl.x == scl.y && scl.y == scl.z;
 
@@ -63,8 +63,8 @@ public:
           // note: world_normal length may not be 1 due to scaling
           world_planes.emplace_back(glm::vec4{world_normal, 0});
           // note: D component (distance to plane from origin along the normal)
-          // in plane equation is set to 0 and will be updated when world_points
-          // change
+          //       in plane equation is set to 0 and will be updated when
+          //       'world_points' change
         }
         // save the state of the cache
         Mmw_agl = agl;
@@ -103,7 +103,7 @@ public:
     release_lock();
   }
 
-  // assumes both this and 'pns' have updated world points and planes
+  // assumes both 'this' and 'pns' have updated world points and planes
   // returns true if any point in this is behind all planes in 'pns'
   inline auto is_any_point_in_volume(planes const &pns) const -> bool {
     return std::ranges::any_of(world_points, [&](glm::vec4 const &point) {
@@ -119,9 +119,9 @@ public:
   }
 
   // works in cases where the sphere is much smaller than the convex volume
-  // e.g. bullets vs walls. gives false positives at corners because there are
-  // positions where the sphere is within the collision planes although outside
-  // the volume
+  //  e.g. bullets vs walls. gives false positives at corners because there are
+  //   positions where the sphere is within the collision planes although
+  //    outside the volume
   // workaround: add planes to the volume at the corners
   inline auto are_in_collision_with_sphere(glm::vec3 const &position,
                                            float const radius) const -> bool {
@@ -227,7 +227,7 @@ public:
   inline auto release_lock() -> void { lock.clear(std::memory_order_release); }
 
   // tests whether any point in 'pns1' is within the volume defined by 'pns2'
-  // and vice versa
+  //  and vice versa
   inline static auto are_in_collision(planes const &pns1,
                                       planes const &pns2) -> bool {
     return pns1.is_any_point_in_volume(pns2) ||

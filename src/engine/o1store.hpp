@@ -74,7 +74,7 @@ public:
   }
 
   // allocates an instance
-  // returns nullptr if instance could not be allocated
+  // returns nullptr or throws if instance could not be allocated
   inline auto allocate_instance() -> type * {
     if (thread_safe) {
       acquire_lock();

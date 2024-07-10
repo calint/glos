@@ -17,8 +17,8 @@ class object {
 
 public:
   // members in order they are accessed by 'grid::add', 'cell::add',
-  // 'cell::update', 'cell:resolve_collisions', 'cell::render' with cache
-  // coherence in mind
+  //  'cell::update', 'cell:resolve_collisions', 'cell::render' with cache
+  //   coherence in mind
 
   // -- grid::add, cell::add
   glm::vec3 position{};        // in meters
@@ -63,7 +63,7 @@ public:
   object **alloc_ptr;             // initiated at allocate by 'o1store'
 
   // note: 32 bit resolution of 'updated_at_tick' and 'rendered_at_tick' vs 64
-  // bit comparison source ok since only checking for equality
+  //       bit comparison source ok since only checking for equality
 
 public:
   inline virtual ~object() = default;
@@ -229,8 +229,8 @@ public:
 
   inline auto apply_allocated_instances() -> void {
     // retrieve the end of list because during objects' 'update' and
-    // 'on_collision' new objects might be created which would change the
-    // end-of-list pointer
+    //  'on_collision' new objects might be created which would change the
+    //   end-of-list pointer
     allocated_list_len_ = store_.allocated_list_len();
     allocated_list_end_ = store_.allocated_list_end();
   }

@@ -437,7 +437,7 @@ private:
     }
 
     // note: data racing between render and update thread on objects
-    //  position, angle, scale glob index is ok (?)
+    //       position, angle, scale glob index is ok (?)
 
     grid.update();
 
@@ -503,7 +503,7 @@ private:
     is_rendering_cv.wait(lock, [this] { return is_rendering; });
 
     // note: render and update have acceptable (?) data races on objects
-    //  position, angle, scale, glob index etc
+    //       position, angle, scale, glob index etc
 
     render();
 

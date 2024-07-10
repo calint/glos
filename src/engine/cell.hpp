@@ -10,7 +10,7 @@ namespace glos {
 
 class cell final {
   // object entry in a cell. object members used in the hot code path copied for
-  // better cache utilization
+  //  better cache utilization
   struct entry {
     glm::vec3 position{};
     float radius = 0;
@@ -20,7 +20,7 @@ class cell final {
   };
 
   // entry in list of objects whose bounding spheres are in collision. if not
-  // spheres further processed to check for collision using bounding planes
+  //  spheres further processed to check for collision using bounding planes
   struct collision {
     object *o1 = nullptr;
     object *o2 = nullptr;
@@ -280,7 +280,7 @@ private:
   // returns true if collision with 'obj' has already been handled by 'receiver'
   static inline auto dispatch_collision(object *receiver, object *obj) -> bool {
     // if object overlaps cells then this code might be called by several
-    // threads at the same time from different cells
+    //  threads at the same time from different cells
     bool const synchronize = threaded_grid && receiver->overlaps_cells;
 
     if (synchronize) {
@@ -288,7 +288,7 @@ private:
     }
 
     // if both objects overlap cells then the same collision is detected &&
-    // dispatched in multiple cells
+    //  dispatched in multiple cells
     if (receiver->overlaps_cells && obj->overlaps_cells &&
         receiver->is_collision_handled_and_if_not_add(obj)) {
       // collision already dispatched for this 'receiver' and 'obj'
@@ -331,8 +331,8 @@ private:
     o2->update_planes_world_coordinates();
 
     // planes can be update only once per 'resolve_collisions' pass because
-    // bounding plane objects state do not change because there is no handle
-    // collision implementation such as spheres do
+    //  bounding plane objects state do not change because there is no handle
+    //   collision implementation such as spheres do
 
     return planes::are_in_collision(o1->planes, o2->planes);
   }

@@ -32,8 +32,8 @@ public:
   std::vector<glm::vec4> planes_points{}; // x, y, z, 1
   std::vector<glm::vec3> planes_normals{};
   // note: each normal has a point at the same index; however there might be
-  // additional points in 'planes_points' to better define a volume and points
-  // it contains
+  //       additional points in 'planes_points' to better define a volume and
+  //       points it contains
 
   inline glob(char const *obj_path, char const *bounding_planes_path) {
     load_object(obj_path);
@@ -291,7 +291,7 @@ private:
       }
       // unknown token
     }
-    // add points not connected to normals to 'plane_points'
+    // add points not connected to normals to 'planes_points'
     for (glm::vec4 const &pt : points) {
       if (std::ranges::find(planes_points, pt) == planes_points.cend()) {
         planes_points.emplace_back(pt);
