@@ -123,7 +123,8 @@ public:
 
     // calculate network lag
     uint64_t const t1 = SDL_GetPerformanceCounter();
-    metrics.net_lag = float(t1 - t0) / float(SDL_GetPerformanceFrequency());
+    metrics.net_ms =
+        1000.0f * float(t1 - t0) / float(SDL_GetPerformanceFrequency());
   }
 
 private:

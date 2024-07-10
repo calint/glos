@@ -30,7 +30,7 @@ public:
   float update_pass_ms = 0;
   uint64_t render_begin_tick = 0;
   float render_pass_ms = 0;
-  float net_lag = 0;
+  float net_ms = 0;
   bool enable_print = true;
 
   inline auto init() -> void {}
@@ -48,7 +48,7 @@ public:
     }
 
     fprintf(f, " %7s  %7s  %5s  %7s  %7s  %7s  %6s  %6s  %6s  %9s\n", "ms",
-            "dt_ms", "fps", "drw_ms", "upd_ms", "netlag", "nobj", "drw_o",
+            "dt_ms", "fps", "drw_ms", "upd_ms", "net_ms", "nobj", "drw_o",
             "drw_g", "drw_t");
   }
 
@@ -60,7 +60,7 @@ public:
     fprintf(
         f, " %07lu  %7.4f  %05u  %7.4f  %7.4f  %7.4f  %06u  %06u  %06u  %09u\n",
         ms, dt * 1000, fps.average_during_last_interval, render_pass_ms,
-        update_pass_ms, net_lag, allocated_objects, rendered_objects,
+        update_pass_ms, net_ms, allocated_objects, rendered_objects,
         rendered_globs, rendered_triangles);
   }
 
@@ -90,7 +90,7 @@ public:
     rendered_globs = 0;
     rendered_triangles = 0;
     ms = SDL_GetTicks64();
-    net_lag = 0;
+    net_ms = 0;
   }
 
   inline auto at_frame_end(FILE *f) -> void {
