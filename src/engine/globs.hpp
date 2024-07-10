@@ -92,7 +92,6 @@ private:
     uint32_t current_material_ix = 0;
     uint32_t vertex_ix = 0;
     uint32_t vertex_ix_prv = 0;
-    bool is_first_obj = true;
 
     std::string line{};
     while (std::getline(file, line)) {
@@ -106,8 +105,7 @@ private:
         materials.load(mtl_path.c_str());
         continue;
 
-      } else if (token == "o" && is_first_obj) {
-        is_first_obj = false;
+      } else if (token == "o") {
         line_stream >> name;
         std::cout << "   " << name << "\n";
         continue;

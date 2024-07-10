@@ -3,6 +3,8 @@
 // reviewed: 2024-01-08
 // reviewed: 2024-07-08
 
+#include "../utils.hpp"
+
 class power_up final : public object {
 public:
   inline power_up() {
@@ -50,6 +52,8 @@ public:
       }
       scale_time_ms = frame_context.ms + 1'000;
     }
+
+    game_area_roll(position);
 
     return true;
   }

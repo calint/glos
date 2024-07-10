@@ -3,38 +3,31 @@
 // reviewed: 2024-01-08
 // reviewed: 2024-07-08
 
-// include order relevant
-#include "../configuration.hpp"
-//
-#include "power_up.hpp"
-//
-#include "../utils.hpp"
-
-class asteroid_small final : public object {
+class ufo final : public object {
 public:
-  inline asteroid_small() {
+  inline ufo() {
     if (debug_multiplayer) {
       ++counter;
-      name.append("asteroid_small_").append(std::to_string(counter));
+      name.append("ufo_").append(std::to_string(counter));
       printf("%lu: %lu: create %s\n", frame_context.frame_num, frame_context.ms,
              name.c_str());
     }
-    glob_ix(glob_ix_asteroid_small);
-    scale = vec3{asteroid_small_scale};
+    ++ufos_alive;
+    glob_ix(glob_ix_ufo);
+    scale = {1.0f, 1.0f, 1.0f};
     bounding_radius = globs.at(glob_ix()).bounding_radius * scale.x;
-    mass = 500;
-    collision_bits = cb_asteroid;
-    collision_mask = cb_hero_bullet | cb_hero;
-    ++asteroids_alive;
+    is_sphere = true;
+    mass = 20;
+    collision_bits = cb_ufo;
+    collision_mask = cb_hero_bullet;
   }
 
-  inline ~asteroid_small() override {
+  inline ~ufo() override {
     if (debug_multiplayer) {
       printf("%lu: %lu: free %s\n", frame_context.frame_num, frame_context.ms,
              name.c_str());
     }
-
-    --asteroids_alive;
+    --ufos_alive;
   }
 
   inline auto update() -> bool override {
@@ -53,17 +46,14 @@ public:
              frame_context.ms, name.c_str(), o->name.c_str());
     }
 
-    score += 100;
+    score += 400;
 
-    if (rnd3(power_up_chance_rem)) {
+    for (uint32_t i = 0; i < ufo_power_ups_at_death; ++i) {
       power_up *pu = new (objects.alloc()) power_up{};
       pu->position = position;
+      pu->velocity = {rnd1(ufo_power_up_velocity), 0,
+                      rnd1(ufo_power_up_velocity)};
       pu->angular_velocity.y = radians(90.0f);
-    }
-
-    if (asteroids_alive == 1) {
-      // if last asteroid
-      create_ufo();
     }
 
     return false;

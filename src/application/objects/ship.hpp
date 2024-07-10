@@ -19,7 +19,7 @@ public:
     bounding_radius = globs.at(glob_ix()).bounding_radius * scale.x;
     mass = 150;
     collision_bits = cb_hero;
-    collision_mask = cb_asteroid | cb_power_up;
+    collision_mask = cb_asteroid | cb_power_up | cb_ufo;
   }
 
   inline ~ship() override {

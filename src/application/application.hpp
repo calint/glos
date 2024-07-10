@@ -12,6 +12,14 @@ static uint32_t level = 0; // no racing
 static uint32_t score = 0; // racing ok
 static uint32_t score_prv = score;
 static std::atomic<uint32_t> asteroids_alive{0};
+static std::atomic<uint32_t> ufos_alive{0};
+
+// forward declarations
+static auto application_init_shaders() -> void;
+static auto create_asteroids(uint32_t num) -> void;
+static auto create_ufo() -> void;
+static auto create_cubes(uint32_t num) -> void;
+static auto create_spheres(uint32_t num) -> void;
 
 // objects
 #include "objects/asteroid_large.hpp"
@@ -20,12 +28,7 @@ static std::atomic<uint32_t> asteroids_alive{0};
 #include "objects/ship.hpp"
 #include "objects/sphere.hpp"
 #include "objects/tetra.hpp"
-
-// forward declarations
-static auto application_init_shaders() -> void;
-static auto create_asteroids(uint32_t num) -> void;
-static auto create_cubes(uint32_t num) -> void;
-static auto create_spheres(uint32_t num) -> void;
+#include "objects/ufo.hpp"
 
 // engine interface
 static auto application_init() -> void {
@@ -47,6 +50,7 @@ static auto application_init() -> void {
   printf(": %15s : %-9zu :\n", "cube", sizeof(cube));
   printf(": %15s : %-9zu :\n", "sphere", sizeof(sphere));
   printf(": %15s : %-9zu :\n", "tetra", sizeof(tetra));
+  printf(": %15s : %-9zu :\n", "ufo", sizeof(ufo));
   printf(":-%15s-:-%-9s-:\n", "---------------", "---------");
   puts("");
 
@@ -61,6 +65,7 @@ static auto application_init() -> void {
   static_assert(sizeof(cube) <= objects_instance_size_B);
   static_assert(sizeof(sphere) <= objects_instance_size_B);
   static_assert(sizeof(tetra) <= objects_instance_size_B);
+  static_assert(sizeof(ufo) <= objects_instance_size_B);
 
   // load the objects and assign the glob indexes
 
@@ -88,6 +93,7 @@ static auto application_init() -> void {
                  "assets/obj/asteroids/asteroid_small.obj");
   glob_ix_fragment = globs.load("assets/obj/asteroids/fragment.obj", nullptr);
   glob_ix_power_up = globs.load("assets/obj/asteroids/power_up.obj", nullptr);
+  glob_ix_ufo = globs.load("assets/obj/asteroids/ufo.obj", nullptr);
 
   glob_ix_skydome = globs.load("assets/obj/skydome.obj", nullptr);
 
@@ -151,7 +157,7 @@ static auto application_on_update_done() -> void {
     return;
   }
 
-  if (asteroids_alive == 0) {
+  if (asteroids_alive == 0 && ufos_alive == 0) {
     ++level;
     create_asteroids(level * asteroid_level);
   }
@@ -205,6 +211,14 @@ static auto create_spheres(uint32_t const num) -> void {
     o->velocity.x = rnd1(v);
     o->velocity.z = rnd1(v);
   }
+}
+
+static auto create_ufo() -> void {
+  ufo *u = new (objects.alloc()) ufo{};
+  u->position = {-grid_size / 2, 0, -grid_size / 2};
+  u->angle = {glm::radians(-65.0f), 0, 0};
+  u->angular_velocity = {0, glm::radians(90.0f), 0};
+  u->velocity = {rnd1(ufo_velocity), 0, rnd1(ufo_velocity)};
 }
 
 // some additional shaders
