@@ -11,8 +11,8 @@ public:
       printf("%lu: %lu: create %s\n", frame_context.frame_num, frame_context.ms,
              name.c_str());
     }
-    is_sphere = true;
     glob_ix(glob_ix_ufo_bullet);
+    is_sphere = true;
     scale = {0.35f, 0.35f, 0.35f};
     bounding_radius = globs.at(glob_ix()).bounding_radius * scale.x;
     mass = 5;
