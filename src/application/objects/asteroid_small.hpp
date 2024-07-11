@@ -60,7 +60,7 @@ public:
     if (frame_context.ms > power_up_soonest_next_spawn_ms &&
         rnd3(power_up_chance_rem)) {
       power_up_soonest_next_spawn_ms =
-          frame_context.ms + power_up_max_span_interval_ms;
+          frame_context.ms + power_up_min_span_interval_ms;
       power_up *pu = new (objects.alloc()) power_up{};
       pu->position = position;
       pu->angular_velocity.y = radians(90.0f);
