@@ -15,13 +15,13 @@ public:
     }
     ++ufos_alive;
     glob_ix(glob_ix_ufo);
+    is_sphere = true;
     scale = {1.0f, 1.0f, 1.0f};
     bounding_radius = globs.at(glob_ix()).bounding_radius * scale.x;
-    is_sphere = true;
-    mass = 20;
-    next_fire_ms = frame_context.ms + ufo_fire_rate_interval_ms;
     collision_bits = cb_ufo;
     collision_mask = cb_hero_bullet;
+    mass = 20;
+    next_fire_ms = frame_context.ms + ufo_fire_rate_interval_ms;
   }
 
   inline ~ufo() override {
@@ -42,7 +42,7 @@ public:
     game_area_roll(position);
 
     if (next_fire_ms < frame_context.ms) {
-      next_fire_ms = frame_context.ms + 3000;
+      next_fire_ms = frame_context.ms + ufo_fire_rate_interval_ms;
       if (hero) {
         ufo_bullet *ub = new (objects.alloc()) ufo_bullet{};
         vec3 dir = normalize(hero->position - position);
