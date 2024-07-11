@@ -53,7 +53,7 @@ public:
              frame_context.ms, name.c_str(), o->name.c_str());
     }
 
-    score += 100;
+    score += 40;
 
     if (rnd3(power_up_chance_rem)) {
       power_up *pu = new (objects.alloc()) power_up{};

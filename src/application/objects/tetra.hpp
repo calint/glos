@@ -41,7 +41,7 @@ public:
              frame_context.ms, name.c_str(), o->name.c_str());
     }
 
-    score += 10;
+    ++score;
 
     return true;
   }

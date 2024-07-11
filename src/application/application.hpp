@@ -18,8 +18,8 @@ static auto create_spheres(uint32_t num) -> void;
 enum class state { init, asteroids, ufo };
 static state state{state::init};
 static uint32_t level = 1; // no racing
-static uint32_t score = 0; // racing ok
-static uint32_t score_prv = score;
+static int32_t score = 0;  // racing ok
+static int32_t score_prv = score;
 static std::atomic<uint32_t> asteroids_alive{0};
 static std::atomic<uint32_t> ufos_alive{0};
 static object *hero = nullptr;
@@ -191,7 +191,7 @@ static auto application_on_update_done() -> void {
 static auto application_on_render_done() -> void {
   if (score != score_prv) {
     std::array<char, 256> buf{};
-    sprintf(buf.data(), "score: %06u", score);
+    sprintf(buf.data(), "score: %06d", score);
     hud.print(buf.data(), SDL_Color{255, 0, 0, 255}, 60, 10);
     score_prv = score;
   }

@@ -53,7 +53,7 @@ public:
              frame_context.ms, name.c_str(), o->name.c_str());
     }
 
-    score += 50;
+    score += 20;
 
     for (uint32_t i = 0; i < asteroid_medium_split; ++i) {
       asteroid_small *ast = new (objects.alloc()) asteroid_small{};

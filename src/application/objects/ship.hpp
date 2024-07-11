@@ -82,7 +82,7 @@ public:
     }
 
     if (typeid(*o) == typeid(power_up)) {
-      score += 150;
+      score += 100;
       if (bullet_level == 0) {
         bullet_fire_rate_ms /= 2;
         if (bullet_fire_rate_ms < 100) {
@@ -95,14 +95,17 @@ public:
           bullet_fire_rate_ms = 100;
         }
       }
-    } else if (o->collision_bits & cb_asteroid) {
-      angle.y += radians(rnd1(45));
-
-      fragment *frg = new (objects.alloc()) fragment{};
-      frg->position = o->position;
-      frg->angular_velocity = vec3{rnd1(bullet_fragment_agl_vel_rnd)};
-      frg->death_time_ms = frame_context.ms + 500;
+      return true;
     }
+
+    angle.y += radians(rnd1(45));
+
+    fragment *frg = new (objects.alloc()) fragment{};
+    frg->position = o->position;
+    frg->angular_velocity = vec3{rnd1(bullet_fragment_agl_vel_rnd)};
+    frg->death_time_ms = frame_context.ms + 500;
+
+    score -= 100;
 
     return true;
   }

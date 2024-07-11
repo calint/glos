@@ -58,7 +58,7 @@ public:
              frame_context.ms, name.c_str(), o->name.c_str());
     }
 
-    score += 500;
+    score += 200;
 
     for (uint32_t i = 0; i < ufo_power_ups_at_death; ++i) {
       power_up *pu = new (objects.alloc()) power_up{};
