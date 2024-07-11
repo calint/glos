@@ -98,9 +98,6 @@ static constexpr float asteroid_small_scale = 0.75f;
 static constexpr float ship_turn_rate = glm::radians(120.0f);
 static constexpr float ship_speed = 6;
 static constexpr float ship_bullet_speed = 17;
-static constexpr uint32_t ship_bullet_fire_interval_ms = 1'000;
-static constexpr uint32_t ship_bullet_level_1_fire_count = 5;
-static constexpr float ship_bullet_spread = 4;
 
 static constexpr float bullet_fragment_agl_vel_rnd = glm::radians(360.0f);
 
