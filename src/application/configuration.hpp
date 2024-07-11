@@ -104,11 +104,13 @@ static constexpr float bullet_fragment_agl_vel_rnd = glm::radians(360.0f);
 static constexpr int32_t power_up_chance_rem = 5;
 static constexpr uint32_t power_up_lifetime_ms = 30'000;
 static constexpr uint32_t power_up_min_span_interval_ms = 5'000;
+
 static constexpr float ufo_velocity = 15;
 static constexpr float ufo_power_up_velocity = 5;
 static constexpr uint32_t ufo_power_ups_at_death = 3;
 static constexpr float ufo_bullet_velocity = 12;
 static constexpr float ufo_angle_x_rate = 40.0f;
+static constexpr uint32_t ufo_fire_rate_interval_ms = 2'500;
 
 // game area based on grid and biggest object
 static constexpr float game_area_half_x = grid_size / 2;

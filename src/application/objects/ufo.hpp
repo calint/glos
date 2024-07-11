@@ -19,7 +19,7 @@ public:
     bounding_radius = globs.at(glob_ix()).bounding_radius * scale.x;
     is_sphere = true;
     mass = 20;
-    next_fire_ms = frame_context.ms + 3000;
+    next_fire_ms = frame_context.ms + ufo_fire_rate_interval_ms;
     collision_bits = cb_ufo;
     collision_mask = cb_hero_bullet;
   }
