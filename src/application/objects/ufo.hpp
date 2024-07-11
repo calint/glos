@@ -43,7 +43,7 @@ public:
       next_fire_ms = frame_context.ms + 3000;
       if (hero) {
         ufo_bullet *ub = new (objects.alloc()) ufo_bullet{};
-        vec3 dir = glm::normalize(hero->position - position);
+        vec3 dir = normalize(hero->position - position);
         ub->position = position;
         ub->velocity = ufo_bullet_velocity * dir;
       }

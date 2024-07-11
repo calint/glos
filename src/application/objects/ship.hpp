@@ -19,7 +19,7 @@ public:
     bounding_radius = globs.at(glob_ix()).bounding_radius * scale.x;
     mass = 150;
     collision_bits = cb_hero;
-    collision_mask = cb_asteroid | cb_power_up | cb_ufo;
+    collision_mask = cb_asteroid | cb_power_up | cb_ufo | cb_ufo_bullet;
   }
 
   inline ~ship() override {
@@ -84,15 +84,15 @@ public:
     if (typeid(*o) == typeid(power_up)) {
       score += 100;
       if (bullet_level == 0) {
-        bullet_fire_rate_ms /= 2;
-        if (bullet_fire_rate_ms < 100) {
-          bullet_fire_rate_ms = ship_bullet_fire_interval_ms;
+        bullet_fire_interval_ms /= 2;
+        if (bullet_fire_interval_ms < 100) {
+          bullet_fire_interval_ms = ship_bullet_fire_interval_ms;
           ++bullet_level;
         }
       } else if (bullet_level == 1) {
-        bullet_fire_rate_ms /= 2;
-        if (bullet_fire_rate_ms < 100) {
-          bullet_fire_rate_ms = 100;
+        bullet_fire_interval_ms /= 2;
+        if (bullet_fire_interval_ms < 100) {
+          bullet_fire_interval_ms = 100;
         }
       }
       return true;
@@ -127,7 +127,7 @@ private:
       blt->position = position + forward_vec;
       blt->angle = angle;
       blt->velocity = ship_bullet_speed * forward_vec;
-      ready_to_fire_at_ms = frame_context.ms + bullet_fire_rate_ms;
+      ready_to_fire_at_ms = frame_context.ms + bullet_fire_interval_ms;
       break;
     }
     case 1: {
@@ -140,13 +140,13 @@ private:
         blt->velocity.x += rnd1(sp);
         blt->velocity.z += rnd1(sp);
       }
-      ready_to_fire_at_ms = frame_context.ms + bullet_fire_rate_ms;
+      ready_to_fire_at_ms = frame_context.ms + bullet_fire_interval_ms;
       break;
     }
     }
   }
 
   uint64_t ready_to_fire_at_ms = 0;
-  uint64_t bullet_fire_rate_ms = ship_bullet_fire_interval_ms;
+  uint64_t bullet_fire_interval_ms = ship_bullet_fire_interval_ms;
   uint8_t bullet_level = 0;
 };

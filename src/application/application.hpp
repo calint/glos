@@ -171,6 +171,9 @@ static auto application_on_update_done() -> void {
   case state::init:
     create_asteroids(level * asteroids_per_level);
     state = state::asteroids;
+    // if (ufos_alive == 0) {
+    //   create_ufo();
+    // }
     break;
   case state::asteroids:
     if (asteroids_alive == 0) {
@@ -181,7 +184,8 @@ static auto application_on_update_done() -> void {
   case state::ufo:
     if (ufos_alive == 0) {
       ++level;
-      state = state::init;
+      create_asteroids(level * asteroids_per_level);
+      state = state::asteroids;
     }
     break;
   }
