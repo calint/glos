@@ -37,6 +37,8 @@ public:
       return false;
     }
 
+    angle.x += radians(ufo_angle_x_rate * frame_context.dt);
+
     game_area_roll(position);
 
     if (next_fire_ms < frame_context.ms) {
