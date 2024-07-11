@@ -5,6 +5,21 @@
 
 #include "ship_bullet.hpp"
 
+struct bullet_level final {
+  uint32_t fire_interval_ms;
+  uint32_t bullets_per_fire;
+  float bullet_spread;
+};
+
+static bullet_level const bullet_levels[]{
+    {1000, 1, 0}, {500, 1, 0}, {250, 1, 0}, {125, 1, 0}, {500, 3, 2},
+    {250, 3, 2},  {125, 3, 2}, {500, 5, 4}, {250, 5, 4}, {125, 5, 4}};
+
+static uint32_t bullet_levels_index = 0;
+
+static constexpr uint32_t bullet_levels_length =
+    sizeof(bullet_levels) / sizeof(bullet_level);
+
 class ship final : public object {
 public:
   inline ship() {
@@ -83,17 +98,8 @@ public:
 
     if (typeid(*o) == typeid(power_up)) {
       score += 100;
-      if (bullet_level == 0) {
-        bullet_fire_interval_ms /= 2;
-        if (bullet_fire_interval_ms < 100) {
-          bullet_fire_interval_ms = ship_bullet_fire_interval_ms;
-          ++bullet_level;
-        }
-      } else if (bullet_level == 1) {
-        bullet_fire_interval_ms /= 2;
-        if (bullet_fire_interval_ms < 100) {
-          bullet_fire_interval_ms = 100;
-        }
+      if (bullet_levels_index < bullet_levels_length - 1) {
+        ++bullet_levels_index;
       }
       return true;
     }
@@ -106,6 +112,10 @@ public:
     frg->death_time_ms = frame_context.ms + 500;
 
     score -= 100;
+
+    if (bullet_levels_index > 0) {
+      --bullet_levels_index;
+    }
 
     return true;
   }
@@ -121,32 +131,17 @@ private:
     // note: M[2] is third column: z-axis
     // note: forward for object model space is negative z
 
-    switch (bullet_level) {
-    case 0: {
+    bullet_level const &bl = bullet_levels[bullet_levels_index];
+    for (uint32_t i = 0; i < bl.bullets_per_fire; ++i) {
       ship_bullet *blt = new (objects.alloc()) ship_bullet{};
       blt->position = position + forward_vec;
       blt->angle = angle;
       blt->velocity = ship_bullet_speed * forward_vec;
-      ready_to_fire_at_ms = frame_context.ms + bullet_fire_interval_ms;
-      break;
+      blt->velocity.x += rnd1(bl.bullet_spread);
+      blt->velocity.z += rnd1(bl.bullet_spread);
     }
-    case 1: {
-      for (uint32_t i = 0; i < ship_bullet_level_1_fire_count; ++i) {
-        ship_bullet *blt = new (objects.alloc()) ship_bullet{};
-        blt->position = position + forward_vec;
-        blt->angle = angle;
-        blt->velocity = ship_bullet_speed * forward_vec;
-        constexpr float sp = ship_bullet_spread;
-        blt->velocity.x += rnd1(sp);
-        blt->velocity.z += rnd1(sp);
-      }
-      ready_to_fire_at_ms = frame_context.ms + bullet_fire_interval_ms;
-      break;
-    }
-    }
+    ready_to_fire_at_ms = frame_context.ms + bl.fire_interval_ms;
   }
 
   uint64_t ready_to_fire_at_ms = 0;
-  uint64_t bullet_fire_interval_ms = ship_bullet_fire_interval_ms;
-  uint8_t bullet_level = 0;
 };
