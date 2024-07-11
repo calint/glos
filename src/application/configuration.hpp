@@ -79,7 +79,7 @@ static constexpr uint32_t cb_ufo = 1U << 4U;
 static constexpr uint32_t cb_ufo_bullet = 1U << 5U;
 
 // settings
-static constexpr uint32_t asteroid_level = 2;
+static constexpr uint32_t asteroids_per_level = 2;
 
 static constexpr float asteroid_large_agl_vel_rnd = glm::radians(75.0f);
 static constexpr float asteroid_large_speed = 10;

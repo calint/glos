@@ -7,20 +7,22 @@
 using namespace glos;
 using namespace glm;
 
-// game state
-static uint32_t level = 0; // no racing
-static uint32_t score = 0; // racing ok
-static uint32_t score_prv = score;
-static std::atomic<uint32_t> asteroids_alive{0};
-static std::atomic<uint32_t> ufos_alive{0};
-static object *hero = nullptr;
-
 // forward declarations
 static auto application_init_shaders() -> void;
 static auto create_asteroids(uint32_t num) -> void;
 static auto create_ufo() -> void;
 static auto create_cubes(uint32_t num) -> void;
 static auto create_spheres(uint32_t num) -> void;
+
+// game state
+enum class state { init, asteroids, ufo };
+static state state{state::init};
+static uint32_t level = 1; // no racing
+static uint32_t score = 0; // racing ok
+static uint32_t score_prv = score;
+static std::atomic<uint32_t> asteroids_alive{0};
+static std::atomic<uint32_t> ufos_alive{0};
+static object *hero = nullptr;
 
 // objects
 #include "objects/asteroid_large.hpp"
@@ -165,9 +167,23 @@ static auto application_on_update_done() -> void {
     return;
   }
 
-  if (asteroids_alive == 0 && ufos_alive == 0) {
-    ++level;
-    create_asteroids(level * asteroid_level);
+  switch (state) {
+  case state::init:
+    create_asteroids(level * asteroids_per_level);
+    state = state::asteroids;
+    break;
+  case state::asteroids:
+    if (asteroids_alive == 0) {
+      create_ufo();
+      state = state::ufo;
+    }
+    break;
+  case state::ufo:
+    if (ufos_alive == 0) {
+      ++level;
+      state = state::init;
+    }
+    break;
   }
 }
 

@@ -61,11 +61,6 @@ public:
       pu->angular_velocity.y = radians(90.0f);
     }
 
-    if (asteroids_alive == 1) {
-      // if last asteroid
-      create_ufo();
-    }
-
     return false;
   }
 };
