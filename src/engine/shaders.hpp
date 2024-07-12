@@ -25,37 +25,43 @@ class shaders final {
 
   // default shader source
   static inline char const *vertex_shader_source = R"(
-  #version 330 core
-  uniform mat4 umtx_mw;  // model-to-world-matrix
-  uniform mat4 umtx_wvp; // world-to-view-to-projection
-  layout(location = 0) in vec4 apos;
-  layout(location = 1) in vec4 argba;
-  layout(location = 2) in vec3 anorm;
-  layout(location = 3) in vec2 atex;
-  out vec4 vrgba;
-  out vec3 vnorm;
-  out vec2 vtex;
-  void main() {
-	  gl_Position = umtx_wvp * umtx_mw * apos;
-	  vrgba = argba;
-	  vnorm = normalize(transpose(inverse(mat3(umtx_mw))) * anorm);
-    // note: https://paroj.github.io/gltut/Illumination/Tut09%20Normal%20Transformation.html
-	  vtex = atex;
-  }
+#version 330 core
+uniform mat4 umtx_mw;  // model-to-world-matrix
+uniform mat4 umtx_wvp; // world-to-view-to-projection
+layout(location = 0) in vec4 apos;
+layout(location = 1) in vec4 argba;
+layout(location = 2) in vec3 anorm;
+layout(location = 3) in vec2 atex;
+out vec4 vrgba;
+out vec3 vnorm;
+out vec2 vtex;
+void main() {
+  gl_Position = umtx_wvp * umtx_mw * apos;
+  vrgba = argba;
+  
+  // normal transform for general case (e.g. non-uniform scaling)
+  // note: https://paroj.github.io/gltut/Illumination/Tut09%20Normal%20Transformation.html
+  vnorm = normalize(transpose(inverse(mat3(umtx_mw))) * anorm);
+  
+  // normal transform for uniform scaling case
+  //vnorm = normalize(mat3(umtx_mw) * anorm);
+  
+  vtex = atex;
+}
   )";
 
   static inline char const *fragment_shader_source = R"(
-  #version 330 core
-  uniform sampler2D utex;
-  uniform vec3 ulht;
-  in vec4 vrgba;
-  in vec3 vnorm;
-  in vec2 vtex;
-  out vec4 rgba;
-  void main() {
-    float diff = max(dot(vnorm, ulht), 0.5);
-    rgba = vec4(vec3(texture2D(utex, vtex)) + diff * vec3(vrgba), vrgba.a);
-  }
+#version 330 core
+uniform sampler2D utex;
+uniform vec3 ulht;
+in vec4 vrgba;
+in vec3 vnorm;
+in vec2 vtex;
+out vec4 rgba;
+void main() {
+  float diff = max(dot(vnorm, ulht), 0.5);
+  rgba = vec4(vec3(texture2D(utex, vtex)) + diff * vec3(vrgba), vrgba.a);
+}
 )";
 
   std::vector<program> programs{};
