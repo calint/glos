@@ -194,7 +194,7 @@ static auto application_on_update_done() -> void {
 // engine interface
 static auto application_on_render_done() -> void {
   if (score != score_prv) {
-    std::array<char, 256> buf{};
+    std::array<char, 256> buf;
     sprintf(buf.data(), "score: %06d", score.load());
     hud.print(buf.data(), SDL_Color{255, 0, 0, 255}, 60, 10);
     score_prv = score;
