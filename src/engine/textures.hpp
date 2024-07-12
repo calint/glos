@@ -27,8 +27,9 @@ public:
     if (!surface) {
       throw exception{std::format("cannot load image from '{}'", path)};
     }
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, surface->w, surface->h, 0, GL_RGB,
-                 GL_UNSIGNED_BYTE, surface->pixels);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, GLsizei(surface->w),
+                 GLsizei(surface->h), 0, GL_RGB, GL_UNSIGNED_BYTE,
+                 surface->pixels);
     glGenerateMipmap(GL_TEXTURE_2D);
     size_B = size_t(surface->w * surface->h) * sizeof(uint32_t);
     SDL_FreeSurface(surface);
