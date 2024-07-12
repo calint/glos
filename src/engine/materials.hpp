@@ -19,6 +19,7 @@ public:
   glm::vec3 Ke{};
   float Ni = 0;
   float d = 0; // opacity
+  uint32_t illum = 0;
   std::string map_Kd{};
   GLuint texture_id = 0;
 };
@@ -93,6 +94,9 @@ public:
 
       } else if (token == "d") {
         line_stream >> store.back().d;
+
+      } else if (token == "illum") {
+        line_stream >> store.back().illum;
 
       } else if (token == "map_Kd") {
         // texture path
