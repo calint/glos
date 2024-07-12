@@ -3,6 +3,8 @@
 [ ] support spaces in path names
 [ ] use c++ random number generator rather than rand()
 [ ] rand() is not thread-safe
+[ ] if object overlaps grid horizontally then there is no need for synchronization 
+    since a thread processes a whole row
 [ ] spawn asteroids outside the viewport
 [ ] release and continue with sandbox game in 'glosi'
 [ ]   render cull cells
@@ -20,8 +22,6 @@
               then added to store while single threaded
         => no need for synchronization because same object will not be processed in more
            than one thread
-[ ] if object overlaps grid horizontally then there is no need for synchronization 
-    since a thread processes a whole row
 [ ] grid: static vs moving vs bullets vs scenery objects
 [ ] assets embedded in static executable with the goal of a one file, no dependencies unit
     => map<path,data>
