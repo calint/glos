@@ -136,9 +136,9 @@ public:
                     GLsizei(converted_surface->h), GL_RGBA, GL_UNSIGNED_BYTE,
                     converted_surface->pixels);
 
-    // constexpr uint32_t pixels[]{0x00ff0000, 0x00ff0000, 0x00ff0000,
-    // 0x00ff0000}; glTexSubImage2D(GL_TEXTURE_2D, 0, GLint(x), GLint(y), 2, 2,
-    // GL_RGBA,
+    // constexpr uint32_t pixels[] = {0x00ff0000, 0x00ff0000, 0x00ff0000,
+    //                                0x00ff0000};
+    // glTexSubImage2D(GL_TEXTURE_2D, 0, GLint(x), GLint(y), 2, 2, GL_RGBA,
     //                 GL_UNSIGNED_BYTE, pixels);
 
     SDL_FreeSurface(text_surface);
