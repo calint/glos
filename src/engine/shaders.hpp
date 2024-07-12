@@ -39,6 +39,7 @@ class shaders final {
 	  gl_Position = umtx_wvp * umtx_mw * apos;
 	  vrgba = argba;
 	  vnorm = normalize(transpose(inverse(mat3(umtx_mw))) * anorm);
+    // note: https://paroj.github.io/gltut/Illumination/Tut09%20Normal%20Transformation.html
 	  vtex = atex;
   }
   )";
