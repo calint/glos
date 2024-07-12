@@ -157,22 +157,22 @@ private:
 
   static inline char const *vertex_shader_source = R"(
 #version 330 core
-layout(location = 0) in vec2 position;
-layout(location = 1) in vec2 tex_coord;
-out vec2 v_tex_coord;
+layout(location = 0) in vec2 apos;
+layout(location = 1) in vec2 atex;
+out vec2 vtex;
 void main() {
-    gl_Position = vec4(position, 0, 1.0);
-    v_tex_coord = tex_coord;
+    gl_Position = vec4(apos, 0, 1.0);
+    vtex = atex;
 }
 )";
 
   static inline char const *fragment_shader_source = R"(
 #version 330 core
 uniform sampler2D utex;
-in vec2 v_tex_coord;
-out vec4 frag_color;
+in vec2 vtex;
+out vec4 rgba;
 void main() {
-    frag_color = texture(utex, v_tex_coord);
+    rgba = texture(utex, vtex);
 }
 )";
 };
