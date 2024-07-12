@@ -45,7 +45,10 @@ void main() {
   
   // normal transform for uniform scaling case
   //vnorm = normalize(mat3(umtx_mw) * anorm);
-  
+
+  // normal transform for identity scale
+  //vnorm = mat3(umtx_mw) * anorm;
+
   vtex = atex;
 }
   )";
