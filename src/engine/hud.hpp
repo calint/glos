@@ -149,24 +149,24 @@ private:
   static constexpr GLsizei texture_height = 256;
 
   static inline char const *vertex_shader_source = R"(
-    #version 330 core
-    layout(location = 0) in vec2 position;
-    layout(location = 1) in vec2 tex_coord;
-    out vec2 v_tex_coord;
-    void main() {
-        gl_Position = vec4(position, 0, 1.0);
-        v_tex_coord = tex_coord;
-    }
+#version 330 core
+layout(location = 0) in vec2 position;
+layout(location = 1) in vec2 tex_coord;
+out vec2 v_tex_coord;
+void main() {
+    gl_Position = vec4(position, 0, 1.0);
+    v_tex_coord = tex_coord;
+}
 )";
 
   static inline char const *fragment_shader_source = R"(
-    #version 330 core
-    in vec2 v_tex_coord;
-    out vec4 frag_color;
-    uniform sampler2D utex;
-    void main() {
-        frag_color = texture(utex, v_tex_coord);
-    }
+#version 330 core
+uniform sampler2D utex;
+in vec2 v_tex_coord;
+out vec4 frag_color;
+void main() {
+    frag_color = texture(utex, v_tex_coord);
+}
 )";
 };
 
