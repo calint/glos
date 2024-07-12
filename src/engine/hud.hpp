@@ -131,8 +131,9 @@ public:
     // RGBA8888
 
     glBindTexture(GL_TEXTURE_2D, texture);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, converted_surface->w,
-                    converted_surface->h, GL_RGBA, GL_UNSIGNED_BYTE,
+    glTexSubImage2D(GL_TEXTURE_2D, 0, GLint(x), GLint(y),
+                    GLsizei(converted_surface->w),
+                    GLsizei(converted_surface->h), GL_RGBA, GL_UNSIGNED_BYTE,
                     converted_surface->pixels);
 
     SDL_FreeSurface(text_surface);
