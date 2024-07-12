@@ -1,5 +1,3 @@
-[x] object: when glob_ix changes invalidate bounding planes
-[x] use io stream rather than 'token'
 [ ] support spaces in path names
 [ ] use c++ random number generator rather than rand()
 [ ] rand() is not thread-safe
@@ -46,13 +44,10 @@
        => works in 2D but not in 3D
 [ ] planes: bool for the case where scaling is uniform to optimize collision detection
     with sphere by removing the division by the length of the normal vector
-[ ] struct vertex: use glm::vecX instead of float[]
 [ ] texture: transparent textures
 [ ] hud: resolve issue with colors
 [ ] use "moving towards each other" vector to cull collision detection
 [ ] look at std::aligned_alloc to align o1store
-[x] convert token.h
-    => removed. using stream
 [ ] object: consider making all members private
 [ ] cell.update does what object::update does since it always returns true
 [ ] bounding box. OBB 3 normals, width, height
@@ -83,6 +78,11 @@
 [ ] shader: mtx_wvp * mtx_mw   is it better with mtx_mwvp?
 [ ] consider: https://github.com/alugowski/task-thread-pool for simple multithreading
 ------------------------------------------------------------------------------------------
+[x] object: when glob_ix changes invalidate bounding planes
+[x] use io stream rather than 'token'
+[x] struct vertex: use glm::vecX instead of float[]
+[x] convert token.h
+    => removed. using stream
 [-] use glDebugMessageCallback
     => not available in opengl es3
 [x] consider making application.cpp into application.hpp

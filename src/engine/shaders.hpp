@@ -8,10 +8,10 @@
 namespace glos {
 
 struct vertex final {
-  float position[3];
-  float color[4];
-  float normal[3];
-  float texture[2];
+  glm::vec3 position{};
+  glm::vec4 color{};
+  glm::vec3 normal{};
+  glm::vec2 texture{};
 };
 
 class shaders final {
