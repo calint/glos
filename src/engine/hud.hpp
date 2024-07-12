@@ -107,6 +107,7 @@ public:
 
   inline auto print(char const *text, SDL_Color const color, int const x,
                     const int y) const -> void {
+
     SDL_Surface *text_surface = TTF_RenderUTF8_Blended(font, text, color);
 
     if (!text_surface) {
