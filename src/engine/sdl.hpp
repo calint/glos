@@ -11,6 +11,17 @@ namespace glos {
 class sdl final {
 public:
   inline auto init() -> void {
+    SDL_version compiled;
+    SDL_version linked;
+
+    SDL_VERSION(&compiled);
+    SDL_GetVersion(&linked);
+
+    printf("SDL version compiled %d.%d.%d\n", compiled.major, compiled.minor,
+           compiled.patch);
+    printf("SDL version linked %d.%d.%d\n\n", linked.major, linked.minor,
+           linked.patch);
+
     if (SDL_Init(SDL_INIT_VIDEO)) {
       throw exception{
           std::format("cannot initiate sdl video: {}", SDL_GetError())};
