@@ -56,7 +56,7 @@ void main() {
   static inline char const *fragment_shader_source = R"(
 #version 330 core
 uniform sampler2D utex;
-uniform vec3 ulht;
+uniform vec3 ulht; // ambient light vector
 in vec4 vrgba;
 in vec3 vnorm;
 in vec2 vtex;
