@@ -90,8 +90,9 @@ public:
   }
 
   inline auto render() const -> void {
-    // glEnable(GL_BLEND);
-    // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     glDisable(GL_DEPTH_TEST);
     glDepthMask(GL_FALSE);
 
@@ -100,9 +101,10 @@ public:
     glUniform1i(0, 0); // sets uniform "utex" to texture unit 0
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 
-    // glDisable(GL_BLEND);
     glDepthMask(GL_TRUE);
     glEnable(GL_DEPTH_TEST);
+
+    glDisable(GL_BLEND);
   }
 
   inline auto print(char const *text, SDL_Color const color, int const x,
