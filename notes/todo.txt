@@ -5,6 +5,7 @@
     since a thread processes a whole row
 [ ] spawn asteroids outside the viewport
 [ ] release and continue with sandbox game in 'glosi'
+[ ]   glosi: "atoms" bonded by "springs" instead of rigid body physics
 [ ]   render cull cells
 [ ]   render cull objects
 [x]   fix multithreading issues
