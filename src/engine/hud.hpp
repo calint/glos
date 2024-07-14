@@ -18,7 +18,7 @@ public:
     }
 
     constexpr GLfloat quad_vertices[] = {
-        // positions, texture coords
+        // position, texture coord
         -1.0f, 1.0f,  0.0f, 0.0f, // top left
         1.0f,  1.0f,  1.0f, 0.0f, // top right
         1.0f,  -1.0f, 1.0f, 1.0f, // bottom right
