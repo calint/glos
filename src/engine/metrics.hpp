@@ -108,7 +108,8 @@ public:
     }
 
     uint64_t const t1 = SDL_GetTicks64();
-    uint64_t const dt_interval = t1 - fps.time_at_start_of_interval_ms;
+    uint32_t const dt_interval =
+        uint32_t(t1 - fps.time_at_start_of_interval_ms);
 
     if (dt_interval < fps.calculation_interval_ms) {
       return;

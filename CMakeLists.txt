@@ -10,7 +10,7 @@
 
 cmake_minimum_required(VERSION 3.7)
 project(glos)
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 set(OpenGL_GL_PREFERENCE GLVND)
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
