@@ -44,7 +44,7 @@ public:
   float mass = 0;         // in kg
   planes planes{};        // bounding planes (if any)
 private:
-  std::atomic_flag lock_get_updated_Mmw = ATOMIC_FLAG_INIT;
+  std::atomic_flag lock_Mmw = ATOMIC_FLAG_INIT;
   glm::vec3 Mmw_pos{}; // position of current Mmw matrix
   glm::vec3 Mmw_agl{}; // angle of current Mmw matrix
   glm::vec3 Mmw_scl{}; // scale of current Mmw matrix
@@ -83,6 +83,7 @@ public:
   }
 
   // returns false if object has died, true otherwise
+  // note: only one thread at a time is active in this section
   inline virtual auto update() -> bool {
     float const dt = frame_context.dt;
     velocity += acceleration * dt;
@@ -90,6 +91,7 @@ public:
     angle += angular_velocity * dt;
 
     if (is_debug_object_planes_normals) {
+      // note: update planes for the normals to be rendered at 'render()'
       glm::mat4 const &M = updated_Mmw();
       class glob const &g = glob();
       planes.update_model_to_world(g.planes_points, g.planes_normals, M,
@@ -100,6 +102,7 @@ public:
   }
 
   // returns false if object has died, true otherwise
+  // note: only on thread at a time is active in this section
   inline virtual auto on_collision(object *obj) -> bool { return true; }
 
   inline auto updated_Mmw() -> glm::mat4 const & {
@@ -108,13 +111,13 @@ public:
     bool constexpr synchronize = threaded_update;
 
     if (synchronize) {
-      while (lock_get_updated_Mmw.test_and_set(std::memory_order_acquire)) {
+      while (lock_Mmw.test_and_set(std::memory_order_acquire)) {
       }
     }
 
     if (is_Mmw_valid()) {
       if (synchronize) {
-        lock_get_updated_Mmw.clear(std::memory_order_release);
+        lock_Mmw.clear(std::memory_order_release);
       }
       return Mmw;
     }
@@ -130,7 +133,7 @@ public:
     Mmw = Mt * Mr * Ms;
 
     if (synchronize) {
-      lock_get_updated_Mmw.clear(std::memory_order_release);
+      lock_Mmw.clear(std::memory_order_release);
     }
 
     return Mmw;
@@ -168,15 +171,16 @@ private:
     return found;
   }
 
-  // called from 'cell' in thread safe way
+  // called from 'cell'
   inline auto update_planes_world_coordinates() -> void {
     bool const synchronize = threaded_grid && overlaps_cells;
+
+    class glob const &g = glob();
 
     if (synchronize) {
       planes.acquire_lock();
     }
 
-    class glob const &g = glob();
     glm::mat4 const &M = updated_Mmw();
     planes.update_model_to_world(g.planes_points, g.planes_normals, M, Mmw_pos,
                                  Mmw_agl, Mmw_scl);
