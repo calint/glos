@@ -5,9 +5,9 @@
 // reviewed: 2024-01-08
 // reviewed: 2024-07-08
 
-//
-// configuration used by engine and application
-//
+// ----------------------------------------------------------------------
+// engine configuration
+// ----------------------------------------------------------------------
 
 // multithreaded grid
 // note: in some cases multithreaded mode is a degradation of performance
@@ -26,9 +26,9 @@ static bool constexpr metrics_print = true;
 // initially render the hud
 static bool constexpr hud_enabled = true;
 
-//
-// configuration used by the application
-//
+// ----------------------------------------------------------------------
+// application configuration
+// ----------------------------------------------------------------------
 
 // game or performance test
 // 0: none (game)  1: cubes  2: spheres
