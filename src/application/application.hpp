@@ -126,7 +126,7 @@ static inline auto application_init() -> void {
   // the dome
   object *skydome = new (objects.alloc()) object{};
   skydome->glob_ix(glob_ix_skydome);
-  float const skydome_scale = glm::length(vec2{grid_size / 2, grid_size / 2});
+  float const skydome_scale = length(vec2{grid_size / 2, grid_size / 2});
   skydome->bounding_radius = skydome_scale;
   skydome->scale = {skydome_scale, skydome_scale, skydome_scale};
 

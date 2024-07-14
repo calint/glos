@@ -34,7 +34,7 @@ inline static auto rnd3(int const rem) -> bool {
   return (r % rem) == 0;
 }
 
-inline static auto game_area_roll(glm::vec3 &position) -> void {
+inline static auto game_area_roll(vec3 &position) -> void {
   // approximately correct. can be done better.
 
   if (position.x < game_area_min_x) {
@@ -56,7 +56,7 @@ inline static auto game_area_roll(glm::vec3 &position) -> void {
   }
 }
 
-inline static auto is_outside_game_area(glm::vec3 const &position) -> bool {
+inline static auto is_outside_game_area(vec3 const &position) -> bool {
   return position.x < game_area_min_x || position.x > game_area_max_x ||
          position.y < game_area_min_y || position.y > game_area_max_y ||
          position.z < game_area_min_z || position.z > game_area_max_z;
