@@ -23,8 +23,11 @@ static int32_t score_prv = score;
 static std::atomic<uint32_t> asteroids_alive = 0;
 static std::atomic<uint32_t> ufos_alive = 0;
 static object *hero = nullptr;
+static std::atomic<uint32_t> counter = 0;
+// note: used when 'debug_multiplayer' is true to give objects unique numbers
 
-// glob indexes (are set by 'application_init()' when loading models)
+// glob indexes
+// note: set by 'application_init()' when loading models and used by objects
 static uint32_t glob_ix_ship = 0;
 static uint32_t glob_ix_ship_engine_on = 0;
 static uint32_t glob_ix_bullet = 0;
@@ -39,9 +42,6 @@ static uint32_t glob_ix_sphere = 0;
 static uint32_t glob_ix_skydome = 0;
 static uint32_t glob_ix_ufo = 0;
 static uint32_t glob_ix_ufo_bullet = 0;
-
-// used when 'debug_multiplayer' is true to give objects unique numbers
-static std::atomic<uint32_t> counter = 0;
 
 // objects
 #include "objects/asteroid_large.hpp"
