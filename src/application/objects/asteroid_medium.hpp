@@ -21,7 +21,7 @@ public:
     }
     glob_ix(glob_ix_asteroid_medium);
     scale = vec3{asteroid_medium_scale};
-    bounding_radius = globs.at(glob_ix()).bounding_radius * scale.x;
+    bounding_radius = glob().bounding_radius * scale.x;
     mass = 1000;
     collision_bits = cb_asteroid;
     collision_mask = cb_hero_bullet | cb_hero;

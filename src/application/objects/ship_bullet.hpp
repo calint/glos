@@ -16,7 +16,7 @@ public:
     }
     glob_ix(glob_ix_bullet);
     scale = {1, 1, 1};
-    bounding_radius = globs.at(glob_ix()).bounding_radius * scale.x;
+    bounding_radius = glob().bounding_radius * scale.x;
     mass = 5;
     collision_bits = cb_hero_bullet;
     collision_mask = cb_asteroid | cb_ufo;

@@ -14,7 +14,7 @@ public:
     }
     glob_ix(glob_ix_sphere);
     scale = {1.0f, 1.0f, 1.0f};
-    bounding_radius = globs.at(glob_ix()).bounding_radius * scale.x;
+    bounding_radius = glob().bounding_radius * scale.x;
     is_sphere = true;
     mass = 1;
     collision_bits = cb_power_up;

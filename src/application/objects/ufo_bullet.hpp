@@ -14,7 +14,7 @@ public:
     glob_ix(glob_ix_ufo_bullet);
     is_sphere = true;
     scale = {0.35f, 0.35f, 0.35f};
-    bounding_radius = globs.at(glob_ix()).bounding_radius * scale.x;
+    bounding_radius = glob().bounding_radius * scale.x;
     mass = 5;
     collision_bits = cb_ufo_bullet;
     collision_mask = cb_hero;
