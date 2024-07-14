@@ -61,6 +61,5 @@ experimental 3d multiplayer game framework using simple data layer 2 and opengl 
 ![single player mode](https://github.com/calint/glos/assets/1920811/e39000d0-8bc9-4070-9454-46bb5ae6e4ab)
 
 ## todo
-* tidy the source in `src/engine/`
 * another sample game in a 3D sandbox-like environment
 * and much more in [todo.txt](https://github.com/calint/glos/blob/master/notes/todo.txt)
