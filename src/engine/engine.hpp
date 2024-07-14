@@ -480,6 +480,7 @@ private:
           //  to grid
           std::unique_lock<std::mutex> lock{is_rendering_mutex};
           is_rendering_cv.wait(lock, [this] { return !is_rendering; });
+          // note: wait until 'is_rendering' is false
 
           if (!is_running) {
             return;
@@ -507,6 +508,7 @@ private:
     // wait for update thread to remove and add objects to grid
     std::unique_lock<std::mutex> lock{is_rendering_mutex};
     is_rendering_cv.wait(lock, [this] { return is_rendering; });
+    // note: wait until 'is_rendering' is true
 
     // note: render and update have acceptable (?) data races on objects
     //       position, angle, scale, glob index etc
