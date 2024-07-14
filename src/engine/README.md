@@ -31,7 +31,6 @@
 * `sdl` handles initiation and shutdown of sdl2
 * `metrics` keeps track of frame time and statistics
 * `o1store` template that implements O(1) allocate and free of preallocated objects
-* `token` is a helper to parse text
 
 ## multithreaded engine
 * configuration`threaded_update` enables update and render to run on different threads
