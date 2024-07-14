@@ -70,6 +70,7 @@ public:
   // note: 'delete obj;' may not be used because memory is managed by 'o1store'.
   //       destructor is invoked in the 'objects.apply_free()'
 
+  // called from 'cell'
   inline virtual auto render() -> void {
     glob().render(updated_Mmw());
 
@@ -82,6 +83,7 @@ public:
     }
   }
 
+  // called from 'cell'
   // returns false if object has died, true otherwise
   // note: only one thread at a time is active in this section
   inline virtual auto update() -> bool {
@@ -101,6 +103,7 @@ public:
     return true;
   }
 
+  // called from 'cell'
   // returns false if object has died, true otherwise
   // note: only on thread at a time is active in this section
   inline virtual auto on_collision(object *obj) -> bool { return true; }
@@ -108,7 +111,10 @@ public:
   inline auto updated_Mmw() -> glm::mat4 const & {
     // * synchronize if render and update run on different threads; both racing
     //   for this function from 'render()' and 'update()'
-    bool constexpr synchronize = threaded_update;
+    // * synchronize if 'threaded_grid' because objects in different cells
+    //   running on different threads might race when calling this function
+
+    bool constexpr synchronize = threaded_update || threaded_grid;
 
     if (synchronize) {
       while (lock_Mmw.test_and_set(std::memory_order_acquire)) {
@@ -146,9 +152,9 @@ public:
     glob_ix_ = i;
   }
 
-  inline auto glob() const -> glob const & { return globs.at(glob_ix_); }
-
   inline auto glob_ix() const -> uint32_t { return glob_ix_; }
+
+  inline auto glob() const -> glob const & { return globs.at(glob_ix_); }
 
 private:
   // called from 'object' in thread safe way
