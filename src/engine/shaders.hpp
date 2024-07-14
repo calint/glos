@@ -71,17 +71,17 @@ void main() {
 
 public:
   // vertex attributes layout in shaders
-  static constexpr GLint apos = 0;
-  static constexpr GLint argba = 1;
-  static constexpr GLint anorm = 2;
-  static constexpr GLint atex = 3;
+  static GLint constexpr apos = 0;
+  static GLint constexpr argba = 1;
+  static GLint constexpr anorm = 2;
+  static GLint constexpr atex = 3;
   // uniform matrixes
-  static constexpr GLint umtx_mw = 0;  // model -> world matrix
-  static constexpr GLint umtx_wvp = 1; // world -> view -> projection matrix
+  static GLint constexpr umtx_mw = 0;  // model -> world matrix
+  static GLint constexpr umtx_wvp = 1; // world -> view -> projection matrix
   // uniform textures
-  static constexpr GLint utex = 2; // texture mapper
+  static GLint constexpr utex = 2; // texture mapper
   // uniform ambient light
-  static constexpr GLint ulht = 3; // light vector
+  static GLint constexpr ulht = 3; // light vector
 
   inline auto init() -> void {
     puts("");

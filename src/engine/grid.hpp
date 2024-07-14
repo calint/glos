@@ -77,8 +77,8 @@ public:
 
   // called from engine
   inline auto add(object *o) -> void {
-    constexpr float gw = grid_cell_size * grid_columns;
-    constexpr float gh = grid_cell_size * grid_rows;
+    float constexpr gw = grid_cell_size * grid_columns;
+    float constexpr gh = grid_cell_size * grid_rows;
 
     float const r = o->bounding_radius;
 
@@ -115,8 +115,8 @@ public:
   }
 
   inline auto debug_render_grid() const -> void {
-    constexpr float gw = grid_cell_size * grid_columns;
-    constexpr float gh = grid_cell_size * grid_rows;
+    float constexpr gw = grid_cell_size * grid_columns;
+    float constexpr gh = grid_cell_size * grid_rows;
     for (float z = -gh / 2; z <= gh / 2; z += grid_cell_size) {
       debug_render_wcs_line({-gw / 2, 0, z}, {gw / 2, 0, z}, {0, 1, 0, 1},
                             false);

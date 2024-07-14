@@ -11,11 +11,11 @@ struct bullet_level final {
   float bullet_spread;
 };
 
-static constexpr bullet_level const bullet_levels[]{
+static bullet_level constexpr bullet_levels[]{
     {1000, 1, 0}, {500, 1, 0}, {250, 1, 0}, {125, 1, 0}, {500, 3, 2},
     {250, 3, 2},  {125, 3, 2}, {500, 5, 4}, {250, 5, 4}, {125, 5, 4}};
 
-static constexpr uint32_t bullet_levels_length =
+static uint32_t constexpr bullet_levels_length =
     sizeof(bullet_levels) / sizeof(bullet_level);
 
 static uint32_t bullet_levels_index = 0;
@@ -126,7 +126,7 @@ private:
       return;
     }
 
-    mat4 const &M = get_updated_Mmw();
+    mat4 const &M = updated_Mmw();
     vec3 const forward_vec = -normalize(vec3{M[2]});
     // note: M[2] is third column: z-axis
     // note: forward for object model space is negative z

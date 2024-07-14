@@ -261,7 +261,7 @@ private:
 
     // resolve collision between the spheres
 
-    constexpr float restitution = 1;
+    float constexpr restitution = 1;
     float const impulse = (1.0f + restitution) *
                           relative_velocity_along_collision_normal /
                           (Oi->mass + Oj->mass);

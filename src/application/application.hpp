@@ -24,6 +24,25 @@ static std::atomic<uint32_t> asteroids_alive = 0;
 static std::atomic<uint32_t> ufos_alive = 0;
 static object *hero = nullptr;
 
+// glob indexes (are set by 'application_init()' when loading models)
+static uint32_t glob_ix_ship = 0;
+static uint32_t glob_ix_ship_engine_on = 0;
+static uint32_t glob_ix_bullet = 0;
+static uint32_t glob_ix_asteroid_large = 0;
+static uint32_t glob_ix_asteroid_medium = 0;
+static uint32_t glob_ix_asteroid_small = 0;
+static uint32_t glob_ix_fragment = 0;
+static uint32_t glob_ix_power_up = 0;
+static uint32_t glob_ix_cube = 0;
+static uint32_t glob_ix_tetra = 0;
+static uint32_t glob_ix_sphere = 0;
+static uint32_t glob_ix_skydome = 0;
+static uint32_t glob_ix_ufo = 0;
+static uint32_t glob_ix_ufo_bullet = 0;
+
+// used when 'debug_multiplayer' is true to give objects unique numbers
+static std::atomic<uint32_t> counter = 0;
+
 // objects
 #include "objects/asteroid_large.hpp"
 #include "objects/cube.hpp"
@@ -205,8 +224,8 @@ static inline auto application_on_render_done() -> void {
 static inline auto application_free() -> void {}
 
 static inline auto create_asteroids(uint32_t const num) -> void {
-  constexpr float v = asteroid_large_speed;
-  constexpr float d = game_area_max_x - game_area_min_x;
+  float constexpr v = asteroid_large_speed;
+  float constexpr d = game_area_max_x - game_area_min_x;
   for (uint32_t i = 0; i < num; ++i) {
     asteroid_large *o = new (objects.alloc()) asteroid_large{};
     o->position.x = rnd1(d);
@@ -217,8 +236,8 @@ static inline auto create_asteroids(uint32_t const num) -> void {
 }
 
 static inline auto create_cubes(uint32_t const num) -> void {
-  constexpr float v = cube_speed;
-  constexpr float d = game_area_max_x - game_area_min_x;
+  float constexpr v = cube_speed;
+  float constexpr d = game_area_max_x - game_area_min_x;
   for (uint32_t i = 0; i < num; ++i) {
     cube *o = new (objects.alloc()) cube{};
     o->position.x = rnd1(d);
@@ -230,8 +249,8 @@ static inline auto create_cubes(uint32_t const num) -> void {
 }
 
 static inline auto create_spheres(uint32_t const num) -> void {
-  constexpr float v = sphere_speed;
-  constexpr float d = game_area_max_x - game_area_min_x;
+  float constexpr v = sphere_speed;
+  float constexpr d = game_area_max_x - game_area_min_x;
   for (uint32_t i = 0; i < num; ++i) {
     sphere *o = new (objects.alloc()) sphere{};
     o->position.x = rnd1(d);
@@ -252,7 +271,7 @@ static inline auto create_ufo() -> void {
 // some additional shaders
 static inline auto application_init_shaders() -> void {
   {
-    constexpr char const *vtx = R"(
+    char constexpr const *vtx = R"(
 #version 330 core
 uniform mat4 umtx_mw; // model-to-world-matrix
 uniform mat4 umtx_wvp;// world-to-view-to-projection
@@ -266,7 +285,7 @@ void main() {
 }
     )";
 
-    constexpr char const *frag = R"(
+    char constexpr const *frag = R"(
 #version 330 core
 out vec4 rgba;
 void main() {
@@ -277,7 +296,7 @@ void main() {
     glos::shaders.load_program_from_source(vtx, frag);
   }
   {
-    constexpr char const *vtx = R"(
+    char constexpr const *vtx = R"(
 #version 330 core
 uniform mat4 umtx_mw; // model-to-world-matrix
 uniform mat4 umtx_wvp;// world-to-view-to-projection
@@ -290,7 +309,7 @@ void main() {
 }
     )";
 
-    constexpr char const *frag = R"(
+    char constexpr const *frag = R"(
 #version 330 core
 in vec4 vrgba;
 out vec4 rgba;

@@ -27,7 +27,7 @@
 * `const` is preferred and used where applicable
 * `auto` is used when the type name is too verbose, such as iterators and templates; otherwise, types are spelled out for readability
 * right to left notation `Type const &inst` instead of `const Type &inst`
-  - for consistency, `const` is written after the type such as `char const *ptr` instead of `const char *ptr` and `float const x` instead of `const float x`
+  - for consistency, `const` and `constexpr` is written after the type such as `char const *ptr` instead of `const char *ptr` and `float constexpr x` instead of `constexpr float x`
   - idea is that type name is an annotation that can be replaced by `auto`
 * unsigned types are used where negative values don't make sense
 * `++i` instead of `i++`

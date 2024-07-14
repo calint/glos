@@ -88,6 +88,9 @@ static frame_context frame_context{};
 
 // a sphere used when debugging object bounding sphere (set at 'init()')
 static uint32_t glob_ix_bounding_sphere = 0;
+
+static bool is_debug_object_planes_normals = false;
+static bool is_debug_object_bounding_sphere = false;
 } // namespace glos
 
 //
@@ -129,25 +132,25 @@ static glm::vec3 ambient_light = glm::normalize(glm::vec3{0, 1, 1});
 // object the camera should follow
 static object *camera_follow_object = nullptr;
 
-static constexpr float rad_over_degree = 2.0f * glm::pi<float>() / 360.0f;
+static float constexpr rad_over_degree = 2.0f * glm::pi<float>() / 360.0f;
 
 // mouse settings
 static float mouse_rad_over_pixels = rad_over_degree * .02f;
 static float mouse_sensitivity = 1.5f;
 
 // signal bit corresponding to keyboard key
-static constexpr uint32_t key_w = 1U << 0U;
-static constexpr uint32_t key_a = 1U << 1U;
-static constexpr uint32_t key_s = 1U << 2U;
-static constexpr uint32_t key_d = 1U << 3U;
-static constexpr uint32_t key_q = 1U << 4U;
-static constexpr uint32_t key_e = 1U << 5U;
-static constexpr uint32_t key_i = 1U << 6U;
-static constexpr uint32_t key_j = 1U << 7U;
-static constexpr uint32_t key_k = 1U << 8U;
-static constexpr uint32_t key_l = 1U << 9U;
-static constexpr uint32_t key_u = 1U << 10U;
-static constexpr uint32_t key_o = 1U << 11U;
+static uint32_t constexpr key_w = 1U << 0U;
+static uint32_t constexpr key_a = 1U << 1U;
+static uint32_t constexpr key_s = 1U << 2U;
+static uint32_t constexpr key_d = 1U << 3U;
+static uint32_t constexpr key_q = 1U << 4U;
+static uint32_t constexpr key_e = 1U << 5U;
+static uint32_t constexpr key_i = 1U << 6U;
+static uint32_t constexpr key_j = 1U << 7U;
+static uint32_t constexpr key_k = 1U << 8U;
+static uint32_t constexpr key_l = 1U << 9U;
+static uint32_t constexpr key_u = 1U << 10U;
+static uint32_t constexpr key_o = 1U << 11U;
 
 class engine final {
 public:
@@ -170,7 +173,7 @@ public:
 
     // line rendering shader
     {
-      constexpr char const *vtx = R"(
+      char constexpr const *vtx = R"(
   #version 330 core
   uniform mat4 umtx_wvp; // world-to-view-to-projection
   layout(location = 0) in vec4 apos; // world coordinates
@@ -179,7 +182,7 @@ public:
   }
   )";
 
-      constexpr char const *frag = R"(
+      char constexpr const *frag = R"(
   #version 330 core
   uniform vec4 ucolor;
   out vec4 rgba;
@@ -193,7 +196,7 @@ public:
 
     // points rendering shader
     {
-      constexpr char const *vtx = R"(
+      char constexpr const *vtx = R"(
   #version 330 core
   uniform mat4 umtx_wvp; // world-to-view-to-projection
   layout(location = 0) in vec4 apos; // world coordinates
@@ -203,7 +206,7 @@ public:
   }
   )";
 
-      constexpr char const *frag = R"(
+      char constexpr const *frag = R"(
   #version 330 core
   uniform vec4 ucolor;
   out vec4 rgba;
@@ -350,6 +353,7 @@ private:
   bool is_render_grid = false;
   bool is_print_grid = false;
   bool is_mouse_mode = false;
+
   // index of shader that renders world coordinate system line
   uint32_t shader_program_ix_render_line = 0;
   // index of shader that renders world coordinate system points
@@ -654,10 +658,10 @@ private:
           }
           break;
         case SDLK_F5:
-          debug_object_planes_normals = !debug_object_planes_normals;
+          is_debug_object_planes_normals = !is_debug_object_planes_normals;
           break;
         case SDLK_F6:
-          debug_object_bounding_sphere = !debug_object_bounding_sphere;
+          is_debug_object_bounding_sphere = !is_debug_object_bounding_sphere;
           break;
         case SDLK_F7:
           is_render_hud = !is_render_hud;

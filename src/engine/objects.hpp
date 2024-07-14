@@ -71,13 +71,13 @@ public:
   //       destructor is invoked in the 'objects.apply_free()'
 
   inline virtual auto render() -> void {
-    glob().render(get_updated_Mmw());
+    glob().render(updated_Mmw());
 
-    if (debug_object_planes_normals) {
+    if (is_debug_object_planes_normals) {
       planes.debug_render_normals();
     }
 
-    if (debug_object_bounding_sphere) {
+    if (is_debug_object_bounding_sphere) {
       debug_render_bounding_sphere(debug_get_Mmw_for_bounding_sphere());
     }
   }
@@ -89,8 +89,8 @@ public:
     position += velocity * dt;
     angle += angular_velocity * dt;
 
-    if (debug_object_planes_normals) {
-      glm::mat4 const &M = get_updated_Mmw();
+    if (is_debug_object_planes_normals) {
+      glm::mat4 const &M = updated_Mmw();
       class glob const &g = glob();
       planes.update_model_to_world(g.planes_points, g.planes_normals, M,
                                    position, angle, scale);
@@ -102,12 +102,10 @@ public:
   // returns false if object has died, true otherwise
   inline virtual auto on_collision(object *obj) -> bool { return true; }
 
-  inline auto get_updated_Mmw() -> glm::mat4 const & {
+  inline auto updated_Mmw() -> glm::mat4 const & {
     // * synchronize if render and update run on different threads; both racing
-    //   for this function
-    // * in threaded grid when objects in different cells running on different
-    //   threads might race for this
-    bool const synchronize = threaded_update || threaded_grid;
+    //   for this function from 'render()' and 'update()'
+    bool constexpr synchronize = threaded_update;
 
     if (synchronize) {
       while (lock_get_updated_Mmw.test_and_set(std::memory_order_acquire)) {
@@ -179,7 +177,7 @@ private:
     }
 
     class glob const &g = glob();
-    glm::mat4 const &M = get_updated_Mmw();
+    glm::mat4 const &M = updated_Mmw();
     planes.update_model_to_world(g.planes_points, g.planes_normals, M, Mmw_pos,
                                  Mmw_agl, Mmw_scl);
 

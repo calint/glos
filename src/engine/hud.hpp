@@ -17,7 +17,7 @@ public:
       throw exception{std::format("cannot initiate ttf: {}", TTF_GetError())};
     }
 
-    constexpr GLfloat quad_vertices[] = {
+    GLfloat constexpr quad_vertices[] = {
         // position, texture coord
         -1.0f, 1.0f,  0.0f, 0.0f, // top left
         1.0f,  1.0f,  1.0f, 0.0f, // top right
@@ -25,7 +25,7 @@ public:
         -1.0f, -1.0f, 0.0f, 1.0f  // bottom left
     };
 
-    constexpr GLuint quad_indices[] = {
+    GLuint constexpr quad_indices[] = {
         2, 1, 0, // first triangle
         3, 2, 0  // second triangle
     };
@@ -138,7 +138,7 @@ public:
                     GLsizei(converted_surface->h), GL_RGBA, GL_UNSIGNED_BYTE,
                     converted_surface->pixels);
 
-    // constexpr uint32_t pixels[] = {0x00ff0000, 0x00ff0000, 0x00ff0000,
+    // uint32_t constexpr pixels[] = {0x00ff0000, 0x00ff0000, 0x00ff0000,
     //                                0x00ff0000};
     // glTexSubImage2D(GL_TEXTURE_2D, 0, GLint(x), GLint(y), 2, 2, GL_RGBA,
     //                 GL_UNSIGNED_BYTE, pixels);
@@ -154,8 +154,8 @@ private:
   GLuint texture = 0;
   TTF_Font *font = nullptr;
 
-  static constexpr GLsizei texture_width = 256;
-  static constexpr GLsizei texture_height = 256;
+  static GLsizei constexpr texture_width = 256;
+  static GLsizei constexpr texture_height = 256;
 
   static inline char const *vertex_shader_source = R"(
 #version 330 core
