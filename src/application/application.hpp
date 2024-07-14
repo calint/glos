@@ -34,7 +34,7 @@ static object *hero = nullptr;
 #include "objects/ufo.hpp"
 
 // engine interface
-static auto application_init() -> void {
+static inline auto application_init() -> void {
   application_init_shaders();
 
   printf("\ntime is %lu ms\n\n", frame_context.ms);
@@ -162,7 +162,7 @@ static auto application_init() -> void {
 }
 
 // engine interface
-static auto application_on_update_done() -> void {
+static inline auto application_on_update_done() -> void {
   if (is_performance_test) {
     return;
   }
@@ -192,7 +192,7 @@ static auto application_on_update_done() -> void {
 }
 
 // engine interface
-static auto application_on_render_done() -> void {
+static inline auto application_on_render_done() -> void {
   if (score != score_prv) {
     std::array<char, 32> buf;
     score_prv = score;
@@ -202,9 +202,9 @@ static auto application_on_render_done() -> void {
 }
 
 // engine interface
-static auto application_free() -> void {}
+static inline auto application_free() -> void {}
 
-static auto create_asteroids(uint32_t const num) -> void {
+static inline auto create_asteroids(uint32_t const num) -> void {
   constexpr float v = asteroid_large_speed;
   constexpr float d = game_area_max_x - game_area_min_x;
   for (uint32_t i = 0; i < num; ++i) {
@@ -216,7 +216,7 @@ static auto create_asteroids(uint32_t const num) -> void {
   }
 }
 
-static auto create_cubes(uint32_t const num) -> void {
+static inline auto create_cubes(uint32_t const num) -> void {
   constexpr float v = cube_speed;
   constexpr float d = game_area_max_x - game_area_min_x;
   for (uint32_t i = 0; i < num; ++i) {
@@ -229,7 +229,7 @@ static auto create_cubes(uint32_t const num) -> void {
   }
 }
 
-static auto create_spheres(uint32_t const num) -> void {
+static inline auto create_spheres(uint32_t const num) -> void {
   constexpr float v = sphere_speed;
   constexpr float d = game_area_max_x - game_area_min_x;
   for (uint32_t i = 0; i < num; ++i) {
@@ -241,7 +241,7 @@ static auto create_spheres(uint32_t const num) -> void {
   }
 }
 
-static auto create_ufo() -> void {
+static inline auto create_ufo() -> void {
   ufo *u = new (objects.alloc()) ufo{};
   u->position = {-grid_size / 2, 0, -grid_size / 2};
   u->angle = {glm::radians(-65.0f), 0, 0};
@@ -250,7 +250,7 @@ static auto create_ufo() -> void {
 }
 
 // some additional shaders
-static auto application_init_shaders() -> void {
+static inline auto application_init_shaders() -> void {
   {
     constexpr char const *vtx = R"(
 #version 330 core
