@@ -11,7 +11,7 @@
             "options": {
                 "cwd": "${workspaceFolder}"
             },
-            "command": "${workspaceFolder}/build.sh",
+            "command": "${workspaceFolder}/make.sh",
             "problemMatcher": [
                 "$gcc"
             ]
