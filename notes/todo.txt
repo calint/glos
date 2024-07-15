@@ -4,6 +4,7 @@
 [ ] if object overlaps grid horizontally then there is no need for synchronization 
     since a thread processes a whole row
 [ ] spawn asteroids outside the viewport
+[ ] object: make all public functions thread safe in case inter thread calls occur?
 [ ] release and continue with sandbox game in 'glosi'
 [ ]   glosi: "atoms" bonded by "springs" instead of rigid body physics
 [ ]   render cull cells
