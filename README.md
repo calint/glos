@@ -26,6 +26,7 @@ experimental 3d multiplayer game framework using simple data layer 2 and opengl 
   - convex volume vs convex volume _(todo)_
 
 ## ubuntu packages used
+* see `make.sh`
 * libglm-dev: opengl math
 * libtbb-dev: parallel unsequenced `for_each`
 * sdl2 related packages
