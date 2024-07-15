@@ -2,6 +2,7 @@
 // reviewed: 2024-01-04
 // reviewed: 2024-01-08
 // reviewed: 2024-07-08
+// reviewed: 2024-07-15
 
 // make common used namespace available in game code
 using namespace glos;
@@ -16,15 +17,16 @@ static auto create_spheres(uint32_t num) -> void;
 
 // game state
 enum class state { init, asteroids, ufo };
+
 static state state = state::init;
-static uint32_t level = 1; // no racing
+static uint32_t level = 1;
 static std::atomic<int32_t> score = 0;
-static int32_t score_prv = score;
+static int32_t score_prv = 0;
 static std::atomic<uint32_t> asteroids_alive = 0;
 static std::atomic<uint32_t> ufos_alive = 0;
-static object *hero = nullptr;
 static std::atomic<uint32_t> counter = 0;
 // note: used when 'debug_multiplayer' is true to give objects unique numbers
+static object *hero = nullptr;
 
 // glob indexes
 // note: set by 'application_init()' when loading models and used by objects
@@ -191,9 +193,6 @@ static inline auto application_on_update_done() -> void {
   case state::init:
     create_asteroids(level * asteroids_per_level);
     state = state::asteroids;
-    // if (ufos_alive == 0) {
-    //   create_ufo();
-    // }
     break;
   case state::asteroids:
     if (asteroids_alive == 0) {
@@ -229,10 +228,8 @@ static inline auto create_asteroids(uint32_t const num) -> void {
   float constexpr d = game_area_max_x - game_area_min_x;
   for (uint32_t i = 0; i < num; ++i) {
     asteroid_large *o = new (objects.alloc()) asteroid_large{};
-    o->position.x = rnd1(d);
-    o->position.z = rnd1(d);
-    o->velocity.x = rnd1(v);
-    o->velocity.z = rnd1(v);
+    o->position = {rnd1(d), 0, rnd1(d)};
+    o->velocity = {rnd1(v), 0, rnd1(v)};
   }
 }
 
@@ -241,10 +238,8 @@ static inline auto create_cubes(uint32_t const num) -> void {
   float constexpr d = game_area_max_x - game_area_min_x;
   for (uint32_t i = 0; i < num; ++i) {
     cube *o = new (objects.alloc()) cube{};
-    o->position.x = rnd1(d);
-    o->position.z = rnd1(d);
-    o->velocity.x = rnd1(v);
-    o->velocity.z = rnd1(v);
+    o->position = {rnd1(d), 0, rnd1(d)};
+    o->velocity = {rnd1(v), 0, rnd1(v)};
     o->angular_velocity.y = radians(20.0f);
   }
 }
@@ -254,18 +249,16 @@ static inline auto create_spheres(uint32_t const num) -> void {
   float constexpr d = game_area_max_x - game_area_min_x;
   for (uint32_t i = 0; i < num; ++i) {
     sphere *o = new (objects.alloc()) sphere{};
-    o->position.x = rnd1(d);
-    o->position.z = rnd1(d);
-    o->velocity.x = rnd1(v);
-    o->velocity.z = rnd1(v);
+    o->position = {rnd1(d), 0, rnd1(d)};
+    o->velocity = {rnd1(v), 0, rnd1(v)};
   }
 }
 
 static inline auto create_ufo() -> void {
   ufo *u = new (objects.alloc()) ufo{};
   u->position = {-grid_size / 2, 0, -grid_size / 2};
-  u->angle = {glm::radians(-65.0f), 0, 0};
-  u->angular_velocity = {0, glm::radians(90.0f), 0};
+  u->angle = {radians(-65.0f), 0, 0};
+  u->angular_velocity = {0, radians(90.0f), 0};
   u->velocity = {rnd1(ufo_velocity), 0, rnd1(ufo_velocity)};
 }
 
