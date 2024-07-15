@@ -32,8 +32,8 @@ experimental 3d multiplayer game framework using simple data layer 2 and opengl 
 * opengl related packages
 
 ## howto run
-* using script: `./make.sh && ./glos`
-* using cmake: `mkdir build && cd build && cmake .. && make && cd ../ && build/glos`
+* using script (recommended): `./make.sh && ./glos`
+* using cmake: `mkdir build && cd build && cmake .. && make && cd .. && build/glos`
 
 ## sample game
 * multiplayer enabled proof of concept
