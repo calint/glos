@@ -2,10 +2,7 @@
 // reviewed: 2024-01-04
 // reviewed: 2024-01-08
 // reviewed: 2024-07-08
-
-// include order matters
-#include "configuration.hpp"
-//
+// reviewed: 2024-07-15
 
 inline static auto rnd1(float const range) -> float {
   int const r = rand();

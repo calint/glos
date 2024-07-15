@@ -2,10 +2,15 @@
 // reviewed: 2024-01-04
 // reviewed: 2024-01-08
 // reviewed: 2024-07-08
+// reviewed: 2024-07-15
 
 #include "../utils.hpp"
 
 class power_up final : public object {
+  uint64_t death_time_ms = 0;
+  uint64_t scale_time_ms = 0;
+  bool scale_up = false;
+
 public:
   inline power_up() {
     if (debug_multiplayer) {
@@ -66,9 +71,4 @@ public:
 
     return false;
   }
-
-private:
-  uint64_t death_time_ms = 0;
-  uint64_t scale_time_ms = 0;
-  bool scale_up = false;
 };

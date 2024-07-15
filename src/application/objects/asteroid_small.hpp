@@ -2,6 +2,7 @@
 // reviewed: 2024-01-04
 // reviewed: 2024-01-08
 // reviewed: 2024-07-08
+// reviewed: 2024-07-15
 
 // include order relevant
 #include "../configuration.hpp"
@@ -10,9 +11,9 @@
 //
 #include "../utils.hpp"
 
-static uint64_t power_up_soonest_next_spawn_ms = 0;
-
 class asteroid_small final : public object {
+  static inline uint64_t power_up_soonest_next_spawn_ms = 0;
+
 public:
   inline asteroid_small() {
     if (debug_multiplayer) {

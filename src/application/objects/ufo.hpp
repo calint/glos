@@ -1,4 +1,5 @@
 #pragma once
+// reviewed: 2024-07-15
 
 #include "ufo_bullet.hpp"
 
@@ -45,8 +46,8 @@ public:
       next_fire_ms = frame_context.ms + ufo_fire_rate_interval_ms;
       if (hero) {
         ufo_bullet *ub = new (objects.alloc()) ufo_bullet{};
-        vec3 dir = normalize(hero->position - position);
         ub->position = position;
+        vec3 const dir = normalize(hero->position - position);
         ub->velocity = ufo_bullet_velocity * dir;
       }
     }

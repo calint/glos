@@ -2,6 +2,7 @@
 // reviewed: 2024-01-04
 // reviewed: 2024-01-08
 // reviewed: 2024-07-08
+// reviewed: 2024-07-15
 
 #include "fragment.hpp"
 
@@ -15,7 +16,7 @@ public:
              name.c_str());
     }
     glob_ix(glob_ix_bullet);
-    scale = {1, 1, 1};
+    scale = {1.0f, 1.0f, 1.0f};
     bounding_radius = glob().bounding_radius * scale.x;
     mass = 5;
     collision_bits = cb_hero_bullet;

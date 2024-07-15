@@ -2,6 +2,7 @@
 // reviewed: 2024-01-04
 // reviewed: 2024-01-08
 // reviewed: 2024-07-08
+// reviewed: 2024-07-15
 
 #include "ship_bullet.hpp"
 
@@ -21,6 +22,8 @@ static uint32_t constexpr bullet_levels_length =
 static uint32_t bullet_levels_index = 0;
 
 class ship final : public object {
+  uint64_t ready_to_fire_at_ms = 0;
+
 public:
   inline ship() {
     if (debug_multiplayer) {
@@ -30,7 +33,7 @@ public:
              name.c_str());
     }
     glob_ix(glob_ix_ship);
-    scale = {1, 1, 1};
+    scale = {1.0f, 1.0f, 1.0f};
     bounding_radius = glob().bounding_radius * scale.x;
     mass = 150;
     collision_bits = cb_hero;
@@ -87,6 +90,7 @@ public:
       camera.look_at = {0, 0, -.000001f};
       // note: -.000001f because of the math of 'look at'
     }
+
     return true;
   }
 
@@ -142,6 +146,4 @@ private:
     }
     ready_to_fire_at_ms = frame_context.ms + bl.fire_interval_ms;
   }
-
-  uint64_t ready_to_fire_at_ms = 0;
 };
