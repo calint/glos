@@ -7,7 +7,7 @@
 # * libsdl2-gfx-dev/noble,now 1.0.4+dfsg-5build1
 # * libsdl2-image-dev/noble,now 2.8.2+dfsg-1build2
 # * libsdl2-ttf-dev/noble,now 2.22.0+dfsg-1
-# * opengl related packages
+# * libgl-dev/noble,now 1.7.0-1build1
 set -e
 cd $(dirname "$0")
 
