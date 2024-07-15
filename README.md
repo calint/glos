@@ -31,6 +31,10 @@ experimental 3d multiplayer game framework using simple data layer 2 and opengl 
 * sdl2 related packages
 * opengl related packages
 
+## howto run
+* using script: `./make.sh && ./glos`
+* using cmake: `mkdir build && cd build && cmake .. && make && cd ../ && build/glos`
+
 ## sample game
 * multiplayer enabled proof of concept
   - `threaded_grid` must be `false` for deterministic behavior
