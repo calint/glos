@@ -27,7 +27,7 @@ experimental 3d multiplayer game framework using simple data layer 2 and opengl 
 
 ## ubuntu packages used
 * libgl-dev: opengl
-* libglm-dev: math
+* libglm-dev: opengl math
 * libtbb-dev: parallel unsequenced `for_each`
 * sdl2 related packages
 * see `make.sh` for details
