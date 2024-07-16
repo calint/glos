@@ -39,10 +39,11 @@ private:
   std::vector<object const *> handled_collisions{};
   bool is_dead = false; // used by 'cell' to avoid events to dead objects
 public:
-  // -- cell::resolve_collisions
+  // -- cell::resolve_collisions: spheres
   bool is_sphere = false; // true if object can be considered a sphere
   float mass = 0;         // in kg
 private:
+  // -- cell::resolve_collisions: planes
   planes planes{}; // bounding planes (if any)
   std::atomic_flag lock_Mmw = ATOMIC_FLAG_INIT;
   glm::vec3 Mmw_pos{}; // position of current Mmw matrix
@@ -51,9 +52,9 @@ private:
 public:
   glm::vec3 scale{}; // in meters
 private:
-  glm::mat4 Mmw{};       // model -> world matrix
-  uint32_t glob_ix_ = 0; // index in globs store
+  glm::mat4 Mmw{}; // model -> world matrix
   // -- cell::render
+  uint32_t glob_ix_ = 0;         // index in globs store
   uint32_t rendered_at_tick = 0; // used by 'cell' to avoid rendering twice
 public:
   // -- other
