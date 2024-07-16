@@ -54,8 +54,8 @@ public:
 private:
   glm::mat4 Mmw{}; // model -> world matrix
   // -- cell::render
-  uint32_t glob_ix_ = 0;         // index in globs store
   uint32_t rendered_at_tick = 0; // used by 'cell' to avoid rendering twice
+  uint32_t glob_ix_ = 0;         // index in globs store
 public:
   // -- other
   // rest of object public state
