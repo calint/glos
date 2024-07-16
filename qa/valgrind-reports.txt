@@ -1,4 +1,5 @@
-2024-07-16: multithreaded grid, performance test mode: cubes
+2024-07-16: performance test mode: cubes
+            multithreaded grid, rendering on, hud on
 
 ==1094009== I refs:        16,144,217,054
 ==1094009== I1  misses:         3,843,166
