@@ -20,7 +20,7 @@
 * include order relevant
   - subsystems are included in dependency order making the program readable top-down
   - most `hpp` files also define a global instance or instances of the defined type 
-* rather than component-based, a monolithic approach with shallow hierarchy is used, where object data is ordered in slices as used by sub-systems, providing cache coherence
+* rather than component-based and streaming data, a monolithic approach with shallow hierarchy is used, where object data is ordered in slices, as used by sub-systems with cache coherence in mind
 * `inline` functions
   - functions are requested to be inlined assuming compilers won't adhere to the hint when it does not make sense, such as big functions called from multiple locations
   - functions called from only one location should be inlined
