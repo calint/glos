@@ -24,8 +24,8 @@ class cell final {
   struct collision {
     object *o1 = nullptr;
     object *o2 = nullptr;
-    bool Oi_subscribed_to_collision_with_Oj = false;
-    bool Oj_subscribed_to_collision_with_Oi = false;
+    bool notify1 = false;
+    bool notify2 = false;
     bool is_collision = false;
   };
 
@@ -130,22 +130,14 @@ private:
     for (uint32_t i = 0; i < len - 1; ++i) {
       for (uint32_t j = i + 1; j < len; ++j) {
 
-        entry const &Oi = entry_list[i];
-        entry const &Oj = entry_list[j];
+        entry const &e1 = entry_list[i];
+        entry const &e2 = entry_list[j];
 
-        bool const Oi_subscribed_to_collisions_with_Oj =
-            Oi.collision_mask & Oj.collision_bits;
-
-        bool const Oj_subscribed_to_collisions_with_Oi =
-            Oj.collision_mask & Oi.collision_bits;
-
-        if ((Oi_subscribed_to_collisions_with_Oj ||
-             Oj_subscribed_to_collisions_with_Oi) &&
-            bounding_spheres_are_in_collision(Oi, Oj)) {
-
-          check_collisions_list.emplace_back(
-              Oi.object, Oj.object, Oi_subscribed_to_collisions_with_Oj,
-              Oj_subscribed_to_collisions_with_Oi);
+        bool const notify1 = e1.collision_mask & e2.collision_bits;
+        bool const notify2 = e2.collision_mask & e1.collision_bits;
+        if ((notify1 || notify2) && bounding_spheres_are_in_collision(e1, e2)) {
+          check_collisions_list.emplace_back(e1.object, e2.object, notify1,
+                                             notify2);
         }
       }
     }
@@ -155,31 +147,31 @@ private:
   inline auto process_check_collisions_list() -> void {
     for (collision &cc : check_collisions_list) {
       // bounding spheres are in collision
-      object *Oi = cc.o1;
-      object *Oj = cc.o2;
+      object *o1 = cc.o1;
+      object *o2 = cc.o2;
 
-      if (Oi->is_sphere && Oj->is_sphere) {
+      if (o1->is_sphere && o2->is_sphere) {
         cc.is_collision = true;
         continue;
       }
 
       // check if sphere vs planes
 
-      if (Oi->is_sphere) {
+      if (o1->is_sphere) {
         // Oj is not a sphere
-        Oj->update_planes_world_coordinates();
-        if (Oj->planes.are_in_collision_with_sphere(Oi->position,
-                                                    Oi->bounding_radius)) {
+        o2->update_planes_world_coordinates();
+        if (o2->planes.are_in_collision_with_sphere(o1->position,
+                                                    o1->bounding_radius)) {
           cc.is_collision = true;
         }
         continue;
       }
 
-      if (Oj->is_sphere) {
+      if (o2->is_sphere) {
         // Oi is not a sphere
-        Oi->update_planes_world_coordinates();
-        if (Oi->planes.are_in_collision_with_sphere(Oj->position,
-                                                    Oj->bounding_radius)) {
+        o1->update_planes_world_coordinates();
+        if (o1->planes.are_in_collision_with_sphere(o2->position,
+                                                    o2->bounding_radius)) {
           cc.is_collision = true;
         }
         continue;
@@ -187,7 +179,7 @@ private:
 
       // both objects are convex volumes bounded by planes
 
-      if (bounding_planes_are_in_collision(Oi, Oj)) {
+      if (bounding_planes_are_in_collision(o1, o2)) {
         cc.is_collision = true;
       }
     }
@@ -201,60 +193,58 @@ private:
       }
 
       // objects are in collision
-      object *Oi = cc.o1;
-      object *Oj = cc.o2;
+      object *o1 = cc.o1;
+      object *o2 = cc.o2;
 
-      if (Oi->is_sphere && Oj->is_sphere) {
-        bool const Oi_already_handled_Oj = cc.Oi_subscribed_to_collision_with_Oj
-                                               ? dispatch_collision(Oi, Oj)
-                                               : false;
-        bool const Oj_already_handled_Oi = cc.Oj_subscribed_to_collision_with_Oi
-                                               ? dispatch_collision(Oj, Oi)
-                                               : false;
+      if (o1->is_sphere && o2->is_sphere) {
+        bool const o1_handled_o2 =
+            cc.notify1 ? dispatch_collision(o1, o2) : false;
+        bool const o2_handled_o1 =
+            cc.notify2 ? dispatch_collision(o2, o1) : false;
 
         // check if collision has already been handled, possibly on a different
         // thread in a different cell
-        if (!Oi_already_handled_Oj && !Oj_already_handled_Oi) [[likely]] {
+        if (!o1_handled_o2 && !o2_handled_o1) [[likely]] {
           // collision has not been handled during this frame by any cell
-          handle_sphere_collision(Oi, Oj);
+          handle_sphere_collision(o1, o2);
         }
         continue;
       }
 
-      if (cc.Oi_subscribed_to_collision_with_Oj) {
-        dispatch_collision(Oi, Oj);
+      if (cc.notify1) {
+        dispatch_collision(o1, o2);
       }
 
-      if (cc.Oj_subscribed_to_collision_with_Oi) {
-        dispatch_collision(Oj, Oi);
+      if (cc.notify2) {
+        dispatch_collision(o2, o1);
       }
     }
   }
 
-  static inline auto handle_sphere_collision(object *Oi, object *Oj) -> void {
+  static inline auto handle_sphere_collision(object *o1, object *o2) -> void {
     // synchronize objects that overlap cells
 
-    if (threaded_grid && Oi->overlaps_cells) {
-      Oi->acquire_lock();
+    if (threaded_grid && o1->overlaps_cells) {
+      o1->acquire_lock();
     }
-    if (threaded_grid && Oj->overlaps_cells) {
-      Oj->acquire_lock();
+    if (threaded_grid && o2->overlaps_cells) {
+      o2->acquire_lock();
     }
 
     glm::vec3 const collision_normal =
-        glm::normalize(Oj->position - Oi->position);
+        glm::normalize(o2->position - o1->position);
 
     float const relative_velocity_along_collision_normal =
-        glm::dot(Oj->velocity - Oi->velocity, collision_normal);
+        glm::dot(o2->velocity - o1->velocity, collision_normal);
 
     if (relative_velocity_along_collision_normal >= 0 ||
         std::isnan(relative_velocity_along_collision_normal)) {
       // sphere are not moving towards each other
-      if (threaded_grid && Oj->overlaps_cells) {
-        Oj->release_lock();
+      if (threaded_grid && o2->overlaps_cells) {
+        o2->release_lock();
       }
-      if (threaded_grid && Oi->overlaps_cells) {
-        Oi->release_lock();
+      if (threaded_grid && o1->overlaps_cells) {
+        o1->release_lock();
       }
       return;
     }
@@ -264,16 +254,16 @@ private:
     float constexpr restitution = 1;
     float const impulse = (1.0f + restitution) *
                           relative_velocity_along_collision_normal /
-                          (Oi->mass + Oj->mass);
+                          (o1->mass + o2->mass);
 
-    Oi->velocity += impulse * Oj->mass * collision_normal;
-    Oj->velocity -= impulse * Oi->mass * collision_normal;
+    o1->velocity += impulse * o2->mass * collision_normal;
+    o2->velocity -= impulse * o1->mass * collision_normal;
 
-    if (threaded_grid && Oj->overlaps_cells) {
-      Oj->release_lock();
+    if (threaded_grid && o2->overlaps_cells) {
+      o2->release_lock();
     }
-    if (threaded_grid && Oi->overlaps_cells) {
-      Oi->release_lock();
+    if (threaded_grid && o1->overlaps_cells) {
+      o1->release_lock();
     }
   }
 
