@@ -24,8 +24,9 @@ static std::atomic_int32_t score{0};
 static int32_t score_prv = 0;
 static std::atomic_uint32_t asteroids_alive{0};
 static std::atomic_uint32_t ufos_alive{0};
-static std::atomic_uint32_t counter{0};
+static std::atomic_uint32_t object_id{0};
 // note: used when 'debug_multiplayer' is true to give objects unique numbers
+
 static object *hero = nullptr;
 
 // glob indexes

@@ -17,9 +17,9 @@ class asteroid_small final : public object {
 public:
   inline asteroid_small() {
     if (debug_multiplayer) {
-      uint32_t const c = ++counter;
-      // note: 'counter' increment and assignment to 'c' is atomic
-      name.append("asteroid_small_").append(std::to_string(c));
+      uint32_t const oid = ++object_id;
+      // note: 'object_id' increment and assignment to 'oid' is atomic
+      name.append("asteroid_small_").append(std::to_string(oid));
       printf("%lu: %lu: create %s\n", frame_context.frame_num, frame_context.ms,
              name.c_str());
     }
