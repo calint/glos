@@ -7,7 +7,8 @@ class ufo_bullet final : public object {
 public:
   inline ufo_bullet() {
     if (debug_multiplayer) {
-      uint32_t const c = counter.fetch_add(1) + 1;
+      uint32_t const c = ++counter;
+      // note: 'counter' increment and assignment to 'c' is atomic
       name.append("ufo_bullet_").append(std::to_string(c));
       printf("%lu: %lu: create %s\n", frame_context.frame_num, frame_context.ms,
              name.c_str());
