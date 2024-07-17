@@ -15,8 +15,8 @@ class asteroid_large final : public object {
 public:
   inline asteroid_large() {
     if (debug_multiplayer) {
-      ++counter;
-      name.append("asteroid_large_").append(std::to_string(counter));
+      uint32_t const c = counter.fetch_add(1) + 1;
+      name.append("asteroid_large_").append(std::to_string(c));
       printf("%lu: %lu: create %s\n", frame_context.frame_num, frame_context.ms,
              name.c_str());
     }
