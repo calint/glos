@@ -158,7 +158,7 @@ private:
       // check if sphere vs planes
 
       if (o1->is_sphere) {
-        // Oj is not a sphere
+        // o2 is not a sphere
         o2->update_planes_world_coordinates();
         if (o2->planes.are_in_collision_with_sphere(o1->position,
                                                     o1->bounding_radius)) {
@@ -168,7 +168,7 @@ private:
       }
 
       if (o2->is_sphere) {
-        // Oi is not a sphere
+        // o1 is not a sphere
         o1->update_planes_world_coordinates();
         if (o1->planes.are_in_collision_with_sphere(o2->position,
                                                     o2->bounding_radius)) {
