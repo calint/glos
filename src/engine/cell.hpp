@@ -277,7 +277,7 @@ private:
       receiver->acquire_lock();
     }
 
-    // if both objects overlap cells then the same collision is detected &&
+    // if both objects overlap cells then the same collision is detected and
     //  dispatched in multiple cells
     if (receiver->overlaps_cells && obj->overlaps_cells &&
         receiver->is_collision_handled_and_if_not_add(obj)) {
