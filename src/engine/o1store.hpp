@@ -17,11 +17,10 @@
 
 namespace glos {
 
-template <typename type, size_t const instance_count,
-          uint32_t const store_id = 0,
-          bool const return_nullptr_when_no_free_instance_available = false,
-          bool const thread_safe = false, size_t const instance_size_B = 0,
-          size_t const cache_line_size_B = 64>
+template <typename type, size_t instance_count, uint32_t store_id = 0,
+          bool return_nullptr_when_no_free_instance_available = false,
+          bool thread_safe = false, size_t instance_size_B = 0,
+          size_t cache_line_size_B = 64>
 class o1store final {
   type *all_ = nullptr;
   type **free_bgn_ = nullptr;
