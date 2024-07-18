@@ -21,7 +21,7 @@ template <typename type, size_t const instance_count,
           uint32_t const store_id = 0,
           bool const return_nullptr_when_no_free_instance_available = false,
           bool const thread_safe = false, size_t const instance_size_B = 0,
-          size_t cache_line_size_B = 64>
+          size_t const cache_line_size_B = 64>
 class o1store final {
   type *all_ = nullptr;
   type **free_bgn_ = nullptr;
@@ -68,7 +68,7 @@ public:
     type *all_it = all_;
     for (type **free_it = free_bgn_; free_it < free_end_; ++free_it) {
       *free_it = all_it;
-      if (instance_size_B != 0) {
+      if (instance_size_B) {
         all_it = reinterpret_cast<type *>(reinterpret_cast<char *>(all_it) +
                                           instance_size_B);
       } else {
