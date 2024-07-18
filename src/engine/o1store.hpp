@@ -18,7 +18,8 @@ namespace glos {
 template <typename type, size_t const instance_count,
           uint32_t const store_id = 0,
           bool const return_nullptr_when_no_free_instance_available = false,
-          bool const thread_safe = false, size_t const instance_size_B = 0>
+          bool const thread_safe = false, size_t const instance_size_B = 0,
+          size_t cache_line_size = 64>
 class o1store final {
   type *all_ = nullptr;
   type **free_bgn_ = nullptr;
@@ -34,21 +35,29 @@ class o1store final {
 public:
   inline o1store() {
     if (instance_size_B) {
-      all_ = static_cast<type *>(calloc(instance_count, instance_size_B));
+      // allocate cache line aligned memory
+      size_t constexpr mem_size = instance_count * instance_size_B;
+      void *const mem = std::aligned_alloc(cache_line_size, mem_size);
+      assert(mem);
+      assert((uintptr_t(mem) % cache_line_size) == 0);
+      std::memset(mem, 0, mem_size);
+      all_ = static_cast<type *>(mem);
     } else {
-      all_ = static_cast<type *>(calloc(instance_count, sizeof(type)));
+      all_ = static_cast<type *>(std::calloc(instance_count, sizeof(type)));
+      assert(all_);
     }
-    free_ptr_ = free_bgn_ =
-        static_cast<type **>(calloc(instance_count, sizeof(type *)));
-    alloc_ptr_ = alloc_bgn_ =
-        static_cast<type **>(calloc(instance_count, sizeof(type *)));
-    del_ptr_ = del_bgn_ =
-        static_cast<type **>(calloc(instance_count, sizeof(type *)));
 
-    if (!all_ || !free_bgn_ || !alloc_bgn_ || !del_bgn_) {
-      throw exception{
-          std::format("store {}: cannot allocate arrays", store_id)};
-    }
+    free_ptr_ = free_bgn_ =
+        static_cast<type **>(std::calloc(instance_count, sizeof(type *)));
+    assert(free_ptr_);
+
+    alloc_ptr_ = alloc_bgn_ =
+        static_cast<type **>(std::calloc(instance_count, sizeof(type *)));
+    assert(alloc_ptr_);
+
+    del_ptr_ = del_bgn_ =
+        static_cast<type **>(std::calloc(instance_count, sizeof(type *)));
+    assert(del_ptr_);
 
     free_end_ = free_bgn_ + instance_count;
     del_end_ = del_bgn_ + instance_count;
@@ -57,7 +66,7 @@ public:
     type *all_it = all_;
     for (type **free_it = free_bgn_; free_it < free_end_; ++free_it) {
       *free_it = all_it;
-      if (instance_size_B) {
+      if (instance_size_B != 0) {
         all_it = reinterpret_cast<type *>(reinterpret_cast<char *>(all_it) +
                                           instance_size_B);
       } else {
@@ -67,10 +76,10 @@ public:
   }
 
   inline ~o1store() {
-    free(all_);
-    free(alloc_bgn_);
-    free(free_bgn_);
-    free(del_bgn_);
+    std::free(all_);
+    std::free(alloc_bgn_);
+    std::free(free_bgn_);
+    std::free(del_bgn_);
   }
 
   // allocates an instance

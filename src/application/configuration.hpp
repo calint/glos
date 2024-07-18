@@ -26,6 +26,9 @@ static bool constexpr metrics_print = true;
 // initially render the hud
 static bool constexpr hud_enabled = true;
 
+// platform cache line size
+static size_t constexpr cache_line_size = 64;
+
 // ----------------------------------------------------------------------
 // application configuration
 // ----------------------------------------------------------------------

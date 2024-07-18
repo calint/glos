@@ -250,7 +250,7 @@ public:
 
 private:
   o1store<object, objects_count, 0, false, threaded_grid,
-          objects_instance_size_B>
+          objects_instance_size_B, cache_line_size>
       store_{};
   object **allocated_list_end_ = nullptr;
   size_t allocated_list_len_ = 0;

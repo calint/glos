@@ -1,3 +1,9 @@
+[x] o1store: cache line aligned allocation when custom instance size
+[x] o1store: check alignment of '*all' calloc to match object size
+    => use std::aligned_alloc and std::free
+[ ] component slices in the monolithic object
+    cache line aligned of multiple 64B (cache line size)
+    updating a component on a query of objects would be cache friendly
 [ ] support spaces in path names
 [ ] use c++ random number generator rather than rand()
 [ ] rand() is not thread-safe
@@ -25,8 +31,6 @@
 [ ] grid: static vs moving vs bullets vs scenery objects
 [ ] assets embedded in static executable with the goal of a one file, no dependencies unit
     => map<path,data>
-[ ] o1store: check alignment of '*all' calloc to match object size
-    => use std::aligned_alloc and std::free
 [ ] collision detection of convex volume vs convex volume using separating axis theorem
     => current method appropriate for intended application
 [ ] glob::load: optimize ranges by merging non-textured materials since all
@@ -70,7 +74,8 @@
 [ ] constexpr everything
 [ ] fix itm (initiate-then-modify) anti-pattern
 [ ] note about the absolute texture path in mtl files
-[ ] object size and content is not cache friendly. consider components
+[-] object size and content is not cache friendly. consider components
+    => monolithic object with cache friendly "slices" as used by the subsystems
 [ ] multiple collision detection convex volumes per object
 [ ] collision detection: collision_context such as collision normal, plane etc
 [ ] collision reaction: tiny random added to 'dt' for each object to avoid
