@@ -9,7 +9,7 @@
 //   when no free slot available
 // * thread_safe: true to synchronize 'allocate_instance' and 'free_instance'
 // * instance_size_B: custom size of object instance used to fit largest object
-//   in an object hierarchy
+//   in an object hierarchy. must be multiple of 'cache_line_size_B'
 // * cache_line_size_B: when 'instance_size_B' specified, object store allocated
 //   cache line aligned
 //
