@@ -269,7 +269,7 @@ private:
     }
   }
 
-  // returns true if collision with 'obj' has already been handled by 'receiver'
+  // @return true if collision with 'obj' has already been handled by 'receiver'
   static inline auto dispatch_collision(object *receiver, object *obj) -> bool {
     // if object overlaps cells then this code might be called by several
     //  threads at the same time from different cells

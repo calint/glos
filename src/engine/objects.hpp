@@ -85,7 +85,7 @@ public:
   }
 
   // called from 'cell'
-  // returns false if object has died, true otherwise
+  // @return false if object has died, true otherwise
   // note: only one thread at a time is active in this section
   inline virtual auto update() -> bool {
     float const dt = frame_context.dt;
@@ -105,8 +105,8 @@ public:
   }
 
   // called from 'cell'
-  // returns false if object has died, true otherwise
   // note: only on thread at a time is active in this section
+  // @return false if object has died, true otherwise
   inline virtual auto on_collision(object *obj) -> bool { return true; }
 
   inline auto updated_Mmw() -> glm::mat4 const & {

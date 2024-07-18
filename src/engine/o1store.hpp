@@ -85,7 +85,7 @@ public:
   }
 
   // allocates an instance
-  // returns nullptr or throws if instance could not be allocated
+  // @return nullptr or throws if instance could not be allocated
   inline auto allocate_instance() -> type * {
     if (thread_safe) {
       acquire_lock();
@@ -115,7 +115,7 @@ public:
   }
 
   // adds instance to list of instances to be freed with 'apply_free()'
-  inline auto free_instance(type *inst) -> void {
+  inline auto free_instance(type *const inst) -> void {
     if (thread_safe) {
       acquire_lock();
     }
@@ -157,27 +157,27 @@ public:
     del_ptr_ = del_bgn_;
   }
 
-  // returns list of allocated instances
+  // @return list of allocated instances
   inline auto allocated_list() const -> type ** { return alloc_bgn_; }
 
-  // returns length of list of allocated instances
+  // @return length of list of allocated instances
   inline auto allocated_list_len() const -> size_t {
     return size_t(alloc_ptr_ - alloc_bgn_);
   }
 
-  // returns one past the end of allocated instances list
+  // @return one past the end of allocated instances list
   inline auto allocated_list_end() const -> type ** { return alloc_ptr_; }
 
-  // returns the list with all preallocated instances
+  // @return the list with all preallocated instances
   inline auto all_list() const -> type * { return all_; }
 
-  // returns the length of 'all' list
+  // @return the length of 'all' list
   inline constexpr auto all_list_len() const -> size_t {
     return instance_count;
   }
 
-  // returns instance at index 'ix' from 'all' list
-  inline auto instance(size_t ix) const -> type * {
+  // @return instance at index 'ix' from 'all' list
+  inline auto instance(size_t const ix) const -> type * {
     if (!instance_size_B) {
       return &all_[ix];
     }
@@ -186,7 +186,7 @@ public:
                                     instance_size_B * ix);
   }
 
-  // returns the size of allocated heap memory in bytes
+  // @return the size of allocated heap memory in bytes
   inline constexpr auto allocated_data_size_B() const -> size_t {
     return instance_size_B ? (instance_count * instance_size_B +
                               3 * instance_count * sizeof(type *))
