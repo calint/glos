@@ -10,6 +10,8 @@
 // * thread_safe: true to synchronize 'allocate_instance' and 'free_instance'
 // * instance_size_B: custom size of object instance used to fit largest object
 //   in an object hierarchy
+// * cache_line_size_B: when specified 'instance_size_B' object store allocated
+//   cache line aligned
 //
 // reviewed: 2024-07-08
 
@@ -19,7 +21,7 @@ template <typename type, size_t const instance_count,
           uint32_t const store_id = 0,
           bool const return_nullptr_when_no_free_instance_available = false,
           bool const thread_safe = false, size_t const instance_size_B = 0,
-          size_t cache_line_size = 64>
+          size_t cache_line_size_B = 64>
 class o1store final {
   type *all_ = nullptr;
   type **free_bgn_ = nullptr;
@@ -37,9 +39,9 @@ public:
     if (instance_size_B) {
       // allocate cache line aligned memory
       size_t constexpr mem_size = instance_count * instance_size_B;
-      void *const mem = std::aligned_alloc(cache_line_size, mem_size);
+      void *const mem = std::aligned_alloc(cache_line_size_B, mem_size);
       assert(mem);
-      assert((uintptr_t(mem) % cache_line_size) == 0);
+      assert((uintptr_t(mem) % cache_line_size_B) == 0);
       std::memset(mem, 0, mem_size);
       all_ = static_cast<type *>(mem);
     } else {
