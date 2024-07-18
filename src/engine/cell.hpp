@@ -211,6 +211,8 @@ private:
         continue;
       }
 
+      // both objects are not spheres
+
       if (cc.notify1) {
         dispatch_collision(o1, o2);
       }
