@@ -37,6 +37,7 @@ class o1store final {
 public:
   inline o1store() {
     if (instance_size_B) {
+      static_assert(instance_size_B % cache_line_size_B == 0);
       // allocate cache line aligned memory
       size_t constexpr mem_size = instance_count * instance_size_B;
       void *const mem = std::aligned_alloc(cache_line_size_B, mem_size);
