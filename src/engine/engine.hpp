@@ -133,18 +133,18 @@ static float mouse_rad_over_pixels = rad_over_degree * .02f;
 static float mouse_sensitivity = 1.5f;
 
 // signal bit corresponding to keyboard key
-static uint32_t constexpr key_w = 1U << 0U;
-static uint32_t constexpr key_a = 1U << 1U;
-static uint32_t constexpr key_s = 1U << 2U;
-static uint32_t constexpr key_d = 1U << 3U;
-static uint32_t constexpr key_q = 1U << 4U;
-static uint32_t constexpr key_e = 1U << 5U;
-static uint32_t constexpr key_i = 1U << 6U;
-static uint32_t constexpr key_j = 1U << 7U;
-static uint32_t constexpr key_k = 1U << 8U;
-static uint32_t constexpr key_l = 1U << 9U;
-static uint32_t constexpr key_u = 1U << 10U;
-static uint32_t constexpr key_o = 1U << 11U;
+static uint32_t constexpr key_w = 1u << 0u;
+static uint32_t constexpr key_a = 1u << 1u;
+static uint32_t constexpr key_s = 1u << 2u;
+static uint32_t constexpr key_d = 1u << 3u;
+static uint32_t constexpr key_q = 1u << 4u;
+static uint32_t constexpr key_e = 1u << 5u;
+static uint32_t constexpr key_i = 1u << 6u;
+static uint32_t constexpr key_j = 1u << 7u;
+static uint32_t constexpr key_k = 1u << 8u;
+static uint32_t constexpr key_l = 1u << 9u;
+static uint32_t constexpr key_u = 1u << 10u;
+static uint32_t constexpr key_o = 1u << 11u;
 
 class engine final {
 public:
