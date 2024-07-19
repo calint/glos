@@ -279,7 +279,6 @@ void main() {
   gl_Position = umtx_wvp * umtx_mw * apos;
 }
     )";
-
     char constexpr const *frag = R"(
 #version 330 core
 out vec4 rgba;
@@ -287,7 +286,6 @@ void main() {
   rgba = vec4(vec3(gl_FragCoord.z), 1.0);
 }
     )";
-
     glos::shaders.load_program_from_source(vtx, frag);
   }
   {
@@ -303,7 +301,6 @@ void main() {
   vrgba = argba;
 }
     )";
-
     char constexpr const *frag = R"(
 #version 330 core
 in vec4 vrgba;
@@ -312,7 +309,6 @@ void main(){
   rgba = vrgba;
 }
     )";
-
     glos::shaders.load_program_from_source(vtx, frag);
   }
 }
