@@ -41,6 +41,7 @@ void main() {
   
   // normal transform for general case (e.g. non-uniform scaling)
   // note: https://paroj.github.io/gltut/Illumination/Tut09%20Normal%20Transformation.html
+  // note: Polar Decomposition theorem
   vnorm = normalize(transpose(inverse(mat3(umtx_mw))) * anorm);
   
   // normal transform for uniform scaling case
