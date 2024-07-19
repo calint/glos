@@ -9,7 +9,5 @@
 #  :: cat /proc/sys/kernel/kptr_restrict
 # 0
 
-#perf record ./glos 
-#perf stat -e cycles,instructions,cache-references,cache-misses,branches,branch-misses ./glos
 perf record -e cycles,instructions,cache-references,cache-misses,branches,branch-misses ./glos
 perf report

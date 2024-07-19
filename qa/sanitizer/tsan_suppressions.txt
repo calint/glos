@@ -1,5 +1,5 @@
 # howto:
-#   make.sh sanitize
+#   make.sh sanitize-thread
 # then run (from project root):
 #   TSAN_OPTIONS="suppressions=qa/sanitizer/tsan_suppressions.txt" ./glos 2> sanitize.log
 # then
