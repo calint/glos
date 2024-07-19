@@ -168,22 +168,22 @@ public:
     // line rendering shader
     {
       char constexpr const *vtx = R"(
-  #version 330 core
-  uniform mat4 umtx_wvp; // world-to-view-to-projection
-  layout(location = 0) in vec4 apos; // world coordinates
-  void main() {
-	  gl_Position = umtx_wvp * apos;
-  }
-  )";
+#version 330 core
+uniform mat4 umtx_wvp; // world-to-view-to-projection
+layout(location = 0) in vec4 apos; // world coordinates
+void main() {
+  gl_Position = umtx_wvp * apos;
+}
+      )";
 
       char constexpr const *frag = R"(
-  #version 330 core
-  uniform vec4 ucolor;
-  out vec4 rgba;
-  void main() {
-    rgba = ucolor;
-  }
-  )";
+#version 330 core
+uniform vec4 ucolor;
+out vec4 rgba;
+void main() {
+  rgba = ucolor;
+}
+      )";
       shader_program_ix_render_line =
           shaders.load_program_from_source(vtx, frag);
     }
@@ -191,23 +191,23 @@ public:
     // points rendering shader
     {
       char constexpr const *vtx = R"(
-  #version 330 core
-  uniform mat4 umtx_wvp; // world-to-view-to-projection
-  layout(location = 0) in vec4 apos; // world coordinates
-  void main() {
-	  gl_Position = umtx_wvp * apos;
-    gl_PointSize = 5.0;
-  }
-  )";
+#version 330 core
+uniform mat4 umtx_wvp; // world-to-view-to-projection
+layout(location = 0) in vec4 apos; // world coordinates
+void main() {
+  gl_Position = umtx_wvp * apos;
+  gl_PointSize = 5.0;
+}
+      )";
 
       char constexpr const *frag = R"(
-  #version 330 core
-  uniform vec4 ucolor;
-  out vec4 rgba;
-  void main() {
-    rgba = ucolor;
-  }
-  )";
+#version 330 core
+uniform vec4 ucolor;
+out vec4 rgba;
+void main() {
+  rgba = ucolor;
+}
+      )";
       shader_program_ix_render_points =
           shaders.load_program_from_source(vtx, frag);
     }
