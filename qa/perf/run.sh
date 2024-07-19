@@ -9,5 +9,5 @@
 #  :: cat /proc/sys/kernel/kptr_restrict
 # 0
 
-perf record -e cycles,instructions,cache-references,cache-misses,branches,branch-misses ./glos
+perf record --delay 3000 -e cycles,instructions,cache-references,cache-misses,branches,branch-misses ./glos
 perf report
