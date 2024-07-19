@@ -255,7 +255,7 @@ private:
 
     if (relative_velocity_along_collision_normal >= 0 ||
         std::isnan(relative_velocity_along_collision_normal)) {
-      // sphere are not moving towards each other
+      // spheres are not moving towards each other
       if (threaded_grid && o2_overlaps_cells) {
         o2->release_lock();
       }
