@@ -117,14 +117,8 @@ static auto application_free() -> void;
 
 namespace glos {
 
-struct color final {
-  GLclampf red;
-  GLclampf green;
-  GLclampf blue;
-};
-
 // color to clear screen with
-static color background_color{0, 0, 0};
+static glm::vec3 background_color{0, 0, 0};
 
 // ambient light used by shader
 static glm::vec3 ambient_light = glm::normalize(glm::vec3{0, 1, 1});
@@ -394,8 +388,8 @@ private:
 
     glUniform3fv(shaders::ulht, 1, glm::value_ptr(ambient_light));
 
-    glClearColor(background_color.red, background_color.green,
-                 background_color.blue, 1.0);
+    glClearColor(background_color.r, background_color.g, background_color.b,
+                 1.0);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

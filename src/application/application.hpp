@@ -167,8 +167,7 @@ static inline auto application_init() -> void {
     }
   }
 
-  // background_color = {1, 1, 1}; //! fix 'hud' so that background color
-  // works
+  background_color = {0, 0, 0};
 
   // setup light and camera
   ambient_light = normalize(vec3{1, 1, 1});

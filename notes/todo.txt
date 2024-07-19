@@ -1,6 +1,7 @@
 [x] o1store: cache line aligned allocation when custom instance size
 [x] o1store: check alignment of '*all' calloc to match object size
     => use std::aligned_alloc and std::free
+[ ] font with transparency to be used in the hud
 [ ] component slices in the monolithic object
     cache line aligned of multiple 64B (cache line size)
     updating a component on a query of objects would be cache friendly
