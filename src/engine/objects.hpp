@@ -199,7 +199,7 @@ private:
 
   inline auto debug_get_Mmw_for_bounding_sphere() const -> glm::mat4 {
     return glm::scale(glm::translate(glm::mat4(1), Mmw_pos),
-                      glm::vec3(bounding_radius));
+                      glm::vec3{bounding_radius});
   }
 
   inline auto acquire_lock() -> void {

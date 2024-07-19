@@ -107,7 +107,7 @@ public:
   inline auto print() const -> void {
     for (auto const &row : cells) {
       for (cell const &c : row) {
-        printf(" %04zu ", c.objects_count());
+        printf(" %04u ", c.objects_count());
       }
       printf("\n");
     }

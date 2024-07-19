@@ -20,7 +20,8 @@ class cell final {
   };
 
   // entry in list of objects whose bounding spheres are in collision. if not
-  //  spheres further processed to check for collision using bounding planes
+  //  both spheres further processed to check for collision using bounding
+  //   planes
   struct collision {
     object *o1 = nullptr;
     object *o2 = nullptr;
@@ -35,29 +36,31 @@ class cell final {
 public:
   // called from grid
   inline auto update() const -> void {
+    uint32_t const frame_num = uint32_t(frame_context.frame_num);
+    // note: ok to truncate because only equality is checked
     for (entry const &ce : entry_list) {
       if (threaded_grid) {
         // multithreaded mode
         if (ce.object->overlaps_cells) [[unlikely]] {
           // object is in several cells and may be called from multiple threads
           ce.object->acquire_lock();
-          if (ce.object->updated_at_tick == frame_context.frame_num) {
+          if (ce.object->updated_at_tick == frame_num) {
             // object already updated in a different cell by a different thread
             ce.object->release_lock();
             continue;
           }
-          ce.object->updated_at_tick = uint32_t(frame_context.frame_num);
+          ce.object->updated_at_tick = frame_num;
           ce.object->release_lock();
         }
       } else {
         // single threaded mode
         if (ce.object->overlaps_cells) [[unlikely]] {
           // object is in several cells and may be called from multiple cells
-          if (ce.object->updated_at_tick == frame_context.frame_num) {
+          if (ce.object->updated_at_tick == frame_num) {
             // already called from a different cell
             continue;
           }
-          ce.object->updated_at_tick = uint32_t(frame_context.frame_num);
+          ce.object->updated_at_tick = frame_num;
         }
       }
 
@@ -82,13 +85,15 @@ public:
 
   // called from grid (from only one thread)
   inline auto render() const -> void {
+    uint32_t const frame_num = uint32_t(frame_context.frame_num);
+    // note: ok to truncate because only equality is checked
     for (entry const &ce : entry_list) {
       if (ce.object->overlaps_cells) [[unlikely]] {
         // check if object has been rendered by another cell
-        if (ce.object->rendered_at_tick == frame_context.frame_num) {
+        if (ce.object->rendered_at_tick == frame_num) {
           continue;
         }
-        ce.object->rendered_at_tick = uint32_t(frame_context.frame_num);
+        ce.object->rendered_at_tick = frame_num;
       }
       ce.object->render();
       ++metrics.rendered_objects;
@@ -115,14 +120,16 @@ public:
     printf("\n");
   }
 
-  inline auto objects_count() const -> size_t { return entry_list.size(); }
+  inline auto objects_count() const -> uint32_t {
+    return uint32_t(entry_list.size());
+  }
 
 private:
   // called from one thread
   inline auto make_check_collisions_list() -> void {
     check_collisions_list.clear();
 
-    size_t const len = entry_list.size();
+    uint32_t const len = uint32_t(entry_list.size());
     if (len < 2) {
       return;
     }
@@ -150,14 +157,17 @@ private:
       object *o1 = cc.o1;
       object *o2 = cc.o2;
 
-      if (o1->is_sphere && o2->is_sphere) {
+      bool const o1_is_sphere = o1->is_sphere;
+      bool const o2_is_sphere = o2->is_sphere;
+
+      if (o1_is_sphere && o2_is_sphere) {
         cc.is_collision = true;
         continue;
       }
 
       // check if sphere vs planes
 
-      if (o1->is_sphere) {
+      if (o1_is_sphere) {
         // o2 is not a sphere
         o2->update_planes_world_coordinates();
         if (o2->planes.are_in_collision_with_sphere(o1->position,
@@ -167,7 +177,7 @@ private:
         continue;
       }
 
-      if (o2->is_sphere) {
+      if (o2_is_sphere) {
         // o1 is not a sphere
         o1->update_planes_world_coordinates();
         if (o1->planes.are_in_collision_with_sphere(o2->position,
@@ -203,7 +213,7 @@ private:
             cc.notify2 ? dispatch_collision(o2, o1) : false;
 
         // check if collision has already been handled, possibly on a different
-        // thread in a different cell
+        //  thread in a different cell
         if (!o1_handled_o2 && !o2_handled_o1) [[likely]] {
           // collision has not been handled during this frame by any cell
           handle_sphere_collision(o1, o2);
@@ -226,10 +236,13 @@ private:
   static inline auto handle_sphere_collision(object *o1, object *o2) -> void {
     // synchronize objects that overlap cells
 
-    if (threaded_grid && o1->overlaps_cells) {
+    bool const o1_overlaps_cells = o1->overlaps_cells;
+    bool const o2_overlaps_cells = o2->overlaps_cells;
+
+    if (threaded_grid && o1_overlaps_cells) {
       o1->acquire_lock();
     }
-    if (threaded_grid && o2->overlaps_cells) {
+    if (threaded_grid && o2_overlaps_cells) {
       o2->acquire_lock();
     }
 
@@ -242,10 +255,10 @@ private:
     if (relative_velocity_along_collision_normal >= 0 ||
         std::isnan(relative_velocity_along_collision_normal)) {
       // sphere are not moving towards each other
-      if (threaded_grid && o2->overlaps_cells) {
+      if (threaded_grid && o2_overlaps_cells) {
         o2->release_lock();
       }
-      if (threaded_grid && o1->overlaps_cells) {
+      if (threaded_grid && o1_overlaps_cells) {
         o1->release_lock();
       }
       return;
@@ -261,10 +274,10 @@ private:
     o1->velocity += impulse * o2->mass * collision_normal;
     o2->velocity -= impulse * o1->mass * collision_normal;
 
-    if (threaded_grid && o2->overlaps_cells) {
+    if (threaded_grid && o2_overlaps_cells) {
       o2->release_lock();
     }
-    if (threaded_grid && o1->overlaps_cells) {
+    if (threaded_grid && o1_overlaps_cells) {
       o1->release_lock();
     }
   }
@@ -273,7 +286,10 @@ private:
   static inline auto dispatch_collision(object *receiver, object *obj) -> bool {
     // if object overlaps cells then this code might be called by several
     //  threads at the same time from different cells
-    bool const synchronize = threaded_grid && receiver->overlaps_cells;
+
+    bool const receiver_overlaps_cells = receiver->overlaps_cells;
+
+    bool const synchronize = threaded_grid && receiver_overlaps_cells;
 
     if (synchronize) {
       receiver->acquire_lock();
@@ -281,7 +297,7 @@ private:
 
     // if both objects overlap cells then the same collision is detected and
     //  dispatched in multiple cells
-    if (receiver->overlaps_cells && obj->overlaps_cells &&
+    if (receiver_overlaps_cells && obj->overlaps_cells &&
         receiver->is_collision_handled_and_if_not_add(obj)) {
       // collision already dispatched for this 'receiver' and 'obj'
       if (synchronize) {
