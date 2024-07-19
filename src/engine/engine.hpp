@@ -235,11 +235,7 @@ public:
 
     // initiate 'frame_context' with current time from server or local timer
     //  in case 'application_init()' needs current time
-    frame_context = {
-        0,
-        net.enabled ? net.ms : SDL_GetTicks64(),
-        0,
-    };
+    frame_context = {0, net.enabled ? net.ms : SDL_GetTicks64(), 0};
 
     // set defaults for metrics
     metrics.fps.calculation_interval_ms = 1000;
