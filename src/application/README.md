@@ -1,5 +1,5 @@
 # table of contents
-* `configuration.hpp` contains constants and global variables used by engine and game
+* `configuration.hpp` contains constants used by engine and game
 * `application.hpp` contains game logic and implements the interface to engine
   - `application_init()` called at init
   - `application_on_update_done()` called after objects have been updated and collisions resolved. may create and change state of objects
@@ -16,6 +16,8 @@
   - `tetra`
   - `cube`
   - `sphere`
+  - `ufo`
+  - `ufo_bullet`
 * `utils.hpp` utility functions used by game and game objects
 
 ## notes
