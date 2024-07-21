@@ -136,11 +136,9 @@ private:
     }
 
     for (uint32_t i = 0; i < len - 1; ++i) {
+      entry const &e1 = entry_list[i];
       for (uint32_t j = i + 1; j < len; ++j) {
-
-        entry const &e1 = entry_list[i];
         entry const &e2 = entry_list[j];
-
         bool const notify1 = e1.collision_mask & e2.collision_bits;
         bool const notify2 = e2.collision_mask & e1.collision_bits;
         if ((notify1 || notify2) && bounding_spheres_are_in_collision(e1, e2)) {
