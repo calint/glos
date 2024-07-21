@@ -1,5 +1,7 @@
 # glos
 
+> :bell: development continued in [glosi](https://github.com/calint/glosi)
+
 experimental 3d multiplayer game framework using simple data layer 2 and opengl es3 in c++ 23
 
 ## intention
