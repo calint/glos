@@ -20,7 +20,9 @@ find_package(SDL2_ttf REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(glm REQUIRED)
 find_package(TBB REQUIRED)
-add_compile_options(-Wall -Wextra -Wpedantic -Wshadow -Wconversion -Wsign-conversion)
+add_compile_options(-O3 -Wall -Wextra -Wpedantic -Wshadow -Wconversion -Wsign-conversion)
 add_compile_options(-Wno-changes-meaning -Wno-unused-variable -Wno-unused-function -Wno-unused-parameter)
+add_compile_options(-flifetime-dse=1) # workaround for issue when g++ optimizes away stores before a 'new in place'
+                                      #  falsely assuming that all object fields are initialized by the constructor
 add_executable(glos src/main.cpp)
 target_link_libraries(glos SDL2::SDL2 SDL2_image SDL2_ttf OpenGL::OpenGL glm::glm TBB::tbb)
