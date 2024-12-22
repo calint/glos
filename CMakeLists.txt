@@ -1,5 +1,6 @@
 # dependencies (in ubuntu 24.04 installation):
 # * clang++ version 18.1.3
+# * g++ (GCC) 14.2.1 20240910
 # * libglm-dev/noble,noble,now 0.9.9.8+ds-7
 # * libtbb-dev/noble,now 2021.11.0-2ubuntu2
 # * libsdl2-dev/noble,now 2.30.0+dfsg-1build3
