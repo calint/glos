@@ -72,17 +72,22 @@ void main() {
 
 public:
   // vertex attributes layout in shaders
-  static GLint constexpr apos = 0;
-  static GLint constexpr argba = 1;
-  static GLint constexpr anorm = 2;
-  static GLint constexpr atex = 3;
-  // uniform matrixes
-  static GLint constexpr umtx_mw = 0;  // model -> world matrix
-  static GLint constexpr umtx_wvp = 1; // world -> view -> projection matrix
-  // uniform textures
-  static GLint constexpr utex = 2; // texture mapper
-  // uniform ambient light
-  static GLint constexpr ulht = 3; // light vector
+  GLint apos = 0;
+  GLint argba = 1;
+  GLint anorm = 2;
+  GLint atex = 3;
+
+  // model -> world matrix
+  GLint umtx_mw = 0;
+
+  // world -> view -> projection matrix
+  GLint umtx_wvp = 1;
+
+  // texture mapper uniform
+  GLint utex = 2;
+
+  // ambient light vector
+  GLint ulht = 3;
 
   inline auto init() -> void {
     puts("");
@@ -98,33 +103,23 @@ public:
     uint32_t const default_program_ix =
         load_program_from_source(vertex_shader_source, fragment_shader_source);
 
-    programs.at(default_program_ix).use();
-
-    GLuint const def_prog_id = programs.at(default_program_ix).id;
+    use_program(default_program_ix);
 
     printf("shader uniforms locations:\n");
     printf(":-%10s-:-%7s-:\n", "----------", "-------");
-    printf(": %10s : %-7d :\n", "umtx_mw",
-           glGetUniformLocation(def_prog_id, "umtx_mw"));
-    printf(": %10s : %-7d :\n", "umtx_wvp",
-           glGetUniformLocation(def_prog_id, "umtx_wvp"));
-    printf(": %10s : %-7d :\n", "utex",
-           glGetUniformLocation(def_prog_id, "utex"));
-    printf(": %10s : %-7d :\n", "ulht",
-           glGetUniformLocation(def_prog_id, "ulht"));
+    printf(": %10s : %-7d :\n", "umtx_mw", umtx_mw);
+    printf(": %10s : %-7d :\n", "umtx_wvp", umtx_wvp);
+    printf(": %10s : %-7d :\n", "utex", utex);
+    printf(": %10s : %-7d :\n", "ulht", ulht);
     printf(":-%10s-:-%7s-:\n", "----------", "-------");
 
     puts("");
     printf("shader attributes locations:\n");
     printf(":-%10s-:-%7s-:\n", "----------", "-------");
-    printf(": %10s : %-7d :\n", "apos",
-           glGetAttribLocation(def_prog_id, "apos"));
-    printf(": %10s : %-7d :\n", "argba",
-           glGetAttribLocation(def_prog_id, "argba"));
-    printf(": %10s : %-7d :\n", "anorm",
-           glGetAttribLocation(def_prog_id, "anorm"));
-    printf(": %10s : %-7d :\n", "atex",
-           glGetAttribLocation(def_prog_id, "atex"));
+    printf(": %10s : %-7d :\n", "apos", apos);
+    printf(": %10s : %-7d :\n", "argba", argba);
+    printf(": %10s : %-7d :\n", "anorm", anorm);
+    printf(": %10s : %-7d :\n", "atex", atex);
     printf(":-%10s-:-%7s-:\n", "----------", "-------");
     puts("");
   }
@@ -163,13 +158,22 @@ public:
 
   inline auto programs_count() const -> size_t { return programs.size(); }
 
-  inline auto use_program(uint32_t const ix) const -> void {
-    programs.at(ix).use();
+  inline auto use_program(uint32_t const ix) -> void {
+    program const &prog = programs.at(ix);
+    prog.use();
+    umtx_mw = glGetUniformLocation(prog.id, "umtx_mw");
+    umtx_wvp = glGetUniformLocation(prog.id, "umtx_wvp");
+    utex = glGetUniformLocation(prog.id, "utex");
+    ulht = glGetUniformLocation(prog.id, "ulht");
+    apos = glGetAttribLocation(prog.id, "apos");
+    argba = glGetAttribLocation(prog.id, "argba");
+    anorm = glGetAttribLocation(prog.id, "anorm");
+    atex = glGetAttribLocation(prog.id, "atex");
   }
 
 private:
-  static inline auto compile(GLenum const shader_type,
-                             char const *src) -> GLuint {
+  static inline auto compile(GLenum const shader_type, char const *src)
+      -> GLuint {
     GLuint const shader_id = glCreateShader(shader_type);
     glShaderSource(shader_id, 1, &src, nullptr);
     glCompileShader(shader_id);
@@ -188,14 +192,14 @@ public:
   //
   // static functions
   //
-  static inline auto gl_print_string(char const *name,
-                                     GLenum const gl_str) -> void {
+  static inline auto gl_print_string(char const *name, GLenum const gl_str)
+      -> void {
     char const *str = (char const *)glGetString(gl_str);
     printf("%s = %s\n", name, str);
   }
 
-  static inline auto
-  shader_name_for_type(GLenum const shader_type) -> char const * {
+  static inline auto shader_name_for_type(GLenum const shader_type)
+      -> char const * {
     switch (shader_type) {
     case GL_VERTEX_SHADER:
       return "vertex";

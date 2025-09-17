@@ -380,10 +380,10 @@ private:
 
     camera.update_matrix_wvp();
 
-    glUniformMatrix4fv(shaders::umtx_wvp, 1, GL_FALSE,
+    glUniformMatrix4fv(shaders.umtx_wvp, 1, GL_FALSE,
                        glm::value_ptr(camera.Mwvp));
 
-    glUniform3fv(shaders::ulht, 1, glm::value_ptr(ambient_light));
+    glUniform3fv(shaders.ulht, 1, glm::value_ptr(ambient_light));
 
     glClearColor(background_color.r, background_color.g, background_color.b,
                  1.0);
