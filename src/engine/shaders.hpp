@@ -5,33 +5,39 @@
 // reviewed: 2024-01-10
 // reviewed: 2024-07-08
 
+#include "exception.hpp"
+#include <GLES3/gl3.h>
+#include <cstdio>
+#include <glm/glm.hpp>
+#include <vector>
+
 namespace glos {
 
 struct vertex final {
-  glm::vec3 position{};
-  glm::vec4 color{};
-  glm::vec3 normal{};
-  glm::vec2 texture{};
+    glm::vec3 position{};
+    glm::vec4 color{};
+    glm::vec3 normal{};
+    glm::vec2 texture{};
 };
 
 class shaders final {
 
-  class program final {
-  public:
-    GLuint id = 0;
+    class program final {
+      public:
+        GLuint id = 0;
 
-    inline auto use() const -> void { glUseProgram(id); }
-  };
+        inline auto use() const -> void { glUseProgram(id); }
+    };
 
-  // default shader source
-  static inline char const *vertex_shader_source = R"(
+    // default shader source
+    static inline char const* vertex_shader_source = R"(
 #version 330 core
 uniform mat4 umtx_mw;  // model-to-world-matrix
 uniform mat4 umtx_wvp; // world-to-view-to-projection
-layout(location = 0) in vec4 apos;
-layout(location = 1) in vec4 argba;
-layout(location = 2) in vec3 anorm;
-layout(location = 3) in vec2 atex;
+in vec4 apos;
+in vec4 argba;
+in vec3 anorm;
+in vec2 atex;
 out vec4 vrgba;
 out vec3 vnorm;
 out vec2 vtex;
@@ -54,7 +60,7 @@ void main() {
 }
   )";
 
-  static inline char const *fragment_shader_source = R"(
+    static inline char const* fragment_shader_source = R"(
 #version 330 core
 uniform sampler2D utex;
 uniform vec3 ulht; // ambient light vector
@@ -68,147 +74,159 @@ void main() {
 }
 )";
 
-  std::vector<program> programs{};
+    std::vector<program> programs{};
 
-public:
-  // vertex attributes layout in shaders
-  GLint apos = 0;
-  GLint argba = 1;
-  GLint anorm = 2;
-  GLint atex = 3;
+  public:
+    // vertex attributes layout in shader
 
-  // model -> world matrix
-  GLint umtx_mw = 0;
+    // vertex coordinate
+    GLint apos = -1;
 
-  // world -> view -> projection matrix
-  GLint umtx_wvp = 1;
+    // color
+    GLint argba = -1;
 
-  // texture mapper uniform
-  GLint utex = 2;
+    // normal
+    GLint anorm = -1;
 
-  // ambient light vector
-  GLint ulht = 3;
+    // texture coordinate
+    GLint atex = -1;
 
-  inline auto init() -> void {
-    puts("");
-    gl_print_string("GL_VENDOR", GL_VENDOR);
-    gl_print_string("GL_RENDERER", GL_RENDERER);
-    gl_print_string("GL_VERSION", GL_VERSION);
-    gl_print_string("GL_SHADING_LANGUAGE_VERSION", GL_SHADING_LANGUAGE_VERSION);
-    puts("");
+    // uniform attributes layout in shader
 
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
+    // model -> world matrix
+    GLint umtx_mw = -1;
 
-    uint32_t const default_program_ix =
-        load_program_from_source(vertex_shader_source, fragment_shader_source);
+    // world -> view -> projection matrix
+    GLint umtx_wvp = -1;
 
-    use_program(default_program_ix);
+    // texture mapper uniform
+    GLint utex = -1;
 
-    printf("shader uniforms locations:\n");
-    printf(":-%10s-:-%7s-:\n", "----------", "-------");
-    printf(": %10s : %-7d :\n", "umtx_mw", umtx_mw);
-    printf(": %10s : %-7d :\n", "umtx_wvp", umtx_wvp);
-    printf(": %10s : %-7d :\n", "utex", utex);
-    printf(": %10s : %-7d :\n", "ulht", ulht);
-    printf(":-%10s-:-%7s-:\n", "----------", "-------");
+    // ambient light vector
+    GLint ulht = -1;
 
-    puts("");
-    printf("shader attributes locations:\n");
-    printf(":-%10s-:-%7s-:\n", "----------", "-------");
-    printf(": %10s : %-7d :\n", "apos", apos);
-    printf(": %10s : %-7d :\n", "argba", argba);
-    printf(": %10s : %-7d :\n", "anorm", anorm);
-    printf(": %10s : %-7d :\n", "atex", atex);
-    printf(":-%10s-:-%7s-:\n", "----------", "-------");
-    puts("");
-  }
+    inline auto init() -> void {
+        puts("");
+        gl_print_string("GL_VENDOR", GL_VENDOR);
+        gl_print_string("GL_RENDERER", GL_RENDERER);
+        gl_print_string("GL_VERSION", GL_VERSION);
+        gl_print_string("GL_SHADING_LANGUAGE_VERSION",
+                        GL_SHADING_LANGUAGE_VERSION);
+        puts("");
 
-  inline auto free() -> void {
-    for (program const &p : programs) {
-      glDeleteProgram(p.id);
-    }
-    programs.clear();
-  }
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_CULL_FACE);
 
-  inline auto load_program_from_source(char const *vert_src,
-                                       char const *frag_src) -> uint32_t {
-    GLuint const program_id = glCreateProgram();
-    GLuint const vertex_shader_id = compile(GL_VERTEX_SHADER, vert_src);
-    GLuint const fragment_shader_id = compile(GL_FRAGMENT_SHADER, frag_src);
-    glAttachShader(program_id, vertex_shader_id);
-    glAttachShader(program_id, fragment_shader_id);
-    glLinkProgram(program_id);
-    // glValidateProgram(program_id);
-    GLint ok = 0;
-    glGetProgramiv(program_id, GL_LINK_STATUS, &ok);
-    if (!ok) {
-      GLchar msg[1024];
-      glGetProgramInfoLog(program_id, sizeof(msg), nullptr, msg);
-      throw exception{std::format("program linking error:\n{}", msg)};
+        uint32_t const default_program_ix = load_program_from_source(
+            vertex_shader_source, fragment_shader_source);
+
+        use_program(default_program_ix);
     }
 
-    glDeleteShader(vertex_shader_id);
-    glDeleteShader(fragment_shader_id);
+    inline auto print_current_shader_info() -> void {
+        printf("shader uniforms locations:\n");
+        printf(":-%10s-:-%4s-:\n", "----------", "----");
+        printf(": %10s : %-4d :\n", "umtx_mw", umtx_mw);
+        printf(": %10s : %-4d :\n", "umtx_wvp", umtx_wvp);
+        printf(": %10s : %-4d :\n", "utex", utex);
+        printf(": %10s : %-4d :\n", "ulht", ulht);
+        printf(":-%10s-:-%4s-:\n", "----------", "----");
 
-    programs.push_back({program_id});
-
-    return uint32_t(programs.size() - 1);
-  }
-
-  inline auto programs_count() const -> size_t { return programs.size(); }
-
-  inline auto use_program(uint32_t const ix) -> void {
-    program const &prog = programs.at(ix);
-    prog.use();
-    umtx_mw = glGetUniformLocation(prog.id, "umtx_mw");
-    umtx_wvp = glGetUniformLocation(prog.id, "umtx_wvp");
-    utex = glGetUniformLocation(prog.id, "utex");
-    ulht = glGetUniformLocation(prog.id, "ulht");
-    apos = glGetAttribLocation(prog.id, "apos");
-    argba = glGetAttribLocation(prog.id, "argba");
-    anorm = glGetAttribLocation(prog.id, "anorm");
-    atex = glGetAttribLocation(prog.id, "atex");
-  }
-
-private:
-  static inline auto compile(GLenum const shader_type, char const *src)
-      -> GLuint {
-    GLuint const shader_id = glCreateShader(shader_type);
-    glShaderSource(shader_id, 1, &src, nullptr);
-    glCompileShader(shader_id);
-    GLint ok = 0;
-    glGetShaderiv(shader_id, GL_COMPILE_STATUS, &ok);
-    if (!ok) {
-      GLchar msg[1024];
-      glGetShaderInfoLog(shader_id, sizeof(msg), nullptr, msg);
-      throw exception{std::format("compile error in {} shader:\n{}",
-                                  shader_name_for_type(shader_type), msg)};
+        printf("shader attributes locations:\n");
+        printf(":-%10s-:-%4s-:\n", "----------", "----");
+        printf(": %10s : %-4d :\n", "apos", apos);
+        printf(": %10s : %-4d :\n", "argba", argba);
+        printf(": %10s : %-4d :\n", "anorm", anorm);
+        printf(": %10s : %-4d :\n", "atex", atex);
+        printf(":-%10s-:-%4s-:\n", "----------", "----");
     }
-    return shader_id;
-  }
 
-public:
-  //
-  // static functions
-  //
-  static inline auto gl_print_string(char const *name, GLenum const gl_str)
-      -> void {
-    char const *str = (char const *)glGetString(gl_str);
-    printf("%s = %s\n", name, str);
-  }
-
-  static inline auto shader_name_for_type(GLenum const shader_type)
-      -> char const * {
-    switch (shader_type) {
-    case GL_VERTEX_SHADER:
-      return "vertex";
-    case GL_FRAGMENT_SHADER:
-      return "fragment";
-    default:
-      return "unknown";
+    inline auto free() -> void {
+        for (program const& p : programs) {
+            glDeleteProgram(p.id);
+        }
+        programs.clear();
     }
-  }
+
+    inline auto load_program_from_source(char const* vert_src,
+                                         char const* frag_src) -> uint32_t {
+        GLuint const program_id = glCreateProgram();
+        GLuint const vertex_shader_id = compile(GL_VERTEX_SHADER, vert_src);
+        GLuint const fragment_shader_id = compile(GL_FRAGMENT_SHADER, frag_src);
+        glAttachShader(program_id, vertex_shader_id);
+        glAttachShader(program_id, fragment_shader_id);
+        glLinkProgram(program_id);
+        // glValidateProgram(program_id);
+        GLint ok = 0;
+        glGetProgramiv(program_id, GL_LINK_STATUS, &ok);
+        if (!ok) {
+            GLchar msg[1024];
+            glGetProgramInfoLog(program_id, sizeof(msg), nullptr, msg);
+            throw exception{std::format("program linking error:\n{}", msg)};
+        }
+
+        glDeleteShader(vertex_shader_id);
+        glDeleteShader(fragment_shader_id);
+
+        programs.push_back({program_id});
+
+        return uint32_t(programs.size() - 1);
+    }
+
+    inline auto programs_count() const -> size_t { return programs.size(); }
+
+    inline auto use_program(uint32_t const ix) -> void {
+        program const& prog = programs.at(ix);
+        prog.use();
+        umtx_mw = glGetUniformLocation(prog.id, "umtx_mw");
+        umtx_wvp = glGetUniformLocation(prog.id, "umtx_wvp");
+        utex = glGetUniformLocation(prog.id, "utex");
+        ulht = glGetUniformLocation(prog.id, "ulht");
+        apos = glGetAttribLocation(prog.id, "apos");
+        argba = glGetAttribLocation(prog.id, "argba");
+        anorm = glGetAttribLocation(prog.id, "anorm");
+        atex = glGetAttribLocation(prog.id, "atex");
+    }
+
+  private:
+    static inline auto compile(GLenum const shader_type, char const* src)
+        -> GLuint {
+        GLuint const shader_id = glCreateShader(shader_type);
+        glShaderSource(shader_id, 1, &src, nullptr);
+        glCompileShader(shader_id);
+        GLint ok = 0;
+        glGetShaderiv(shader_id, GL_COMPILE_STATUS, &ok);
+        if (!ok) {
+            GLchar msg[1024];
+            glGetShaderInfoLog(shader_id, sizeof(msg), nullptr, msg);
+            throw exception{std::format("compile error in {} shader:\n{}",
+                                        shader_name_for_type(shader_type),
+                                        msg)};
+        }
+        return shader_id;
+    }
+
+  public:
+    //
+    // static functions
+    //
+    static inline auto gl_print_string(char const* name, GLenum const gl_str)
+        -> void {
+        GLubyte const* str = glGetString(gl_str);
+        printf("%s = %s\n", name, str);
+    }
+
+    static inline auto shader_name_for_type(GLenum const shader_type)
+        -> char const* {
+        switch (shader_type) {
+        case GL_VERTEX_SHADER:
+            return "vertex";
+        case GL_FRAGMENT_SHADER:
+            return "fragment";
+        default:
+            return "unknown";
+        }
+    }
 };
 
 static shaders shaders{};

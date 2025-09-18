@@ -5,6 +5,10 @@
 // reviewed: 2024-01-08
 // reviewed: 2024-07-08
 
+#include <cstddef>
+#include <cstdint>
+#include <glm/glm.hpp>
+
 // ----------------------------------------------------------------------
 // engine configuration
 // ----------------------------------------------------------------------
@@ -32,6 +36,9 @@ static size_t constexpr cache_line_size_B = 64;
 // ----------------------------------------------------------------------
 // application configuration
 // ----------------------------------------------------------------------
+
+// random number generator sphere_seed
+static int constexpr random_seed = 0;
 
 // game or performance test
 // 0: none (game)  1: cubes  2: spheres

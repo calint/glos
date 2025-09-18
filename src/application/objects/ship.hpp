@@ -4,6 +4,8 @@
 // reviewed: 2024-07-08
 // reviewed: 2024-07-15
 
+#include "../../engine/camera.hpp"
+#include "power_up.hpp"
 #include "ship_bullet.hpp"
 
 struct bullet_level final {
@@ -21,7 +23,7 @@ static uint32_t constexpr bullet_levels_length =
 
 static uint32_t bullet_levels_index = 0;
 
-class ship final : public object {
+class ship final : public glos::object {
   uint64_t ready_to_fire_at_ms = 0;
 
 public:
@@ -30,8 +32,8 @@ public:
       uint32_t const oid = ++object_id;
       // note: 'object_id' increment and assignment to 'oid' is atomic
       name.append("ship_").append(std::to_string(oid));
-      printf("%lu: %lu: create %s\n", frame_context.frame_num, frame_context.ms,
-             name.c_str());
+      printf("%lu: %lu: create %s\n", glos::frame_context.frame_num,
+             glos::frame_context.ms, name.c_str());
     }
     glob_ix(glob_ix_ship);
     scale = {1.0f, 1.0f, 1.0f};
@@ -43,8 +45,8 @@ public:
 
   inline ~ship() override {
     if (debug_multiplayer) {
-      printf("%lu: %lu: free %s\n", frame_context.frame_num, frame_context.ms,
-             name.c_str());
+      printf("%lu: %lu: free %s\n", glos::frame_context.frame_num,
+             glos::frame_context.ms, name.c_str());
     }
   }
 
@@ -65,30 +67,31 @@ public:
     uint64_t const keys = net_state->keys;
 
     // handle ship controls
-    if (keys & key_w) {
-      velocity +=
-          ship_speed * vec3{-sin(angle.y), 0, -cos(angle.y)} * frame_context.dt;
+    if (keys & glos::key_w) {
+      linear_velocity += ship_speed *
+                         glm::vec3{-sin(angle.y), 0, -cos(angle.y)} *
+                         glos::frame_context.dt;
       glob_ix(glob_ix_ship_engine_on);
     }
-    if (keys & key_a) {
+    if (keys & glos::key_a) {
       angular_velocity.y = ship_turn_rate;
     }
-    if (keys & key_d) {
+    if (keys & glos::key_d) {
       angular_velocity.y = -ship_turn_rate;
     }
-    if (keys & key_j) {
+    if (keys & glos::key_j) {
       fire();
     }
-    if (keys & key_k) {
-      camera.type = camera::type::LOOK_AT;
-      camera.position = {0, 30, 30};
-      camera.look_at = {0, 0, -.000001f};
+    if (keys & glos::key_k) {
+      glos::camera.type = glos::camera::type::LOOK_AT;
+      glos::camera.position = {0, 30, 30};
+      glos::camera.look_at = {0, 0, -.000001f};
       // note: -.000001f because of the math of 'look at'
     }
-    if (keys & key_l) {
-      camera.type = camera::type::ORTHOGONAL;
-      camera.position = {0, 50, 0};
-      camera.look_at = {0, 0, -.000001f};
+    if (keys & glos::key_l) {
+      glos::camera.type = glos::camera::type::ORTHOGONAL;
+      glos::camera.position = {0, 50, 0};
+      glos::camera.look_at = {0, 0, -.000001f};
       // note: -.000001f because of the math of 'look at'
     }
 
@@ -97,8 +100,8 @@ public:
 
   inline auto on_collision(object *o) -> bool override {
     if (debug_multiplayer) {
-      printf("%lu: %lu: %s collision with %s\n", frame_context.frame_num,
-             frame_context.ms, name.c_str(), o->name.c_str());
+      printf("%lu: %lu: %s collision with %s\n", glos::frame_context.frame_num,
+             glos::frame_context.ms, name.c_str(), o->name.c_str());
     }
 
     if (typeid(*o) == typeid(power_up)) {
@@ -109,12 +112,12 @@ public:
       return true;
     }
 
-    angle.y += radians(rnd1(45));
+    angle.y += glm::radians(rnd1(45));
 
-    fragment *frg = new (objects.alloc()) fragment{};
+    fragment *frg = new (glos::objects.alloc()) fragment{};
     frg->position = o->position;
-    frg->angular_velocity = vec3{rnd1(bullet_fragment_agl_vel_rnd)};
-    frg->death_time_ms = frame_context.ms + 500;
+    frg->angular_velocity = glm::vec3{rnd1(bullet_fragment_agl_vel_rnd)};
+    frg->death_time_ms = glos::frame_context.ms + 500;
 
     score -= 100;
 
@@ -127,24 +130,24 @@ public:
 
 private:
   inline auto fire() -> void {
-    if (ready_to_fire_at_ms > frame_context.ms) {
+    if (ready_to_fire_at_ms > glos::frame_context.ms) {
       return;
     }
 
-    mat4 const &M = updated_Mmw();
-    vec3 const forward_vec = -normalize(vec3{M[2]});
+    glm::mat4 const &M = updated_Mmw();
+    glm::vec3 const forward_vec = -normalize(glm::vec3{M[2]});
     // note: M[2] is third column: z-axis
     // note: forward for object model space is negative z
 
     bullet_level const &bl = bullet_levels[bullet_levels_index];
     for (uint32_t i = 0; i < bl.bullets_per_fire; ++i) {
-      ship_bullet *blt = new (objects.alloc()) ship_bullet{};
+      ship_bullet *blt = new (glos::objects.alloc()) ship_bullet{};
       blt->position = position + forward_vec;
       blt->angle = angle;
-      blt->velocity = ship_bullet_speed * forward_vec;
-      blt->velocity.x += rnd1(bl.bullet_spread);
-      blt->velocity.z += rnd1(bl.bullet_spread);
+      blt->linear_velocity = ship_bullet_speed * forward_vec;
+      blt->linear_velocity.x += rnd1(bl.bullet_spread);
+      blt->linear_velocity.z += rnd1(bl.bullet_spread);
     }
-    ready_to_fire_at_ms = frame_context.ms + bl.fire_interval_ms;
+    ready_to_fire_at_ms = glos::frame_context.ms + bl.fire_interval_ms;
   }
 };

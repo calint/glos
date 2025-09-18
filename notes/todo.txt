@@ -1,3 +1,5 @@
+[x] make it workable with neovim
+[x] upgrade to glosi engine
 [x] o1store: cache line aligned allocation when custom instance size
 [x] o1store: check alignment of '*all' calloc to match object size
     => use std::aligned_alloc and std::free
