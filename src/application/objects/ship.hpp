@@ -9,9 +9,9 @@
 #include "ship_bullet.hpp"
 
 struct bullet_level final {
-  uint32_t fire_interval_ms;
-  uint32_t bullets_per_fire;
-  float bullet_spread;
+    uint32_t fire_interval_ms;
+    uint32_t bullets_per_fire;
+    float bullet_spread;
 };
 
 static bullet_level constexpr bullet_levels[]{
@@ -24,130 +24,131 @@ static uint32_t constexpr bullet_levels_length =
 static uint32_t bullet_levels_index = 0;
 
 class ship final : public glos::object {
-  uint64_t ready_to_fire_at_ms = 0;
+    uint64_t ready_to_fire_at_ms = 0;
 
-public:
-  inline ship() {
-    if (debug_multiplayer) {
-      uint32_t const oid = ++object_id;
-      // note: 'object_id' increment and assignment to 'oid' is atomic
-      name.append("ship_").append(std::to_string(oid));
-      printf("%lu: %lu: create %s\n", glos::frame_context.frame_num,
-             glos::frame_context.ms, name.c_str());
-    }
-    glob_ix(glob_ix_ship);
-    scale = {1.0f, 1.0f, 1.0f};
-    bounding_radius = glob().bounding_radius * scale.x;
-    mass = 150;
-    collision_bits = cb_hero;
-    collision_mask = cb_asteroid | cb_power_up | cb_ufo | cb_ufo_bullet;
-  }
-
-  inline ~ship() override {
-    if (debug_multiplayer) {
-      printf("%lu: %lu: free %s\n", glos::frame_context.frame_num,
-             glos::frame_context.ms, name.c_str());
-    }
-  }
-
-  inline auto update() -> bool override {
-    if (!object::update()) {
-      return false;
+  public:
+    inline ship() {
+        if (debug_multiplayer) {
+            uint32_t const oid = ++object_id;
+            // note: 'object_id' increment and assignment to 'oid' is atomic
+            name.append("ship_").append(std::to_string(oid));
+            printf("%lu: %lu: create %s\n", glos::frame_context.frame_num,
+                   glos::frame_context.ms, name.c_str());
+        }
+        glob_ix(glob_ix_ship);
+        scale = {1.0f, 1.0f, 1.0f};
+        bounding_radius = glob().bounding_radius * scale.x;
+        mass = 150;
+        collision_bits = cb_hero;
+        collision_mask = cb_asteroid | cb_power_up | cb_ufo | cb_ufo_bullet;
     }
 
-    game_area_roll(position);
-
-    angular_velocity = {};
-    glob_ix(glob_ix_ship);
-
-    if (net_state == nullptr) {
-      return true;
+    inline ~ship() override {
+        if (debug_multiplayer) {
+            printf("%lu: %lu: free %s\n", glos::frame_context.frame_num,
+                   glos::frame_context.ms, name.c_str());
+        }
     }
 
-    uint64_t const keys = net_state->keys;
+    inline auto update() -> bool override {
+        if (!object::update()) {
+            return false;
+        }
 
-    // handle ship controls
-    if (keys & glos::key_w) {
-      linear_velocity += ship_speed *
-                         glm::vec3{-sin(angle.y), 0, -cos(angle.y)} *
-                         glos::frame_context.dt;
-      glob_ix(glob_ix_ship_engine_on);
-    }
-    if (keys & glos::key_a) {
-      angular_velocity.y = ship_turn_rate;
-    }
-    if (keys & glos::key_d) {
-      angular_velocity.y = -ship_turn_rate;
-    }
-    if (keys & glos::key_j) {
-      fire();
-    }
-    if (keys & glos::key_k) {
-      glos::camera.type = glos::camera::type::LOOK_AT;
-      glos::camera.position = {0, 30, 30};
-      glos::camera.look_at = {0, 0, -.000001f};
-      // note: -.000001f because of the math of 'look at'
-    }
-    if (keys & glos::key_l) {
-      glos::camera.type = glos::camera::type::ORTHOGONAL;
-      glos::camera.position = {0, 50, 0};
-      glos::camera.look_at = {0, 0, -.000001f};
-      // note: -.000001f because of the math of 'look at'
-    }
+        game_area_roll(position);
 
-    return true;
-  }
+        angular_velocity = {};
+        glob_ix(glob_ix_ship);
 
-  inline auto on_collision(object *o) -> bool override {
-    if (debug_multiplayer) {
-      printf("%lu: %lu: %s collision with %s\n", glos::frame_context.frame_num,
-             glos::frame_context.ms, name.c_str(), o->name.c_str());
-    }
+        if (net_state == nullptr) {
+            return true;
+        }
 
-    if (typeid(*o) == typeid(power_up)) {
-      score += 100;
-      if (bullet_levels_index < bullet_levels_length - 1) {
-        ++bullet_levels_index;
-      }
-      return true;
-    }
+        uint64_t const keys = net_state->keys;
 
-    angle.y += glm::radians(rnd1(45));
+        // handle ship controls
+        if (keys & glos::key_w) {
+            linear_velocity += ship_speed *
+                               glm::vec3{-sin(angle.y), 0, -cos(angle.y)} *
+                               glos::frame_context.dt;
+            glob_ix(glob_ix_ship_engine_on);
+        }
+        if (keys & glos::key_a) {
+            angular_velocity.y = ship_turn_rate;
+        }
+        if (keys & glos::key_d) {
+            angular_velocity.y = -ship_turn_rate;
+        }
+        if (keys & glos::key_j) {
+            fire();
+        }
+        if (keys & glos::key_k) {
+            glos::camera.type = glos::camera::type::LOOK_AT;
+            glos::camera.position = {0, 30, 30};
+            glos::camera.look_at = {0, 0, -.000001f};
+            // note: -.000001f because of the math of 'look at'
+        }
+        if (keys & glos::key_l) {
+            glos::camera.type = glos::camera::type::ORTHOGONAL;
+            glos::camera.position = {0, 50, 0};
+            glos::camera.look_at = {0, 0, -.000001f};
+            // note: -.000001f because of the math of 'look at'
+        }
 
-    fragment *frg = new (glos::objects.alloc()) fragment{};
-    frg->position = o->position;
-    frg->angular_velocity = glm::vec3{rnd1(bullet_fragment_agl_vel_rnd)};
-    frg->death_time_ms = glos::frame_context.ms + 500;
-
-    score -= 100;
-
-    if (bullet_levels_index > 0) {
-      --bullet_levels_index;
+        return true;
     }
 
-    return true;
-  }
+    inline auto on_collision(object* o) -> bool override {
+        if (debug_multiplayer) {
+            printf("%lu: %lu: %s collision with %s\n",
+                   glos::frame_context.frame_num, glos::frame_context.ms,
+                   name.c_str(), o->name.c_str());
+        }
 
-private:
-  inline auto fire() -> void {
-    if (ready_to_fire_at_ms > glos::frame_context.ms) {
-      return;
+        if (typeid(*o) == typeid(power_up)) {
+            score += 100;
+            if (bullet_levels_index < bullet_levels_length - 1) {
+                ++bullet_levels_index;
+            }
+            return true;
+        }
+
+        angle.y += glm::radians(rnd1(45));
+
+        fragment* frg = new (glos::objects.alloc()) fragment{};
+        frg->position = o->position;
+        frg->angular_velocity = glm::vec3{rnd1(bullet_fragment_agl_vel_rnd)};
+        frg->death_time_ms = glos::frame_context.ms + 500;
+
+        score -= 100;
+
+        if (bullet_levels_index > 0) {
+            --bullet_levels_index;
+        }
+
+        return true;
     }
 
-    glm::mat4 const &M = updated_Mmw();
-    glm::vec3 const forward_vec = -normalize(glm::vec3{M[2]});
-    // note: M[2] is third column: z-axis
-    // note: forward for object model space is negative z
+  private:
+    inline auto fire() -> void {
+        if (ready_to_fire_at_ms > glos::frame_context.ms) {
+            return;
+        }
 
-    bullet_level const &bl = bullet_levels[bullet_levels_index];
-    for (uint32_t i = 0; i < bl.bullets_per_fire; ++i) {
-      ship_bullet *blt = new (glos::objects.alloc()) ship_bullet{};
-      blt->position = position + forward_vec;
-      blt->angle = angle;
-      blt->linear_velocity = ship_bullet_speed * forward_vec;
-      blt->linear_velocity.x += rnd1(bl.bullet_spread);
-      blt->linear_velocity.z += rnd1(bl.bullet_spread);
+        glm::mat4 const& M = updated_Mmw();
+        glm::vec3 const forward_vec = -normalize(glm::vec3{M[2]});
+        // note: M[2] is third column: z-axis
+        // note: forward for object model space is negative z
+
+        bullet_level const& bl = bullet_levels[bullet_levels_index];
+        for (uint32_t i = 0; i < bl.bullets_per_fire; ++i) {
+            ship_bullet* blt = new (glos::objects.alloc()) ship_bullet{};
+            blt->position = position + forward_vec;
+            blt->angle = angle;
+            blt->linear_velocity = ship_bullet_speed * forward_vec;
+            blt->linear_velocity.x += rnd1(bl.bullet_spread);
+            blt->linear_velocity.z += rnd1(bl.bullet_spread);
+        }
+        ready_to_fire_at_ms = glos::frame_context.ms + bl.fire_interval_ms;
     }
-    ready_to_fire_at_ms = glos::frame_context.ms + bl.fire_interval_ms;
-  }
 };

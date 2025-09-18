@@ -16,7 +16,7 @@ static std::atomic_uint32_t ufos_alive{0};
 static std::atomic_uint32_t object_id{0};
 // note: used when 'debug_multiplayer' is true to give objects unique numbers
 
-static glos::object *hero = nullptr;
+static glos::object* hero = nullptr;
 
 // glob indexes
 // note: set by 'application_init()' when loading models and used by objects
