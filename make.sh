@@ -11,7 +11,10 @@
 set -e
 cd $(dirname "$0")
 
-#CC="g++ -std=c++23 -Wno-changes-meaning"
+#CC="g++ -std=c++23 -Wno-changes-meaning -flifetime-dse=1"
+# note: -flifetime-dse=1 : workaround for issue when compiler optimizes away stores before new in place
+#       falsely assuming that all object fields are initialized by constructor resulting in crash
+
 CC="clang++ -std=c++23"
 SRC="src/main.cpp"
 BIN="glos"
