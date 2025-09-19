@@ -1,8 +1,3 @@
-[x] make it workable with neovim
-[x] upgrade to glosi engine
-[x] o1store: cache line aligned allocation when custom instance size
-[x] o1store: check alignment of '*all' calloc to match object size
-    => use std::aligned_alloc and std::free
 [ ] font with transparency to be used in the hud
 [ ] component slices in the monolithic object
     cache line aligned of multiple 64B (cache line size)
@@ -18,7 +13,7 @@
 [ ]   glosi: "atoms" bonded by "springs" instead of rigid body physics
 [ ]   render cull cells
 [ ]   render cull objects
-[x]   fix multithreading issues
+[ ]   fix multithreading issues
 [ ]     in multiplayer threaded grid
         if objects max bounding radius is less than half a grid cell size then threading
         can be done in deterministic way
@@ -34,13 +29,10 @@
 [ ] grid: static vs moving vs bullets vs scenery objects
 [ ] assets embedded in static executable with the goal of a one file, no dependencies unit
     => map<path,data>
-[ ] collision detection of convex volume vs convex volume using separating axis theorem
-    => current method appropriate for intended application
 [ ] glob::load: optimize ranges by merging non-textured materials since all
     material info is saved in the vertices
     => texture_id stored in range
     => keep with the thought that material properties will be used at rendering
-[ ] shaders: make uniform and attribute locations dynamic
 [ ] optimize rendering
 [ ] render list to avoid data races when update thread runs in parallel
 [ ] collision detection: large sphere vs "pointy" convex volume gives false positives
@@ -56,7 +48,6 @@
 [ ] texture: transparent textures
 [ ] hud: resolve issue with colors
 [ ] use "moving towards each other" vector to cull collision detection
-[ ] look at std::aligned_alloc to align o1store
 [ ] object: consider making all members private
 [ ] cell.update does what object::update does since it always returns true
 [ ] bounding box. OBB 3 normals, width, height
@@ -66,7 +57,6 @@
     a non synchronized statement
 [ ] planes::update_model_to_world could save frame_num from context to shorten
     the decision if cached values are valid
-[ ] objects.free(): what if destructors created new objects
 [ ] net_server: read/write instead of recv(...,0) and send(...,0)
 [ ] net_server: record client signals and then replay the session
 [ ] object: update Mmw if it will be rendered
@@ -74,11 +64,8 @@
 [ ] grid cell render culling
 [ ] cmake or premake and automatically download dependencies using git submodules
 [ ] net_server as separate application
-[ ] constexpr everything
 [ ] fix itm (initiate-then-modify) anti-pattern
 [ ] note about the absolute texture path in mtl files
-[-] object size and content is not cache friendly. consider components
-    => monolithic object with cache friendly "slices" as used by the subsystems
 [ ] multiple collision detection convex volumes per object
 [ ] collision detection: collision_context such as collision normal, plane etc
 [ ] collision reaction: tiny random added to 'dt' for each object to avoid
@@ -88,6 +75,20 @@
 [ ] shader: mtx_wvp * mtx_mw   is it better with mtx_mwvp?
 [ ] consider: https://github.com/alugowski/task-thread-pool for simple multithreading
 ------------------------------------------------------------------------------------------
+[-] collision detection of convex volume vs convex volume using separating axis theorem
+    => current method appropriate for intended application
+[x] shaders: make uniform and attribute locations dynamic
+[x] look at std::aligned_alloc to align o1store
+[x] objects.free(): what if destructors created new objects
+[-] object size and content is not cache friendly. consider components
+    => monolithic object with cache friendly "slices" as used by the subsystems
+[-] constexpr everything
+    => this should be a compiler switch
+[x] make it workable with neovim
+[x] upgrade to glosi engine
+[x] o1store: cache line aligned allocation when custom instance size
+[x] o1store: check alignment of '*all' calloc to match object size
+    => use std::aligned_alloc and std::free
 [x] object: when glob_ix changes invalidate bounding planes
 [x] use io stream rather than 'token'
 [x] struct vertex: use glm::vecX instead of float[]
