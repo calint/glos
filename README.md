@@ -62,4 +62,4 @@ es3 in c++ 23
   * F7: hud on/off
   * F8: render grid cells on/off
 
-## [todo](https://github.com/calint/glos/blob/main/notes/todo.txt)
+## [todo](https://github.com/calint/glos/blob/master/notes/todo.tx)
