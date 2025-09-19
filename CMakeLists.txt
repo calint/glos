@@ -1,6 +1,6 @@
 # note: for dependencies in ubuntu and arch linux see `make.sh`
 cmake_minimum_required(VERSION 3.10)
-project(glosi)
+project(glos)
 set(CMAKE_VERBOSE_MAKEFILE ON)
 set(BUILD_DIR "${CMAKE_SOURCE_DIR}/build")
 file(MAKE_DIRECTORY ${BUILD_DIR})
