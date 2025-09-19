@@ -39,8 +39,8 @@ es3 in c++ 23
 
 ## howto run
 
-* using script (recommended): `./make.sh && ./glosi`
-* using cmake: `mkdir build && cd build && cmake .. && make && cd .. && build/glosi`
+* using script (recommended): `./make.sh && ./glos`
+* using cmake: `mkdir build && cd build && cmake .. && make && cd .. && build/glos`
 
 ## sample game
 
@@ -62,4 +62,4 @@ es3 in c++ 23
   * F7: hud on/off
   * F8: render grid cells on/off
 
-## [todo](https://github.com/calint/glosi/blob/main/notes/todo.txt)
+## [todo](https://github.com/calint/glos/blob/main/notes/todo.txt)
