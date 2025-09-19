@@ -61,5 +61,6 @@ es3 in c++ 23
   * F6: render bounding spheres on/off
   * F7: hud on/off
   * F8: render grid cells on/off
+  * F9: print current shader info
 
 ## [todo](https://github.com/calint/glos/blob/master/notes/todo.txt)
