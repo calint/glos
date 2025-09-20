@@ -19,11 +19,10 @@ class object {
     friend class grid;
     friend class cell;
 
-  public:
     // members in order they are accessed by 'grid::add', 'cell::add',
     //  'cell::update', 'cell:resolve_collisions', 'cell::render' with cache
     //   coherence in mind
-
+  public:
     // -- grid::add, cell::add
     glm::vec3 position{};        // in meters
     float bounding_radius = 0;   // in meters
@@ -33,8 +32,8 @@ class object {
     bool overlaps_cells = false; // used by grid to flag cell overlap
   public:
     bool is_static = false; // immovable object
-                            // -- cell::update
   private:
+    // -- cell::update
     std::atomic_flag lock = ATOMIC_FLAG_INIT;
     uint32_t updated_at_tick = 0; // used by cell to avoid updating twice
   public:
@@ -76,8 +75,7 @@ class object {
   public:
     inline virtual ~object() = default;
     // note: 'delete obj;' may not be used because memory is managed by
-    // 'o1store'.
-    //       destructor is invoked at 'objects.apply_free(...)'
+    // 'o1store'. destructor is invoked at 'objects.apply_free(...)'
 
     // called from 'cell'
     inline virtual auto render() -> void {
