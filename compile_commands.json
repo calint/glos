@@ -15,9 +15,9 @@
       "-Wno-unsafe-buffer-usage",
       "-Wno-unsafe-buffer-usage-in-libc-call",
       "-Wno-undefined-internal",
-      "-Wno-unused",
+      "-Wno-unused"
     ],
     "directory": "/home/c/w/glos",
     "file": "src/main.cpp"
-  },
+  }
 ]
